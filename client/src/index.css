@@ -1,0 +1,47 @@
+html {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	font-family: 'Arial', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background: var(--main-background-color);
+	line-height: 1.6em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+p,
+h1,
+h2 {
+	margin: 0;
+}
+
+input,
+textarea,
+button,
+select {
+	border: none;
+	outline: none;
+}
+
+button:focus {
+	outline: none;
+}
+

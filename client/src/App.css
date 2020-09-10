@@ -1,0 +1,78 @@
+.brand-data-cnt {
+    margin-top: 20vh;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.flex-v {
+	display: flex;
+	flex-direction: column;
+}
+
+.flex-v-cent-h {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.flex {
+	display: flex;
+}
+
+.flex-cent-v {
+	display: flex;
+	align-items: center;
+}
+
+.space-between {
+	display: flex;
+	justify-content: space-between;
+}
+
+.space-between-cent-v {
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.border {
+    border: 1px solid grey;
+}
+
+.border-radius {
+    border-radius: 5px;
+}
+
+.input-border-radius {
+    border-radius: 3px;
+}
+
+.input-padding {
+    padding: .5em;
+}
+
+.text-centered {
+	text-align: center;
+}
+
+.full-height {
+	height: 100vh;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.pointer {
+	cursor: pointer;
+	user-select: none;
+}
+
+.white-bg {
+	background: #fff;
+}
