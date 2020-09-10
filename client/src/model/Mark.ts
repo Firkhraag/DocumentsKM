@@ -1,4 +1,4 @@
-interface IBrand {    
+interface IMark {    
     series: string
     node: string
     subnode: string
@@ -10,7 +10,7 @@ interface IBrand {
     objectName: string
 }
 
-class Brand {
+class Mark {
     series: string
     node: string
     subnode: string
@@ -21,7 +21,7 @@ class Brand {
     facilityName: string
     objectName: string
     
-    constructor(obj?: IBrand) {    
+    constructor(obj?: IMark) {    
         this.series = obj && obj.series || ''
         this.node = obj && obj.node || ''
         this.subnode = obj && obj.subnode || ''
@@ -34,4 +34,4 @@ class Brand {
     }   
 }
 
-export default Brand
+export default Mark

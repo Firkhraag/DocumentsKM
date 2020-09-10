@@ -3,13 +3,13 @@ using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
-    public class MockBrandRepo : IBrandRepo
+    public class MockMarkRepo : IMarkRepo
     {
-        public IEnumerable<Brand> GetAllBrands()
+        public IEnumerable<Mark> GetAllMarks()
         {
-            return new List<Brand>
+            return new List<Mark>
             {
-                new Brand
+                new Mark
                 {
                     Id=0,
                     Series="M56888",
@@ -22,7 +22,7 @@ namespace DocumentsKM.Data
                     FacilityName="Давно выяснено, что при оценке дизайна и композиции читаемый текст мешает сосредоточиться. Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение шаблона, а также реальное распределение букв и пробелов в абзацах, которое не получается при простой дубликации.",
                     ObjectName="Давно выяснено, что при оценке дизайна и композиции читаемый текст мешает сосредоточиться. Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение шаблона, а также реальное распределение букв и пробелов в абзацах, которое не получается при простой дубликации.",
                 },
-                new Brand
+                new Mark
                 {
                     Id=1,
                     Series="V59988",
@@ -38,9 +38,9 @@ namespace DocumentsKM.Data
             };
         }
 
-        public Brand GetBrandById(int id)
+        public Mark GetMarkById(int id)
         {
-            return new Brand
+            return new Mark
             {
                 Id=0,
                 Series="M56888",

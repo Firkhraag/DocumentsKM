@@ -1,6 +1,6 @@
 namespace DocumentsKM.Models
 {
-    public class Brand
+    public class Mark
     {
         public int Id { get; set; }
         public string Series { get; set; }

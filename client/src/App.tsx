@@ -1,12 +1,12 @@
 import React from 'react'
-import BrandData from './components/BrandData/BrandData'
+import MarkData from './components/MarkData/MarkData'
 import './App.css'
 
 const App = () => {
 
 	return (
-		<div className="brand-data-cnt flex-v-cent-h full-height">
-            <BrandData isCreateModeInitially={false} />
+		<div className="flex-v-cent-h full-height">
+            <MarkData isCreateModeInitially={false} />
 		</div>
 	)
 }

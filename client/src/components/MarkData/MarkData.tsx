@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import Brand from '../../model/Brand'
-import './BrandData.css'
+import Mark from '../../model/Mark'
+import './MarkData.css'
 
-type BrandDataProps = {
+type MarkDataProps = {
 	isCreateModeInitially: boolean
 }
 
 // !!!TBD set node to empty string when changeng series
 
-const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
+const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 	const [isCreateMode, setIsCreateMode] = useState<boolean>(
 		isCreateModeInitially
 	)
-	const [brand, setBrand] = useState<Brand>(new Brand(null))
+	const [mark, setMark] = useState<Mark>(new Mark(null))
 
 	const [series, setSeries] = useState<Array<string>>([])
 	// const [selectedSeries, setSelectedSeries] = useState<string>("")
@@ -43,7 +43,7 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 		}
 		setSubnodes([])
 		setCodes([])
-		setBrand({ ...new Brand(null), series: v })
+		setMark({ ...new Mark(null), series: v })
 	}
 
 	const onNodeSelect = (event: React.FormEvent<HTMLSelectElement>) => {
@@ -60,9 +60,9 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 			setSubnodes([])
 		}
 		setCodes([])
-		setBrand({
-			...new Brand(null),
-			series: brand.series,
+		setMark({
+			...new Mark(null),
+			series: mark.series,
 			node: v,
 			gipSurname: gipSurname,
 		})
@@ -85,8 +85,8 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 		} else {
 			setCodes([])
 		}
-		setBrand({
-			...brand,
+		setMark({
+			...mark,
 			subnode: v,
 			facilityName: facilityName,
 			objectName: objectName,
@@ -96,15 +96,15 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
     const onCodeSelect = (event: React.FormEvent<HTMLSelectElement>) => {
         const v = event.currentTarget.value
 
-		setBrand({
-			...brand,
+		setMark({
+			...mark,
 			code: v,
 		})
 	}
 
 	return (
-		<div className="brand-data-cnt">
-			<h1 className="text-centered brand-data-title">Данные по марке</h1>
+		<div className="Mark-data-cnt">
+			<h1 className="text-centered Mark-data-title">Данные по марке</h1>
 			<div className="tabs">
 				<input
 					type="radio"
@@ -125,11 +125,11 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 				/>
 				<label htmlFor="tab-btn-2">Добавить</label>
 
-				<div className="brand-data">
+				<div className="Mark-data">
 					{isCreateMode ? null : (
 						<div className="flex-v mrg-bot">
 							<p>Последние марки</p>
-							<select className="w-latest-brands mrg-right border input-border-radius input-padding">
+							<select className="w-latest-Marks mrg-right border input-border-radius input-padding">
 								<option value=""></option>
 								<option>M32788.111.111-KVB 8</option>
 								<option>D32788.111.111-KVB 8</option>
@@ -141,7 +141,7 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 							<p className="mrg-bot-1">Базовая серия</p>
 							<select
                                 onChange={onSeriesSelect}
-                                value={brand.series}
+                                value={mark.series}
 								className="input-width-1 border input-border-radius input-padding"
 							>
 								<option key={-1}></option>
@@ -157,7 +157,7 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 							<p className="mrg-bot-1">Узел</p>
 							<select
                                 onChange={onNodeSelect}
-                                value={brand.node}
+                                value={mark.node}
 								className="input-width-0 border input-border-radius input-padding"
 							>
 								<option key={-1}></option>
@@ -173,7 +173,7 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 							<p className="mrg-bot-1">Подузел</p>
 							<select
                                 onChange={onSubnodeSelect}
-                                value={brand.subnode}
+                                value={mark.subnode}
 								className="input-width-0 border input-border-radius input-padding"
 							>
 								<option key={-1}></option>
@@ -188,7 +188,7 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 						{isCreateMode ? null : (
 							<div className="flex-v">
 								<p className="mrg-bot-1">Марка</p>
-								<select onChange={onCodeSelect} value={brand.code} className="input-width-0 border input-border-radius input-padding">
+								<select onChange={onCodeSelect} value={mark.code} className="input-width-0 border input-border-radius input-padding">
 									<option key={-1}></option>
 									{codes.map((x, y) => (
 										<option key={y}>{x}</option>
@@ -201,44 +201,44 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 						)}
 					</div>
 					<div className="mrg-bot">
-						{brand.gipSurname === '' ? null : (
+						{mark.gipSurname === '' ? null : (
 							<div className="mrg-bot">
 								<p className="mrg-bot-1">Фамилия ГИПа</p>
 								<p className="border input-border-radius input-padding">
-									{brand.gipSurname}
+									{mark.gipSurname}
 								</p>
 							</div>
 						)}
-						{brand.facilityName === '' ? null : (
+						{mark.facilityName === '' ? null : (
 							<div className="mrg-bot">
 								<p className="mrg-bot-1">
 									Наименование комплекса
 								</p>
 								<p className="border input-border-radius input-padding">
-									{brand.facilityName}
+									{mark.facilityName}
 								</p>
 							</div>
 						)}
-						{brand.objectName === '' ? null : (
+						{mark.objectName === '' ? null : (
 							<div className="mrg-bot">
 								<p className="mrg-bot-1">
 									Наименование объекта
 								</p>
 								<p className="border input-border-radius input-padding">
-									{brand.objectName}
+									{mark.objectName}
 								</p>
 							</div>
 						)}
 					</div>
 
 					{isCreateMode ? (
-						brand.subnode === '' ? null : (
+						mark.subnode === '' ? null : (
 							<button className="input-border-radius pointer">
 								Добавить новую марку
 							</button>
 						)
 					) : (
-						brand.code === '' ? null : <button className="input-border-radius pointer">
+						mark.code === '' ? null : <button className="input-border-radius pointer">
 							Сохранить изменения
 						</button>
 					)}
@@ -273,4 +273,4 @@ const BrandData = ({ isCreateModeInitially }: BrandDataProps) => {
 	)
 }
 
-export default BrandData
+export default MarkData

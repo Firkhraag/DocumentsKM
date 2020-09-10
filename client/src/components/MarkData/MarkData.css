@@ -1,44 +1,44 @@
-.brand-data-cnt {
+.mark-data-cnt {
     margin: 10vh 0;
 }
 
-.brand-data-title {
+.mark-data-title {
     margin-bottom: 1em;
 }
 
-.brand-data .mrg-bot {
+.mark-data .mrg-bot {
     margin-bottom: 1em;
 }
 
-.brand-data .mrg-bot-1 {
+.mark-data .mrg-bot-1 {
     margin-bottom: .1em;
 }
 
-.brand-data .mrg-left {
+.mark-data .mrg-left {
     margin-left: .5em;
 }
 
-.brand-data .mrg-right {
+.mark-data .mrg-right {
     margin-right: .5em;
 }
 
-.brand-data .w-latest-brands {
+.mark-data .w-latest-brands {
     width: 15.25vw;
 }
 
-.brand-data .input-width-1 {
+.mark-data .input-width-1 {
     width: 8vw;
 }
 
-.brand-data .input-width-0 {
+.mark-data .input-width-0 {
     width: 6vw;
 }
 
-.brand-data .input-width-2 {
+.mark-data .input-width-2 {
     width: 18vw;
 }
 
-.brand-data button {
+.mark-data button {
     font-size: 15px;
     background: #ededed;
     border: 1px solid #bdbdbd;
