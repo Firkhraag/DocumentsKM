@@ -1,9 +1,17 @@
+.brand-data-cnt {
+    margin: 10vh 0;
+}
+
 .brand-data-title {
     margin-bottom: 1em;
 }
 
 .brand-data .mrg-bot {
     margin-bottom: 1em;
+}
+
+.brand-data .mrg-bot-1 {
+    margin-bottom: .1em;
 }
 
 .brand-data .mrg-left {
@@ -14,26 +22,32 @@
     margin-right: .5em;
 }
 
+.brand-data .w-latest-brands {
+    width: 15.25vw;
+}
+
 .brand-data .input-width-1 {
     width: 8vw;
+}
+
+.brand-data .input-width-0 {
+    width: 6vw;
 }
 
 .brand-data .input-width-2 {
     width: 18vw;
 }
 
-.brand-data .input-width-3 {
-    width: 13vw;
-}
-
 .brand-data button {
-    background: #dfdfdf;
+    font-size: 15px;
+    background: #ededed;
     border: 1px solid #bdbdbd;
     padding: .75em;
 }
 
 .tabs {
-	font-size: 0;
+    font-size: 0;
+    width: 40vw;
 }
 
 .tabs > input[type='radio'] {
@@ -42,7 +56,7 @@
 
 .tabs > div {
 	border: 1px solid #e0e0e0;
-	padding: 10px 15px;
+	padding: 1.25em;
 	font-size: 16px;
 }
 

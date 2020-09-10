@@ -1,7 +1,3 @@
-.brand-data-cnt {
-    margin-top: 20vh;
-}
-
 .container {
 	display: flex;
 	flex-direction: column;
@@ -27,6 +23,11 @@
 .flex-cent-v {
 	display: flex;
 	align-items: center;
+}
+
+.flex-bot-v {
+	display: flex;
+	align-items: flex-end;
 }
 
 .space-between {
