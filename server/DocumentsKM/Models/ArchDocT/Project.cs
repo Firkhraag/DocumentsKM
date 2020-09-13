@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DocumentsKM.Models
+namespace DocumentsKM.ArchDocT
 {
     public class Project
     {
@@ -19,9 +19,34 @@ namespace DocumentsKM.Models
         [MaxLength(255)]
         public string Name { get; set; }
 
+        // НазваниеДоп
+        [Required]
+        [MaxLength(255)]
+        public string AdditionalName { get; set; }
+
         // БазСерия
         [Required]
         [MaxLength(20)]
         public string BaseSeries { get; set; }
+
+        // Должн1
+        [Required]
+        [MaxLength(30)]
+        public string Position1 { get; set; }
+
+        // Утвердил1
+        [Required]
+        [MaxLength(20)]
+        public string Approved1 { get; set; }
+
+        // Должн2
+        [Required]
+        [MaxLength(30)]
+        public string Position2 { get; set; }
+
+        // Утвердил2
+        [Required]
+        [MaxLength(20)]
+        public string Approved2 { get; set; }
     }
 }

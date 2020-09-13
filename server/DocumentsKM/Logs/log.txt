@@ -1,0 +1,17 @@
+09/13/2020 19:57:54 Application starting up
+09/13/2020 19:58:14 HTTP "GET" "/" responded 404 in 17.9405 ms
+09/13/2020 19:59:05 Request
+09/13/2020 19:59:05 HTTP "GET" "/api/marks" responded 200 in 63.8118 ms
+09/13/2020 19:59:05 HTTP "GET" "/favicon.ico" responded 404 in 0.0612 ms
+09/13/2020 20:03:28 Application starting up
+09/13/2020 20:03:35 HTTP "GET" "/" responded 404 in 16.7908 ms
+09/13/2020 20:03:38 Request
+09/13/2020 20:03:38 HTTP "GET" "/api/marks" responded 200 in 60.1169 ms
+09/13/2020 20:12:21 Application starting up
+09/13/2020 20:12:38 Request "GetAllMarks"
+09/13/2020 20:12:38 HTTP "GET" "/api/marks" responded 200 in 68.2429 ms
+09/13/2020 22:42:55 Application starting up
+09/13/2020 22:47:08 Request "GetAllMarks"
+09/13/2020 22:47:08 HTTP "GET" "/api/marks" responded 200 in 209.1474 ms
+09/13/2020 22:47:15 HTTP "GET" "/api/marks/0" responded 200 in 48.6361 ms
+09/14/2020 00:41:52 Application starting up

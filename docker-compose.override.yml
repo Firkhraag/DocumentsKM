@@ -1,0 +1,98 @@
+# docker-compose.override.yml (Extended config for DEVELOPMENT env.)
+# Deploy command: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+version: '3.8'
+
+services:
+    basket-api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://0.0.0.0:80
+            - ConnectionString=${AZURE_REDIS_BASKET_DB:-basketdata}
+            - identityUrl=http://identity-api
+            - IdentityUrlExternal=http://${EXTERNAL_DNS_NAME_OR_IP}:5105
+            - EventBusConnection=${AZURE_SERVICE_BUS:-rabbitmq}
+            - EventBusUserName=${SERVICE_BUS_USERNAME}
+            - EventBusPassword=${SERVICE_BUS_PASSWORD}
+            - AzureServiceBusEnabled=False
+            - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
+            - OrchestratorType=${ORCHESTRATOR_TYPE}
+            - UseLoadTest=${USE_LOADTEST:-False}
+        ports:
+            - "5103:80"
+    catalog-api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://0.0.0.0:80
+            - ConnectionString=${AZURE_CATALOG_DB:-Server=sqldata;Database=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=Pass@word}
+            - PicBaseUrl=${AZURE_STORAGE_CATALOG_URL:-http://localhost:5202/api/v1/catalog/items/[0]/pic/}
+            - EventBusConnection=${AZURE_SERVICE_BUS:-rabbitmq}
+            - EventBusUserName=${SERVICE_BUS_USERNAME}
+            - EventBusPassword=${SERVICE_BUS_PASSWORD}
+            - AzureStorageAccountName=${AZURE_STORAGE_CATALOG_NAME}
+            - AzureStorageAccountKey=${AZURE_STORAGE_CATALOG_KEY}
+            - UseCustomizationData=True
+            - AzureServiceBusEnabled=False
+            - AzureStorageEnabled=False
+            - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
+            - OrchestratorType=${ORCHESTRATOR_TYPE}
+        ports: 
+            - "5101:80"
+    marketing-api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://0.0.0.0:80
+            - ConnectionString=${AZURE_MARKETING_DB:-Server=sqldata;Database=Microsoft.eShopOnContainers.Services.MarketingDb;User Id=sa;Password=Pass@word}
+            - MongoConnectionString=${AZURE_COSMOSDB:-mongodb://nosqldata}
+            - MongoDatabase=MarketingDb
+            - EventBusConnection=${AZURE_SERVICE_BUS:-rabbitmq}
+            - EventBusUserName=${SERVICE_BUS_USERNAME}
+            - EventBusPassword=${SERVICE_BUS_PASSWORD}
+            - identityUrl=http://identity-api
+            - IdentityUrlExternal=http://${EXTERNAL_DNS_NAME_OR_IP}:5105
+            - CampaignDetailFunctionUri=${AZUREFUNC_CAMPAIGN_DETAILS_URI}
+            - PicBaseUrl=${AZURE_STORAGE_MARKETING_URL:-http://localhost:5110/api/v1/campaigns/[0]/pic/}
+            - AzureStorageAccountName=${AZURE_STORAGE_MARKETING_NAME}
+            - AzureStorageAccountKey=${AZURE_STORAGE_MARKETING_KEY}
+            - AzureServiceBusEnabled=False
+            - AzureStorageEnabled=False
+            - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
+            - OrchestratorType=${ORCHESTRATOR_TYPE}
+            - UseLoadTest=${USE_LOADTEST:-False}
+        ports:
+            - "5110:80"
+    webmvc:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://0.0.0.0:80
+            - PurchaseUrl=http://webshoppingapigw
+            - IdentityUrl=http://10.0.75.1:5105
+            - MarketingUrl=http://webmarketingapigw
+            - CatalogUrlHC=http://catalog-api/hc
+            - OrderingUrlHC=http://ordering-api/hc
+            - IdentityUrlHC=http://identity-api/hc
+            - BasketUrlHC=http://basket-api/hc
+            - MarketingUrlHC=http://marketing-api/hc
+            - PaymentUrlHC=http://payment-api/hc
+            - SignalrHubUrl=http://${EXTERNAL_DNS_NAME_OR_IP}:5202
+            - UseCustomizationData=True
+            - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
+            - OrchestratorType=${ORCHESTRATOR_TYPE}
+            - UseLoadTest=${USE_LOADTEST:-False}
+        ports:
+            - "5100:80"
+    sqldata:
+        environment:
+            - SA_PASSWORD=Pass@word
+            - ACCEPT_EULA=Y
+        ports:
+            - "5433:1433"
+    nosqldata:
+        ports:
+            - "27017:27017"
+    basketdata:
+        ports:
+            - "6379:6379"
+    rabbitmq:
+        ports:
+            - "15672:15672"
+            - "5672:5672"

@@ -1,13 +1,41 @@
-version: '3'
+# docker-compose.yml (Base)
+version: '3.8'
 services:
-    DocumentsKMApi:
-        build: DocumentsKM/
-        ports:
-            - "8080:80"
-        environment:
-            ASPNETCORE_URLS: "https://+;http://+"
-            ASPNETCORE_HTTPS_PORT: "8001"
-            ASPNETCORE_ENVIRONMENT: "Development"
-        volumes:
-            - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
-            - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+    basket-api:
+        image: eshop/basket-api:${TAG:-latest}
+        build:
+            context: .
+            dockerfile: src/Services/Basket/Basket.API/Dockerfile
+        depends_on:
+            - basketdata
+            - identity-api
+            - rabbitmq
+    marketing-api:
+        image: eshop/marketing-api:${TAG:-latest}
+        build:
+            context: .
+            dockerfile: src/Services/Marketing/Marketing.API/Dockerfile
+        depends_on:
+            - sqldata
+            - nosqldata
+            - identity-api
+            - rabbitmq
+    webmvc:
+        image: eshop/webmvc:${TAG:-latest}
+        build:
+            context: .
+            dockerfile: src/Web/WebMVC/Dockerfile
+            depends_on:
+                - catalog-api
+                - ordering-api
+                - identity-api
+                - basket-api
+                - marketing-api
+    sqldata:
+        image: mcr.microsoft.com/mssql/server:2017-latest
+    nosqldata:
+        image: mongo
+    basketdata:
+        image: redis
+    rabbitmq:
+        image: rabbitmq:3-management

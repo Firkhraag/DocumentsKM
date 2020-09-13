@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DocumentsKM.Models
+namespace DocumentsKM.Personnel
 {
     public class Depatment
     {

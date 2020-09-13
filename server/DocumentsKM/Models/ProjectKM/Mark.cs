@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DocumentsKM.Models
+namespace DocumentsKM.ProjectKM
 {
     public class Mark
     {
@@ -66,9 +66,9 @@ namespace DocumentsKM.Models
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Violating 3NF if next field is related to a department
+
         // Нач_отд 
         // FOREIGN_KEY из таблицы СписокРаботников
-
         [Required]
         public ulong DepartmentHeadId { get; set; }
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

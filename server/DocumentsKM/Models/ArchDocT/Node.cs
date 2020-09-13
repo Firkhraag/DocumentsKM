@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DocumentsKM.Models
+namespace DocumentsKM.ArchDocT
 {
     public class Node
     {
@@ -16,7 +16,7 @@ namespace DocumentsKM.Models
         [Required]
         public ulong ProjectId { get; set; }
 
-        // Код
+        // КодУзла
         [Required]
         [MaxLength(10)]
         public string Code { get; set; }
