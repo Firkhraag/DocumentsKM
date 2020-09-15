@@ -1,11 +1,10 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DocumentsKM.ArchDocT
+namespace DocumentsKM.Model
 {
     public class Project
     {
-        // For now we will consider NOT NULL constraint for every field
-
         // Проект
         [Key]
         public ulong Id { get; set; }
@@ -48,5 +47,7 @@ namespace DocumentsKM.ArchDocT
         [Required]
         [MaxLength(20)]
         public string Approved2 { get; set; }
+
+        public List<Node> Nodes { get; set; }
     }
 }

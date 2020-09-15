@@ -1,14 +1,14 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.Personnel
+namespace DocumentsKM.Model
 {
-    public class Depatment
+    public class Department
     {
-        // For now we will consider NOT NULL constraint for every field
-
         // НомОтдела
         [Key]
-        public ulong Number { get; set; }
+        public ulong Id { get; set; }
 
         // НазваниеОтдела
         [Required]
@@ -32,5 +32,12 @@ namespace DocumentsKM.Personnel
         // Производственный
         [Required]
         public bool IsIndustrial { get; set; }
+
+        // Нач_отд 
+        [Required]
+        [ForeignKey("EmployeeId")]
+        public Employee DepartmentHead { get; set; }
+
+        public List<Employee> Employees { get; set; }
     }
 }

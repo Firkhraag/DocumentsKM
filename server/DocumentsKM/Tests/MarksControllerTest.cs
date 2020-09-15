@@ -8,7 +8,7 @@ namespace ProjectKM.Tests
     public class MarksControllerTest
     {
 
-        private readonly Mock<IMarkRepo> _repo;
+        // private readonly Mock<IMarkRepo> _repo;
 
         // [Fact]
         // public async Task Add_to_cart_success()

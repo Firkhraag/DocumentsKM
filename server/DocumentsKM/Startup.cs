@@ -24,23 +24,25 @@ namespace DocumentsKM
 
         public void ConfigureServices(IServiceCollection services)
         {
-
+            // Add Swagger documentation
+            // URI: https://localhost:8081/swagger
             services.AddSwaggerGen(options =>
                 {
                     options.SwaggerDoc(
                         "v1",
                         new OpenApiInfo
                         {
-                            Title = "Mark Data HTTP API",
+                            Title = "Marks Data",
                             Version = "v1",
-                            Description = "Mark data service"
+                            Description = "Service is used for reading, creating and updating marks"
                         }
                     );
                 });
 
-            // Configure connection to Postgres
+            // Configure connection to database
+            // Postgres
             services.AddDbContext<MarkContext>(opt => opt.UseNpgsql(
-                Configuration.GetConnectionString("ArchDocTConnection")
+                Configuration.GetConnectionString("MarksDataConnection")
             ));
 
             services.AddControllers().AddNewtonsoftJson(s => {

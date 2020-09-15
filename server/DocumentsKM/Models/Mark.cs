@@ -1,20 +1,19 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.ProjectKM
+namespace DocumentsKM.Model
 {
     public class Mark
     {
-        // For now we will consider NOT NULL constraint for every field
-
         // Id_Марки
         [Key]
         public ulong Id { get; set; }
 
         // ОА_Подузел
-        // FOREIGN KEY т. Подузлы
         [Required]
-        public ulong SubnodeId { get; set; }
+        [ForeignKey("SubnodeId")]
+        public Subnode Subnode { get; set; }
 
         // КодМарки
         [Required]
@@ -22,21 +21,6 @@ namespace DocumentsKM.ProjectKM
         public string Code { get; set; }
 
         // CREATE UNIQUE INDEX <name> ON (ОА_Подузел, КодМарки)
-
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // Violating 3NF
-
-        // ОА_БазСерия из таблицы Поекты
-        // ОА_КодУзла из таблицы Узлы
-        // ОА_КодПодузла из таблицы Подузлы
-
-        // ОА_Подузел -> ОА_КодПодузла
-        // ОА_Подузел -> ОА_КодУзла
-        // ОА_Подузел -> ОА_КодУзла -> ОА_БазСерия
-
-        // Skipping those fields at least for now
-        // (should consider perfomance gains to include those)
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // ДопКод
         [Required]
@@ -48,18 +32,9 @@ namespace DocumentsKM.ProjectKM
         [MaxLength(255)]
         public string Name { get; set; }
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        // Код_отд
-        // FOREIGN_KEY из таблицы Отдел
-        // [Required]
-        // [MaxLength(5)]
-        // public string DepartmentName { get; set; }
-
-        // Код_отд
-        // FOREIGN_KEY из таблицы Отдел
         [Required]
-        public ulong DepartmentId { get; set; }
+        [ForeignKey("DepartmentId")]
+        public Department Department { get; set; }
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

@@ -1,20 +1,19 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.ArchDocT
+namespace DocumentsKM.Model
 {
     public class Node
     {
-        // For now we will consider NOT NULL constraint for every field
-
         // Узел
         [Key]
         public ulong Id { get; set; }
 
         // Проект
-        // FK т. Проекты
         [Required]
-        public ulong ProjectId { get; set; }
+        [ForeignKey("ProjectId")]
+        public Project Project { get; set; }
 
         // КодУзла
         [Required]
@@ -32,9 +31,9 @@ namespace DocumentsKM.ArchDocT
         public string AdditionalName { get; set; }
 
         // ГИП
-        // FK т. СписокРаботников
         [Required]
-        public ulong ChiefEngineerId { get; set; }
+        [ForeignKey("EmployeeId")]
+        public Employee ChiefEngineer { get; set; }
 
         // АктивУзел
         [Required]
@@ -45,9 +44,5 @@ namespace DocumentsKM.ArchDocT
         [Required]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
-
-        // id_uz_twf
-        [Required]
-        public ulong IdTwf { get; set; }
     }
 }

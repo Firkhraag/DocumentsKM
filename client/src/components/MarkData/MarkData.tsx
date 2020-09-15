@@ -1,38 +1,67 @@
 import React, { useState, useEffect } from 'react'
 import Mark from '../../model/Mark'
+import InputArea from './InputArea'
+import Dropdown from './Dropdown'
 import './MarkData.css'
 
 type MarkDataProps = {
 	isCreateModeInitially: boolean
 }
 
-// !!!TBD set node to empty string when changeng series
-
 const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
+
+    const seriesStringLength = 30
+    const nodeStringLength = 10
+    const subnodeStringLength = 10
+    const markStringLength = 40
+    const fullNameStringLength = 90
+
 	const [isCreateMode, setIsCreateMode] = useState<boolean>(
 		isCreateModeInitially
-	)
+    )
+    
 	const [mark, setMark] = useState<Mark>(new Mark(null))
-
 	const [series, setSeries] = useState<Array<string>>([])
-	// const [selectedSeries, setSelectedSeries] = useState<string>("")
-
 	const [nodes, setNodes] = useState<Array<string>>([])
-	// const [selectedNode, setSelectedNode] = useState<string>("")
-
 	const [subnodes, setSubnodes] = useState<Array<string>>([])
-	// const [selectedSubnode, setSelectedSubnode] = useState<string>("")
-
-	const [codes, setCodes] = useState<Array<string>>([])
-	// const [selectedCode, setSelectedCode] = useState<string>("")
+    const [marks, setMarks] = useState<Array<string>>([])
+    
+    const [markFullName, setMarkFullName] = useState('')
+    const [latestMarks, setLatestMarks] = useState<string[]>([])
 
 	useEffect(() => {
 		const seriesFetched: Array<string> = ['M32788', 'V32788', 'G32788']
-		setSeries(seriesFetched)
-	}, [])
+        setSeries(seriesFetched)
+        
+        const latestMarksFetched: Array<string> = [
+            'M32788.111.111-KVB 8',
+            'V62788.121.01-ZB11',
+            'V62GHV.121.01-ZB11',
+            'V62VB121.01-ZB11',
+            'V62FD8.121.01-ZB11',
+            'V6278V.21.01-ZB11',
+            'V62788.121.01-ZB11',
+            'D62SDS788.121.01-ZB11',
+            'DSS.121.01-ZB11',
+            'D6C88.121.01-ZB11',
+            'D62SFDDS788.121.01-ZB11',
+            'D62CVS788.121.01-ZB11',
+            'D62CCSDS788.121.01-ZB11'
+        ]
+		setLatestMarks(latestMarksFetched)
+    }, [])
+    
+    const onLatestMarkSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+        const v = event.currentTarget.textContent
+        setNodes([])
+        setSubnodes([])
+		setMarks([])
+		setMark({ ...new Mark(null), series: v })
+		setMarkFullName(v)
+    }
 
-	const onSeriesSelect = (event: React.FormEvent<HTMLSelectElement>) => {
-		const v = event.currentTarget.value
+    const onSeriesSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+		const v = event.currentTarget.textContent
 		if (v !== '') {
 			// Fetch
 			const nodes: Array<string> = ['527', '127', '134']
@@ -42,12 +71,12 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 			setNodes([])
 		}
 		setSubnodes([])
-		setCodes([])
+		setMarks([])
 		setMark({ ...new Mark(null), series: v })
 	}
 
-	const onNodeSelect = (event: React.FormEvent<HTMLSelectElement>) => {
-		const v = event.currentTarget.value
+    const onNodeSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+		const v = event.currentTarget.textContent
 
 		let gipSurname = ''
 		if (v !== '') {
@@ -59,7 +88,7 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 		} else {
 			setSubnodes([])
 		}
-		setCodes([])
+		setMarks([])
 		setMark({
 			...new Mark(null),
 			series: mark.series,
@@ -68,8 +97,8 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 		})
 	}
 
-	const onSubnodeSelect = (event: React.FormEvent<HTMLSelectElement>) => {
-		const v = event.currentTarget.value
+    const onSubnodeSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+		const v = event.currentTarget.textContent
 
 		let facilityName = ''
 		let objectName = ''
@@ -81,9 +110,9 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 			objectName =
 				'Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн.'
 
-			setCodes(codes)
+			setMarks(codes)
 		} else {
-			setCodes([])
+			setMarks([])
 		}
 		setMark({
 			...mark,
@@ -93,18 +122,18 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 		})
     }
     
-    const onCodeSelect = (event: React.FormEvent<HTMLSelectElement>) => {
-        const v = event.currentTarget.value
+    const onMarkSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+        const v = event.currentTarget.textContent
 
 		setMark({
 			...mark,
-			code: v,
+			mark: v,
 		})
 	}
 
 	return (
-		<div className="Mark-data-cnt">
-			<h1 className="text-centered Mark-data-title">Данные по марке</h1>
+		<div className="mark-data-cnt">
+			<h1 className="text-centered mark-data-title">Данные по марке</h1>
 			<div className="tabs">
 				<input
 					type="radio"
@@ -125,87 +154,69 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 				/>
 				<label htmlFor="tab-btn-2">Добавить</label>
 
-				<div className="Mark-data">
-					{isCreateMode ? null : (
-						<div className="flex-v mrg-bot">
-							<p>Последние марки</p>
-							<select className="w-latest-Marks mrg-right border input-border-radius input-padding">
-								<option value=""></option>
-								<option>M32788.111.111-KVB 8</option>
-								<option>D32788.111.111-KVB 8</option>
-							</select>
-						</div>
-					)}
-					<div className="flex-bot-v mrg-bot">
-						<div className="flex-v">
-							<p className="mrg-bot-1">Базовая серия</p>
-							<select
-                                onChange={onSeriesSelect}
-                                value={mark.series}
-								className="input-width-1 border input-border-radius input-padding"
-							>
-								<option key={-1}></option>
-								{series.map((x, y) => (
-									<option key={y}>{x}</option>
-								))}
-							</select>
-						</div>
+				<div className="mark-data">
+					{/* {isCreateMode ? null : (
+                        <InputArea label="Последние марки" widthClassName={'w-latest-marks'} onChangeFunc={onLatestMarkSelect} value={markFullName} options={latestMarks} />
+					)} */}
+                    <div className="flex">
+                    <Dropdown
+                        label="Последние марки"
+                        widthClassName={'input-width-1'}
+                        maxInputLength={fullNameStringLength}
+                        onClickFunc={onLatestMarkSelect}
+                        value={markFullName}
+                        options={latestMarks}
+                    />
+                    </div>
 
+                    <div className="flex-bot-v mrg-top mrg-bot">
+                        <Dropdown
+                            label="Базовая серия"
+                            widthClassName={'input-width-2'}
+                            maxInputLength={seriesStringLength}
+                            onClickFunc={onSeriesSelect}
+                            value={mark.series}
+                            options={series}
+                        />
+                        <div className="mrg-left" />
+                        <Dropdown
+                            label="Узел"
+                            widthClassName={'input-width-3'}
+                            maxInputLength={nodeStringLength}
+                            onClickFunc={onNodeSelect}
+                            value={mark.node}
+                            options={nodes}
+                        />
+                        <div className="mrg-left" />
+                        <Dropdown
+                            label="Подузел"
+                            widthClassName={'input-width-3'}
+                            maxInputLength={subnodeStringLength}
+                            onClickFunc={onSubnodeSelect}
+                            value={mark.subnode}
+                            options={subnodes}
+                        />
+                    </div>
+					
+                    {/* <div className="flex-bot-v mrg-top mrg-bot">
+                        <InputArea label="Базовая серия" widthClassName={'input-width-1'} onChangeFunc={onSeriesSelect} value={mark.series} options={series} />
 						<p className="mrg-left mrg-right">.</p>
-
-						<div className="flex-v">
-							<p className="mrg-bot-1">Узел</p>
-							<select
-                                onChange={onNodeSelect}
-                                value={mark.node}
-								className="input-width-0 border input-border-radius input-padding"
-							>
-								<option key={-1}></option>
-								{nodes.map((x, y) => (
-									<option key={y}>{x}</option>
-								))}
-							</select>
-						</div>
-
+                        <InputArea label="Узел" widthClassName={'input-width-0'} onChangeFunc={onNodeSelect} value={mark.node} options={nodes} />
 						<p className="mrg-left mrg-right">.</p>
-
-						<div className="flex-v">
-							<p className="mrg-bot-1">Подузел</p>
-							<select
-                                onChange={onSubnodeSelect}
-                                value={mark.subnode}
-								className="input-width-0 border input-border-radius input-padding"
-							>
-								<option key={-1}></option>
-								{subnodes.map((x, y) => (
-									<option key={y}>{x}</option>
-								))}
-							</select>
-						</div>
+                        <InputArea label="Подузел" widthClassName={'input-width-0'} onChangeFunc={onSubnodeSelect} value={mark.subnode} options={subnodes} />
 						{isCreateMode ? null : (
 							<p className="mrg-left mrg-right">-</p>
 						)}
 						{isCreateMode ? null : (
-							<div className="flex-v">
-								<p className="mrg-bot-1">Марка</p>
-								<select onChange={onCodeSelect} value={mark.code} className="input-width-0 border input-border-radius input-padding">
-									<option key={-1}></option>
-									{codes.map((x, y) => (
-										<option key={y}>{x}</option>
-									))}
-									{/* <option value="" hidden>Марка</option>
-                        <option>Пункт 1</option>
-                        <option>Пункт 2</option> */}
-								</select>
-							</div>
+                            <InputArea label="Марка" widthClassName={'input-width-0'} onChangeFunc={onCodeSelect} value={mark.code} options={codes} />
 						)}
-					</div>
-					<div className="mrg-bot">
-						{mark.gipSurname === '' ? null : (
+					</div> */}
+					{/* <div className="mrg-bot">
+                        {mark.code === '' ? null : (
 							<div className="mrg-bot">
-								<p className="mrg-bot-1">Фамилия ГИПа</p>
+								<p className="mrg-bot-1">Обозначение марки</p>
 								<p className="border input-border-radius input-padding">
-									{mark.gipSurname}
+									{mark.series+'.'+mark.node+'.'+mark.subnode+'-'+mark.code}
 								</p>
 							</div>
 						)}
@@ -229,7 +240,19 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 								</p>
 							</div>
 						)}
-					</div>
+                        {mark.code === '' ? null : (
+							<InputArea label="Отдел" widthClassName={'input-width-1'} onChangeFunc={onSubnodeSelect} value={mark.subnode} options={subnodes} />
+
+						)}
+                        {mark.gipSurname === '' ? null : (
+							<div className="mrg-bot">
+								<p className="mrg-bot-1">Фамилия ГИПа</p>
+								<p className="border input-border-radius input-padding">
+									{mark.gipSurname}
+								</p>
+							</div>
+						)}
+					</div> */}
 
 					{isCreateMode ? (
 						mark.subnode === '' ? null : (
@@ -238,7 +261,7 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 							</button>
 						)
 					) : (
-						mark.code === '' ? null : <button className="input-border-radius pointer">
+						mark.mark === '' ? null : <button className="input-border-radius pointer">
 							Сохранить изменения
 						</button>
 					)}

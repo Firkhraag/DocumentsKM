@@ -1,6 +1,6 @@
 using AutoMapper;
 using DocumentsKM.Dtos;
-using DocumentsKM.ProjectKM;
+using DocumentsKM.Model;
 
 namespace ProjectKM.Profiles
 {

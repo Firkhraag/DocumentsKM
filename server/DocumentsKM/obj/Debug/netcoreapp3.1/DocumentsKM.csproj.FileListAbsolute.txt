@@ -57,7 +57,6 @@ D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Serilog.Settings.Conf
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Serilog.Sinks.Console.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Serilog.Sinks.Debug.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Serilog.Sinks.File.dll
-D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Logs\log.json
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\AutoMapper.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
@@ -147,3 +146,6 @@ D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\zh-Hant\Microsoft.Vis
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\xunit.runner.visualstudio.dotnetcore.testadapter.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\xunit.runner.reporters.netcoreapp10.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\xunit.runner.utility.netcoreapp10.dll
+D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Castle.Core.dll
+D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Moq.dll
+D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Serilog.Sinks.Async.dll

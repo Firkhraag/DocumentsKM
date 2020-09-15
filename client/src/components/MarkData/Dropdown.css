@@ -1,0 +1,50 @@
+.label-area {
+    /* margin-bottom: .1em; */
+    font-size: 13px;
+    color: #666;
+}
+
+.input-area {
+    font-size: 16px;
+    border-bottom: 1px solid #ccc;
+    padding: 0 .8em .5em 0;
+    box-sizing: border-box;
+}
+
+.input-width-1 {
+    width: 33.3vw;
+}
+
+.input-width-2 {
+    width: 12vw;
+}
+
+.input-width-3 {
+    width: 9vw;
+}
+
+.arrow-area {
+    right: 0;
+    top: 0;
+}
+
+.dropdown-area {
+    left: 0px;
+    top: 100%;
+    z-index: 100;
+    max-height: 26.5em;
+}
+
+.dropdown-area-opened {
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.option-area {
+    padding: .5em;
+    border-bottom: 1px solid #ccc;
+}
+
+.option-area:hover {
+    background: #ddd;
+}

@@ -14,7 +14,7 @@
     "@types/react-dom": "^16.9.8",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
-    "css-loader": "^4.2.2",
+    "css-loader": "^4.3.0",
     "file-loader": "^6.1.0",
     "html-webpack-plugin": "^4.4.1",
     "source-map-loader": "^1.1.0",
@@ -30,6 +30,8 @@
     "history": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-expanding-textarea": "^2.2.3"
+    "react-expanding-textarea": "^2.2.3",
+    "react-spring": "^9.0.0-rc.3",
+    "resize-observer-polyfill": "^1.5.1"
   }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
-using DocumentsKM.ProjectKM;
+using DocumentsKM.Model;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

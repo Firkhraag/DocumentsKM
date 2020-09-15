@@ -1,14 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DocumentsKM.Personnel
+namespace DocumentsKM.Model
 {
     public class Position
     {
-        // For now we will consider NOT NULL constraint for every field
-
         // КодДолжности
         [Key]
-        public uint Code { get; set; }
+        public uint Id { get; set; }
 
         // НазваниеДолжности
         [Required]

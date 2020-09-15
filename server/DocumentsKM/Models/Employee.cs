@@ -1,12 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.Personnel
+namespace DocumentsKM.Model
 {
     public class Employee
     {
-        // For now we will consider NOT NULL constraint for every field
-
         // таб_ном
         [Key]
         public ulong Id { get; set; }
@@ -26,12 +25,13 @@ namespace DocumentsKM.Personnel
         public DateTime FiredDate { get; set; }
 
         // ОтделКод, ОтделИмя
-        // FOREIGN KEY т. Отдел
-        public ulong DepartmentNumber { get; set; }
+        [Required]
+        [ForeignKey("DepartmentId")]
+        public Department Department { get; set; }
 
         // ДолжностьКод, ДолжностьИмя
-        // FOREIGN KEY т. Должность
-        public ulong PositionCode { get; set; }
+        [ForeignKey("PositionId")]
+        public Position Position { get; set; }
 
         // Телефон
         [MaxLength(50)]

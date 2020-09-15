@@ -77,3 +77,11 @@
 .white-bg {
 	background: #fff;
 }
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}

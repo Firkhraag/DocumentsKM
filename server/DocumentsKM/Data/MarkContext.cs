@@ -1,4 +1,4 @@
-using DocumentsKM.ProjectKM;
+using DocumentsKM.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data

@@ -1,4 +1,4 @@
-interface IMark {    
+interface IPosition {    
     series: string
     node: string
     subnode: string
@@ -10,7 +10,7 @@ interface IMark {
     objectName: string
 }
 
-class Mark {
+class Position {
     series: string
     node: string
     subnode: string
@@ -21,7 +21,7 @@ class Mark {
     facilityName: string
     objectName: string
     
-    constructor(obj?: IMark) {    
+    constructor(obj?: IPosition) {    
         this.series = obj && obj.series || ''
         this.node = obj && obj.node || ''
         this.subnode = obj && obj.subnode || ''
@@ -34,4 +34,4 @@ class Mark {
     }   
 }
 
-export default Mark
+export default Position

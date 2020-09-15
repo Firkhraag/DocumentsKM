@@ -1,20 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.ArchDocT
+namespace DocumentsKM.Model
 {
     public class Subnode
     {
-        // For now we will consider NOT NULL constraint for every field
-
         // Подузел
         [Key]
         public ulong Id { get; set; }
 
         // Узел
-        // FK т. Узлы
         [Required]
-        public ulong NodeId { get; set; }
+        [ForeignKey("NodeId")]
+        public Node Node { get; set; }
 
         // КодПодуз
         [Required]
@@ -36,8 +36,6 @@ namespace DocumentsKM.ArchDocT
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
-        // id_puz_twf
-        [Required]
-        public ulong IdTwf { get; set; }
+        public List<Mark> Marks { get; set; }
     }
 }

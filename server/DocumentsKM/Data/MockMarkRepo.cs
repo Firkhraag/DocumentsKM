@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DocumentsKM.ProjectKM;
+using DocumentsKM.Model;
 
 namespace DocumentsKM.Data
 {
