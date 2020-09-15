@@ -1,37 +1,62 @@
-interface IMark {    
-    series: string
-    node: string
-    subnode: string
-    mark: string
+import Subnode from './Subnode'
+import Department from './Department'
+import Employee from './Employee'
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
+interface IMark {
+	id: number
+	subnode: Subnode
+	code: string
+	additionalCode: string
+	name: string
+	department: Department
+	chiefSpecialist: Employee
+	groupLeader: Employee
+	mainBulder: Employee
+	agreedWorker1: Employee
+	agreedWorker2: Employee
+	agreedWorker3: Employee
+	agreedWorker4: Employee
+	agreedWorker5: Employee
+	agreedWorker6: Employee
+	agreedWorker7: Employee
 }
 
 class Mark {
-    series: string
-    node: string
-    subnode: string
-    mark: string
+	id: number
+	subnode: Subnode
+	code: string
+	additionalCode: string
+	name: string
+	department: Department
+	chiefSpecialist: Employee
+	groupLeader: Employee
+	mainBulder: Employee
+	agreedWorker1: Employee
+	agreedWorker2: Employee
+	agreedWorker3: Employee
+	agreedWorker4: Employee
+	agreedWorker5: Employee
+	agreedWorker6: Employee
+	agreedWorker7: Employee
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
-    
-    constructor(obj?: IMark) {    
-        this.series = obj && obj.series || ''
-        this.node = obj && obj.node || ''
-        this.subnode = obj && obj.subnode || ''
-        this.mark = obj && obj.mark || ''
-
-        // Others
-        this.gipSurname = obj && obj.gipSurname || ''
-        this.facilityName = obj && obj.facilityName || ''
-        this.objectName = obj && obj.objectName || ''
-    }   
+	constructor(obj?: IMark) {
+		this.id = (obj && obj.id) || 0
+		this.subnode = (obj && obj.subnode) || null
+		this.code = (obj && obj.code) || ''
+		this.additionalCode = (obj && obj.additionalCode) || ''
+		this.name = (obj && obj.name) || ''
+		this.department = (obj && obj.department) || null
+		this.chiefSpecialist = (obj && obj.chiefSpecialist) || null
+		this.groupLeader = (obj && obj.groupLeader) || null
+		this.mainBulder = (obj && obj.mainBulder) || null
+		this.agreedWorker1 = (obj && obj.agreedWorker1) || null
+		this.agreedWorker2 = (obj && obj.agreedWorker2) || null
+		this.agreedWorker3 = (obj && obj.agreedWorker3) || null
+		this.agreedWorker4 = (obj && obj.agreedWorker4) || null
+		this.agreedWorker5 = (obj && obj.agreedWorker5) || null
+		this.agreedWorker6 = (obj && obj.agreedWorker6) || null
+		this.agreedWorker7 = (obj && obj.agreedWorker7) || null
+	}
 }
 
 export default Mark

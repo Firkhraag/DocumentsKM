@@ -1,37 +1,37 @@
-interface IProject {    
-    series: string
-    node: string
-    subnode: string
-    mark: string
+import Employee from './Employee'
+import Node from './Node'
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
+interface IProject {
+	id: number
+	type: number
+	name: string
+	additionalName: string
+	baseSeries: string
+	approved1: Employee
+	approved2: Employee
+	nodes: Array<Node>
 }
 
 class Project {
-    series: string
-    node: string
-    subnode: string
-    mark: string
+	id: number
+	type: number
+	name: string
+	additionalName: string
+	baseSeries: string
+	approved1: Employee
+	approved2: Employee
+	nodes: Array<Node>
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
-    
-    constructor(obj?: IProject) {    
-        this.series = obj && obj.series || ''
-        this.node = obj && obj.node || ''
-        this.subnode = obj && obj.subnode || ''
-        this.mark = obj && obj.mark || ''
-
-        // Others
-        this.gipSurname = obj && obj.gipSurname || ''
-        this.facilityName = obj && obj.facilityName || ''
-        this.objectName = obj && obj.objectName || ''
-    }   
+	constructor(obj?: IProject) {
+		this.id = (obj && obj.id) || 0
+		this.type = (obj && obj.type) || 0
+		this.name = (obj && obj.name) || ''
+		this.additionalName = (obj && obj.additionalName) || ''
+		this.baseSeries = (obj && obj.baseSeries) || ''
+		this.approved1 = (obj && obj.approved1) || null
+		this.approved2 = (obj && obj.approved2) || null
+		this.nodes = (obj && obj.nodes) || null
+	}
 }
 
 export default Project

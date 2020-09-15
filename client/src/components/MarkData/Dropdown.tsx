@@ -9,7 +9,8 @@ type DropdownProps = {
 	widthClassName: string
 	maxInputLength: number
 	onClickFunc: (event: React.MouseEvent<HTMLDivElement>) => void
-	value: string
+    value: string
+    // changeValue: (newValue: string) => void
 	options: string[]
 }
 
@@ -24,19 +25,20 @@ const Dropdown = ({
 	const [isInputFocused, setInputFocused] = useState(false)
 	const [dropdownHeight, setDropdownHeight] = useState(0)
 
-	const ref = useRef()
+	const inputRef = useRef()
+	const dropdownRef = useRef()
 
 	useEffect(() => {
 		const ro = new ResizeObserver(([entry]) => {
 			setDropdownHeight(entry.target.scrollHeight)
 		})
 
-		if (ref.current) {
-			ro.observe(ref.current)
+		if (dropdownRef.current) {
+			ro.observe(dropdownRef.current)
 		}
 
 		return () => ro.disconnect()
-	}, [ref])
+	}, [dropdownRef])
 
 	const onInputChange = (event: React.FormEvent<HTMLInputElement>) => {
 		const newValue = event.currentTarget.value
@@ -64,10 +66,11 @@ const Dropdown = ({
 	})
 
 	return (
-		<div className="flex-v">
+		<div className="flex-v mrg-bottom">
 			<p className="label-area">{label}</p>
 			<div className="dropdown-cnt relative">
 				<input
+					ref={inputRef}
 					className={widthClassName + ' input-area'}
 					type="text"
 					value={value}
@@ -78,7 +81,10 @@ const Dropdown = ({
 					spellCheck="false"
 					maxLength={maxInputLength}
 				/>
-				<div className="arrow-area absolute">
+				<div
+					onClick={() => inputRef}
+					className="arrow-area absolute pointer"
+				>
 					<ArrowSvg />
 				</div>
 				<div
@@ -89,7 +95,7 @@ const Dropdown = ({
 					}
 				>
 					<animated.div className="answer" style={springProp}>
-						<div ref={ref}>
+						<div ref={dropdownRef}>
 							{options.map((option, key) => (
 								<div
 									onClick={onClickFunc}

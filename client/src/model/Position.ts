@@ -1,37 +1,19 @@
-interface IPosition {    
-    series: string
-    node: string
-    subnode: string
-    mark: string
-
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
+interface IPosition {
+	code: number
+	name: string
+	shortName: string
 }
 
 class Position {
-    series: string
-    node: string
-    subnode: string
-    mark: string
+	code: number
+	name: string
+	shortName: string
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
-    
-    constructor(obj?: IPosition) {    
-        this.series = obj && obj.series || ''
-        this.node = obj && obj.node || ''
-        this.subnode = obj && obj.subnode || ''
-        this.mark = obj && obj.mark || ''
-
-        // Others
-        this.gipSurname = obj && obj.gipSurname || ''
-        this.facilityName = obj && obj.facilityName || ''
-        this.objectName = obj && obj.objectName || ''
-    }   
+	constructor(obj?: IPosition) {
+		this.code = (obj && obj.code) || 0
+		this.name = (obj && obj.name) || ''
+		this.shortName = (obj && obj.shortName) || ''
+	}
 }
 
 export default Position

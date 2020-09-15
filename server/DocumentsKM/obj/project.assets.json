@@ -1127,18 +1127,6 @@
           "lib/netstandard2.0/Serilog.Settings.Configuration.dll": {}
         }
       },
-      "Serilog.Sinks.Async/1.4.1-dev-00073": {
-        "type": "package",
-        "dependencies": {
-          "Serilog": "2.8.0"
-        },
-        "compile": {
-          "lib/netstandard2.0/Serilog.Sinks.Async.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/Serilog.Sinks.Async.dll": {}
-        }
-      },
       "Serilog.Sinks.Console/3.1.1": {
         "type": "package",
         "dependencies": {
@@ -3990,25 +3978,6 @@
         "lib/netstandard2.0/Serilog.Settings.Configuration.xml",
         "serilog.settings.configuration.3.2.0-dev-00244.nupkg.sha512",
         "serilog.settings.configuration.nuspec"
-      ]
-    },
-    "Serilog.Sinks.Async/1.4.1-dev-00073": {
-      "sha512": "UkZfTVlAPpAdlnVqfEqzHAEtNTI+XluU/Vt7ZrF0bZT8IGnv6anxIlavjSpRJ2s42ZrOIbQya22KHyoU2shYNg==",
-      "type": "package",
-      "path": "serilog.sinks.async/1.4.1-dev-00073",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net45/Serilog.Sinks.Async.dll",
-        "lib/net45/Serilog.Sinks.Async.xml",
-        "lib/net461/Serilog.Sinks.Async.dll",
-        "lib/net461/Serilog.Sinks.Async.xml",
-        "lib/netstandard1.1/Serilog.Sinks.Async.dll",
-        "lib/netstandard1.1/Serilog.Sinks.Async.xml",
-        "lib/netstandard2.0/Serilog.Sinks.Async.dll",
-        "lib/netstandard2.0/Serilog.Sinks.Async.xml",
-        "serilog.sinks.async.1.4.1-dev-00073.nupkg.sha512",
-        "serilog.sinks.async.nuspec"
       ]
     },
     "Serilog.Sinks.Console/3.1.1": {
@@ -7978,7 +7947,6 @@
       "Serilog.Enrichers.Process >= 2.0.2-dev-00731",
       "Serilog.Enrichers.Thread >= 3.2.0-dev-00747",
       "Serilog.Settings.Configuration >= 3.2.0-dev-00244",
-      "Serilog.Sinks.Async >= 1.4.1-dev-00073",
       "Swashbuckle.AspNetCore >= 5.5.1",
       "Swashbuckle.AspNetCore.Swagger >= 5.5.1",
       "Swashbuckle.AspNetCore.SwaggerGen >= 5.5.1",
@@ -8080,10 +8048,6 @@
           "Serilog.Settings.Configuration": {
             "target": "Package",
             "version": "[3.2.0-dev-00244, )"
-          },
-          "Serilog.Sinks.Async": {
-            "target": "Package",
-            "version": "[1.4.1-dev-00073, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

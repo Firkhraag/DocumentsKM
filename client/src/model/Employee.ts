@@ -1,37 +1,34 @@
-interface IEmployee {    
-    series: string
-    node: string
-    subnode: string
-    mark: string
+import Department from './Department'
+import Position from './Position'
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
+interface IEmployee {
+	id: number
+	fullName: string
+	department: Department
+	position: Position
+	phoneNumber: string
+	isCanteen: boolean
+	vacationType: number
 }
 
 class Employee {
-    series: string
-    node: string
-    subnode: string
-    mark: string
+	id: number
+	fullName: string
+	department: Department
+	position: Position
+	phoneNumber: string
+	isCanteen: boolean
+	vacationType: number
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
-    
-    constructor(obj?: IEmployee) {    
-        this.series = obj && obj.series || ''
-        this.node = obj && obj.node || ''
-        this.subnode = obj && obj.subnode || ''
-        this.mark = obj && obj.mark || ''
-
-        // Others
-        this.gipSurname = obj && obj.gipSurname || ''
-        this.facilityName = obj && obj.facilityName || ''
-        this.objectName = obj && obj.objectName || ''
-    }   
+	constructor(obj?: IEmployee) {
+		this.id = (obj && obj.id) || 0
+		this.fullName = (obj && obj.fullName) || ''
+		this.department = (obj && obj.department) || null
+		this.position = (obj && obj.position) || null
+		this.phoneNumber = (obj && obj.phoneNumber) || ''
+		this.isCanteen = (obj && obj.isCanteen) || false
+		this.vacationType = (obj && obj.vacationType) || 0
+	}
 }
 
 export default Employee

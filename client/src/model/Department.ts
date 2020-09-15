@@ -1,37 +1,36 @@
-interface IDepartment {    
-    series: string
-    node: string
-    subnode: string
-    mark: string
+import Employee from './Employee'
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
+interface IDepartment {
+	number: number
+	name: string
+	shortName: string
+	code: string
+	isActive: boolean
+	isIndustrial: boolean
+	departmentHead: Employee
+	employees: Array<Employee>
 }
 
 class Department {
-    series: string
-    node: string
-    subnode: string
-    mark: string
+	number: number
+	name: string
+	shortName: string
+	code: string
+	isActive: boolean
+	isIndustrial: boolean
+	departmentHead: Employee
+	employees: Array<Employee>
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
-    
-    constructor(obj?: IDepartment) {    
-        this.series = obj && obj.series || ''
-        this.node = obj && obj.node || ''
-        this.subnode = obj && obj.subnode || ''
-        this.mark = obj && obj.mark || ''
-
-        // Others
-        this.gipSurname = obj && obj.gipSurname || ''
-        this.facilityName = obj && obj.facilityName || ''
-        this.objectName = obj && obj.objectName || ''
-    }   
+	constructor(obj?: IDepartment) {
+		this.number = (obj && obj.number) || 0
+		this.name = (obj && obj.name) || ''
+		this.shortName = (obj && obj.shortName) || ''
+		this.code = (obj && obj.code) || ''
+		this.isActive = (obj && obj.isActive) || false
+		this.isIndustrial = (obj && obj.isIndustrial) || false
+		this.departmentHead = (obj && obj.departmentHead) || null
+		this.employees = (obj && obj.employees) || null
+	}
 }
 
 export default Department

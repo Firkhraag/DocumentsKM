@@ -37,7 +37,6 @@
           "Serilog.Enrichers.Process": "2.0.2-dev-00731",
           "Serilog.Enrichers.Thread": "3.2.0-dev-00747",
           "Serilog.Settings.Configuration": "3.2.0-dev-00244",
-          "Serilog.Sinks.Async": "1.4.1-dev-00073",
           "Swashbuckle.AspNetCore": "5.5.1",
           "Swashbuckle.AspNetCore.Swagger": "5.5.1",
           "Swashbuckle.AspNetCore.SwaggerGen": "5.5.1",
@@ -1280,20 +1279,6 @@
         },
         "compile": {
           "lib/netstandard2.0/Serilog.Settings.Configuration.dll": {}
-        }
-      },
-      "Serilog.Sinks.Async/1.4.1-dev-00073": {
-        "dependencies": {
-          "Serilog": "2.9.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Serilog.Sinks.Async.dll": {
-            "assemblyVersion": "1.4.0.0",
-            "fileVersion": "1.4.0.0"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/Serilog.Sinks.Async.dll": {}
         }
       },
       "Serilog.Sinks.Console/3.1.1": {
@@ -4299,13 +4284,6 @@
       "sha512": "sha512-3t0uxEMXdvkX8CIR0SRLX7pD9MtwcN24q5v8iDoDTWoFnavstn6VxPC0wXcTtz2/jck1RVul2YIe3P66rBchSg==",
       "path": "serilog.settings.configuration/3.2.0-dev-00244",
       "hashPath": "serilog.settings.configuration.3.2.0-dev-00244.nupkg.sha512"
-    },
-    "Serilog.Sinks.Async/1.4.1-dev-00073": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-UkZfTVlAPpAdlnVqfEqzHAEtNTI+XluU/Vt7ZrF0bZT8IGnv6anxIlavjSpRJ2s42ZrOIbQya22KHyoU2shYNg==",
-      "path": "serilog.sinks.async/1.4.1-dev-00073",
-      "hashPath": "serilog.sinks.async.1.4.1-dev-00073.nupkg.sha512"
     },
     "Serilog.Sinks.Console/3.1.1": {
       "type": "package",

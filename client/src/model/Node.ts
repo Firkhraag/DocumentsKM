@@ -1,37 +1,38 @@
-interface INode {    
-    series: string
-    node: string
-    subnode: string
-    mark: string
+import Project from './Project'
+import Employee from './Employee'
+import Subnode from './Subnode'
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
+interface INode {
+	id: number
+	project: Project
+	code: string
+	name: string
+	additionalName: string
+	chiefEngineer: Employee
+    activeNode: string
+    subnodes: Array<Subnode>
 }
 
 class Node {
-    series: string
-    node: string
-    subnode: string
-    mark: string
+	id: number
+	project: Project
+	code: string
+	name: string
+	additionalName: string
+	chiefEngineer: Employee
+    activeNode: string
+    subnodes: Array<Subnode>
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
-    
-    constructor(obj?: INode) {    
-        this.series = obj && obj.series || ''
-        this.node = obj && obj.node || ''
-        this.subnode = obj && obj.subnode || ''
-        this.mark = obj && obj.mark || ''
-
-        // Others
-        this.gipSurname = obj && obj.gipSurname || ''
-        this.facilityName = obj && obj.facilityName || ''
-        this.objectName = obj && obj.objectName || ''
-    }   
+	constructor(obj?: INode) {
+		this.id = (obj && obj.id) || 0
+		this.project = (obj && obj.project) || null
+		this.code = (obj && obj.code) || ''
+		this.name = (obj && obj.name) || ''
+		this.additionalName = (obj && obj.additionalName) || ''
+		this.chiefEngineer = (obj && obj.chiefEngineer) || null
+		this.activeNode = (obj && obj.activeNode) || ''
+		this.subnodes = (obj && obj.subnodes) || null
+	}
 }
 
 export default Node

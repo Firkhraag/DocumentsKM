@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { useSpring, animated } from 'react-spring'
+import ResizeObserver from 'resize-observer-polyfill'
 import Mark from '../../model/Mark'
-import InputArea from './InputArea'
 import Dropdown from './Dropdown'
 import './MarkData.css'
 
@@ -10,18 +11,20 @@ type MarkDataProps = {
 
 const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 
+    // Max lengths of input fields strings
     const seriesStringLength = 30
     const nodeStringLength = 10
     const subnodeStringLength = 10
     const markStringLength = 40
     const fullNameStringLength = 90
 
+    // Select and Create modes
 	const [isCreateMode, setIsCreateMode] = useState<boolean>(
 		isCreateModeInitially
     )
     
 	const [mark, setMark] = useState<Mark>(new Mark(null))
-	const [series, setSeries] = useState<Array<string>>([])
+	const [projects, setProjects] = useState<Array<string>>([])
 	const [nodes, setNodes] = useState<Array<string>>([])
 	const [subnodes, setSubnodes] = useState<Array<string>>([])
     const [marks, setMarks] = useState<Array<string>>([])
@@ -29,9 +32,12 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
     const [markFullName, setMarkFullName] = useState('')
     const [latestMarks, setLatestMarks] = useState<string[]>([])
 
+    const nodeRef = useRef()
+    const [dropdownHeight, setDropdownHeight] = useState(0)
+
 	useEffect(() => {
 		const seriesFetched: Array<string> = ['M32788', 'V32788', 'G32788']
-        setSeries(seriesFetched)
+        setProjects(seriesFetched)
         
         const latestMarksFetched: Array<string> = [
             'M32788.111.111-KVB 8',
@@ -48,19 +54,53 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
             'D62CVS788.121.01-ZB11',
             'D62CCSDS788.121.01-ZB11'
         ]
-		setLatestMarks(latestMarksFetched)
-    }, [])
+        setLatestMarks(latestMarksFetched)
+        
+        const ro = new ResizeObserver(([entry]) => {
+			setDropdownHeight(entry.target.scrollHeight)
+		})
+
+		if (nodeRef.current) {
+			ro.observe(nodeRef.current)
+		}
+
+		return () => ro.disconnect()
+    }, [nodeRef])
+
+    const nodeSpringProp = useSpring({
+		from: { opacity: 0 as any, height: 0 },
+		to: {
+            opacity: mark.project !== '' ? 1 : (0 as any),
+            height: mark.project !== '' ? dropdownHeight : 0,
+        },
+    })
+    
+    const subnodeSpringProp = useSpring({
+		from: { opacity: 0 as any, height: 0 },
+		to: {
+            opacity: mark.node !== '' ? 1 : (0 as any),
+            height: mark.node !== '' ? dropdownHeight : 0,
+        },
+    })
+    
+    const markSpringProp = useSpring({
+		from: { opacity: 0 as any, height: 0 },
+		to: {
+            opacity: mark.subnode !== '' ? 1 : (0 as any),
+            height: mark.subnode !== '' ? dropdownHeight : 0,
+        },
+	})
     
     const onLatestMarkSelect = (event: React.MouseEvent<HTMLDivElement>) => {
         const v = event.currentTarget.textContent
         setNodes([])
         setSubnodes([])
 		setMarks([])
-		setMark({ ...new Mark(null), series: v })
+		setMark({ ...new Mark(null), project: v })
 		setMarkFullName(v)
     }
 
-    const onSeriesSelect = (event: React.MouseEvent<HTMLDivElement>) => {
+    const onProjectSelect = (event: React.MouseEvent<HTMLDivElement>) => {
 		const v = event.currentTarget.textContent
 		if (v !== '') {
 			// Fetch
@@ -72,7 +112,7 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 		}
 		setSubnodes([])
 		setMarks([])
-		setMark({ ...new Mark(null), series: v })
+		setMark({ ...new Mark(null), project: v })
 	}
 
     const onNodeSelect = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -91,7 +131,7 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 		setMarks([])
 		setMark({
 			...new Mark(null),
-			series: mark.series,
+			project: mark.project,
 			node: v,
 			gipSurname: gipSurname,
 		})
@@ -133,7 +173,7 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 
 	return (
 		<div className="mark-data-cnt">
-			<h1 className="text-centered mark-data-title">Данные по марке</h1>
+			<h1 className="text-centered">Марки</h1>
 			<div className="tabs">
 				<input
 					type="radio"
@@ -143,7 +183,7 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 					onChange={() => setIsCreateMode(false)}
 					checked={isCreateMode ? false : true}
 				/>
-				<label htmlFor="tab-btn-1">Выбрать</label>
+				<label htmlFor="tab-btn-1">Редактировать</label>
 				<input
 					type="radio"
 					name="tab-btn"
@@ -154,49 +194,132 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 				/>
 				<label htmlFor="tab-btn-2">Добавить</label>
 
-				<div className="mark-data">
+				<div className="flex-v">
 					{/* {isCreateMode ? null : (
                         <InputArea label="Последние марки" widthClassName={'w-latest-marks'} onChangeFunc={onLatestMarkSelect} value={markFullName} options={latestMarks} />
 					)} */}
-                    <div className="flex">
+                    {/* <div className="flex"> */}
+
+                    <p className="text-centered section-label">Выберите марку</p>
+
                     <Dropdown
                         label="Последние марки"
-                        widthClassName={'input-width-1'}
+                        widthClassName={'1input-width-1'}
                         maxInputLength={fullNameStringLength}
                         onClickFunc={onLatestMarkSelect}
                         value={markFullName}
                         options={latestMarks}
                     />
-                    </div>
+                    {/* </div> */}
 
-                    <div className="flex-bot-v mrg-top mrg-bot">
-                        <Dropdown
+                    <p className="text-centered">или</p>
+
+                    <Dropdown
                             label="Базовая серия"
-                            widthClassName={'input-width-2'}
+                            widthClassName={'1input-width-2'}
                             maxInputLength={seriesStringLength}
-                            onClickFunc={onSeriesSelect}
-                            value={mark.series}
-                            options={series}
+                            onClickFunc={onProjectSelect}
+                            value={mark.project}
+                            options={projects}
                         />
-                        <div className="mrg-left" />
-                        <Dropdown
+
+                    <animated.div className="answer" style={nodeSpringProp}>
+						<div ref={nodeRef}>
+                            <Dropdown
+                                label="Узел"
+                                widthClassName={'1input-width-3'}
+                                maxInputLength={nodeStringLength}
+                                onClickFunc={onNodeSelect}
+                                value={mark.node}
+                                options={nodes}
+                            />
+						</div>
+					</animated.div>
+
+                    <animated.div className="answer" style={subnodeSpringProp}>
+						<div>
+                            <Dropdown
+                                label="Подузел"
+                                widthClassName={'1input-width-3'}
+                                maxInputLength={subnodeStringLength}
+                                onClickFunc={onSubnodeSelect}
+                                value={mark.subnode}
+                                options={subnodes}
+                            />
+						</div>
+					</animated.div>
+
+                    <animated.div className="answer" style={markSpringProp}>
+						<div>
+                            <Dropdown
+                                label="Марка"
+                                widthClassName={'1input-width-3'}
+                                maxInputLength={markStringLength}
+                                onClickFunc={onMarkSelect}
+                                value={mark.mark}
+                                options={marks}
+                            />
+						</div>
+					</animated.div>
+
+                    <p className="text-centered">Данные марки</p>
+                    
+                    {/* <p className="text-centered">Информация</p>
+
+                    {mark.facilityName === '' ? null : (
+							<div className="mrg-bot">
+								<p className="mrg-bot-1">
+									Наименование комплекса
+								</p>
+								<p className="border input-border-radius input-padding">
+									{mark.facilityName}
+								</p>
+							</div>
+						)}
+						{mark.objectName === '' ? null : (
+							<div className="mrg-bot">
+								<p className="mrg-bot-1">
+									Наименование объекта
+								</p>
+								<p className="border input-border-radius input-padding">
+									{mark.objectName}
+								</p>
+							</div>
+						)}
+                        {mark.mark === '' ? null : (
+							<InputArea label="Отдел" widthClassName={'input-width-1'} onChangeFunc={onSubnodeSelect} value={mark.subnode} options={subnodes} />
+
+						)}
+                        {mark.gipSurname === '' ? null : (
+							<div className="mrg-bot">
+								<p className="mrg-bot-1">Фамилия ГИПа</p>
+								<p className="border input-border-radius input-padding">
+									{mark.gipSurname}
+								</p>
+							</div>
+						)} */}
+
+
+                        {/* <Dropdown
                             label="Узел"
-                            widthClassName={'input-width-3'}
+                            widthClassName={'1input-width-3'}
                             maxInputLength={nodeStringLength}
                             onClickFunc={onNodeSelect}
                             value={mark.node}
                             options={nodes}
                         />
-                        <div className="mrg-left" />
                         <Dropdown
                             label="Подузел"
-                            widthClassName={'input-width-3'}
+                            widthClassName={'1input-width-3'}
                             maxInputLength={subnodeStringLength}
                             onClickFunc={onSubnodeSelect}
                             value={mark.subnode}
                             options={subnodes}
-                        />
-                    </div>
+                        /> */}
+
+                    {/* <div className="flex-bot-v mrg-top mrg-bot">
+                        
+                    </div> */}
 					
                     {/* <div className="flex-bot-v mrg-top mrg-bot">
                         <InputArea label="Базовая серия" widthClassName={'input-width-1'} onChangeFunc={onSeriesSelect} value={mark.series} options={series} />

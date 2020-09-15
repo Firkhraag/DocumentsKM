@@ -26,11 +26,11 @@ namespace DocumentsKM.Model
 
         // ОтделКод, ОтделИмя
         [Required]
-        [ForeignKey("DepartmentId")]
+        [ForeignKey("DepartmentNumber")]
         public Department Department { get; set; }
 
         // ДолжностьКод, ДолжностьИмя
-        [ForeignKey("PositionId")]
+        [ForeignKey("PositionCode")]
         public Position Position { get; set; }
 
         // Телефон

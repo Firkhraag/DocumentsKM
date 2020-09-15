@@ -1,0 +1,148 @@
+{
+    "Timestamp": "2020-09-14T15:28:02.2135594+05:00",
+    "Level": "Information",
+    "MessageTemplate": "Application starting up",
+    "Properties": {
+        "MachineName": "LAPTOP-JSR6TV0G",
+        "ProcessId": 8624,
+        "ThreadId": 1
+    }
+}
+{
+    "Timestamp": "2020-09-14T15:28:21.1382375+05:00",
+    "Level": "Information",
+    "MessageTemplate": "Request {funcName}",
+    "Properties": {
+        "funcName": "GetAllMarks",
+        "SourceContext": "DocumentsKM.Controllers.MarksController",
+        "ActionId": "784d1cbd-6527-49c6-bce8-5c72c7bace31",
+        "ActionName": "DocumentsKM.Controllers.MarksController.GetAllMarks (DocumentsKM)",
+        "RequestId": "0HM2OJ3JGP04M:00000001",
+        "RequestPath": "/api/marks",
+        "SpanId": "|8eb004d3-4430bcb22eea67f3.",
+        "TraceId": "8eb004d3-4430bcb22eea67f3",
+        "ParentId": "",
+        "MachineName": "LAPTOP-JSR6TV0G",
+        "ProcessId": 8624,
+        "ThreadId": 11
+    }
+}
+{
+    "Timestamp": "2020-09-14T15:28:21.3375095+05:00",
+    "Level": "Information",
+    "MessageTemplate": "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
+    "Properties": {
+        "RequestMethod": "GET",
+        "RequestPath": "/api/marks",
+        "StatusCode": 200,
+        "Elapsed": 452.0119,
+        "SourceContext": "Serilog.AspNetCore.RequestLoggingMiddleware",
+        "RequestId": "0HM2OJ3JGP04M:00000001",
+        "SpanId": "|8eb004d3-4430bcb22eea67f3.",
+        "TraceId": "8eb004d3-4430bcb22eea67f3",
+        "ParentId": "",
+        "MachineName": "LAPTOP-JSR6TV0G",
+        "ProcessId": 8624,
+        "ThreadId": 11
+    },
+    "Renderings": {
+        "Elapsed": [
+            {
+                "Format": "0.0000",
+                "Rendering": "452.0119"
+            }
+        ]
+    }
+}
+{
+    "Timestamp": "2020-09-14T15:29:18.4998966+05:00",
+    "Level": "Information",
+    "MessageTemplate": "Request {funcName}",
+    "Properties": {
+        "funcName": "GetAllMarks",
+        "SourceContext": "DocumentsKM.Controllers.MarksController",
+        "ActionId": "784d1cbd-6527-49c6-bce8-5c72c7bace31",
+        "ActionName": "DocumentsKM.Controllers.MarksController.GetAllMarks (DocumentsKM)",
+        "RequestId": "0HM2OJ3JGP04M:00000003",
+        "RequestPath": "/api/marks",
+        "SpanId": "|8eb004d4-4430bcb22eea67f3.",
+        "TraceId": "8eb004d4-4430bcb22eea67f3",
+        "ParentId": "",
+        "MachineName": "LAPTOP-JSR6TV0G",
+        "ProcessId": 8624,
+        "ThreadId": 7
+    }
+}
+{
+    "Timestamp": "2020-09-14T15:29:18.5051270+05:00",
+    "Level": "Information",
+    "MessageTemplate": "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
+    "Properties": {
+        "RequestMethod": "GET",
+        "RequestPath": "/api/marks",
+        "StatusCode": 200,
+        "Elapsed": 5.8303,
+        "SourceContext": "Serilog.AspNetCore.RequestLoggingMiddleware",
+        "RequestId": "0HM2OJ3JGP04M:00000003",
+        "SpanId": "|8eb004d4-4430bcb22eea67f3.",
+        "TraceId": "8eb004d4-4430bcb22eea67f3",
+        "ParentId": "",
+        "MachineName": "LAPTOP-JSR6TV0G",
+        "ProcessId": 8624,
+        "ThreadId": 7
+    },
+    "Renderings": {
+        "Elapsed": [
+            {
+                "Format": "0.0000",
+                "Rendering": "5.8303"
+            }
+        ]
+    }
+}
+{
+    "Timestamp": "2020-09-14T15:29:24.3256699+05:00",
+    "Level": "Information",
+    "MessageTemplate": "Request {funcName}",
+    "Properties": {
+        "funcName": "GetAllMarks",
+        "SourceContext": "DocumentsKM.Controllers.MarksController",
+        "ActionId": "784d1cbd-6527-49c6-bce8-5c72c7bace31",
+        "ActionName": "DocumentsKM.Controllers.MarksController.GetAllMarks (DocumentsKM)",
+        "RequestId": "0HM2OJ3JGP04M:00000005",
+        "RequestPath": "/api/marks",
+        "SpanId": "|8eb004d5-4430bcb22eea67f3.",
+        "TraceId": "8eb004d5-4430bcb22eea67f3",
+        "ParentId": "",
+        "MachineName": "LAPTOP-JSR6TV0G",
+        "ProcessId": 8624,
+        "ThreadId": 7
+    }
+}
+{
+    "Timestamp": "2020-09-14T15:29:24.3311632+05:00",
+    "Level": "Information",
+    "MessageTemplate": "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms",
+    "Properties": {
+        "RequestMethod": "GET",
+        "RequestPath": "/api/marks",
+        "StatusCode": 200,
+        "Elapsed": 7.2085,
+        "SourceContext": "Serilog.AspNetCore.RequestLoggingMiddleware",
+        "RequestId": "0HM2OJ3JGP04M:00000005",
+        "SpanId": "|8eb004d5-4430bcb22eea67f3.",
+        "TraceId": "8eb004d5-4430bcb22eea67f3",
+        "ParentId": "",
+        "MachineName": "LAPTOP-JSR6TV0G",
+        "ProcessId": 8624,
+        "ThreadId": 7
+    },
+    "Renderings": {
+        "Elapsed": [
+            {
+                "Format": "0.0000",
+                "Rendering": "7.2085"
+            }
+        ]
+    }
+}

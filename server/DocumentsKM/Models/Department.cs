@@ -8,7 +8,7 @@ namespace DocumentsKM.Model
     {
         // НомОтдела
         [Key]
-        public ulong Id { get; set; }
+        public ulong Number { get; set; }
 
         // НазваниеОтдела
         [Required]

@@ -1,37 +1,31 @@
-interface ISubnode {    
-    series: string
-    node: string
-    subnode: string
-    mark: string
+import Node from './Node'
+import Mark from './Mark'
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
+interface ISubnode {
+	id: number
+	node: Node
+	code: string
+	name: string
+	additionalName: string
+	marks: Array<Mark>
 }
 
 class Subnode {
-    series: string
-    node: string
-    subnode: string
-    mark: string
+	id: number
+	node: Node
+	code: string
+	name: string
+	additionalName: string
+	marks: Array<Mark>
 
-    // Others
-    gipSurname: string
-    facilityName: string
-    objectName: string
-    
-    constructor(obj?: ISubnode) {    
-        this.series = obj && obj.series || ''
-        this.node = obj && obj.node || ''
-        this.subnode = obj && obj.subnode || ''
-        this.mark = obj && obj.mark || ''
-
-        // Others
-        this.gipSurname = obj && obj.gipSurname || ''
-        this.facilityName = obj && obj.facilityName || ''
-        this.objectName = obj && obj.objectName || ''
-    }   
+	constructor(obj?: ISubnode) {
+		this.id = (obj && obj.id) || 0
+		this.node = (obj && obj.node) || null
+		this.code = (obj && obj.code) || ''
+		this.name = (obj && obj.name) || ''
+		this.additionalName = (obj && obj.additionalName) || ''
+		this.marks = (obj && obj.marks) || null
+	}
 }
 
 export default Subnode

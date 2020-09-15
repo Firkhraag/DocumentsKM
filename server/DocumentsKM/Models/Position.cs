@@ -6,7 +6,7 @@ namespace DocumentsKM.Model
     {
         // КодДолжности
         [Key]
-        public uint Id { get; set; }
+        public uint Code { get; set; }
 
         // НазваниеДолжности
         [Required]

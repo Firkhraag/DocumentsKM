@@ -1,57 +1,25 @@
 .mark-data-cnt {
-    margin: 10vh 0;
+	margin: 10vh 0;
 }
 
-.mark-data-title {
-    margin-bottom: 1em;
+.mark-data-cnt h1 {
+	margin-bottom: 1em;
 }
 
-.mark-data .mrg-bot {
-    margin-bottom: 1em;
+.mark-data-cnt button {
+	font-size: 15px;
+	background: #ededed;
+	border: 1px solid #bdbdbd;
+	padding: 0.75em;
 }
 
-.mark-data .mrg-top {
-    margin-top: 1em;
-}
-
-.mark-data .mrg-bot-1 {
-    margin-bottom: .1em;
-}
-
-.mark-data .mrg-left {
-    margin-left: .75em;
-}
-
-.mark-data .mrg-right {
-    margin-right: .5em;
-}
-
-/* .mark-data .w-latest-marks {
-    width: 15.25vw;
-}
-
-.mark-data .input-width-1 {
-    width: 8vw;
-}
-
-.mark-data .input-width-0 {
-    width: 6vw;
-}
-
-.mark-data .input-width-2 {
-    width: 18vw;
-} */
-
-.mark-data button {
-    font-size: 15px;
-    background: #ededed;
-    border: 1px solid #bdbdbd;
-    padding: .75em;
+.mark-data-cnt .mrg-bot {
+	margin-bottom: 1em;
 }
 
 .tabs {
-    font-size: 0;
-    width: 40vw;
+	font-size: 0;
+	width: 30vw;
 }
 
 .tabs > input[type='radio'] {
@@ -71,15 +39,15 @@
 	user-select: none;
 	background-color: #f5f5f5;
 	border: 1px solid #d0d0d0;
-	padding: .5em .75em;
+	padding: 0.5em 0.75em;
 	font-size: 16px;
 	line-height: 1.5;
 	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 	cursor: pointer;
 	position: relative;
-    top: 1px;
-    width: 50%;
-    box-sizing: border-box;
+	top: 1px;
+	width: 50%;
+	box-sizing: border-box;
 }
 
 .tabs > label:not(:first-of-type) {
