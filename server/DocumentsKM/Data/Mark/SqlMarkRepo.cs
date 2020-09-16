@@ -14,6 +14,13 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        // GetAllSubnodeMarks returns the list of marks for the subnode
+        public IEnumerable<Mark> GetAllSubnodeMarks(ulong subnodeId)
+        {
+            // TBD
+            return _context.Marks.ToList();
+        }
+
         public void CreateMark(Mark mark)
         {
             if (mark == null)

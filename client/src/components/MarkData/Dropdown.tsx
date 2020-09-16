@@ -8,7 +8,7 @@ type DropdownProps = {
 	label: string
 	widthClassName: string
 	maxInputLength: number
-	onClickFunc: (event: React.MouseEvent<HTMLDivElement>) => void
+	onClickFunc: (id: number) => void
     value: string
     // changeValue: (newValue: string) => void
 	options: string[]
@@ -29,6 +29,7 @@ const Dropdown = ({
 	const dropdownRef = useRef()
 
 	useEffect(() => {
+        // Track the height of dropdown options
 		const ro = new ResizeObserver(([entry]) => {
 			setDropdownHeight(entry.target.scrollHeight)
 		})
@@ -50,20 +51,35 @@ const Dropdown = ({
 	}
 
 	const onInputBlur = () => {
-		setInputFocused(false)
-	}
+        // Timeout gives the time to register a click on select option
+        setTimeout(() => setInputFocused(false), 100)
+    }
+    
+    const onArrowClick = () => {
+        const inputElement = inputRef.current as any
+        if (inputElement) {
+            inputElement.focus()
+        }
+    }
 
 	const springProp = useSpring({
-		from: { opacity: 0 as any, height: 0, overflowY: 'hidden' as any },
+		from: { 
+            opacity: 0 as any,
+            height: 0,
+            overflowY: 'hidden' as any,
+        },
 		to: [
 			{
-				opacity: isInputFocused ? 1 : (0 as any),
+                opacity: isInputFocused ? 1 : (0 as any),
 				height: isInputFocused ? dropdownHeight : 0,
-				config: { duration: 300 },
+                config: { duration: 200 },
 			},
-			{ overflowY: 'auto' as any, config: { duration: 1 } },
+            {
+                overflowY: 'auto' as any,
+                config: { duration: 1 }
+            },
 		],
-	})
+    })
 
 	return (
 		<div className="flex-v mrg-bottom">
@@ -82,23 +98,27 @@ const Dropdown = ({
 					maxLength={maxInputLength}
 				/>
 				<div
-					onClick={() => inputRef}
+					onClick={onArrowClick}
 					className="arrow-area absolute pointer"
 				>
 					<ArrowSvg />
 				</div>
-				<div
+				{/* <div
 					className={
 						isInputFocused
 							? `${widthClassName} dropdown-area-opened dropdown-area flex-v absolute pointer white-bg`
 							: `${widthClassName} dropdown-area flex-v absolute pointer white-bg`
 					}
-				>
-					<animated.div className="answer" style={springProp}>
-						<div ref={dropdownRef}>
+				> */}
+					<animated.div onClick={()=>console.log('Clicked animated')} style={springProp} className={
+						isInputFocused
+							? `${widthClassName} dropdown-area-opened dropdown-area flex-v absolute pointer white-bg`
+							: `${widthClassName} dropdown-area flex-v absolute pointer white-bg`
+					}>
+						<div onClick={()=>console.log('Clicked')} ref={dropdownRef}>
 							{options.map((option, key) => (
 								<div
-									onClick={onClickFunc}
+									onClick={() => onClickFunc(key)}
 									key={key}
 									className="option-area"
 								>
@@ -107,7 +127,7 @@ const Dropdown = ({
 							))}
 						</div>
 					</animated.div>
-				</div>
+				{/* </div> */}
 			</div>
 		</div>
 	)

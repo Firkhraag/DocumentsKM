@@ -7,8 +7,9 @@ namespace DocumentsKM.Data
     {
         bool SaveChanges();
 
-        IEnumerable<Mark> GetAllMarks();
+        IEnumerable<Mark> GetAllSubnodeMarks(ulong subnodeId);
         Mark GetMarkById(ulong id);
+        IEnumerable<Mark> GetAllMarks();
         void CreateMark(Mark mark);
         void UpdateMark(Mark mark);
     }

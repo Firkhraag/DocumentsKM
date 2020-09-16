@@ -40,7 +40,6 @@
     max-height: 26.5em;
     width: 100%;
 }
-
 .dropdown-area-opened {
     border: 1px solid #ccc;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);

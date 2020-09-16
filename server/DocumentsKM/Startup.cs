@@ -24,6 +24,10 @@ namespace DocumentsKM
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+            // Add CORS services
+            services.AddCors();
+
             // Add Swagger documentation
             // URI: https://localhost:8081/swagger
             services.AddSwaggerGen(options =>
@@ -51,8 +55,12 @@ namespace DocumentsKM
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // Inject MockMarkRepo into IMarkRepo
+            // Inject MockRepos into IRepos
+            services.AddScoped<IProjectRepo, MockProjectRepo>();
+            services.AddScoped<INodeRepo, MockNodeRepo>();
+            services.AddScoped<ISubnodeRepo, MockSubnodeRepo>();
             services.AddScoped<IMarkRepo, MockMarkRepo>();
+            // Inject SqlRepos into IRepos
             // services.AddScoped<IMarkRepo, SqlMarkRepo>();
         }
 
@@ -62,6 +70,14 @@ namespace DocumentsKM
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Enable CORS
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // SECURITY BREACH, REPLACE TO SECOND LINE WHEN USING FRONTEND SERVER
+            // Dev
+            app.UseCors(builder => builder.AllowAnyOrigin());
+            // Prod
+            // app.UseCors(builder => builder.WithOrigins("http://example.com"));
 
             app.UseSwagger().UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
 

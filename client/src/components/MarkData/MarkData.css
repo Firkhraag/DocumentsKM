@@ -17,6 +17,11 @@
 	margin-bottom: 1em;
 }
 
+.section-label {
+    margin: 1em 0;
+    font-size: 18px;
+}
+
 .tabs {
 	font-size: 0;
 	width: 30vw;

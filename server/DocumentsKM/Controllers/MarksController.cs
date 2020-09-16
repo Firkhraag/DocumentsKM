@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 
 namespace DocumentsKM.Controllers
 {
-    [Route("api/marks")]
     [ApiController]
     public class MarksController : ControllerBase
     {
@@ -28,10 +27,21 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
+        [Route("api/subnodes/{subnodeId}/marks")]
+        [HttpGet]
+        public ActionResult<IEnumerable<SubnodeCodeReadDto>> GetAllSubnodeMarks(ulong subnodeId)
+        {
+            var marks = _repository.GetAllSubnodeMarks(subnodeId);
+            if (marks != null) {
+                return Ok(_mapper.Map<IEnumerable<MarkCodeReadDto>>(marks));
+            }
+            return NotFound();
+        }
+
+        [Route("api/marks")]
         [HttpGet]
         public ActionResult<IEnumerable<MarkReadDto>> GetAllMarks()
         {
-            _logger.LogInformation("Request {funcName}", "GetAllMarks");
             var marks = _repository.GetAllMarks();
             if (marks != null) {
                 return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
@@ -39,6 +49,7 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
+        [Route("api/marks")]
         [HttpGet("{id}", Name="GetMarkById")]
         public ActionResult<MarkReadDto> GetMarkById(ulong id)
         {
@@ -49,6 +60,7 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
+        [Route("api/marks")]
         [HttpPost]
         public ActionResult<MarkReadDto> CreateMark(MarkCreateDto markCreateDto)
         {
@@ -62,6 +74,7 @@ namespace DocumentsKM.Controllers
             return CreatedAtRoute(nameof(GetMarkById), new {Id = markReadDto.Id}, markReadDto);
         }
 
+        [Route("api/marks")]
         [HttpPatch("{id}")]
         public ActionResult UpdateMark(ulong id, JsonPatchDocument<MarkUpdateDto> patchDoc)
         {
