@@ -2,6 +2,14 @@
 	margin: 10vh 0;
 }
 
+.info-area {
+    font-size: 16px;
+    border-bottom: 1px solid #ccc;
+    padding: 0 .8em .3em 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .mark-data-cnt h1 {
 	margin-bottom: 1em;
 }
@@ -15,6 +23,10 @@
 
 .mark-data-cnt .mrg-bot {
 	margin-bottom: 1em;
+}
+
+.mark-data-cnt .mrg-top {
+	margin-top: 1em;
 }
 
 .section-label {
@@ -62,4 +74,39 @@
 .tabs > input[type='radio']:checked + label {
 	background-color: #fff;
 	border-bottom: 1px solid #fff;
+}
+
+.tabs button {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+@media (max-width: 1366px) {
+	.tabs {
+		width: 35vw;
+	}
+}
+
+@media (max-width: 1200px) {
+	.tabs {
+		width: 40vw;
+	}
+}
+
+@media (max-width: 992px) {
+	.tabs {
+		width: 45vw;
+	}
+}
+
+@media (max-width: 768px) {
+	.tabs {
+		width: 50vw;
+	}
+}
+
+@media (max-width: 576px) {
+	.tabs {
+		width: 55vw;
+	}
 }

@@ -87,7 +87,7 @@ const Dropdown = ({
 	return (
 		<div className="flex-v mrg-bottom">
 			<p className="label-area">{label}</p>
-			<div className="dropdown-cnt relative">
+			<div className="relative">
 				<input
 					ref={inputRef}
 					className="input-area"

@@ -1,5 +1,4 @@
 .label-area {
-    /* margin-bottom: .1em; */
     font-size: 13px;
     color: #666;
 }
@@ -14,18 +13,6 @@
 
 .input-area:focus {
     border-bottom: 1px solid #aaa;
-}
-
-.input-width-1 {
-    width: 33.3vw;
-}
-
-.input-width-2 {
-    width: 12vw;
-}
-
-.input-width-3 {
-    width: 9vw;
 }
 
 .arrow-area {

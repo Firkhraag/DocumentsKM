@@ -47,14 +47,14 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
     const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
     // Object that holds select options
     const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
-    // Height of Dropdown component
-    const [dropdownHeight, setDropdownHeight] = useState(0)
-    // TBD
-    const [infoHeight, setInfoHeight] = useState(0)
-    // Reference for getting Dropdown component
-    const height1Ref = useRef()
-    // TBD
-    const height2Ref = useRef()
+    // Heights
+    const [dropdownComponentHeight, setDropdownComponentHeight] = useState(0)
+    const [initialInfoSectionHeight, setInitialInfoSectionHeight] = useState(0)
+    const [laterInfoSectionHeight, setLaterInfoSectionHeight] = useState(0)
+    // Reference for getting heights
+    const dropdownComponentHeightRef = useRef()
+    const initialInfoSectionHeightRef = useRef()
+    const laterInfoSectionHeightRef = useRef()
 
 	useEffect(() => {
         // Cannot use async func as callback in useEffect
@@ -89,63 +89,76 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
                 console.log('Failed to fetch the data')
             }
         }
-       
         fetchData()
         
-        // Observe the height of Dropdown component
-        const ro1 = new ResizeObserver(([entry]) => {
-			setDropdownHeight(entry.target.scrollHeight)
+        // Observe the heights
+        const dropdownComponentResizeObserver = new ResizeObserver(([entry]) => {
+			setDropdownComponentHeight(entry.target.scrollHeight)
 		})
-		if (height1Ref.current) {
-			ro1.observe(height1Ref.current)
+		if (dropdownComponentHeightRef.current) {
+			dropdownComponentResizeObserver.observe(dropdownComponentHeightRef.current)
         }
-        // TBD
-        const ro2 = new ResizeObserver(([entry]) => {
-			setInfoHeight(entry.target.scrollHeight)
+
+        const initialInfoSectionResizeObserver = new ResizeObserver(([entry]) => {
+			setInitialInfoSectionHeight(entry.target.scrollHeight)
 		})
-		if (height2Ref.current) {
-			ro2.observe(height1Ref.current)
-		}
+		if (initialInfoSectionHeightRef.current) {
+			initialInfoSectionResizeObserver.observe(initialInfoSectionHeightRef.current)
+        }
+        
+        const laterInfoSectionResizeObserver = new ResizeObserver(([entry]) => {
+			setLaterInfoSectionHeight(entry.target.scrollHeight)
+		})
+		if (laterInfoSectionHeightRef.current) {
+			laterInfoSectionResizeObserver.observe(laterInfoSectionHeightRef.current)
+        }
         // Remove height observers on unmount
 		return () => {
-            ro1.disconnect()
-            ro2.disconnect()
+            dropdownComponentResizeObserver.disconnect()
+            initialInfoSectionResizeObserver.disconnect()
+            laterInfoSectionResizeObserver.disconnect()
         }
-    }, [height1Ref, height2Ref])
+    }, [dropdownComponentHeightRef, initialInfoSectionHeightRef, laterInfoSectionHeightRef])
 
-    // getDropdownSpringStyle return animation style for Dropdown component
-    const getDropdownSpringStyle = (obj: any) => {
+    // getSpringStyle returns spring animation style
+    const getSpringStyle = (obj: any, height: number) => {
         return useSpring({
-            from: { opacity: 0 as any, height: 0 },
+            from: {
+                opacity: 0 as any,
+                height: 0,
+                overflowY: 'hidden' as any
+            },
             to: {
                 opacity: obj == null ? (0 as any) : 1,
-                height: obj == null ? 0 : dropdownHeight,
+                height: obj == null ? 0 : height,
+                overflowY: obj == null ? ('hidden' as any) : ('visible' as any)
             },
         })
     }
 
-    // TBD
-    // const recentMarksSpringProp = useSpring({
-	// 	from: { opacity: 0 as any, height: 0 },
-	// 	to: {
-    //         opacity: isCreateMode ? (0 as any) : 1,
-    //         height: isCreateMode ? 0 : dropdownHeight,
-    //     },
-    // })
-    // 
-    // const textSpringProp = useSpring({
-	// 	from: { opacity: 0 as any, height: 0 },
-	// 	to: {
-    //         opacity: isCreateMode ? (0 as any) : 1,
-    //         height: isCreateMode ? 0 : 25.6,
-    //     },
-    // })
-
     const marksSpringProp = useSpring({
-        from: { opacity: 0 as any, height: 0 },
+        from: {
+            opacity: 0 as any,
+            height: 0,
+            overflowY: 'hidden' as any
+        },
         to: {
             opacity: selectedObject.subnode == null || isCreateMode ? (0 as any) : 1,
-            height: selectedObject.subnode == null || isCreateMode ? 0 : dropdownHeight,
+            height: selectedObject.subnode == null || isCreateMode ? 0 : dropdownComponentHeight,
+            overflowY: selectedObject.subnode == null ? ('hidden' as any) : ('visible' as any)
+        },
+    })
+
+    const initialInfoSectionSpringProp = useSpring({
+        from: {
+            opacity: 0 as any,
+            height: 0,
+            overflowY: 'hidden' as any
+        },
+        to: {
+            opacity: selectedObject.node == null || isCreateMode ? (0 as any) : 1,
+            height: selectedObject.node == null || isCreateMode ? 0 : initialInfoSectionHeight,
+            overflowY: selectedObject.node == null ? ('hidden' as any) : ('visible' as any)
         },
     })
     
@@ -463,8 +476,8 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
                         })}
                     />
 
-                    <animated.div style={getDropdownSpringStyle(selectedObject.project)}>
-						<div ref={height1Ref}>
+                    <animated.div style={getSpringStyle(selectedObject.project, dropdownComponentHeight)}>
+						<div ref={dropdownComponentHeightRef}>
                             <Dropdown
                                 label="Узел"
                                 maxInputLength={nodeStringLength}
@@ -480,41 +493,80 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 						</div>
 					</animated.div>
 
-                    <animated.div style={getDropdownSpringStyle(selectedObject.node)}>
-						<div>
-                            <Dropdown
-                                label="Подузел"
-                                maxInputLength={subnodeStringLength}
-                                onClickFunc={onSubnodeSelect}
-                                value={selectedObject.subnode == null ? '' : selectedObject.subnode.code}
-                                options={optionsObject.subnodes.map(s => {
-                                    return {
-                                        id: s.id,
-                                        val: s.code
-                                    }
-                                })}
-                            />
-						</div>
+                    <animated.div style={getSpringStyle(selectedObject.node, dropdownComponentHeight)}>
+                        <Dropdown
+                            label="Подузел"
+                            maxInputLength={subnodeStringLength}
+                            onClickFunc={onSubnodeSelect}
+                            value={selectedObject.subnode == null ? '' : selectedObject.subnode.code}
+                            options={optionsObject.subnodes.map(s => {
+                                return {
+                                    id: s.id,
+                                    val: s.code
+                                }
+                            })}
+                        />
 					</animated.div>
 
                     <animated.div style={marksSpringProp}>
-						<div>
-                            <Dropdown
-                                label="Марка"
-                                maxInputLength={markStringLength}
-                                onClickFunc={onMarkSelect}
-                                value={selectedObject.mark == null ? '' : selectedObject.mark.code}
-                                options={optionsObject.marks.map(m => {
-                                    return {
-                                        id: m.id,
-                                        val: m.code
-                                    }
-                                })}
-                            />
-						</div>
+                        <Dropdown
+                            label="Марка"
+                            maxInputLength={markStringLength}
+                            onClickFunc={onMarkSelect}
+                            value={selectedObject.mark == null ? '' : selectedObject.mark.code}
+                            options={optionsObject.marks.map(m => {
+                                return {
+                                    id: m.id,
+                                    val: m.code
+                                }
+                            })}
+                        />
 					</animated.div>
 
-                    <p className="text-centered section-label">Данные марки</p>
+                    
+
+                    <animated.div style={getSpringStyle(selectedObject.node, initialInfoSectionHeight)}>
+                        <div ref={initialInfoSectionHeightRef}>
+                            <p className="text-centered section-label">Данные марки</p>
+                            <div className="flex-v mrg-bottom">
+                                <p className="label-area">ГИП</p>
+                                <div className="info-area">
+                                    { selectedObject.node == null ? '' : selectedObject.node.chiefEngineer.fullName  }
+                                </div>
+                            </div>
+                        </div>
+                    </animated.div>
+
+                    <animated.div style={getSpringStyle(selectedObject.mark, laterInfoSectionHeight)}>
+                        <div ref={laterInfoSectionHeightRef}>
+                            <div className="mrg-top" />
+                            <div className="flex-v mrg-bottom">
+                                <p className="label-area">Наименование комплекса</p>
+                                <div className="info-area">
+                                Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века.
+                                </div>
+                            </div>
+
+                            <div className="flex-v mrg-bottom">
+                                <p className="label-area">Наименование объекта</p>
+                                <div className="info-area">
+                                Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века.
+                                </div>
+                            </div>
+
+                            {isCreateMode ? (
+                                selectedObject.subnode === null ? null : (
+                                    <button className="input-border-radius pointer">
+                                        Добавить новую марку
+                                    </button>
+                                )
+                            ) : (
+                                selectedObject.mark === null ? null : <button className="input-border-radius pointer">
+                                    Сохранить изменения
+                                </button>
+                            )}
+                        </div>
+                    </animated.div>
                     
                     {/* <p className="text-centered">Информация</p>
 
@@ -628,18 +680,6 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 							</div>
 						)}
 					</div> */}
-
-					{isCreateMode ? (
-						selectedObject.subnode === null ? null : (
-							<button className="input-border-radius pointer">
-								Добавить новую марку
-							</button>
-						)
-					) : (
-						selectedObject.mark === null ? null : <button className="input-border-radius pointer">
-							Сохранить изменения
-						</button>
-					)}
 
 					{/* <div className="space-between-cent-v mrg-bot">
                     <div className="flex">
