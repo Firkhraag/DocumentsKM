@@ -60,6 +60,7 @@ namespace DocumentsKM
             services.AddScoped<INodeRepo, MockNodeRepo>();
             services.AddScoped<ISubnodeRepo, MockSubnodeRepo>();
             services.AddScoped<IMarkRepo, MockMarkRepo>();
+            services.AddScoped<IEmployeeRepo, MockEmployeeRepo>();
             // Inject SqlRepos into IRepos
             // services.AddScoped<IMarkRepo, SqlMarkRepo>();
         }

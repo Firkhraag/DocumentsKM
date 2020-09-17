@@ -1,0 +1,270 @@
+09/17/2020 12:54:25 Application starting up
+09/17/2020 13:17:02 HTTP "GET" "/api/projects" responded 200 in 362.2174 ms
+09/17/2020 13:17:11 HTTP "GET" "/api/projects/%7Bid%7D/nodes" responded 400 in 54.6095 ms
+09/17/2020 13:57:16 HTTP "GET" "/api/projects" responded 200 in 2.1972 ms
+09/17/2020 13:57:23 HTTP "GET" "/api/projects/%7Bid%7D/nodes" responded 400 in 4.7828 ms
+09/17/2020 13:57:30 HTTP "GET" "/api/projects" responded 200 in 2.7962 ms
+09/17/2020 13:57:34 HTTP "GET" "/api/projects/%7Bid%7D/nodes" responded 400 in 4.3632 ms
+09/17/2020 13:58:39 HTTP "GET" "/api/projects" responded 200 in 1.4005 ms
+09/17/2020 13:58:40 HTTP "GET" "/api/projects/1/nodes" responded 200 in 10.7713 ms
+09/17/2020 14:03:13 HTTP "GET" "/api/projects" responded 200 in 1.5616 ms
+09/17/2020 14:03:17 HTTP "GET" "/api/projects/1/nodes" responded 200 in 2.9341 ms
+09/17/2020 14:03:19 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 19.5007 ms
+09/17/2020 14:18:23 HTTP "GET" "/api/projects" responded 200 in 1.3700 ms
+09/17/2020 14:18:25 HTTP "GET" "/api/projects/0/nodes" responded 200 in 1.5555 ms
+09/17/2020 14:18:26 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 3.9952 ms
+09/17/2020 14:18:29 HTTP "GET" "/api/projects" responded 200 in 1.4450 ms
+09/17/2020 14:18:30 HTTP "GET" "/api/projects/0/nodes" responded 200 in 1.3679 ms
+09/17/2020 14:18:32 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 1.8216 ms
+09/17/2020 14:18:35 HTTP "GET" "/api/projects" responded 200 in 1.1972 ms
+09/17/2020 14:18:36 HTTP "GET" "/api/projects/0/nodes" responded 200 in 1.2153 ms
+09/17/2020 14:18:37 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 1.1103 ms
+09/17/2020 14:18:39 HTTP "GET" "/api/subnodes/0/marks" responded 200 in 10.5910 ms
+09/17/2020 14:18:43 HTTP "GET" "/api/projects" responded 200 in 0.9052 ms
+09/17/2020 14:18:45 HTTP "GET" "/api/projects/0/nodes" responded 200 in 1.0333 ms
+09/17/2020 14:18:46 HTTP "GET" "/api/nodes/1/subnodes" responded 200 in 0.9940 ms
+09/17/2020 14:18:48 HTTP "GET" "/api/subnodes/2/marks" responded 200 in 1.1302 ms
+09/17/2020 14:21:43 HTTP "GET" "/api/projects" responded 200 in 0.7451 ms
+09/17/2020 14:21:45 HTTP "GET" "/api/projects/2/nodes" responded 200 in 1.0569 ms
+09/17/2020 14:22:00 HTTP "GET" "/api/projects/1/nodes" responded 200 in 1.1638 ms
+09/17/2020 14:22:02 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 1.4972 ms
+09/17/2020 14:23:50 HTTP "GET" "/api/projects" responded 200 in 1.2262 ms
+09/17/2020 14:23:52 HTTP "GET" "/api/projects/0/nodes" responded 200 in 0.9465 ms
+09/17/2020 14:23:55 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.6179 ms
+09/17/2020 14:23:59 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.7129 ms
+09/17/2020 14:26:25 HTTP "GET" "/api/projects" responded 200 in 0.4111 ms
+09/17/2020 14:26:27 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.7149 ms
+09/17/2020 14:26:28 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.6192 ms
+09/17/2020 14:31:53 HTTP "GET" "/api/projects" responded 200 in 0.3026 ms
+09/17/2020 14:31:56 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.6519 ms
+09/17/2020 14:31:58 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.6334 ms
+09/17/2020 14:32:56 HTTP "GET" "/api/projects" responded 200 in 0.1629 ms
+09/17/2020 14:32:58 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.5927 ms
+09/17/2020 14:33:00 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.6001 ms
+09/17/2020 14:33:36 HTTP "GET" "/api/projects" responded 200 in 0.1920 ms
+09/17/2020 14:33:41 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.6181 ms
+09/17/2020 14:34:48 HTTP "GET" "/api/projects" responded 200 in 0.2419 ms
+09/17/2020 14:34:51 HTTP "GET" "/api/projects/0/nodes" responded 200 in 1.0931 ms
+09/17/2020 14:34:53 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 0.4009 ms
+09/17/2020 14:34:55 HTTP "GET" "/api/subnodes/1/marks" responded 200 in 0.8504 ms
+09/17/2020 14:45:41 HTTP "GET" "/api/projects" responded 200 in 0.2406 ms
+09/17/2020 14:45:51 HTTP "GET" "/api/projects" responded 200 in 0.1765 ms
+09/17/2020 14:47:59 HTTP "GET" "/api/projects" responded 200 in 0.2237 ms
+09/17/2020 14:48:02 HTTP "GET" "/api/projects/2/nodes" responded 200 in 0.4602 ms
+09/17/2020 14:48:13 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.3425 ms
+09/17/2020 14:48:15 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.2779 ms
+09/17/2020 14:48:55 HTTP "GET" "/api/projects" responded 200 in 0.2307 ms
+09/17/2020 15:03:45 HTTP "GET" "/api/projects" responded 200 in 0.2863 ms
+09/17/2020 15:03:50 HTTP "GET" "/api/projects" responded 200 in 0.2279 ms
+09/17/2020 15:04:17 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.3137 ms
+09/17/2020 15:04:32 HTTP "GET" "/api/projects" responded 200 in 0.1637 ms
+09/17/2020 15:04:33 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.2964 ms
+09/17/2020 15:04:35 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.1906 ms
+09/17/2020 15:04:38 HTTP "GET" "/api/projects" responded 200 in 0.3119 ms
+09/17/2020 15:05:37 HTTP "GET" "/api/projects" responded 200 in 0.3031 ms
+09/17/2020 15:05:39 HTTP "GET" "/api/projects/0/nodes" responded 200 in 0.1951 ms
+09/17/2020 15:05:40 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 0.2115 ms
+09/17/2020 15:05:42 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.1957 ms
+09/17/2020 15:05:44 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.1930 ms
+09/17/2020 15:05:47 HTTP "GET" "/api/projects" responded 200 in 0.2147 ms
+09/17/2020 15:11:17 HTTP "GET" "/api/projects" responded 200 in 0.7988 ms
+09/17/2020 15:11:27 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.2258 ms
+09/17/2020 15:11:28 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.1826 ms
+09/17/2020 15:11:44 HTTP "GET" "/api/projects" responded 200 in 0.1326 ms
+09/17/2020 15:11:46 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.1743 ms
+09/17/2020 15:11:49 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.3496 ms
+09/17/2020 15:12:17 HTTP "GET" "/api/projects" responded 200 in 0.4318 ms
+09/17/2020 15:12:19 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.2505 ms
+09/17/2020 15:12:20 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.3378 ms
+09/17/2020 15:13:04 HTTP "GET" "/api/projects" responded 200 in 0.2609 ms
+09/17/2020 15:13:05 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.3498 ms
+09/17/2020 15:13:07 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.1632 ms
+09/17/2020 15:27:12 HTTP "GET" "/api/projects" responded 200 in 0.2608 ms
+09/17/2020 15:27:13 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.2896 ms
+09/17/2020 15:27:14 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.1735 ms
+09/17/2020 15:27:22 HTTP "GET" "/api/projects/0/nodes" responded 200 in 0.3756 ms
+09/17/2020 15:27:24 HTTP "GET" "/api/nodes/1/subnodes" responded 200 in 0.1714 ms
+09/17/2020 15:27:28 HTTP "GET" "/api/subnodes/2/marks" responded 200 in 0.4847 ms
+09/17/2020 15:28:33 HTTP "GET" "/api/projects" responded 200 in 0.2554 ms
+09/17/2020 15:29:37 HTTP "GET" "/api/projects" responded 200 in 0.3600 ms
+09/17/2020 15:35:26 HTTP "GET" "/api/projects" responded 200 in 0.2485 ms
+09/17/2020 15:35:57 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.3657 ms
+09/17/2020 15:36:00 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.2824 ms
+09/17/2020 15:36:28 HTTP "GET" "/api/projects/0/nodes" responded 200 in 0.1688 ms
+09/17/2020 15:36:29 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 0.4082 ms
+09/17/2020 15:36:31 HTTP "GET" "/api/subnodes/0/marks" responded 200 in 0.1694 ms
+09/17/2020 15:39:33 HTTP "GET" "/api/projects" responded 200 in 0.1984 ms
+09/17/2020 15:39:35 HTTP "GET" "/api/projects" responded 200 in 0.1931 ms
+09/17/2020 15:39:36 HTTP "GET" "/api/projects/0/nodes" responded 200 in 0.1686 ms
+09/17/2020 15:39:37 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 0.2340 ms
+09/17/2020 15:39:38 HTTP "GET" "/api/subnodes/0/marks" responded 200 in 0.2054 ms
+09/17/2020 15:40:57 HTTP "GET" "/api/projects" responded 200 in 0.3006 ms
+09/17/2020 15:47:23 HTTP "GET" "/api/projects/1/nodes" responded 200 in 0.2870 ms
+09/17/2020 15:47:25 HTTP "GET" "/api/nodes/2/subnodes" responded 200 in 0.2386 ms
+09/17/2020 15:47:30 HTTP "GET" "/api/projects/2/nodes" responded 200 in 0.1905 ms
+09/17/2020 15:47:32 HTTP "GET" "/api/projects/0/nodes" responded 200 in 0.2079 ms
+09/17/2020 15:47:33 HTTP "GET" "/api/nodes/1/subnodes" responded 200 in 0.1851 ms
+09/17/2020 15:47:34 HTTP "GET" "/api/subnodes/2/marks" responded 200 in 0.1654 ms
+09/17/2020 18:32:44 Application starting up
+09/17/2020 18:35:51 Application is shutting down
+09/17/2020 18:56:35 Application starting up
+09/17/2020 18:57:33 HTTP "GET" "/api/recent_marks" responded 500 in 232.4998 ms
+AutoMapper.AutoMapperMappingException: Error mapping types.
+
+Mapping types:
+Object -> IEnumerable`1
+System.Object -> System.Collections.Generic.IEnumerable`1[[DocumentsKM.Dtos.MarkWithSubnodeReadDto, DocumentsKM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]
+ ---> AutoMapper.AutoMapperMappingException: Error mapping types.
+
+Mapping types:
+Mark -> MarkWithSubnodeReadDto
+DocumentsKM.Model.Mark -> DocumentsKM.Dtos.MarkWithSubnodeReadDto
+
+Type Map configuration:
+Mark -> MarkWithSubnodeReadDto
+DocumentsKM.Model.Mark -> DocumentsKM.Dtos.MarkWithSubnodeReadDto
+
+Destination Member:
+Subnode
+
+ ---> AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+Subnode -> SubnodeWithNodeReadDto
+DocumentsKM.Model.Subnode -> DocumentsKM.Dtos.SubnodeWithNodeReadDto
+   at lambda_method(Closure , Subnode , SubnodeWithNodeReadDto , ResolutionContext )
+   at lambda_method(Closure , Object , IEnumerable`1 , ResolutionContext )
+   --- End of inner exception stack trace ---
+   at lambda_method(Closure , Object , IEnumerable`1 , ResolutionContext )
+   --- End of inner exception stack trace ---
+   at lambda_method(Closure , Object , IEnumerable`1 , ResolutionContext )
+   at DocumentsKM.Controllers.MarksController.GetUserRecentMarks() in D:\Dev\Gipromez\server\DocumentsKM\Controllers\MarksController.cs:line 47
+   at lambda_method(Closure , Object , Object[] )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutor.Execute(Object target, Object[] parameters)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+09/17/2020 18:57:33 An unhandled exception has occurred while executing the request.
+AutoMapper.AutoMapperMappingException: Error mapping types.
+
+Mapping types:
+Object -> IEnumerable`1
+System.Object -> System.Collections.Generic.IEnumerable`1[[DocumentsKM.Dtos.MarkWithSubnodeReadDto, DocumentsKM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]
+ ---> AutoMapper.AutoMapperMappingException: Error mapping types.
+
+Mapping types:
+Mark -> MarkWithSubnodeReadDto
+DocumentsKM.Model.Mark -> DocumentsKM.Dtos.MarkWithSubnodeReadDto
+
+Type Map configuration:
+Mark -> MarkWithSubnodeReadDto
+DocumentsKM.Model.Mark -> DocumentsKM.Dtos.MarkWithSubnodeReadDto
+
+Destination Member:
+Subnode
+
+ ---> AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+Subnode -> SubnodeWithNodeReadDto
+DocumentsKM.Model.Subnode -> DocumentsKM.Dtos.SubnodeWithNodeReadDto
+   at lambda_method(Closure , Subnode , SubnodeWithNodeReadDto , ResolutionContext )
+   at lambda_method(Closure , Object , IEnumerable`1 , ResolutionContext )
+   --- End of inner exception stack trace ---
+   at lambda_method(Closure , Object , IEnumerable`1 , ResolutionContext )
+   --- End of inner exception stack trace ---
+   at lambda_method(Closure , Object , IEnumerable`1 , ResolutionContext )
+   at DocumentsKM.Controllers.MarksController.GetUserRecentMarks() in D:\Dev\Gipromez\server\DocumentsKM\Controllers\MarksController.cs:line 47
+   at lambda_method(Closure , Object , Object[] )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutor.Execute(Object target, Object[] parameters)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+09/17/2020 19:00:58 Application is shutting down
+09/17/2020 19:02:50 Application starting up
+09/17/2020 19:02:59 HTTP "GET" "/api/recent_marks" responded 200 in 364.8194 ms
+09/17/2020 19:07:55 HTTP "GET" "/api/projects" responded 200 in 9.6136 ms
+09/17/2020 19:08:00 HTTP "GET" "/api/projects" responded 200 in 1.8960 ms
+09/17/2020 19:08:01 HTTP "GET" "/api/projects/0/nodes" responded 200 in 22.1527 ms
+09/17/2020 19:08:03 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 18.5213 ms
+09/17/2020 19:08:06 HTTP "GET" "/api/subnodes/0/marks" responded 200 in 10.0422 ms
+09/17/2020 19:11:25 HTTP "GET" "/api/projects" responded 200 in 1.8509 ms
+09/17/2020 19:11:29 HTTP "GET" "/api/projects" responded 200 in 1.3382 ms
+09/17/2020 19:11:31 HTTP "GET" "/api/projects/0/nodes" responded 200 in 2.4621 ms
+09/17/2020 19:11:36 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 2.3635 ms
+09/17/2020 19:11:38 HTTP "GET" "/api/subnodes/0/marks" responded 200 in 3.1588 ms
+09/17/2020 19:14:39 HTTP "GET" "/api/projects" responded 200 in 1.2295 ms
+09/17/2020 19:14:39 HTTP "GET" "/api/recent_marks" responded 200 in 0.8180 ms
+09/17/2020 19:20:12 HTTP "GET" "/api/projects" responded 200 in 1.0420 ms
+09/17/2020 19:20:12 HTTP "GET" "/api/recent_marks" responded 200 in 1.0223 ms
+09/17/2020 20:02:41 HTTP "GET" "/api/projects" responded 200 in 1.2245 ms
+09/17/2020 20:02:41 HTTP "GET" "/api/recent_marks" responded 200 in 0.7112 ms
+09/17/2020 20:05:01 HTTP "GET" "/api/projects" responded 200 in 0.6725 ms
+09/17/2020 20:05:01 HTTP "GET" "/api/recent_marks" responded 200 in 0.6139 ms
+09/17/2020 20:06:13 HTTP "GET" "/api/projects" responded 200 in 1.3143 ms
+09/17/2020 20:06:13 HTTP "GET" "/api/recent_marks" responded 200 in 0.2739 ms
+09/17/2020 20:06:46 HTTP "GET" "/api/projects" responded 200 in 0.7048 ms
+09/17/2020 20:06:46 HTTP "GET" "/api/recent_marks" responded 200 in 0.6405 ms
+09/17/2020 20:06:47 HTTP "GET" "/api/projects" responded 200 in 0.5972 ms
+09/17/2020 20:06:47 HTTP "GET" "/api/recent_marks" responded 200 in 0.5406 ms
+09/17/2020 20:08:46 HTTP "GET" "/api/projects" responded 200 in 0.5984 ms
+09/17/2020 20:08:46 HTTP "GET" "/api/recent_marks" responded 200 in 0.5957 ms
+09/17/2020 20:08:57 HTTP "GET" "/api/projects/0/nodes" responded 200 in 1.2018 ms
+09/17/2020 20:09:00 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 1.0475 ms
+09/17/2020 20:09:01 HTTP "GET" "/api/subnodes/1/marks" responded 200 in 0.9726 ms
+09/17/2020 20:26:54 HTTP "GET" "/api/projects" responded 200 in 0.8896 ms
+09/17/2020 20:26:54 HTTP "GET" "/api/recent_marks" responded 200 in 0.9381 ms
+09/17/2020 20:30:17 HTTP "GET" "/api/projects" responded 200 in 0.3794 ms
+09/17/2020 20:30:17 HTTP "GET" "/api/recent_marks" responded 200 in 0.2545 ms
+09/17/2020 20:31:32 HTTP "GET" "/api/projects" responded 200 in 0.2044 ms
+09/17/2020 20:31:32 HTTP "GET" "/api/recent_marks" responded 200 in 0.2114 ms
+09/17/2020 20:32:20 HTTP "GET" "/api/projects" responded 200 in 0.3124 ms
+09/17/2020 20:32:20 HTTP "GET" "/api/recent_marks" responded 200 in 0.1520 ms
+09/17/2020 20:40:00 HTTP "GET" "/api/projects" responded 200 in 0.2346 ms
+09/17/2020 20:40:00 HTTP "GET" "/api/recent_marks" responded 200 in 0.2416 ms
+09/17/2020 20:41:53 HTTP "GET" "/api/projects" responded 200 in 0.2345 ms
+09/17/2020 20:41:53 HTTP "GET" "/api/recent_marks" responded 200 in 0.2230 ms
+09/17/2020 20:48:46 HTTP "GET" "/api/projects" responded 200 in 0.2929 ms
+09/17/2020 20:48:46 HTTP "GET" "/api/recent_marks" responded 200 in 0.1657 ms
+09/17/2020 20:49:38 HTTP "GET" "/api/projects" responded 200 in 0.2502 ms
+09/17/2020 20:49:38 HTTP "GET" "/api/recent_marks" responded 200 in 0.1903 ms
+09/17/2020 20:49:48 HTTP "GET" "/api/projects/0/nodes" responded 200 in 0.9758 ms
+09/17/2020 20:49:49 HTTP "GET" "/api/nodes/1/subnodes" responded 200 in 0.8865 ms
+09/17/2020 20:49:55 HTTP "GET" "/api/subnodes/2/marks" responded 200 in 0.7500 ms
+09/17/2020 20:49:58 HTTP "GET" "/api/nodes/0/subnodes" responded 200 in 0.6352 ms
+09/17/2020 20:50:01 HTTP "GET" "/api/subnodes/1/marks" responded 200 in 0.5911 ms
+09/17/2020 20:50:34 HTTP "GET" "/api/projects" responded 200 in 0.1530 ms
+09/17/2020 20:50:34 HTTP "GET" "/api/recent_marks" responded 200 in 0.1672 ms
+09/17/2020 21:04:47 Application is shutting down
+09/17/2020 21:04:53 Application starting up
+09/17/2020 21:04:58 Application is shutting down
+09/17/2020 21:06:20 Application starting up
+09/17/2020 21:06:30 HTTP "GET" "/api/projects" responded 200 in 355.0390 ms
+09/17/2020 21:06:31 HTTP "GET" "/api/recent_marks" responded 200 in 32.0298 ms
+09/17/2020 21:06:35 HTTP "GET" "/api/recent_marks" responded 200 in 2.0351 ms
+09/17/2020 21:15:39 Application is shutting down

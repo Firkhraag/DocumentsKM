@@ -32,6 +32,7 @@ namespace DocumentsKM
             }
             finally
             {
+                Log.Information("Application is shutting down");
                 // Flush remaining logs
                 Log.CloseAndFlush();
             }

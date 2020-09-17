@@ -43,6 +43,12 @@ namespace DocumentsKM.Data
             return marksToReturn;
         }
 
+        // GetAllSubnodeMarks returns the list of marks for the subnode
+        public IEnumerable<Mark> GetUserRecentMarks()
+        {
+            return _marks;
+        }
+
         public Mark GetMarkById(ulong id)
         {
             try {

@@ -148,6 +148,4 @@ D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\xunit.runner.reporter
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\xunit.runner.utility.netcoreapp10.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Castle.Core.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Moq.dll
-D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Logs\log20200914.json
-D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Logs\log20200915.json
-D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Logs\log20200916.json
+D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\netcoreapp3.1\Logs\log20200917.json

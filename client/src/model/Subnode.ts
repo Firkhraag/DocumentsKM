@@ -3,7 +3,7 @@ import Mark from './Mark'
 
 interface ISubnode {
 	id: number
-	// node: Node
+	node: Node
 	code: string
 	// name: string
 	// additionalName: string
@@ -12,7 +12,7 @@ interface ISubnode {
 
 class Subnode {
 	id: number
-	// node: Node
+	node: Node
 	code: string
 	// name: string
 	// additionalName: string
@@ -20,7 +20,7 @@ class Subnode {
 
 	constructor(obj?: ISubnode) {
 		this.id = (obj && obj.id) || 0
-		// this.node = (obj && obj.node) || null
+		this.node = (obj && obj.node) || null
 		this.code = (obj && obj.code) || ''
 		// this.name = (obj && obj.name) || ''
 		// this.additionalName = (obj && obj.additionalName) || ''

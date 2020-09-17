@@ -16,21 +16,6 @@ type MarkDataProps = {
 
 const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 
-    // interface ISelectedObject {
-    //     recentMark: string
-    //     project: string
-    //     node: string
-    //     subnode: string
-    //     mark: string
-    // }
-    // interface IOptionsObject {
-    //     recentMark: string[]
-    //     project: string[]
-    //     node: string[]
-    //     subnode: string[]
-    //     mark: string[]
-    // }
-
     // Max lengths of input fields strings
     const seriesStringLength = 30
     const nodeStringLength = 10
@@ -38,9 +23,7 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
     const markStringLength = 40
     const fullNameStringLength = 90
 
-    // Select and Create modes
-    const [isCreateMode, setIsCreateMode] = useState(isCreateModeInitially)
-
+    // Default state objects
     const defaultSelectedObject = {
         recentMark: '',
         project: null as Project,
@@ -48,60 +31,58 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
         subnode: null as Subnode,
         mark: null as Mark
     }
-    const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
-
     const defaultOptionsObject = {
-        recentMarks: [] as string[],
+        recentMarks: [] as Mark[],
+        recentSubnodes: [] as Subnode[],
         projects: [] as Project[],
         nodes: [] as Node[],
         subnodes: [] as Subnode[],
         marks: [] as Mark[]
     }
-    const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
-    
-	// const [mark, setMark] = useState<Mark>(new Mark(null))
-	// const [projects, setProjects] = useState<Array<string>>([])
-	// const [nodes, setNodes] = useState<Array<string>>([])
-	// const [subnodes, setSubnodes] = useState<Array<string>>([])
-    // const [marks, setMarks] = useState<Array<string>>([])
-    
-    // const [markFullName, setMarkFullName] = useState('')
-    // const [latestMarks, setLatestMarks] = useState<string[]>([])
 
+    // States
+    // Select and Create modes
+    const [isCreateMode, setIsCreateMode] = useState(isCreateModeInitially)
+    // Object that holds selected values
+    const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
+    // Object that holds select options
+    const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
+    // Height of Dropdown component
     const [dropdownHeight, setDropdownHeight] = useState(0)
     // TBD
     const [infoHeight, setInfoHeight] = useState(0)
+    // Reference for getting Dropdown component
     const height1Ref = useRef()
+    // TBD
     const height2Ref = useRef()
 
 	useEffect(() => {
-        // const projectsFetched: Array<string> = ['M32788', 'V32788', 'G32788']
-
+        // Cannot use async func as callback in useEffect
+        // Function for fetching data
         const fetchData = async () => {
             try {
+                // Fetch projects
                 const projectsFetchedResponse = await axios.get(protocol + '://' + host + '/api/projects')
                 const projectsFetched = projectsFetchedResponse.data
 
-                console.log(projectsFetchedResponse)
-                console.log(projectsFetchedResponse.data)
-                const recentMarksFetched: Array<string> = [
-                    'M32788.111.111-KVB 8',
-                    'V62788.121.01-ZB11',
-                    'V62GHV.121.01-ZB11',
-                    'V62VB121.01-ZB11',
-                    'V62FD8.121.01-ZB11',
-                    'V6278V.21.01-ZB11',
-                    'V62788.121.01-ZB11',
-                    'D62SDS788.121.01-ZB11',
-                    'DSS.121.01-ZB11',
-                    'D6C88.121.01-ZB11',
-                    'D62SFDDS788.121.01-ZB11',
-                    'D62CVS788.121.01-ZB11',
-                    'D62CCSDS788.121.01-ZB11'
-                ]
+                // Not very nice, but we are not using GraphQL here
+                const recentMarksFetchedResponse = await axios.get(protocol + '://' + host + '/api/recent_marks')
+                const recentMarksFetched = recentMarksFetchedResponse.data
+
+                const recentSubnodesIds: Array<number> = []
+                const recentSubnodesFetched: Array<Subnode> = []
+                for (let mark of recentMarksFetched) {
+                    if (!recentSubnodesIds.includes(mark.subnode.id)) {
+                        recentSubnodesIds.push(mark.subnode.id)
+                        recentSubnodesFetched.push(mark.subnode)
+                    }
+                }
+
+                // Set fetched objects as select options
                 setOptionsObject({
                     ...defaultOptionsObject,
                     recentMarks: recentMarksFetched,
+                    recentSubnodes: recentSubnodesFetched,
                     projects: projectsFetched
                 })
             } catch (e) {
@@ -111,70 +92,112 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
        
         fetchData()
         
+        // Observe the height of Dropdown component
         const ro1 = new ResizeObserver(([entry]) => {
 			setDropdownHeight(entry.target.scrollHeight)
 		})
-
 		if (height1Ref.current) {
 			ro1.observe(height1Ref.current)
         }
-        
+        // TBD
         const ro2 = new ResizeObserver(([entry]) => {
 			setInfoHeight(entry.target.scrollHeight)
 		})
-
 		if (height2Ref.current) {
 			ro2.observe(height1Ref.current)
 		}
-
+        // Remove height observers on unmount
 		return () => {
             ro1.disconnect()
             ro2.disconnect()
         }
     }, [height1Ref, height2Ref])
 
+    // getDropdownSpringStyle return animation style for Dropdown component
+    const getDropdownSpringStyle = (obj: any) => {
+        return useSpring({
+            from: { opacity: 0 as any, height: 0 },
+            to: {
+                opacity: obj == null ? (0 as any) : 1,
+                height: obj == null ? 0 : dropdownHeight,
+            },
+        })
+    }
 
-    const recentMarksSpringProp = useSpring({
-		from: { opacity: 0 as any, height: 0 },
-		to: {
-            opacity: isCreateMode ? (0 as any) : 1,
-            height: isCreateMode ? 0 : dropdownHeight,
-        },
-    })
+    // TBD
+    // const recentMarksSpringProp = useSpring({
+	// 	from: { opacity: 0 as any, height: 0 },
+	// 	to: {
+    //         opacity: isCreateMode ? (0 as any) : 1,
+    //         height: isCreateMode ? 0 : dropdownHeight,
+    //     },
+    // })
+    // 
+    // const textSpringProp = useSpring({
+	// 	from: { opacity: 0 as any, height: 0 },
+	// 	to: {
+    //         opacity: isCreateMode ? (0 as any) : 1,
+    //         height: isCreateMode ? 0 : 25.6,
+    //     },
+    // })
 
-    const nodeSpringProp = useSpring({
-		from: { opacity: 0 as any, height: 0 },
-		to: {
-            opacity: selectedObject.project !== null ? 1 : (0 as any),
-            height: selectedObject.project !== null ? dropdownHeight : 0,
-        },
-    })
-    
-    const subnodeSpringProp = useSpring({
-		from: { opacity: 0 as any, height: 0 },
-		to: {
-            opacity: selectedObject.node !== null ? 1 : (0 as any),
-            height: selectedObject.node !== null ? dropdownHeight : 0,
-        },
-    })
-    
-    const markSpringProp = useSpring({
-		from: { opacity: 0 as any, height: 0 },
-		to: {
-            opacity: (selectedObject.subnode !== null && !isCreateMode) ? 1 : (0 as any),
-            height: (selectedObject.subnode !== null && !isCreateMode) ? dropdownHeight : 0,
-        },
-    })
-    
-    const textSpringProp = useSpring({
-		from: { opacity: 0 as any, height: 0 },
-		to: {
-            opacity: isCreateMode ? (0 as any) : 1,
-            height: isCreateMode ? 0 : 25.6,
+    const marksSpringProp = useSpring({
+        from: { opacity: 0 as any, height: 0 },
+        to: {
+            opacity: selectedObject.subnode == null || isCreateMode ? (0 as any) : 1,
+            height: selectedObject.subnode == null || isCreateMode ? 0 : dropdownHeight,
         },
     })
     
     const onRecentMarkSelect = (id: number) => {
+        let v: Mark = null
+        for (let mark of optionsObject.recentMarks) {
+            if (mark.id === id) {
+                v = mark
+                break
+            }
+        }
+        if (v == null) {
+            return
+        }
+        if ((selectedObject.mark !== null) && (v.id === selectedObject.mark.id)) {
+            return
+        }
+
+        // setOptionsObject({
+        //     ...defaultOptionsObject,
+        //     recentMarks: optionsObject.recentMarks,
+        //     projects: optionsObject.projects,
+        //     nodes: fetchedNodes,
+        //     subnodes: fetchedSubnodes,
+        //     marks: fetchedMarks
+        // })
+        // setSelectedObject({
+        //     ...defaultSelectedObject,
+        //     recentMark: v,
+        //     project: 'M32788',
+        //     node: '127',
+        //     subnode: '33',
+        //     mark: 'AVS 1'
+        // })
+
+        // try {
+        //     const fetchedNodesResponse = await axios.get(protocol + '://' + host + `/api/projects/${id}/nodes`)
+        //     const fetchedNodes = fetchedNodesResponse.data
+        //     setOptionsObject({
+        //         ...defaultOptionsObject,
+        //         recentMarks: optionsObject.recentMarks,
+        //         projects: optionsObject.projects,
+        //         nodes: fetchedNodes
+        //     })
+        //     setSelectedObject({
+        //         ...defaultSelectedObject,
+        //         project: v
+        //     })
+        // } catch (e) {
+        //     console.log('Failed to fetch the data')
+        // }
+
         // TBD
 
         // const v = optionsObject.recentMarks[id]
@@ -201,19 +224,43 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
         // })
     }
 
-    const onProjectSelect = async (id: number) => {
-        const v = optionsObject.projects[id]
-        if (v === selectedObject.project) {
+    const onRecentSubnodeSelect = (id: number) => {
+        let v: Subnode = null
+        for (let subnode of optionsObject.recentSubnodes) {
+            if (subnode.id === id) {
+                v = subnode
+                break
+            }
+        }
+        if (v == null) {
             return
         }
-        
-        try {
-            const fetchedNodesResponse = await axios.get(protocol + '://' + host + '/api/projects/{id}/nodes')
-            const fetchedNodes = fetchedNodesResponse.data
+        if ((selectedObject.subnode !== null) && (v.id === selectedObject.subnode.id)) {
+            return
+        }
+    }
 
+    const onProjectSelect = async (id: number) => {
+        let v: Project = null
+        for (let project of optionsObject.projects) {
+            if (project.id === id) {
+                v = project
+                break
+            }
+        }
+        if (v == null) {
+            return
+        }
+        if ((selectedObject.project !== null) && (v.id === selectedObject.project.id)) {
+            return
+        }
+        try {
+            const fetchedNodesResponse = await axios.get(protocol + '://' + host + `/api/projects/${id}/nodes`)
+            const fetchedNodes = fetchedNodesResponse.data
             setOptionsObject({
                 ...defaultOptionsObject,
                 recentMarks: optionsObject.recentMarks,
+                recentSubnodes: optionsObject.recentSubnodes,
                 projects: optionsObject.projects,
                 nodes: fetchedNodes
             })
@@ -227,18 +274,26 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 	}
 
     const onNodeSelect = async (id: number) => {
-        const v = optionsObject.nodes[id]
-        if (v === selectedObject.node) {
+        let v: Node = null
+        for (let node of optionsObject.nodes) {
+            if (node.id === id) {
+                v = node
+                break
+            }
+        }
+        if (v == null) {
             return
         }
-
+        if ((selectedObject.node !== null) && (v.id === selectedObject.node.id)) {
+            return
+        }
         try {
-            const fetchedSubnodesResponse = await axios.get(protocol + '://' + host + '/api/nodes/{id}/subnodes')
+            const fetchedSubnodesResponse = await axios.get(protocol + '://' + host + `/api/nodes/${id}/subnodes`)
             const fetchedSubnodes = fetchedSubnodesResponse.data
-
             setOptionsObject({
                 ...defaultOptionsObject,
                 recentMarks: optionsObject.recentMarks,
+                recentSubnodes: optionsObject.recentSubnodes,
                 projects: optionsObject.projects,
                 nodes: optionsObject.nodes,
                 subnodes: fetchedSubnodes
@@ -251,39 +306,30 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
         } catch (e) {
             console.log('Failed to fetch the data')
         }
-
-		// let gipSurname = ''
-		// if (v !== '') {
-		// 	// Fetch
-		// 	const subnodes: Array<string> = ['527', '127', '134']
-		// 	gipSurname = 'Влад'
-
-		// 	setSubnodes(subnodes)
-		// } else {
-		// 	setSubnodes([])
-		// }
-		// setMarks([])
-		// setMark({
-		// 	...new Mark(null),
-		// 	project: mark.project,
-		// 	node: v,
-		// 	gipSurname: gipSurname,
-		// })
+        // let gipSurname = 'Влад'
 	}
 
     const onSubnodeSelect = async (id: number) => {
-        const v = optionsObject.subnodes[id]
-        if (v === selectedObject.subnode) {
+        let v: Subnode = null
+        for (let subnode of optionsObject.subnodes) {
+            if (subnode.id === id) {
+                v = subnode
+                break
+            }
+        }
+        if (v == null) {
             return
         }
-
+        if ((selectedObject.subnode !== null) && (v.id === selectedObject.subnode.id)) {
+            return
+        }
         try {
-            const fetchedMarksResponse = await axios.get(protocol + '://' + host + '/api/subnodes/{id}/marks')
+            const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/api/subnodes/${id}/marks`)
             const fetchedMarks = fetchedMarksResponse.data
-
             setOptionsObject({
                 ...defaultOptionsObject,
                 recentMarks: optionsObject.recentMarks,
+                recentSubnodes: optionsObject.recentSubnodes,
                 projects: optionsObject.projects,
                 nodes: optionsObject.nodes,
                 subnodes: optionsObject.subnodes,
@@ -298,41 +344,26 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
         } catch (e) {
             console.log('Failed to fetch the data')
         }
-
-		// let facilityName = ''
-		// let objectName = ''
-		// if (v !== '') {
-		// 	// Fetch
-		// 	const codes: Array<string> = ['AVS 1', 'RTY 6', 'ZXE111']
-		// 	facilityName =
+		// 	let facilityName =
 		// 		'Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн.'
-		// 	objectName =
+		// 	let objectName =
 		// 		'Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн.'
-
-		// 	setMarks(codes)
-		// } else {
-		// 	setMarks([])
-		// }
-		// setMark({
-		// 	...mark,
-		// 	subnode: v,
-		// 	facilityName: facilityName,
-		// 	objectName: objectName,
-		// })
     }
     
     const onMarkSelect = (id: number) => {
-        const v = optionsObject.marks[id]
-        if (v === selectedObject.mark) {
+        let v: Mark = null
+        for (let mark of optionsObject.marks) {
+            if (mark.id === id) {
+                v = mark
+                break
+            }
+        }
+        if (v == null) {
             return
         }
-        // const fetchedMarks: Array<string> = ['AVS 1', 'RTY 6', 'ZXE111']
-        // setOptionsObject({
-        //     ...defaultOptionsObject,
-        //     nodes: optionsObject.nodes,
-        //     subnodes: optionsObject.subnodes,
-        //     marks: fetchedMarks
-        // })
+        if ((selectedObject.mark !== null) && (v.id === selectedObject.mark.id)) {
+            return
+        }
         setSelectedObject({
             ...defaultSelectedObject,
             project: selectedObject.project,
@@ -340,11 +371,6 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
             subnode: selectedObject.subnode,
             mark: v
         })
-
-		// setMark({
-		// 	...mark,
-		// 	mark: v,
-		// })
 	}
 
 	return (
@@ -378,7 +404,7 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
 
                     <p className="text-centered section-label">{isCreateMode ? 'Выберите подузел' : 'Выберите марку'}</p>
 
-                    <animated.div style={recentMarksSpringProp}>
+                    {/* <animated.div style={recentMarksSpringProp}>
 						<div>
                     <Dropdown
                         label="Последние марки"
@@ -386,59 +412,104 @@ const MarkData = ({ isCreateModeInitially }: MarkDataProps) => {
                         maxInputLength={fullNameStringLength}
                         onClickFunc={onRecentMarkSelect}
                         value={selectedObject.recentMark}
-                        options={optionsObject.recentMarks}
+                        options={optionsObject}
                     />
                     </div>
-					</animated.div>
+					</animated.div> */}
 
-                    <animated.div style={textSpringProp}>
+                    {/* <animated.div style={textSpringProp}>
                         <p ref={height2Ref} className="text-centered">или</p>
-                    </animated.div>
+                    </animated.div> */}
 
                     <Dropdown
-                            label="Базовая серия"
-                            widthClassName={'1input-width-2'}
-                            maxInputLength={seriesStringLength}
-                            onClickFunc={onProjectSelect}
-                            value={selectedObject.project}
-                            options={optionsObject.projects}
-                        />
+                        label={ isCreateMode ? "Последние подузлы" : "Последние марки"}
+                        maxInputLength={fullNameStringLength}
+                        onClickFunc={isCreateMode ? onRecentSubnodeSelect : onRecentMarkSelect}
+                        value={selectedObject.recentMark}
+                        options={isCreateMode ? optionsObject.recentSubnodes.map(s => {
+                            const n = s.node
+                            const p = n.project
+                            const fullName = `${p.baseSeries}.${n.code}.${s.code}`
+                            return {
+                                id: s.id,
+                                val: fullName
+                            }
+                        }) : optionsObject.recentMarks.map(m => {
+                            const s = m.subnode
+                            const n = s.node
+                            const p = n.project
+                            const fullName = isCreateMode ?
+                                `${p.baseSeries}.${n.code}.${s.code}` :
+                                `${p.baseSeries}.${n.code}.${s.code}-${m.code}`
+                            return {
+                                id: m.id,
+                                val: fullName
+                            }
+                        })}
+                    />
 
-                    <animated.div style={nodeSpringProp}>
+                    <p className="text-centered">или</p>
+
+                    <Dropdown
+                        label="Базовая серия"
+                        maxInputLength={seriesStringLength}
+                        onClickFunc={onProjectSelect}
+                        value={selectedObject.project == null ? '' : selectedObject.project.baseSeries}
+                        options={optionsObject.projects.map(p => {
+                            return {
+                                id: p.id,
+                                val: p.baseSeries
+                            }
+                        })}
+                    />
+
+                    <animated.div style={getDropdownSpringStyle(selectedObject.project)}>
 						<div ref={height1Ref}>
                             <Dropdown
                                 label="Узел"
-                                widthClassName={'1input-width-3'}
                                 maxInputLength={nodeStringLength}
                                 onClickFunc={onNodeSelect}
-                                value={selectedObject.node}
-                                options={optionsObject.nodes}
+                                value={selectedObject.node == null ? '' : selectedObject.node.code}
+                                options={optionsObject.nodes.map(n => {
+                                    return {
+                                        id: n.id,
+                                        val: n.code
+                                    }
+                                })}
                             />
 						</div>
 					</animated.div>
 
-                    <animated.div style={subnodeSpringProp}>
+                    <animated.div style={getDropdownSpringStyle(selectedObject.node)}>
 						<div>
                             <Dropdown
                                 label="Подузел"
-                                widthClassName={'1input-width-3'}
                                 maxInputLength={subnodeStringLength}
                                 onClickFunc={onSubnodeSelect}
-                                value={selectedObject.subnode}
-                                options={optionsObject.subnodes}
+                                value={selectedObject.subnode == null ? '' : selectedObject.subnode.code}
+                                options={optionsObject.subnodes.map(s => {
+                                    return {
+                                        id: s.id,
+                                        val: s.code
+                                    }
+                                })}
                             />
 						</div>
 					</animated.div>
 
-                    <animated.div style={markSpringProp}>
+                    <animated.div style={marksSpringProp}>
 						<div>
                             <Dropdown
                                 label="Марка"
-                                widthClassName={'1input-width-3'}
                                 maxInputLength={markStringLength}
                                 onClickFunc={onMarkSelect}
-                                value={selectedObject.mark}
-                                options={optionsObject.marks}
+                                value={selectedObject.mark == null ? '' : selectedObject.mark.code}
+                                options={optionsObject.marks.map(m => {
+                                    return {
+                                        id: m.id,
+                                        val: m.code
+                                    }
+                                })}
                             />
 						</div>
 					</animated.div>

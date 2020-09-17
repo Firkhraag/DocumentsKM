@@ -21,6 +21,18 @@ namespace DocumentsKM.Data
             return _context.Marks.ToList();
         }
 
+        // GetAllSubnodeMarks returns the list of marks for the subnode
+        public IEnumerable<Mark> GetUserRecentMarks()
+        {
+            //TBD
+            return _context.Marks.ToList();
+        }
+
+        public Mark GetMarkById(ulong id)
+        {
+            return _context.Marks.FirstOrDefault(m => m.Id == id);
+        }
+
         public void CreateMark(Mark mark)
         {
             if (mark == null)
@@ -33,11 +45,6 @@ namespace DocumentsKM.Data
         public IEnumerable<Mark> GetAllMarks()
         {
             return _context.Marks.ToList();
-        }
-
-        public Mark GetMarkById(ulong id)
-        {
-            return _context.Marks.FirstOrDefault(m => m.Id == id);
         }
 
         public bool SaveChanges()

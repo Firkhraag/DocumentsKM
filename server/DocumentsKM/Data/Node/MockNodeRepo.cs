@@ -10,23 +10,26 @@ namespace DocumentsKM.Data
         // Initial Nodes list
         private readonly List<Node> _nodes;
 
-        public MockNodeRepo(IProjectRepo projectRepo)
+        public MockNodeRepo(IProjectRepo projectRepo, IEmployeeRepo employeeRepo)
         {
             _nodes = new List<Node>{
                 new Node{
                     Id=0,
                     Project=projectRepo.GetProjectById(0),
-                    Code="111"
+                    Code="111",
+                    ChiefEngineer=employeeRepo.GetEmployeeById(0)
                 },
                 new Node{
                     Id=1,
                     Project=projectRepo.GetProjectById(0),
-                    Code="222"
+                    Code="222",
+                    ChiefEngineer=employeeRepo.GetEmployeeById(1)
                 },
                 new Node{
                     Id=2,
                     Project=projectRepo.GetProjectById(1),
-                    Code="333"
+                    Code="333",
+                    ChiefEngineer=employeeRepo.GetEmployeeById(2)
                 }
             };
         }

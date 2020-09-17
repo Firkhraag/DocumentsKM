@@ -44,6 +44,12 @@ namespace DocumentsKM.Data
             }
             return subnodesToReturn;
         }
+
+        // // GetUserRecentSubnodes returns the list of subnodes where user recently created a mark (+or selected a mark???)
+        // public IEnumerable<Subnode> GetUserRecentSubnodes()
+        // {
+        //     return _subnodes;
+        // }
         
         // GetSubnodeById returns the subnode with a given id
         public Subnode GetSubnodeById(ulong id)

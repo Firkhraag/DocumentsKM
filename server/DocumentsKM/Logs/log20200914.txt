@@ -1,7 +1,0 @@
-09/14/2020 15:28:02 Application starting up
-09/14/2020 15:28:21 Request "GetAllMarks"
-09/14/2020 15:28:21 HTTP "GET" "/api/marks" responded 200 in 452.0119 ms
-09/14/2020 15:29:18 Request "GetAllMarks"
-09/14/2020 15:29:18 HTTP "GET" "/api/marks" responded 200 in 5.8303 ms
-09/14/2020 15:29:24 Request "GetAllMarks"
-09/14/2020 15:29:24 HTTP "GET" "/api/marks" responded 200 in 7.2085 ms

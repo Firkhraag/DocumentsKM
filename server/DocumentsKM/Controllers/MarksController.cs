@@ -38,13 +38,13 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
-        [Route("api/marks")]
+        [Route("api/recent_marks")]
         [HttpGet]
-        public ActionResult<IEnumerable<MarkReadDto>> GetAllMarks()
+        public ActionResult<IEnumerable<MarkWithSubnodeReadDto>> GetUserRecentMarks()
         {
-            var marks = _repository.GetAllMarks();
+            var marks = _repository.GetUserRecentMarks();
             if (marks != null) {
-                return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
+                return Ok(_mapper.Map<IEnumerable<MarkWithSubnodeReadDto>>(marks));
             }
             return NotFound();
         }
@@ -56,6 +56,17 @@ namespace DocumentsKM.Controllers
             var mark = _repository.GetMarkById(id);
             if (mark != null) {
                 return Ok(_mapper.Map<MarkReadDto>(mark));
+            }
+            return NotFound();
+        }
+
+        [Route("api/marks")]
+        [HttpGet]
+        public ActionResult<IEnumerable<MarkReadDto>> GetAllMarks()
+        {
+            var marks = _repository.GetAllMarks();
+            if (marks != null) {
+                return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
             }
             return NotFound();
         }

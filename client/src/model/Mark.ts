@@ -4,7 +4,7 @@ import Employee from './Employee'
 
 interface IMark {
 	id: number
-	// subnode: Subnode
+	subnode: Subnode
 	code: string
 	// additionalCode: string
 	// name: string
@@ -23,7 +23,7 @@ interface IMark {
 
 class Mark {
 	id: number
-	// subnode: Subnode
+	subnode: Subnode
 	code: string
 	// additionalCode: string
 	// name: string
@@ -41,7 +41,7 @@ class Mark {
 
 	constructor(obj?: IMark) {
 		this.id = (obj && obj.id) || 0
-		// this.subnode = (obj && obj.subnode) || null
+		this.subnode = (obj && obj.subnode) || null
 		this.code = (obj && obj.code) || ''
 		// this.additionalCode = (obj && obj.additionalCode) || ''
 		// this.name = (obj && obj.name) || ''

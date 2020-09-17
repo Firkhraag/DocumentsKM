@@ -1,5 +1,0 @@
-09/15/2020 22:50:39 Application starting up
-09/15/2020 22:50:49 HTTP "GET" "/" responded 404 in 17.7278 ms
-09/15/2020 22:51:03 HTTP "GET" "/marks/0" responded 404 in 0.1978 ms
-09/15/2020 22:52:10 HTTP "GET" "/api/marks/0" responded 200 in 327.5730 ms
-09/15/2020 22:52:10 HTTP "GET" "/favicon.ico" responded 404 in 0.0869 ms

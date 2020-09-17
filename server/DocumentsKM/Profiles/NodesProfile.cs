@@ -10,6 +10,7 @@ namespace DocumentsKM.Profiles
         {
             // Souce -> Target
             CreateMap<Node, NodeCodeReadDto>();
+            CreateMap<Node, NodeWithProjectReadDto>();
         }
     }
 }
