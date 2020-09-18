@@ -5,7 +5,5 @@ namespace DocumentsKM.Dtos
         public ulong Id { get; set; }
 
         public string Code { get; set; }
-
-        public EmployeeNameReadDto ChiefEngineer { get; set; }
     }
 }

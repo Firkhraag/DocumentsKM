@@ -22,7 +22,7 @@
     "ts-loader": "^8.0.3",
     "typescript": "^4.0.2",
     "url-loader": "^4.1.0",
-    "webpack": "^4.44.1",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
@@ -31,6 +31,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-expanding-textarea": "^2.2.3",
+    "react-router-dom": "^6.0.0-beta.0",
     "react-spring": "^9.0.0-rc.3",
     "resize-observer-polyfill": "^1.5.1"
   }

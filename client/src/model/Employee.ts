@@ -3,12 +3,12 @@ import Position from './Position'
 
 interface IEmployee {
 	id: number
-	fullName: string
+    fullName: string
 	// department: Department
 	// position: Position
 	// phoneNumber: string
 	// isCanteen: boolean
-	// vacationType: number
+    // vacationType: number
 }
 
 class Employee {

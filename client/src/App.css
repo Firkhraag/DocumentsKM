@@ -1,3 +1,90 @@
+.component-cnt {
+    margin: 10vh 0;
+}
+
+.component-cnt h1 {
+    margin-bottom: 1em;
+}
+
+.component-cnt > div {
+    border: 1px solid #d0d0d0;
+	padding: 1.25em;
+	font-size: 16px;
+}
+
+.final-btn {
+    width: 100%;
+    margin-top: 2.5em;
+    font-size: 15px;
+	background: #ededed;
+	border: 1px solid #cdcdcd;
+    padding: 0.5em;
+    transition: all .1s ease-in-out;
+}
+
+.final-btn:hover {
+	background: #dcdcdc;
+}
+
+.label-area {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: .33em;
+}
+
+.mrg-bot {
+    margin-bottom: 1.25em;
+}
+
+.component-width {
+    width: 30vw;
+}
+
+@media (max-width: 1366px) {
+	.component-width {
+		width: 35vw;
+	}
+}
+
+@media (max-width: 1200px) {
+	.component-width {
+		width: 40vw;
+	}
+}
+
+@media (max-width: 992px) {
+	.component-width {
+		width: 45vw;
+	}
+}
+
+@media (max-width: 768px) {
+	.component-width {
+		width: 50vw;
+	}
+}
+
+@media (max-width: 576px) {
+	.component-width {
+		width: 55vw;
+	}
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table .head-tr {
+    background: #efefef;
+}
+
+table td {
+    padding: .5em;
+    border: 1px solid #d0d0d0;
+}
+
+/* Section */
+
 .container {
 	display: flex;
 	flex-direction: column;

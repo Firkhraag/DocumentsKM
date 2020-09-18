@@ -10,15 +10,18 @@ type IOption = {
 }
 
 type DropdownProps = {
+    cntStyle: string
 	label: string
 	maxInputLength: number
 	onClickFunc: (id: number) => void
-	value: string
+    value: string
+    // TBD
 	// changeValue: (newValue: string) => void
 	options: Array<IOption>
 }
 
 const Dropdown = ({
+    cntStyle,
 	label,
 	maxInputLength,
 	onClickFunc,
@@ -28,6 +31,7 @@ const Dropdown = ({
 	const [isInputFocused, setInputFocused] = useState(false)
 	const [dropdownHeight, setDropdownHeight] = useState(0)
 
+    // Input ref for focusing input field
 	const inputRef = useRef()
 	const dropdownRef = useRef()
 
@@ -85,7 +89,7 @@ const Dropdown = ({
 	})
 
 	return (
-		<div className="flex-v mrg-bottom">
+		<div className={cntStyle}>
 			<p className="label-area">{label}</p>
 			<div className="relative">
 				<input
