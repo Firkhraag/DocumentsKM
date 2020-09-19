@@ -61,6 +61,8 @@ namespace DocumentsKM
             services.AddScoped<ISubnodeRepo, MockSubnodeRepo>();
             services.AddScoped<IMarkRepo, MockMarkRepo>();
             services.AddScoped<IEmployeeRepo, MockEmployeeRepo>();
+            services.AddScoped<IDepartmentRepo, MockDepartmentRepo>();
+            services.AddScoped<IPositionRepo, MockPositionRepo>();
             // Inject SqlRepos into IRepos
             // services.AddScoped<IMarkRepo, SqlMarkRepo>();
         }

@@ -1,0 +1,7 @@
+.agreements-table {
+    width: 100%;
+}
+
+table.agreements-table td.td-no-border {
+    border: none;
+}

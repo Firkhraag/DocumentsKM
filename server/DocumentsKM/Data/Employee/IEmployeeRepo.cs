@@ -5,7 +5,7 @@ namespace DocumentsKM.Data
 {
     public interface IEmployeeRepo
     {
-        // IEnumerable<Employee> GetAllEmployees(ulong projectId);
         Employee GetEmployeeById(ulong id);
+        IEnumerable<Employee> GetAllApprovalSpecialists(ulong departmentNumber, uint minPosCode, uint maxPosCode);
     }
 }

@@ -11,22 +11,26 @@ namespace DocumentsKM.Data
 
         public MockMarkRepo(ISubnodeRepo subnodeRepo)
         {
-            _marks = new List<Mark>{
-                new Mark{
+            _marks = new List<Mark>
+            {
+                new Mark
+                {
                     Id=0,
                     Subnode=subnodeRepo.GetSubnodeById(0),
-                    Code="111"
+                    Code="Test mark1",
                 },
-                new Mark{
+                new Mark
+                {
                     Id=1,
                     Subnode=subnodeRepo.GetSubnodeById(0),
-                    Code="222"
+                    Code="Test mark2",
                 },
-                new Mark{
+                new Mark
+                {
                     Id=2,
                     Subnode=subnodeRepo.GetSubnodeById(1),
-                    Code="333"
-                }
+                    Code="Test mark3",
+                },
             };
         }
 
@@ -34,11 +38,16 @@ namespace DocumentsKM.Data
         public IEnumerable<Mark> GetAllSubnodeMarks(ulong subnodeId)
         {
             var marksToReturn = new List<Mark>();
-            foreach (Mark mark in _marks) {
+            foreach (Mark mark in _marks)
+            {
                 if (mark.Subnode.Id == subnodeId)
                 {
                     marksToReturn.Add(mark);
                 }
+            }
+            if (marksToReturn.Count == 0)
+            {
+                return null;
             }
             return marksToReturn;
         }
@@ -51,10 +60,13 @@ namespace DocumentsKM.Data
 
         public Mark GetMarkById(ulong id)
         {
-            try {
+            try
+            {
                 var mark = _marks[Convert.ToInt32(id)];
                 return mark;
-            } catch (ArgumentOutOfRangeException) {
+            }
+            catch (ArgumentOutOfRangeException)
+            {
                 return null;
             }
         }

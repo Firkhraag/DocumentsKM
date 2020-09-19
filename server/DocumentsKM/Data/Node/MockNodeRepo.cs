@@ -12,25 +12,29 @@ namespace DocumentsKM.Data
 
         public MockNodeRepo(IProjectRepo projectRepo, IEmployeeRepo employeeRepo)
         {
-            _nodes = new List<Node>{
-                new Node{
+            _nodes = new List<Node>
+            {
+                new Node
+                {
                     Id=0,
                     Project=projectRepo.GetProjectById(0),
                     Code="111",
-                    ChiefEngineer=employeeRepo.GetEmployeeById(0)
+                    ChiefEngineer=employeeRepo.GetEmployeeById(0),
                 },
-                new Node{
+                new Node
+                {
                     Id=1,
                     Project=projectRepo.GetProjectById(0),
                     Code="222",
-                    ChiefEngineer=employeeRepo.GetEmployeeById(1)
+                    ChiefEngineer=employeeRepo.GetEmployeeById(1),
                 },
-                new Node{
+                new Node
+                {
                     Id=2,
                     Project=projectRepo.GetProjectById(1),
                     Code="333",
-                    ChiefEngineer=employeeRepo.GetEmployeeById(2)
-                }
+                    ChiefEngineer=employeeRepo.GetEmployeeById(2),
+                },
             };
         }
 
@@ -38,11 +42,16 @@ namespace DocumentsKM.Data
         public IEnumerable<Node> GetAllProjectNodes(ulong projectId)
         {
             var nodesToReturn = new List<Node>();
-            foreach (Node node in _nodes) {
+            foreach (Node node in _nodes)
+            {
                 if (node.Project.Id == projectId)
                 {
                     nodesToReturn.Add(node);
                 }
+            }
+            if (nodesToReturn.Count == 0)
+            {
+                return null;
             }
             return nodesToReturn;
         }
@@ -50,10 +59,13 @@ namespace DocumentsKM.Data
         // GetNodeById returns the node with a given id
         public Node GetNodeById(ulong id)
         {
-            try {
+            try
+            {
                 var node = _nodes[Convert.ToInt32(id)];
                 return node;
-            } catch (ArgumentOutOfRangeException) {
+            }
+            catch (ArgumentOutOfRangeException)
+            {
                 return null;
             }
         }

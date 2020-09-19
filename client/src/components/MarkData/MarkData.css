@@ -5,3 +5,16 @@
     width: 100%;
     box-sizing: border-box;
 }
+
+.label-mrgn-top-1 {
+    margin-top: 1em;
+}
+
+.label-mrgn-top-2 {
+    margin-top: 2em;
+}
+
+.data-section-label {
+    margin-bottom: 2em;
+    font-size: 18px;
+}

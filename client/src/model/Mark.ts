@@ -12,13 +12,13 @@ interface IMark {
 	// chiefSpecialist: Employee
 	// groupLeader: Employee
 	// mainBulder: Employee
-	// agreedWorker1: Employee
-	// agreedWorker2: Employee
-	// agreedWorker3: Employee
-	// agreedWorker4: Employee
-	// agreedWorker5: Employee
-	// agreedWorker6: Employee
-	// agreedWorker7: Employee
+	// approvalSpecialist1: Employee
+	// approvalSpecialist2: Employee
+	// approvalSpecialist3: Employee
+	// approvalSpecialist4: Employee
+	// approvalSpecialist5: Employee
+	// approvalSpecialist6: Employee
+	// approvalSpecialist7: Employee
 }
 
 class Mark {
@@ -31,13 +31,13 @@ class Mark {
 	// chiefSpecialist: Employee
 	// groupLeader: Employee
 	// mainBulder: Employee
-	// agreedWorker1: Employee
-	// agreedWorker2: Employee
-	// agreedWorker3: Employee
-	// agreedWorker4: Employee
-	// agreedWorker5: Employee
-	// agreedWorker6: Employee
-	// agreedWorker7: Employee
+	// approvalSpecialist1: Employee
+	// approvalSpecialist2: Employee
+	// approvalSpecialist3: Employee
+	// approvalSpecialist4: Employee
+	// approvalSpecialist5: Employee
+	// approvalSpecialist6: Employee
+	// approvalSpecialist7: Employee
 
 	constructor(obj?: IMark) {
 		this.id = (obj && obj.id) || 0
@@ -49,13 +49,13 @@ class Mark {
 		// this.chiefSpecialist = (obj && obj.chiefSpecialist) || null
 		// this.groupLeader = (obj && obj.groupLeader) || null
 		// this.mainBulder = (obj && obj.mainBulder) || null
-		// this.agreedWorker1 = (obj && obj.agreedWorker1) || null
-		// this.agreedWorker2 = (obj && obj.agreedWorker2) || null
-		// this.agreedWorker3 = (obj && obj.agreedWorker3) || null
-		// this.agreedWorker4 = (obj && obj.agreedWorker4) || null
-		// this.agreedWorker5 = (obj && obj.agreedWorker5) || null
-		// this.agreedWorker6 = (obj && obj.agreedWorker6) || null
-		// this.agreedWorker7 = (obj && obj.agreedWorker7) || null
+		// this.approvalSpecialist1 = (obj && obj.approvalSpecialist1) || null
+		// this.approvalSpecialist2 = (obj && obj.approvalSpecialist2) || null
+		// this.approvalSpecialist3 = (obj && obj.approvalSpecialist3) || null
+		// this.approvalSpecialist4 = (obj && obj.approvalSpecialist4) || null
+		// this.approvalSpecialist5 = (obj && obj.approvalSpecialist5) || null
+		// this.approvalSpecialist6 = (obj && obj.approvalSpecialist6) || null
+		// this.approvalSpecialist7 = (obj && obj.approvalSpecialist7) || null
 	}
 }
 

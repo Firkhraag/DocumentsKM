@@ -38,4 +38,7 @@
     background: #ddd;
 }
 
+.options-cnt div:last-child {
+    border-bottom: none;
+}
 

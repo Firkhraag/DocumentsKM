@@ -8,19 +8,23 @@ namespace DocumentsKM.Data
     public class MockProjectRepo : IProjectRepo
     {
         // Initial projects list
-        private List<Project> _projects = new List<Project>{
-            new Project{
+        private List<Project> _projects = new List<Project>
+        {
+            new Project
+            {
                 Id=0,
-                BaseSeries="M32788"
+                BaseSeries="M32788",
             },
-            new Project{
+            new Project
+            {
                 Id=1,
-                BaseSeries="V14578"
+                BaseSeries="V14578",
             },
-            new Project{
+            new Project
+            {
                 Id=2,
-                BaseSeries="G29856"
-            }
+                BaseSeries="G29856",
+            },
         };
 
         // // CreateProject adds new project to the list
@@ -36,16 +40,23 @@ namespace DocumentsKM.Data
         // GetAllProjects returns the list of projects
         public IEnumerable<Project> GetAllProjects()
         {
+            if (_projects.Count == 0)
+            {
+                return null;
+            }
             return _projects;
         }
 
         // GetProjectById returns the project with a given id
         public Project GetProjectById(ulong id)
         {
-            try {
+            try
+            {
                 var project = _projects[Convert.ToInt32(id)];
                 return project;
-            } catch (ArgumentOutOfRangeException) {
+            }
+            catch (ArgumentOutOfRangeException)
+            {
                 return null;
             }
         }

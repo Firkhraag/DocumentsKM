@@ -13,22 +13,26 @@ namespace DocumentsKM.Data
         // Using the implementation of interface for testing
         public MockSubnodeRepo(INodeRepo nodeRepo)
         {
-            _subnodes = new List<Subnode>{
-                new Subnode{
+            _subnodes = new List<Subnode>
+            {
+                new Subnode
+                {
                     Id=0,
                     Node=nodeRepo.GetNodeById(0),
-                    Code="111"
+                    Code="Test subnode1",
                 },
-                new Subnode{
+                new Subnode
+                {
                     Id=1,
                     Node=nodeRepo.GetNodeById(0),
-                    Code="222"
+                    Code="Test subnode2",
                 },
-                new Subnode{
+                new Subnode
+                {
                     Id=2,
                     Node=nodeRepo.GetNodeById(1),
-                    Code="333"
-                }
+                    Code="Test subnode3",
+                },
             };
         }
 
@@ -36,11 +40,16 @@ namespace DocumentsKM.Data
         public IEnumerable<Subnode> GetAllNodeSubnodes(ulong nodeId)
         {
             var subnodesToReturn = new List<Subnode>();
-            foreach (Subnode subnode in _subnodes) {
+            foreach (Subnode subnode in _subnodes)
+            {
                 if (subnode.Node.Id == nodeId)
                 {
                     subnodesToReturn.Add(subnode);
                 }
+            }
+            if (subnodesToReturn.Count == 0)
+            {
+                return null;
             }
             return subnodesToReturn;
         }
@@ -54,10 +63,13 @@ namespace DocumentsKM.Data
         // GetSubnodeById returns the subnode with a given id
         public Subnode GetSubnodeById(ulong id)
         {
-            try {
+            try
+            {
                 var subnode = _subnodes[Convert.ToInt32(id)];
                 return subnode;
-            } catch (ArgumentOutOfRangeException) {
+            }
+            catch (ArgumentOutOfRangeException)
+            {
                 return null;
             }
         }

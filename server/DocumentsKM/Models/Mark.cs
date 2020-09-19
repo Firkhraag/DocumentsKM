@@ -32,6 +32,7 @@ namespace DocumentsKM.Model
         [MaxLength(255)]
         public string Name { get; set; }
 
+        // Код_отд
         [Required]
         [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
@@ -51,30 +52,30 @@ namespace DocumentsKM.Model
 
         // Исп1
         [ForeignKey("EmployeeId")]
-        public Employee AgreedWorker1 { get; set; }
+        public Employee ApprovalSpecialist1 { get; set; }
 
         // Исп2
         [ForeignKey("EmployeeId")]
-        public Employee AgreedWorker2 { get; set; }
+        public Employee ApprovalSpecialist2 { get; set; }
 
         // Исп3
         [ForeignKey("EmployeeId")]
-        public Employee AgreedWorker3 { get; set; }
+        public Employee ApprovalSpecialist3 { get; set; }
 
         // Исп4
         [ForeignKey("EmployeeId")]
-        public Employee AgreedWorker4 { get; set; }
+        public Employee ApprovalSpecialist4 { get; set; }
 
         // Исп5
         [ForeignKey("EmployeeId")]
-        public Employee AgreedWorker5 { get; set; }
+        public Employee ApprovalSpecialist5 { get; set; }
 
         // Исп6
         [ForeignKey("EmployeeId")]
-        public Employee AgreedWorker6 { get; set; }
+        public Employee ApprovalSpecialist6 { get; set; }
 
         // Исп7
         [ForeignKey("EmployeeId")]
-        public Employee AgreedWorker7 { get; set; }
+        public Employee ApprovalSpecialist7 { get; set; }
     }
 }

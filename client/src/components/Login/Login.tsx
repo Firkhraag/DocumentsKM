@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import './Login.css'
 
 const Login = () => {
 	const [inputValues, setInputValues] = useState({
@@ -20,12 +21,12 @@ const Login = () => {
             <h1 className="text-centered">Вход</h1>
             <div>
                 <div className="flex-v mrg-bot">
-                    <label htmlFor="login" className="label-area">Логин</label>
+                    <label htmlFor="login" className="login-label-area">Логин</label>
                     <input id="login" className="input-area" onBlur={onLoginChange} type="text" placeholder="Введите ваш логин" spellCheck="false" required />
                 </div>
 
                 <div className="flex-v">
-                    <label htmlFor="password" className="label-area">Пароль</label>
+                    <label htmlFor="password" className="login-label-area">Пароль</label>
                     <input id="password" className="input-area" type="password" onBlur={onPasswordChange} placeholder="Введите ваш пароль" spellCheck="false" required />
                 </div>
 

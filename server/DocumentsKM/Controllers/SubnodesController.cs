@@ -37,16 +37,5 @@ namespace DocumentsKM.Controllers
             }
             return NotFound();
         }
-
-        // [Route("api/recent_subnodes")]
-        // [HttpGet]
-        // public ActionResult<IEnumerable<SubnodeCodeReadDto>> GetUserRecentSubnodes()
-        // {
-        //     var subnodes = _repository.GetUserRecentSubnodes();
-        //     if (subnodes != null) {
-        //         return Ok(_mapper.Map<IEnumerable<SubnodeCodeReadDto>>(subnodes));
-        //     }
-        //     return NotFound();
-        // }
     }
 }

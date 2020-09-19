@@ -118,7 +118,7 @@ const Dropdown = ({
 							: 'dropdown-area flex-v absolute pointer white-bg'
 					}
 				>
-					<div ref={dropdownRef}>
+					<div ref={dropdownRef} className="options-cnt">
 						{options.map((option) => (
 							<div
 								onClick={() => onClickFunc(option.id)}
