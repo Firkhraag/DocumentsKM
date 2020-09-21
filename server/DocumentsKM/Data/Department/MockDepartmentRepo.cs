@@ -57,10 +57,6 @@ namespace DocumentsKM.Data
                     departmentsToReturn.Add(department);
                 }
             }
-            if (departmentsToReturn.Count == 0)
-            {
-                return null;
-            }
             return departmentsToReturn;
         }
     }

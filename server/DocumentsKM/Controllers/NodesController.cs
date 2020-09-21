@@ -32,10 +32,9 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<NodeCodeReadDto>> GetAllProjectNodes(ulong projectId)
         {
             var nodes = _repository.GetAllProjectNodes(projectId);
-            if (nodes != null) {
-                return Ok(_mapper.Map<IEnumerable<NodeCodeReadDto>>(nodes));
-            }
-            return NotFound();
+            // TBD: Should catch Internal server error!
+            // Ok even if array is empty
+            return Ok(_mapper.Map<IEnumerable<NodeCodeReadDto>>(nodes));
         }
     }
 }

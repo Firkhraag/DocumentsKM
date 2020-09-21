@@ -32,10 +32,9 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<ProjectSeriesReadDto>> GetAllProjects()
         {
             var projects = _repository.GetAllProjects();
-            if (projects != null) {
-                return Ok(_mapper.Map<IEnumerable<ProjectSeriesReadDto>>(projects));
-            }
-            return NotFound();
+            // TBD: Should catch Internal server error!
+            // Ok even if array is empty
+            return Ok(_mapper.Map<IEnumerable<ProjectSeriesReadDto>>(projects));
         }
     }
 }

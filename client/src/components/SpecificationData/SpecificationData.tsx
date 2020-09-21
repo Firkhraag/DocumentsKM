@@ -1,7 +1,7 @@
 import React from 'react'
-import './MetalData.css'
+import './SpecificationData.css'
 
-const MetalData = () => {
+const SpecificationData = () => {
     return (
         <div className="component-cnt component-width">
             <h1 className="text-centered">Данные спецификации</h1>
@@ -153,4 +153,4 @@ const MetalData = () => {
     )
 }
 
-export default MetalData;
+export default SpecificationData;

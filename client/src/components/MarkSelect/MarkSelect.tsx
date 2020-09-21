@@ -21,7 +21,8 @@ const MarkSelect = () => {
 
     // Default state objects
     const defaultSelectedObject = {
-        recentMark: '',
+        recentMarkString: '',
+        recentSubnodeString: '',
         project: null as Project,
         node: null as Node,
         subnode: null as Subnode,
@@ -64,6 +65,7 @@ const MarkSelect = () => {
                 // Not very nice, but we are not using GraphQL here
                 const recentMarksFetchedResponse = await axios.get(protocol + '://' + host + '/api/recent_marks')
                 const recentMarksFetched = recentMarksFetchedResponse.data
+                console.log(recentMarksFetched)
 
                 const recentSubnodesIds: Array<number> = []
                 const recentSubnodesFetched: Array<Subnode> = []
@@ -131,7 +133,7 @@ const MarkSelect = () => {
         })
     }
     
-    const onRecentMarkSelect = (id: number) => {
+    const onRecentMarkSelect = async (id: number) => {
         let v: Mark = null
         for (let mark of optionsObject.recentMarks) {
             if (mark.id === id) {
@@ -145,51 +147,40 @@ const MarkSelect = () => {
         if ((selectedObject.mark !== null) && (v.id === selectedObject.mark.id)) {
             return
         }
-
-        // try {
-        //     const fetchedNodesResponse = await axios.get(protocol + '://' + host + `/api/projects/${id}/nodes`)
-        //     const fetchedNodes = fetchedNodesResponse.data
-        //     setOptionsObject({
-        //         ...defaultOptionsObject,
-        //         recentMarks: optionsObject.recentMarks,
-        //         projects: optionsObject.projects,
-        //         nodes: fetchedNodes
-        //     })
-        //     setSelectedObject({
-        //         ...defaultSelectedObject,
-        //         project: v
-        //     })
-        // } catch (e) {
-        //     console.log('Failed to fetch the data')
-        // }
-
-        // TBD
-
-        // const v = optionsObject.recentMarks[id]
-
-        // const fetchedNodes: Array<string> = ['527', '127', '134']
-        // const fetchedSubnodes: Array<string> = ['11', '22', '33']
-        // const fetchedMarks: Array<string> = ['AVS 1', 'RTY 6', 'ZXE111']
-
-        // setOptionsObject({
-        //     ...defaultOptionsObject,
-        //     recentMarks: optionsObject.recentMarks,
-        //     projects: optionsObject.projects,
-        //     nodes: fetchedNodes,
-        //     subnodes: fetchedSubnodes,
-        //     marks: fetchedMarks
-        // })
-        // setSelectedObject({
-        //     ...defaultSelectedObject,
-        //     recentMark: v,
-        //     project: 'M32788',
-        //     node: '127',
-        //     subnode: '33',
-        //     mark: 'AVS 1'
-        // })
+        const s = v.subnode
+        const n = s.node
+        const p = n.project
+        try {
+            const fetchedNodesResponse = await axios.get(protocol + '://' + host + `/api/projects/${p.id}/nodes`)
+            const fetchedNodes = fetchedNodesResponse.data
+            const fetchedSubnodesResponse = await axios.get(protocol + '://' + host + `/api/nodes/${n.id}/subnodes`)
+            const fetchedSubnodes = fetchedSubnodesResponse.data
+            const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/api/subnodes/${s.id}/marks`)
+            const fetchedMarks = fetchedMarksResponse.data
+            setOptionsObject({
+                ...defaultOptionsObject,
+                recentMarks: optionsObject.recentMarks,
+                recentSubnodes: optionsObject.recentSubnodes,
+                projects: optionsObject.projects,
+                nodes: fetchedNodes,
+                subnodes: fetchedSubnodes,
+                marks: fetchedMarks,
+            })
+        } catch (e) {
+            console.log('Failed to fetch the data')
+        }
+        setSelectedObject({
+            ...defaultSelectedObject,
+            recentMarkString: `${p.baseSeries}.${n.code}.${s.code}-${v.code}`,
+            recentSubnodeString: `${p.baseSeries}.${n.code}.${s.code}`,
+            project: p,
+            node: n,
+            subnode: s,
+            mark: v,
+        })
     }
 
-    const onRecentSubnodeSelect = (id: number) => {
+    const onRecentSubnodeSelect = async (id: number) => {
         let v: Subnode = null
         for (let subnode of optionsObject.recentSubnodes) {
             if (subnode.id === id) {
@@ -203,6 +194,32 @@ const MarkSelect = () => {
         if ((selectedObject.subnode !== null) && (v.id === selectedObject.subnode.id)) {
             return
         }
+        const n = v.node
+        const p = n.project
+        try {
+            const fetchedNodesResponse = await axios.get(protocol + '://' + host + `/api/projects/${p.id}/nodes`)
+            const fetchedNodes = fetchedNodesResponse.data
+            const fetchedSubnodesResponse = await axios.get(protocol + '://' + host + `/api/nodes/${n.id}/subnodes`)
+            const fetchedSubnodes = fetchedSubnodesResponse.data
+            setOptionsObject({
+                ...defaultOptionsObject,
+                recentMarks: optionsObject.recentMarks,
+                recentSubnodes: optionsObject.recentSubnodes,
+                projects: optionsObject.projects,
+                nodes: fetchedNodes,
+                subnodes: fetchedSubnodes,
+            })
+        } catch (e) {
+            console.log('Failed to fetch the data')
+        }
+        setSelectedObject({
+            ...defaultSelectedObject,
+            recentSubnodeString: `${p.baseSeries}.${n.code}.${v.code}`,
+            project: p,
+            node: n,
+            subnode: v,
+
+        })
     }
 
     const onProjectSelect = async (id: number) => {
@@ -365,7 +382,7 @@ const MarkSelect = () => {
                         label={ isCreateMode ? "Последние подузлы" : "Последние марки"}
                         maxInputLength={ isCreateMode ? subnodeNameStringLength : markNameStringLength }
                         onClickFunc={isCreateMode ? onRecentSubnodeSelect : onRecentMarkSelect}
-                        value={selectedObject.recentMark} // TBD
+                        value={ isCreateMode ?  selectedObject.recentSubnodeString : selectedObject.recentMarkString}
                         options={isCreateMode ? optionsObject.recentSubnodes.map(s => {
                             const n = s.node
                             const p = n.project

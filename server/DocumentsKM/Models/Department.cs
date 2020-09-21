@@ -38,6 +38,6 @@ namespace DocumentsKM.Model
         [ForeignKey("EmployeeId")]
         public Employee DepartmentHead { get; set; }
 
-        public List<Employee> Employees { get; set; }
+        // public List<Employee> Employees { get; set; }
     }
 }

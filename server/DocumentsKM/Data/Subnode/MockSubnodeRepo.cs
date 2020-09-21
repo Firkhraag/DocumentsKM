@@ -47,10 +47,6 @@ namespace DocumentsKM.Data
                     subnodesToReturn.Add(subnode);
                 }
             }
-            if (subnodesToReturn.Count == 0)
-            {
-                return null;
-            }
             return subnodesToReturn;
         }
 

@@ -45,10 +45,6 @@ namespace DocumentsKM.Data
                     marksToReturn.Add(mark);
                 }
             }
-            if (marksToReturn.Count == 0)
-            {
-                return null;
-            }
             return marksToReturn;
         }
 

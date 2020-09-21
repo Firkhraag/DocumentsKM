@@ -67,10 +67,6 @@ namespace DocumentsKM.Data
                     specialistsToReturn.Add(employee);
                 }
             }
-            if (specialistsToReturn.Count == 0)
-            {
-                return null;
-            }
             // Asc sort
             specialistsToReturn.Sort((x, y) => x.Position.Code.CompareTo(y.Position.Code));
             return specialistsToReturn;

@@ -36,6 +36,6 @@ namespace DocumentsKM.Model
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
-        public List<Mark> Marks { get; set; }
+        // public List<Mark> Marks { get; set; }
     }
 }

@@ -40,10 +40,6 @@ namespace DocumentsKM.Data
         // GetAllProjects returns the list of projects
         public IEnumerable<Project> GetAllProjects()
         {
-            if (_projects.Count == 0)
-            {
-                return null;
-            }
             return _projects;
         }
 

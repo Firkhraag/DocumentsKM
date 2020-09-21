@@ -32,10 +32,9 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<SubnodeCodeReadDto>> GetAllNodeSubnodes(ulong nodeId)
         {
             var subnodes = _repository.GetAllNodeSubnodes(nodeId);
-            if (subnodes != null) {
-                return Ok(_mapper.Map<IEnumerable<SubnodeCodeReadDto>>(subnodes));
-            }
-            return NotFound();
+            // TBD: Should catch Internal server error!
+            // Ok even if array is empty
+            return Ok(_mapper.Map<IEnumerable<SubnodeCodeReadDto>>(subnodes));
         }
     }
 }

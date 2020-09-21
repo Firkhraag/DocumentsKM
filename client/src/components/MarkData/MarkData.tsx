@@ -67,9 +67,9 @@ const MarkData = () => {
             overflowY: 'hidden' as any
         },
         to: {
-            opacity: false ? (0 as any) : 1,
-            height: false ? 0 : height,
-            overflowY: false ? ('hidden' as any) : ('visible' as any)
+            opacity: true ? (0 as any) : 1,
+            height: true ? 0 : height,
+            overflowY: true ? ('hidden' as any) : ('visible' as any)
         },
     })
 

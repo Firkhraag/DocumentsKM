@@ -32,10 +32,9 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<DepartmentCodeReadDto>> GetApprovalDepartments()
         {
             var departments = _repository.GetAllApprovalDepartments();
-            if (departments != null) {
-                return Ok(_mapper.Map<IEnumerable<DepartmentCodeReadDto>>(departments));
-            }
-            return NotFound();
+            // TBD: Should catch Internal server error!
+            // Ok even if array is empty
+            return Ok(_mapper.Map<IEnumerable<DepartmentCodeReadDto>>(departments));
         }
     }
 }

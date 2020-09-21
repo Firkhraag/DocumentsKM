@@ -46,6 +46,6 @@ namespace DocumentsKM.Model
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
-        public List<Subnode> Subnodes { get; set; }
+        // public List<Subnode> Subnodes { get; set; }
     }
 }

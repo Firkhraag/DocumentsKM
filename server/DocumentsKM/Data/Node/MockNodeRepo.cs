@@ -49,10 +49,6 @@ namespace DocumentsKM.Data
                     nodesToReturn.Add(node);
                 }
             }
-            if (nodesToReturn.Count == 0)
-            {
-                return null;
-            }
             return nodesToReturn;
         }
 

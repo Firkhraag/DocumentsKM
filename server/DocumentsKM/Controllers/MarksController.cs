@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
@@ -32,10 +33,9 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<SubnodeCodeReadDto>> GetAllSubnodeMarks(ulong subnodeId)
         {
             var marks = _repository.GetAllSubnodeMarks(subnodeId);
-            if (marks != null) {
-                return Ok(_mapper.Map<IEnumerable<MarkCodeReadDto>>(marks));
-            }
-            return NotFound();
+            // TBD: Should catch Internal server error!
+            // Ok even if array is empty
+            return Ok(_mapper.Map<IEnumerable<MarkCodeReadDto>>(marks));
         }
 
         [Route("api/recent_marks")]
@@ -43,10 +43,9 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<MarkWithSubnodeReadDto>> GetUserRecentMarks()
         {
             var marks = _repository.GetUserRecentMarks();
-            if (marks != null) {
-                return Ok(_mapper.Map<IEnumerable<MarkWithSubnodeReadDto>>(marks));
-            }
-            return NotFound();
+            // TBD: Should catch Internal server error!
+            // Ok even if array is empty
+            return Ok(_mapper.Map<IEnumerable<MarkWithSubnodeReadDto>>(marks));
         }
 
         [Route("api/marks")]
@@ -65,10 +64,9 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<MarkReadDto>> GetAllMarks()
         {
             var marks = _repository.GetAllMarks();
-            if (marks != null) {
-                return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
-            }
-            return NotFound();
+            // TBD: Should catch Internal server error!
+            // Ok even if array is empty
+            return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
         }
 
         [Route("api/marks")]

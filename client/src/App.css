@@ -70,12 +70,17 @@
 	}
 }
 
+/* Section */
+
 table {
     border-collapse: collapse;
 }
 
 table .head-tr {
     background: #efefef;
+    font-size: 14px;
+    font-weight: bold;
+    color: #444;
 }
 
 table td {

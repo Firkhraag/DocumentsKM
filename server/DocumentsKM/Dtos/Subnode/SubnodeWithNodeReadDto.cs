@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DocumentsKM.Dtos
 {
     public class SubnodeWithNodeReadDto
@@ -7,5 +9,7 @@ namespace DocumentsKM.Dtos
         public NodeWithProjectReadDto Node { get; set; }
 
         public string Code { get; set; }
+
+        // public List<MarkCodeReadDto> Marks { get; set; }
     }
 }

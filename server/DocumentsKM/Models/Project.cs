@@ -61,6 +61,6 @@ namespace DocumentsKM.Model
         // [MaxLength(20)]
         // public string Approved2 { get; set; }
 
-        public List<Node> Nodes { get; set; }
+        // public List<Node> Nodes { get; set; }
     }
 }

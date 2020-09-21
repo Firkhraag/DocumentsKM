@@ -34,10 +34,9 @@ namespace DocumentsKM.Controllers
             uint minPosCode = 1170;
             uint maxPosCode = 1251;
             var specialists = _repository.GetAllApprovalSpecialists(departmentId, minPosCode, maxPosCode);
-            if (specialists != null) {
-                return Ok(_mapper.Map<IEnumerable<EmployeeNameReadDto>>(specialists));
-            }
-            return NotFound();
+            // TBD: Should catch Internal server error!
+            // Ok even if array is empty
+            return Ok(_mapper.Map<IEnumerable<EmployeeNameReadDto>>(specialists));
         }
     }
 }
