@@ -6,6 +6,6 @@ namespace DocumentsKM.Data
     public interface IDepartmentRepo
     {
         Department GetDepartmentByNumber(ulong number);
-        IEnumerable<Department> GetAllApprovalDepartments();
+        IEnumerable<Department> GetAllActiveDepartments();
     }
 }

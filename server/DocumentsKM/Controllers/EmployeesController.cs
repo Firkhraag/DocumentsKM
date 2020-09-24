@@ -3,12 +3,15 @@ using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
 using DocumentsKM.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace DocumentsKM.Controllers
 {
+    [Route("api")]
+    [Authorize]
     [ApiController]
     public class EmployeesController : ControllerBase
     {
@@ -27,8 +30,7 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        [Route("api/approval/departments/{departmentId}/specialists")]
-        [HttpGet]
+        [HttpGet, Route("departments/{departmentId}/employee/approval")]
         public ActionResult<IEnumerable<EmployeeNameReadDto>> GetAllApprovalSpecialists(ulong departmentId)
         {
             uint minPosCode = 1170;

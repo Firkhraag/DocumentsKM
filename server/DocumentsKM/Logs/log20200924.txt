@@ -1,0 +1,88 @@
+09/24/2020 14:59:50 Application starting up
+09/24/2020 15:00:06 HTTP "POST" "/api/auth/login" responded 401 in 632.8835 ms
+09/24/2020 15:45:39 Application is shutting down
+09/24/2020 18:52:07 Application starting up
+09/24/2020 18:52:31 HTTP "POST" "/api/auth/login" responded 401 in 359.1363 ms
+09/24/2020 18:55:04 HTTP "POST" "/api/auth/login" responded 401 in 3.6558 ms
+09/24/2020 18:55:09 HTTP "POST" "/api/auth/login" responded 401 in 6.9410 ms
+09/24/2020 18:55:37 HTTP "POST" "/api/auth/login" responded 401 in 2.5017 ms
+09/24/2020 18:55:46 HTTP "POST" "/api/auth/login" responded 401 in 3.3529 ms
+09/24/2020 18:56:57 HTTP "POST" "/api/auth/login" responded 200 in 116.8618 ms
+09/24/2020 18:59:53 HTTP "POST" "/api/auth/login" responded 200 in 2.6116 ms
+09/24/2020 18:59:59 HTTP "POST" "/api/auth/login" responded 200 in 2.7694 ms
+09/24/2020 19:00:17 HTTP "POST" "/api/auth/login" responded 200 in 3.0617 ms
+09/24/2020 19:00:19 HTTP "POST" "/api/auth/login" responded 200 in 2.7095 ms
+09/24/2020 19:01:43 HTTP "POST" "/api/auth/login" responded 200 in 2.9501 ms
+09/24/2020 19:04:42 HTTP "POST" "/api/auth/login" responded 200 in 2.3641 ms
+09/24/2020 19:06:32 HTTP "GET" "/api/projects" responded 401 in 18.4622 ms
+09/24/2020 19:06:45 HTTP "POST" "/api/auth/login" responded 200 in 2.6940 ms
+09/24/2020 19:06:45 HTTP "GET" "/api/projects" responded 401 in 0.8759 ms
+09/24/2020 19:07:11 HTTP "POST" "/api/auth/login" responded 200 in 2.2975 ms
+09/24/2020 19:07:13 HTTP "GET" "/api/projects" responded 401 in 1.0711 ms
+09/24/2020 20:19:24 HTTP "POST" "/api/auth/login" responded 200 in 5.9706 ms
+09/24/2020 20:19:24 HTTP "GET" "/api/projects" responded 401 in 1.1344 ms
+09/24/2020 20:19:53 HTTP "POST" "/api/auth/login" responded 401 in 1.9597 ms
+09/24/2020 20:20:03 HTTP "POST" "/api/auth/login" responded 200 in 2.1542 ms
+09/24/2020 20:22:51 HTTP "POST" "/api/auth/login" responded 200 in 1.9216 ms
+09/24/2020 20:22:52 HTTP "GET" "/api/projects" responded 401 in 0.4972 ms
+09/24/2020 20:22:59 HTTP "POST" "/api/auth/login" responded 200 in 2.0155 ms
+09/24/2020 20:22:59 HTTP "GET" "/api/projects" responded 401 in 0.5402 ms
+09/24/2020 20:24:38 HTTP "POST" "/api/auth/login" responded 200 in 1.7828 ms
+09/24/2020 20:24:38 HTTP "GET" "/api/projects" responded 401 in 0.5055 ms
+09/24/2020 20:25:40 HTTP "POST" "/api/auth/login" responded 200 in 1.9083 ms
+09/24/2020 20:27:15 HTTP "POST" "/api/auth/login" responded 200 in 1.9135 ms
+09/24/2020 20:27:36 HTTP "POST" "/api/auth/login" responded 200 in 1.4371 ms
+09/24/2020 20:30:41 HTTP "POST" "/api/auth/login" responded 200 in 1.7655 ms
+09/24/2020 20:30:41 HTTP "GET" "/api/projects" responded 401 in 0.4263 ms
+09/24/2020 20:34:06 HTTP "POST" "/api/auth/login" responded 200 in 1.5395 ms
+09/24/2020 20:34:08 HTTP "GET" "/api/projects" responded 401 in 0.5019 ms
+09/24/2020 20:37:08 HTTP "POST" "/api/auth/login" responded 200 in 1.4589 ms
+09/24/2020 20:37:10 HTTP "GET" "/api/projects" responded 401 in 0.5057 ms
+09/24/2020 20:46:11 HTTP "POST" "/api/auth/login" responded 200 in 65.2284 ms
+09/24/2020 20:46:14 HTTP "GET" "/api/projects" responded 401 in 6.4336 ms
+09/24/2020 20:47:41 Application is shutting down
+09/24/2020 20:50:23 Application starting up
+09/24/2020 20:53:00 HTTP "POST" "/api/auth/login" responded 200 in 529.4985 ms
+09/24/2020 20:53:04 HTTP "GET" "/api/projects" responded 401 in 15.2737 ms
+09/24/2020 20:53:09 HTTP "GET" "/api/projects" responded 401 in 2.8820 ms
+09/24/2020 20:53:13 HTTP "POST" "/api/auth/login" responded 200 in 4.0585 ms
+09/24/2020 20:53:15 HTTP "GET" "/api/projects" responded 401 in 1.9405 ms
+09/24/2020 20:53:21 Application is shutting down
+09/24/2020 20:55:18 Application starting up
+09/24/2020 20:55:46 HTTP "POST" "/api/auth/login" responded 200 in 413.6377 ms
+09/24/2020 20:55:48 HTTP "GET" "/api/projects" responded 200 in 50.2468 ms
+09/24/2020 21:02:19 HTTP "POST" "/api/auth/login" responded 200 in 5.5160 ms
+09/24/2020 21:02:20 HTTP "GET" "/api/projects" responded 401 in 3.6078 ms
+09/24/2020 21:02:36 HTTP "POST" "/api/auth/login" responded 200 in 3.3534 ms
+09/24/2020 21:02:38 HTTP "GET" "/api/projects" responded 401 in 1.5099 ms
+09/24/2020 21:02:47 HTTP "GET" "/api/projects" responded 200 in 4.1447 ms
+09/24/2020 21:02:52 HTTP "GET" "/api/projects" responded 200 in 2.8224 ms
+09/24/2020 21:03:30 HTTP "GET" "/api/projects" responded 401 in 0.9315 ms
+09/24/2020 21:04:14 HTTP "GET" "/api/projects" responded 200 in 3.0541 ms
+09/24/2020 21:04:43 Application is shutting down
+09/24/2020 21:04:47 Application starting up
+09/24/2020 21:05:00 HTTP "GET" "/api/projects" responded 200 in 448.1300 ms
+09/24/2020 21:05:03 HTTP "POST" "/api/auth/login" responded 200 in 47.2383 ms
+09/24/2020 21:05:06 HTTP "GET" "/api/projects" responded 200 in 6.5762 ms
+09/24/2020 21:08:34 HTTP "GET" "/api/projects" responded 200 in 3.5908 ms
+09/24/2020 21:08:36 HTTP "GET" "/api/projects" responded 200 in 3.3314 ms
+09/24/2020 21:08:36 HTTP "GET" "/api/projects" responded 200 in 3.3903 ms
+09/24/2020 21:22:10 Application is shutting down
+09/24/2020 21:22:29 Application starting up
+09/24/2020 21:22:43 HTTP "POST" "/api/auth/login" responded 200 in 407.8512 ms
+09/24/2020 21:22:48 HTTP "GET" "/api/projects" responded 200 in 68.8672 ms
+09/24/2020 21:22:48 HTTP "GET" "/api/recent_marks" responded 400 in 34.2448 ms
+09/24/2020 21:23:41 HTTP "POST" "/api/auth/login" responded 200 in 2.9606 ms
+09/24/2020 21:23:42 HTTP "GET" "/api/projects" responded 200 in 3.8322 ms
+09/24/2020 21:23:42 HTTP "GET" "/api/recent_marks" responded 400 in 2.2318 ms
+09/24/2020 21:28:50 HTTP "POST" "/api/auth/login" responded 200 in 4.3969 ms
+09/24/2020 21:30:22 HTTP "POST" "/api/auth/login" responded 200 in 4.3877 ms
+09/24/2020 21:30:30 HTTP "GET" "/api/projects" responded 200 in 6.4934 ms
+09/24/2020 21:30:30 HTTP "GET" "/api/recent_marks" responded 400 in 5.3734 ms
+09/24/2020 21:31:00 HTTP "GET" "/api/projects" responded 401 in 6.9080 ms
+09/24/2020 21:31:03 HTTP "POST" "/api/auth/login" responded 200 in 3.2914 ms
+09/24/2020 21:31:05 HTTP "GET" "/api/projects" responded 200 in 2.2439 ms
+09/24/2020 22:14:59 HTTP "POST" "/api/auth/login" responded 200 in 6.0239 ms
+09/24/2020 22:15:03 HTTP "GET" "/api/projects" responded 200 in 3.5437 ms
+09/24/2020 22:15:03 HTTP "GET" "/api/recent_marks" responded 400 in 4.4906 ms
+09/24/2020 22:22:15 Application is shutting down

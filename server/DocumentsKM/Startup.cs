@@ -10,6 +10,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DocumentsKM
 {
@@ -26,10 +29,58 @@ namespace DocumentsKM
         {
 
             // Add CORS services
-            services.AddCors();
+            // services.AddCors();
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("EnableCORS", builder =>
+                {
+                    // builder.WithOrigins("https://localhost:8080")
+                    // .AllowAnyHeader()
+                    // .AllowAnyMethod();
+                    builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
+            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //     .AddJwtBearer(opt =>
+            //     {
+            //         // Resource id of api
+            //         opt.Audience = Configuration["AAD:ResourceId"];
+            //     });
+
+            // services.AddAuthentication(opt =>
+            // {
+            //     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            // })
+            // .AddJwtBearer(opt =>
+            // {
+
+            // });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    // Development mode
+                    ValidIssuer = "https://localhost:5001",
+                    // ValidAudience = "https://localhost:5001",
+                    ValidAudience = "http://localhost:8080",
+                    // Should be stored in env
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345")),
+                    ClockSkew = TimeSpan.Zero,
+                };
+            });
 
             // Add Swagger documentation
-            // URI: https://localhost:8081/swagger
+            // URI: https://localhost:5001/swagger
             services.AddSwaggerGen(options =>
                 {
                     options.SwaggerDoc(
@@ -78,11 +129,17 @@ namespace DocumentsKM
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // SECURITY BREACH, REPLACE TO SECOND LINE WHEN USING FRONTEND SERVER
             // Dev
-            app.UseCors(builder => builder.AllowAnyOrigin());
+            // app.UseCors(builder => builder.AllowAnyOrigin());
             // Prod
             // app.UseCors(builder => builder.WithOrigins("http://example.com"));
+            app.UseCors("EnableCORS");
 
-            app.UseSwagger().UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
+            app.UseStaticFiles();
+
+            app.UseSwagger().UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseHttpsRedirection();
 
@@ -90,6 +147,7 @@ namespace DocumentsKM
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

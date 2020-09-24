@@ -1,7 +1,3 @@
-.component-cnt {
-    margin: 10vh 0;
-}
-
 .component-cnt h1 {
     margin-bottom: 1.1em;
 }
@@ -30,6 +26,7 @@
     font-size: 13px;
     color: #666;
     margin-bottom: .33em;
+    font-weight: bold;
 }
 
 .mrg-bot {

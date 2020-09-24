@@ -47,7 +47,7 @@ namespace DocumentsKM.Data
             }
         }
 
-        public IEnumerable<Department> GetAllApprovalDepartments()
+        public IEnumerable<Department> GetAllActiveDepartments()
         {
             var departmentsToReturn = new List<Department>();
             foreach (Department department in _departments)

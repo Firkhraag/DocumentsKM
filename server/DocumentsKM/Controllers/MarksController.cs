@@ -4,12 +4,15 @@ using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
 using DocumentsKM.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace DocumentsKM.Controllers
 {
+    [Route("api")]
+    [Authorize]
     [ApiController]
     public class MarksController : ControllerBase
     {
@@ -28,8 +31,7 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        [Route("api/subnodes/{subnodeId}/marks")]
-        [HttpGet]
+        [HttpGet, Route("subnodes/{subnodeId}/marks")]
         public ActionResult<IEnumerable<SubnodeCodeReadDto>> GetAllSubnodeMarks(ulong subnodeId)
         {
             var marks = _repository.GetAllSubnodeMarks(subnodeId);
@@ -38,8 +40,7 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<MarkCodeReadDto>>(marks));
         }
 
-        [Route("api/recent_marks")]
-        [HttpGet]
+        [HttpGet, Route("marks/recent")]
         public ActionResult<IEnumerable<MarkWithSubnodeReadDto>> GetUserRecentMarks()
         {
             var marks = _repository.GetUserRecentMarks();
@@ -48,7 +49,7 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<MarkWithSubnodeReadDto>>(marks));
         }
 
-        [Route("api/marks")]
+        [Route("marks")]
         [HttpGet("{id}", Name="GetMarkById")]
         public ActionResult<MarkReadDto> GetMarkById(ulong id)
         {
@@ -59,8 +60,7 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
-        [Route("api/marks")]
-        [HttpGet]
+        [HttpGet, Route("marks")]
         public ActionResult<IEnumerable<MarkReadDto>> GetAllMarks()
         {
             var marks = _repository.GetAllMarks();
@@ -69,8 +69,7 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
         }
 
-        [Route("api/marks")]
-        [HttpPost]
+        [HttpPost, Route("marks")]
         public ActionResult<MarkReadDto> CreateMark(MarkCreateDto markCreateDto)
         {
             var markModel = _mapper.Map<Mark>(markCreateDto);
@@ -83,7 +82,7 @@ namespace DocumentsKM.Controllers
             return CreatedAtRoute(nameof(GetMarkById), new {Id = markReadDto.Id}, markReadDto);
         }
 
-        [Route("api/marks")]
+        [Route("marks")]
         [HttpPatch("{id}")]
         public ActionResult UpdateMark(ulong id, JsonPatchDocument<MarkUpdateDto> patchDoc)
         {

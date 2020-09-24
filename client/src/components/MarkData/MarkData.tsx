@@ -1,52 +1,54 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSpring, animated } from 'react-spring'
 import ResizeObserver from 'resize-observer-polyfill'
-import axios from 'axios'
-import { protocol, host } from '../../env'
+import httpClient from '../../axios'
+import Department from '../../model/Department'
+import Employee from '../../model/Employee'
 import Dropdown from '../Dropdown/Dropdown'
 import './MarkData.css'
 
 const MarkData = () => {
-
     const specialistNameStringLength = 50
+
+    // Default state objects
+	const defaultSelectedObject = {
+		departments: [] as Department[],
+		employees: [] as Employee[],
+	}
+	const defaultOptionsObject = {
+		departments: [] as Department[],
+		employees: [[]] as Array<Employee[]>,
+	}
+
+	// Object that holds selected values
+	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
+	// Object that holds select options
+	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
     const [height, setHeight] = useState(0)
     const heightRef = useRef()
 
     useEffect(() => {
         // Cannot use async func as callback in useEffect
-        // Function for fetching data
-        const fetchData = async () => {
-            try {
-                // // Fetch projects
-                // const projectsFetchedResponse = await axios.get(protocol + '://' + host + '/api/projects')
-                // const projectsFetched = projectsFetchedResponse.data
+		// Function for fetching data
+		const fetchData = async () => {
+			try {
+				// Fetch departments
+				const departmentsFetchedResponse = await httpClient.get(
+					'/api/departments'
+				)
+				const departmentsFetched = departmentsFetchedResponse.data
 
-                // // Not very nice, but we are not using GraphQL here
-                // const recentMarksFetchedResponse = await axios.get(protocol + '://' + host + '/api/recent_marks')
-                // const recentMarksFetched = recentMarksFetchedResponse.data
-
-                // const recentSubnodesIds: Array<number> = []
-                // const recentSubnodesFetched: Array<Subnode> = []
-                // for (let mark of recentMarksFetched) {
-                //     if (!recentSubnodesIds.includes(mark.subnode.id)) {
-                //         recentSubnodesIds.push(mark.subnode.id)
-                //         recentSubnodesFetched.push(mark.subnode)
-                //     }
-                // }
-
-                // // Set fetched objects as select options
-                // setOptionsObject({
-                //     ...defaultOptionsObject,
-                //     recentMarks: recentMarksFetched,
-                //     recentSubnodes: recentSubnodesFetched,
-                //     projects: projectsFetched
-                // })
-            } catch (e) {
-                console.log('Failed to fetch the data')
-            }
-        }
-        fetchData()
+				// Set fetched objects as select options
+				setOptionsObject({
+					...defaultOptionsObject,
+					departments: departmentsFetched,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
+			}
+		}
+		fetchData()
         
         // Observe the heights
         const heightObserver = new ResizeObserver(([entry]) => {
@@ -113,10 +115,12 @@ const MarkData = () => {
 					maxInputLength={specialistNameStringLength}
 					onClickFunc={null}
 					value={''}
-					options={[{
-                        id: 0,
-                        val: 'Test',
-                    }]}
+					options={optionsObject.departments.map((d) => {
+                        return {
+                            id: d.number,
+                            val: d.code,
+                        }
+                    })}
 				/>
 
                 <animated.div style={springStyle}>

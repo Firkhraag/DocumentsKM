@@ -3,12 +3,15 @@ using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
 using DocumentsKM.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace DocumentsKM.Controllers
 {
+    [Route("api")]
+    [Authorize]
     [ApiController]
     public class NodesController : ControllerBase
     {
@@ -27,8 +30,7 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        [Route("api/projects/{projectId}/nodes")]
-        [HttpGet]
+        [HttpGet, Route("projects/{projectId}/nodes")]
         public ActionResult<IEnumerable<NodeCodeReadDto>> GetAllProjectNodes(ulong projectId)
         {
             var nodes = _repository.GetAllProjectNodes(projectId);

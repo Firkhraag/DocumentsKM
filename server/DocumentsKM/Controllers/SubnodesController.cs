@@ -3,12 +3,15 @@ using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
 using DocumentsKM.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace DocumentsKM.Controllers
 {
+    [Route("api")]
+    [Authorize]
     [ApiController]
     public class SubnodesController : ControllerBase
     {
@@ -27,8 +30,7 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        [Route("api/nodes/{nodeId}/subnodes")]
-        [HttpGet]
+        [HttpGet, Route("nodes/{nodeId}/subnodes")]
         public ActionResult<IEnumerable<SubnodeCodeReadDto>> GetAllNodeSubnodes(ulong nodeId)
         {
             var subnodes = _repository.GetAllNodeSubnodes(nodeId);

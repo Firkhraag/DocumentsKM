@@ -4,7 +4,7 @@
 // export const host = window.location.host
 
 // Development
-export const host = 'localhost:8080'
+// export const host = 'localhost:5001'
 
 // Protocol type
 
@@ -12,4 +12,5 @@ export const host = 'localhost:8080'
 // export const protocol = 'https'
 
 // Development
-export const protocol = 'http'
+// export const protocol = 'https'
+//

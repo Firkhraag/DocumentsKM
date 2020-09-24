@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSpring, animated } from 'react-spring'
 import ResizeObserver from 'resize-observer-polyfill'
-import axios from 'axios'
-import { protocol, host } from '../../env'
+import httpClient from '../../axios'
 import Project from '../../model/Project'
 import Node from '../../model/Node'
 import Subnode from '../../model/Subnode'
@@ -59,11 +58,11 @@ const MarkSelect = () => {
         const fetchData = async () => {
             try {
                 // Fetch projects
-                const projectsFetchedResponse = await axios.get(protocol + '://' + host + '/api/projects')
+                const projectsFetchedResponse = await httpClient.get('/api/projects')
                 const projectsFetched = projectsFetchedResponse.data
 
                 // Not very nice, but we are not using GraphQL here
-                const recentMarksFetchedResponse = await axios.get(protocol + '://' + host + '/api/recent_marks')
+                const recentMarksFetchedResponse = await httpClient.get('/api/marks/recent')
                 const recentMarksFetched = recentMarksFetchedResponse.data
                 console.log(recentMarksFetched)
 
@@ -151,11 +150,11 @@ const MarkSelect = () => {
         const n = s.node
         const p = n.project
         try {
-            const fetchedNodesResponse = await axios.get(protocol + '://' + host + `/api/projects/${p.id}/nodes`)
+            const fetchedNodesResponse = await httpClient.get(`/api/projects/${p.id}/nodes`)
             const fetchedNodes = fetchedNodesResponse.data
-            const fetchedSubnodesResponse = await axios.get(protocol + '://' + host + `/api/nodes/${n.id}/subnodes`)
+            const fetchedSubnodesResponse = await httpClient.get(`/api/nodes/${n.id}/subnodes`)
             const fetchedSubnodes = fetchedSubnodesResponse.data
-            const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/api/subnodes/${s.id}/marks`)
+            const fetchedMarksResponse = await httpClient.get(`/api/subnodes/${s.id}/marks`)
             const fetchedMarks = fetchedMarksResponse.data
             setOptionsObject({
                 ...defaultOptionsObject,
@@ -197,9 +196,9 @@ const MarkSelect = () => {
         const n = v.node
         const p = n.project
         try {
-            const fetchedNodesResponse = await axios.get(protocol + '://' + host + `/api/projects/${p.id}/nodes`)
+            const fetchedNodesResponse = await httpClient.get(`/api/projects/${p.id}/nodes`)
             const fetchedNodes = fetchedNodesResponse.data
-            const fetchedSubnodesResponse = await axios.get(protocol + '://' + host + `/api/nodes/${n.id}/subnodes`)
+            const fetchedSubnodesResponse = await httpClient.get(`/api/nodes/${n.id}/subnodes`)
             const fetchedSubnodes = fetchedSubnodesResponse.data
             setOptionsObject({
                 ...defaultOptionsObject,
@@ -237,7 +236,7 @@ const MarkSelect = () => {
             return
         }
         try {
-            const fetchedNodesResponse = await axios.get(protocol + '://' + host + `/api/projects/${id}/nodes`)
+            const fetchedNodesResponse = await httpClient.get(`/api/projects/${id}/nodes`)
             const fetchedNodes = fetchedNodesResponse.data
             setOptionsObject({
                 ...defaultOptionsObject,
@@ -270,7 +269,7 @@ const MarkSelect = () => {
             return
         }
         try {
-            const fetchedSubnodesResponse = await axios.get(protocol + '://' + host + `/api/nodes/${id}/subnodes`)
+            const fetchedSubnodesResponse = await httpClient.get(`/api/nodes/${id}/subnodes`)
             const fetchedSubnodes = fetchedSubnodesResponse.data
             setOptionsObject({
                 ...defaultOptionsObject,
@@ -305,7 +304,7 @@ const MarkSelect = () => {
             return
         }
         try {
-            const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/api/subnodes/${id}/marks`)
+            const fetchedMarksResponse = await httpClient.get(`/api/subnodes/${id}/marks`)
             const fetchedMarks = fetchedMarksResponse.data
             setOptionsObject({
                 ...defaultOptionsObject,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { protocol, host } from '../../env'
+import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import Dropdown from '../Dropdown/Dropdown'
@@ -32,8 +31,8 @@ const MarkApproval = () => {
 		const fetchData = async () => {
 			try {
 				// Fetch departments
-				const departmentsFetchedResponse = await axios.get(
-					protocol + '://' + host + '/api/approval/departments'
+				const departmentsFetchedResponse = await httpClient.get(
+					'/api/departments'
 				)
 				const departmentsFetched = departmentsFetchedResponse.data
 

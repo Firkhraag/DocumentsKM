@@ -1,6 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import AppProviders from './app/AppProviders'
+import App from './app/App'
 import './index.css'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(
+	<AppProviders>
+		<App />
+	</AppProviders>,
+	document.getElementById('root')
+)
