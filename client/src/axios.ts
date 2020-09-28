@@ -1,17 +1,19 @@
 import axios from 'axios'
 
 const httpClient = axios.create({
-	baseURL: 'https://localhost:5001',
     // baseURL: process.env.APP_API_BASE_URL,
     // or use window.location.host
+    baseURL: 'https://localhost:5001',
+    timeout: 2000,
 })
 
 export const tokenKeyName = 'token'
 
+let tokenValue = ''
+export const setToken = (token: string) => tokenValue = token
+
 httpClient.interceptors.request.use(config => {
-    const token = localStorage.getItem(tokenKeyName)
-    console.log(token)
-	config.headers.Authorization = token ? `Bearer ${token}` : ''
+	config.headers.Authorization = `Bearer ${tokenValue}`
 	return config
 })
 

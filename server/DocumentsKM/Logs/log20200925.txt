@@ -1,0 +1,16 @@
+09/25/2020 21:13:50 Application starting up
+09/25/2020 21:14:22 HTTP "GET" "/api/projects" responded 401 in 363.6956 ms
+09/25/2020 21:14:29 HTTP "GET" "/api/projects" responded 401 in 5.5329 ms
+09/25/2020 21:15:04 HTTP "GET" "/api/auth/me" responded 401 in 1.0299 ms
+09/25/2020 21:15:11 HTTP "GET" "/api/auth/me" responded 401 in 2.4204 ms
+09/25/2020 21:16:04 HTTP "POST" "/api/auth/login" responded 200 in 1143.6357 ms
+09/25/2020 21:16:20 HTTP "GET" "/api/auth/me" responded 200 in 589.8774 ms
+09/25/2020 21:16:24 HTTP "GET" "/api/auth/me" responded 200 in 574.3922 ms
+09/25/2020 21:16:31 HTTP "GET" "/api/projects" responded 200 in 27.9489 ms
+09/25/2020 21:16:36 HTTP "GET" "/api/auth/me" responded 200 in 572.4388 ms
+09/25/2020 21:17:11 HTTP "GET" "/api/auth/me" responded 200 in 574.9898 ms
+09/25/2020 21:17:17 HTTP "GET" "/api/projects" responded 200 in 0.8759 ms
+09/25/2020 21:17:24 HTTP "GET" "/api/projects" responded 200 in 0.9812 ms
+09/25/2020 21:17:36 HTTP "POST" "/api/auth/login" responded 200 in 762.9717 ms
+09/25/2020 21:18:20 HTTP "GET" "/api/auth/me" responded 200 in 568.9104 ms
+09/25/2020 21:37:37 Application is shutting down

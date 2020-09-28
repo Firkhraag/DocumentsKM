@@ -12,6 +12,21 @@ type MarkProviderProps = {
 }
 
 export const MarkProvider = ({ children }: MarkProviderProps) => {
+
+    const getSelectedMark = () => {
+        const markStr = localStorage.getItem('selectedMark')
+        if (!markStr) {
+            return '-'
+        }
+        const mark = JSON.parse(markStr)
+        const now = new Date()
+        if (now.getTime() > mark.expiry) {
+            localStorage.removeItem('selectedMark')
+            return '-'
+        }
+        return mark.name
+    }
+
 	const [mark, setMark] = useState<Mark>(null)
 	return (
 		<MarkContext.Provider value={mark}>

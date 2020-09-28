@@ -1,0 +1,206 @@
+09/26/2020 22:13:49 Application starting up
+09/26/2020 22:13:50 Application startup exception
+System.InvalidOperationException: The CORS protocol does not allow specifying a wildcard (any) origin and credentials at the same time. Configure the CORS policy by listing individual origins if credentials needs to be supported.
+   at Microsoft.AspNetCore.Cors.Infrastructure.CorsPolicyBuilder.Build()
+   at Microsoft.AspNetCore.Builder.CorsMiddlewareExtensions.UseCors(IApplicationBuilder app, Action`1 configurePolicy)
+   at DocumentsKM.Startup.Configure(IApplicationBuilder app, IWebHostEnvironment env) in D:\Dev\Gipromez\server\Startup.cs:line 199
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor, Boolean wrapExceptions)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at Microsoft.AspNetCore.Hosting.ConfigureBuilder.Invoke(Object instance, IApplicationBuilder builder)
+   at Microsoft.AspNetCore.Hosting.ConfigureBuilder.<>c__DisplayClass4_0.<Build>b__0(IApplicationBuilder builder)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostBuilder.<>c__DisplayClass15_0.<UseStartup>b__1(IApplicationBuilder app)
+   at Microsoft.AspNetCore.Mvc.Filters.MiddlewareFilterBuilderStartupFilter.<>c__DisplayClass0_0.<Configure>g__MiddlewareFilterBuilder|0(IApplicationBuilder builder)
+   at Microsoft.AspNetCore.HostFilteringStartupFilter.<>c__DisplayClass0_0.<Configure>b__0(IApplicationBuilder app)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+09/26/2020 22:13:50 Application failed to start
+System.InvalidOperationException: The CORS protocol does not allow specifying a wildcard (any) origin and credentials at the same time. Configure the CORS policy by listing individual origins if credentials needs to be supported.
+   at Microsoft.AspNetCore.Cors.Infrastructure.CorsPolicyBuilder.Build()
+   at Microsoft.AspNetCore.Builder.CorsMiddlewareExtensions.UseCors(IApplicationBuilder app, Action`1 configurePolicy)
+   at DocumentsKM.Startup.Configure(IApplicationBuilder app, IWebHostEnvironment env) in D:\Dev\Gipromez\server\Startup.cs:line 199
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor, Boolean wrapExceptions)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at Microsoft.AspNetCore.Hosting.ConfigureBuilder.Invoke(Object instance, IApplicationBuilder builder)
+   at Microsoft.AspNetCore.Hosting.ConfigureBuilder.<>c__DisplayClass4_0.<Build>b__0(IApplicationBuilder builder)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostBuilder.<>c__DisplayClass15_0.<UseStartup>b__1(IApplicationBuilder app)
+   at Microsoft.AspNetCore.Mvc.Filters.MiddlewareFilterBuilderStartupFilter.<>c__DisplayClass0_0.<Configure>g__MiddlewareFilterBuilder|0(IApplicationBuilder builder)
+   at Microsoft.AspNetCore.HostFilteringStartupFilter.<>c__DisplayClass0_0.<Configure>b__0(IApplicationBuilder app)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at DocumentsKM.Program.Main(String[] args) in D:\Dev\Gipromez\server\Program.cs:line 26
+09/26/2020 22:13:50 Application is shutting down
+09/26/2020 22:15:13 Application starting up
+09/26/2020 22:15:55 HTTP "GET" "/api/projects" responded 401 in 151.3141 ms
+09/26/2020 22:16:02 HTTP "GET" "/api/projects" responded 401 in 3.1954 ms
+09/26/2020 22:16:52 HTTP "POST" "/api/users/authenticate" responded 200 in 1177.3389 ms
+09/26/2020 22:17:26 HTTP "POST" "/api/users/authenticate" responded 200 in 771.1144 ms
+09/26/2020 22:24:02 Application is shutting down
+09/26/2020 22:24:06 Application starting up
+09/26/2020 22:24:16 HTTP "POST" "/api/users/authenticate" responded 200 in 1102.3542 ms
+09/26/2020 22:25:07 Application is shutting down
+09/26/2020 22:25:46 Application starting up
+09/26/2020 22:25:55 HTTP "POST" "/api/users/authenticate" responded 200 in 1098.3423 ms
+09/26/2020 22:26:56 Application is shutting down
+09/26/2020 22:27:04 Application starting up
+09/26/2020 22:27:20 HTTP "POST" "/api/users/authenticate" responded 200 in 1139.3740 ms
+09/26/2020 22:29:08 HTTP "GET" "/api/users/revoke-token" responded 400 in 607.6838 ms
+09/26/2020 22:30:52 Application is shutting down
+09/26/2020 22:31:52 Application starting up
+09/26/2020 22:32:09 HTTP "POST" "/api/users/authenticate" responded 200 in 1164.3930 ms
+09/26/2020 22:32:26 HTTP "GET" "/api/users/logout" responded 400 in 591.1008 ms
+09/26/2020 22:34:57 Application is shutting down
+09/26/2020 22:35:03 Application starting up
+09/26/2020 22:38:15 HTTP "POST" "/api/users/authenticate" responded 200 in 1144.4972 ms
+09/26/2020 22:38:34 HTTP "POST" "/api/users/authenticate" responded 200 in 768.4926 ms
+09/26/2020 22:38:39 HTTP "POST" "/api/users/authenticate" responded 200 in 774.5443 ms
+09/26/2020 22:38:44 HTTP "POST" "/api/users/authenticate" responded 200 in 754.4478 ms
+09/26/2020 22:38:57 HTTP "GET" "/api/users/logout" responded 400 in 583.6647 ms
+09/26/2020 22:40:04 HTTP "GET" "/api/users/logout1" responded 400 in 580.8881 ms
+09/26/2020 22:40:09 HTTP "GET" "/api/users/logout12" responded 400 in 578.4004 ms
+09/26/2020 22:40:14 HTTP "GET" "/api/users/logout" responded 400 in 574.6953 ms
+09/26/2020 22:40:33 HTTP "POST" "/api/users/logout" responded 200 in 596.1193 ms
+09/26/2020 22:40:41 HTTP "GET" "/api/projects" responded 500 in 2.9686 ms
+System.InvalidOperationException: Unable to resolve service for type 'AutoMapper.IMapper' while attempting to activate 'DocumentsKM.Controllers.ProjectsController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method26(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.Policy.AuthorizationMiddlewareResultHandler.HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+09/26/2020 22:40:41 Connection id ""0HM328BP6RU16"", Request id ""0HM328BP6RU16:0000000B"": An unhandled exception was thrown by the application.
+System.InvalidOperationException: Unable to resolve service for type 'AutoMapper.IMapper' while attempting to activate 'DocumentsKM.Controllers.ProjectsController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method26(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.Policy.AuthorizationMiddlewareResultHandler.HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+09/26/2020 22:40:45 HTTP "GET" "/api/projects" responded 500 in 2.6302 ms
+System.InvalidOperationException: Unable to resolve service for type 'AutoMapper.IMapper' while attempting to activate 'DocumentsKM.Controllers.ProjectsController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method26(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.Policy.AuthorizationMiddlewareResultHandler.HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+09/26/2020 22:40:45 Connection id ""0HM328BP6RU16"", Request id ""0HM328BP6RU16:0000000C"": An unhandled exception was thrown by the application.
+System.InvalidOperationException: Unable to resolve service for type 'AutoMapper.IMapper' while attempting to activate 'DocumentsKM.Controllers.ProjectsController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method26(Closure , IServiceProvider , Object[] )
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerActivatorProvider.<>c__DisplayClass4_0.<CreateActivator>b__0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.Policy.AuthorizationMiddlewareResultHandler.HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+09/26/2020 22:49:12 Application is shutting down
+09/26/2020 22:50:16 Application starting up
+09/26/2020 22:50:23 HTTP "POST" "/api/users/login" responded 200 in 1153.1645 ms
+09/26/2020 22:50:28 HTTP "POST" "/api/users/logout" responded 200 in 773.1936 ms
+09/26/2020 22:50:33 HTTP "POST" "/api/users/logout" responded 401 in 5.4755 ms
+09/26/2020 22:50:38 HTTP "POST" "/api/users/login" responded 200 in 775.7610 ms
+09/26/2020 22:50:42 HTTP "POST" "/api/users/logout" responded 200 in 567.3735 ms
+09/26/2020 22:50:49 Application is shutting down
+09/26/2020 22:57:53 Application starting up
+09/26/2020 22:58:26 HTTP "POST" "/api/users/login" responded 200 in 1404.4045 ms
+09/26/2020 22:59:10 HTTP "POST" "/api/users/refresh-token" responded 200 in 675.7544 ms
+09/26/2020 22:59:17 HTTP "POST" "/api/users/refresh-token" responded 200 in 598.8443 ms
+09/26/2020 22:59:22 HTTP "POST" "/api/users/refresh-token" responded 200 in 603.7260 ms
+09/26/2020 22:59:26 HTTP "POST" "/api/users/refresh-token" responded 200 in 593.3561 ms
+09/26/2020 22:59:49 HTTP "POST" "/api/users/logout" responded 204 in 605.9529 ms
+09/26/2020 22:59:58 HTTP "POST" "/api/users/refresh-token" responded 500 in 590.9100 ms
+System.ArgumentException: A null key is not valid in this context
+   at StackExchange.Redis.RedisKey.AssertNotNull() in /_/src/StackExchange.Redis/RedisKey.cs:line 171
+   at StackExchange.Redis.Message.CommandKeyBase..ctor(Int32 db, CommandFlags flags, RedisCommand command, RedisKey& key) in /_/src/StackExchange.Redis/Message.cs:line 806
+   at StackExchange.Redis.Message.CommandKeyMessage..ctor(Int32 db, CommandFlags flags, RedisCommand command, RedisKey& key) in /_/src/StackExchange.Redis/Message.cs:line 956
+   at StackExchange.Redis.Message.Create(Int32 db, CommandFlags flags, RedisCommand command, RedisKey& key) in /_/src/StackExchange.Redis/Message.cs:line 239
+   at StackExchange.Redis.RedisDatabase.StringGetAsync(RedisKey key, CommandFlags flags) in /_/src/StackExchange.Redis/RedisDatabase.cs:line 2393
+   at DocumentsKM.Services.RedisCacheService.GetCacheValueAsync(String key, Byte dbNum) in D:\Dev\Gipromez\server\Services\Cache\RedisCacheService.cs:line 25
+   at DocumentsKM.Services.UserService.RefreshToken(String token, String ipAddress) in D:\Dev\Gipromez\server\Services\User\UserService.cs:line 56
+   at WebApi.Controllers.UsersController.RefreshToken() in D:\Dev\Gipromez\server\Controllers\UsersController.cs:line 197
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+09/26/2020 22:59:58 Connection id ""0HM328N1OR7TR"", Request id ""0HM328N1OR7TR:00000008"": An unhandled exception was thrown by the application.
+System.ArgumentException: A null key is not valid in this context
+   at StackExchange.Redis.RedisKey.AssertNotNull() in /_/src/StackExchange.Redis/RedisKey.cs:line 171
+   at StackExchange.Redis.Message.CommandKeyBase..ctor(Int32 db, CommandFlags flags, RedisCommand command, RedisKey& key) in /_/src/StackExchange.Redis/Message.cs:line 806
+   at StackExchange.Redis.Message.CommandKeyMessage..ctor(Int32 db, CommandFlags flags, RedisCommand command, RedisKey& key) in /_/src/StackExchange.Redis/Message.cs:line 956
+   at StackExchange.Redis.Message.Create(Int32 db, CommandFlags flags, RedisCommand command, RedisKey& key) in /_/src/StackExchange.Redis/Message.cs:line 239
+   at StackExchange.Redis.RedisDatabase.StringGetAsync(RedisKey key, CommandFlags flags) in /_/src/StackExchange.Redis/RedisDatabase.cs:line 2393
+   at DocumentsKM.Services.RedisCacheService.GetCacheValueAsync(String key, Byte dbNum) in D:\Dev\Gipromez\server\Services\Cache\RedisCacheService.cs:line 25
+   at DocumentsKM.Services.UserService.RefreshToken(String token, String ipAddress) in D:\Dev\Gipromez\server\Services\User\UserService.cs:line 56
+   at WebApi.Controllers.UsersController.RefreshToken() in D:\Dev\Gipromez\server\Controllers\UsersController.cs:line 197
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+09/26/2020 23:25:37 Application is shutting down
+09/26/2020 23:26:17 Application starting up
+09/26/2020 23:26:49 HTTP "POST" "/api/users/refresh-token" responded 401 in 860.6449 ms
+09/26/2020 23:27:14 HTTP "POST" "/api/users/logout" responded 401 in 10.8936 ms
+09/26/2020 23:27:22 HTTP "POST" "/api/users/login" responded 200 in 853.8593 ms
+09/26/2020 23:27:27 HTTP "POST" "/api/users/refresh-token" responded 200 in 583.6512 ms
+09/26/2020 23:27:30 HTTP "POST" "/api/users/refresh-token" responded 200 in 580.2946 ms
+09/26/2020 23:27:41 HTTP "POST" "/api/users/logout" responded 204 in 574.5461 ms
+09/26/2020 23:52:04 HTTP "GET" "/api/projects" responded 401 in 1.1086 ms

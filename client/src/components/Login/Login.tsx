@@ -54,7 +54,8 @@ const Login = () => {
 						onBlur={onLoginChange}
 						type="text"
 						placeholder="Введите ваш логин"
-						spellCheck="false"
+                        spellCheck="false"
+                        maxLength={255}
 						required
 					/>
 				</div>
@@ -69,8 +70,9 @@ const Login = () => {
 						type="password"
 						onBlur={onPasswordChange}
 						placeholder="Введите ваш пароль"
-						spellCheck="false"
-						required
+                        spellCheck="false"
+                        maxLength={255}
+                        required
 					/>
 				</div>
 

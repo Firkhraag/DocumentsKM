@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import httpClient, { tokenKeyName } from '../axios'
+import httpClient, { tokenKeyName, setToken } from '../axios'
 
-const AuthContext = createContext<boolean>(false)
+const AuthContext = createContext<string>(null)
 
 type DispatchContextType = {
     login: (login: string, password: string) => void
@@ -17,21 +17,21 @@ type AuthProviderProps = {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [authenticatedUser, setAuthenticatedUser] = useState<string>(null)
 
     const login = async (login: string, password: string) => {
         if (
 			login.length > 0 &&
-			login.length < 100 &&
+			login.length < 256 &&
 			password.length > 0 &&
-			password.length < 100
+			password.length < 256
 		) {
-			const response = await httpClient.post('/api/auth/login', {
+			const response = await httpClient.post('/api/users/login', {
 				login: login,
 				password: password,
             })
-            localStorage.setItem(tokenKeyName, response.data.token)
-            setIsAuthenticated(true)
+            setToken(response.data.token)
+            setAuthenticatedUser(response.data.fullName)
 		} else {
             throw new Error('Неверный логин или пароль')
         }
@@ -42,15 +42,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     useEffect(() => {
         const fetchData = async () => {
-            // const result = await axios.post(protocol + '://' + host + '/api/login')
-            // setAuth(result.data)
+            try {
+                const response = await httpClient.post('/api/users/refresh-token')
+                setToken(response.data.token)
+                setAuthenticatedUser(response.data.fullName)
+            } catch (e) {
+                setAuthenticatedUser('')
+            }
         }
-       
         fetchData()
     }, []);
 
 	return (
-		<AuthContext.Provider value={isAuthenticated}>
+		<AuthContext.Provider value={authenticatedUser}>
 			<AuthDispatchContext.Provider value={{login, logout}}>
 				{children}
 			</AuthDispatchContext.Provider>
