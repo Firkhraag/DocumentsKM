@@ -1,0 +1,8 @@
+09/28/2020 17:58:22 Application starting up
+09/28/2020 17:58:30 {"Id":0,"FullName":"Test employee1","AccessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAiLCJuYmYiOjE2MDEyOTc5MTAsImV4cCI6MTYwMTI5ODgxMCwiaWF0IjoxNjAxMjk3OTEwfQ.R7Jx5ol_vNsvAJzTnuZguEhw6eBuVjt8tvhbRfVQAfE"}
+09/28/2020 17:58:30 HTTP "POST" "/api/users/login" responded 200 in 1126.5458 ms
+09/28/2020 17:58:40 Application is shutting down
+09/28/2020 20:47:11 Application starting up
+09/28/2020 20:47:45 HTTP "POST" "/api/users/login" responded 400 in 819.5195 ms
+09/28/2020 20:47:51 HTTP "POST" "/api/users/login" responded 200 in 887.7789 ms
+09/28/2020 21:14:13 Application is shutting down
