@@ -162,8 +162,6 @@ D:\Dev\Gipromez\server\bin\Debug\net5.0\Logs\log20200928.json
 D:\Dev\Gipromez\server\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.Testing.dll
 D:\Dev\Gipromez\server\bin\Debug\net5.0\Microsoft.AspNetCore.TestHost.dll
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\appsettings.Development.json
-D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Logs\log20200920.json
-D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Logs\log20200921.json
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Logs\log20200923.json
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Logs\log20200924.json
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Logs\log20200925.json
@@ -238,3 +236,6 @@ D:\Dev\Gipromez\server\DocumentsKM\obj\Debug\net5.0\DocumentsKM.pdb
 D:\Dev\Gipromez\server\DocumentsKM\obj\Debug\net5.0\DocumentsKM.genruntimeconfig.cache
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Logs\log20200929.json
 D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
+D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Logs\log20200930.json
+D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Swashbuckle.AspNetCore.Annotations.dll
+D:\Dev\Gipromez\server\DocumentsKM\bin\Debug\net5.0\Logs\log20201001.json

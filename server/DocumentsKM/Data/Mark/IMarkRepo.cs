@@ -17,8 +17,5 @@ namespace DocumentsKM.Data
 
         void Create(Mark mark);
         void Update(Mark mark);
-
-        // Применить изменения (EF)
-        bool SaveChanges();
     }
 }

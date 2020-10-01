@@ -9,8 +9,5 @@ namespace DocumentsKM.Data
         IEnumerable<Department> GetAllActive();
         // Получить отдел по номеру
         Department GetByNumber(int number);
-
-        // Применить изменения (EF)
-        bool SaveChanges();
     }
 }

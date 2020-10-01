@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
@@ -7,9 +6,9 @@ namespace DocumentsKM.Services
 {
     public class SqlUserRepo : IUserRepo
     {
-        private UserContext _context;
+        private ApplicationContext _context;
 
-        public SqlUserRepo(UserContext context)
+        public SqlUserRepo(ApplicationContext context)
         {
             _context = context;
         }
@@ -27,11 +26,6 @@ namespace DocumentsKM.Services
         public User GetByLogin(string login)
         {
             return _context.Users.SingleOrDefault(u => u.Login == login);
-        }
-
-        public bool SaveChanges()
-        {
-            return (_context.SaveChanges() >= 0);
         }
     }
 }

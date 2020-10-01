@@ -6,8 +6,5 @@ namespace DocumentsKM.Data
     {
         // Получить должность по коду
         Position GetByCode(int code);
-
-        // Применить изменения (EF)
-        bool SaveChanges();
     }
 }

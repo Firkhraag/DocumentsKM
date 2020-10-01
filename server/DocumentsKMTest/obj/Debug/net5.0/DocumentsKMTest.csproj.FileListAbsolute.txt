@@ -101,7 +101,6 @@ D:\Dev\Gipromez\server\DocumentsKMTest\obj\Debug\net5.0\DocumentsKMTest.genrunti
 D:\Dev\Gipromez\server\DocumentsKMTest\obj\Debug\net5.0\DocumentsKMTest.MvcApplicationPartsAssemblyInfo.cache
 D:\Dev\Gipromez\server\DocumentsKMTest\bin\Debug\net5.0\appsettings.Development.json
 D:\Dev\Gipromez\server\DocumentsKMTest\bin\Debug\net5.0\appsettings.json
-D:\Dev\Gipromez\server\DocumentsKMTest\bin\Debug\net5.0\Logs\log20200920.json
 D:\Dev\Gipromez\server\DocumentsKMTest\bin\Debug\net5.0\Logs\log20200921.json
 D:\Dev\Gipromez\server\DocumentsKMTest\bin\Debug\net5.0\Logs\log20200923.json
 D:\Dev\Gipromez\server\DocumentsKMTest\bin\Debug\net5.0\Logs\log20200924.json
@@ -162,3 +161,5 @@ D:\Dev\Gipromez\server\DocumentsKMTest\obj\Debug\net5.0\DocumentsKMTest.MvcAppli
 D:\Dev\Gipromez\server\DocumentsKMTest\obj\Debug\net5.0\DocumentsKMTest.RazorTargetAssemblyInfo.cache
 D:\Dev\Gipromez\server\DocumentsKMTest\obj\Debug\net5.0\staticwebassets\DocumentsKMTest.StaticWebAssets.Manifest.cache
 D:\Dev\Gipromez\server\DocumentsKMTest\obj\Debug\net5.0\staticwebassets\DocumentsKMTest.StaticWebAssets.xml
+D:\Dev\Gipromez\server\DocumentsKMTest\bin\Debug\net5.0\Logs\log20200930.json
+D:\Dev\Gipromez\server\DocumentsKMTest\bin\Debug\net5.0\Swashbuckle.AspNetCore.Annotations.dll

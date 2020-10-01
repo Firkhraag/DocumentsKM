@@ -92,6 +92,12 @@ namespace DocumentsKM
                 };
             });
 
+            // Подключение к базе данных
+            // Postgres
+            services.AddDbContext<ApplicationContext>(opt => opt.UseNpgsql(
+                Configuration.GetConnectionString("PostgresConnection")
+            ));
+
             // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(Startup));
 
@@ -106,7 +112,7 @@ namespace DocumentsKM
             injectScopedRepositories(services);
         }
 
-        public void injectScopedServices(IServiceCollection services)
+        private void injectScopedServices(IServiceCollection services)
         {
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<INodeService, NodeService>();
@@ -117,16 +123,16 @@ namespace DocumentsKM
             services.AddScoped<IUserService, UserService>();
         }
 
-        public void injectScopedRepositories(IServiceCollection services)
+        private void injectScopedRepositories(IServiceCollection services)
         {
-            services.AddScoped<IProjectRepo, MockProjectRepo>();
-            services.AddScoped<INodeRepo, MockNodeRepo>();
-            services.AddScoped<ISubnodeRepo, MockSubnodeRepo>();
-            services.AddScoped<IMarkRepo, MockMarkRepo>();
-            services.AddScoped<IEmployeeRepo, MockEmployeeRepo>();
-            services.AddScoped<IDepartmentRepo, MockDepartmentRepo>();
-            services.AddScoped<IPositionRepo, MockPositionRepo>();
-            services.AddScoped<IUserRepo, MockUserRepo>();
+            services.AddScoped<IProjectRepo, SqlProjectRepo>();
+            services.AddScoped<INodeRepo, SqlNodeRepo>();
+            services.AddScoped<ISubnodeRepo, SqlSubnodeRepo>();
+            services.AddScoped<IMarkRepo, SqlMarkRepo>();
+            services.AddScoped<IEmployeeRepo, SqlEmployeeRepo>();
+            services.AddScoped<IDepartmentRepo, SqlDepartmentRepo>();
+            services.AddScoped<IPositionRepo, SqlPositionRepo>();
+            services.AddScoped<IUserRepo, SqlUserRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -136,21 +142,22 @@ namespace DocumentsKM
             // context.Users.Add(new User { FirstName = "Test", LastName = "User", Username = "test", Password = "test" });
             // context.SaveChanges();
 
-            if (env.IsDevelopment())
-            {
-                app.UseExceptionHandler("/error-local-development");
-            }
-            else
-            {
-                app.UseExceptionHandler("/error");
-            }
+            // if (env.IsDevelopment())
+            // {
+            //     app.UseExceptionHandler("/error-local-development");
+            // }
+            // else
+            // {
+            //     app.UseExceptionHandler("/error");
+            // }
+            app.UseExceptionHandler("/error");
 
             app.UseCors("EnableCORS");
 
             // Swagger UI
             app.UseSwagger().UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DocumentsKM API");
             });
 
             app.UseHttpsRedirection();

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "FQ6OG7jXSPPBhAxc0Tkb8oifWTtfIenoYRZ7xa+cSbjCQ6oVLoiRSkjt0ng03bHF9AGEhDnVGiziGIvdcLQuxg==",
+  "dgSpecHash": "QNV5EQge0X3ecnjEt7KA1wMx1JCEm183JsKPGlua8k2aHGatpWLW+srrbtMf8kVCZbe+9f3IwUDhdNyO5lGDlQ==",
   "success": true,
   "projectFilePath": "D:\\Dev\\Gipromez\\server\\DocumentsKMTest\\DocumentsKMTest.csproj",
   "expectedPackageFiles": [
@@ -100,6 +100,7 @@
     "C:\\Users\\sigla\\.nuget\\packages\\serilog.sinks.file\\4.1.0\\serilog.sinks.file.4.1.0.nupkg.sha512",
     "C:\\Users\\sigla\\.nuget\\packages\\stackexchange.redis\\2.1.58\\stackexchange.redis.2.1.58.nupkg.sha512",
     "C:\\Users\\sigla\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "C:\\Users\\sigla\\.nuget\\packages\\swashbuckle.aspnetcore.annotations\\5.6.3\\swashbuckle.aspnetcore.annotations.5.6.3.nupkg.sha512",
     "C:\\Users\\sigla\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
     "C:\\Users\\sigla\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.6.3\\swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
     "C:\\Users\\sigla\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\5.6.3\\swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512",

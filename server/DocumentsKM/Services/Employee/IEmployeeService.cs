@@ -6,6 +6,9 @@ namespace DocumentsKM.Services
     public interface IEmployeeService
     {
         // Получить всех сотрудников для согласования
-        IEnumerable<Employee> GetAllApprovalByDepartmentId(int departmentId);
+        IEnumerable<Employee> GetAllApprovalByDepartmentNumber(int departmentNumber);
+
+        // Получить сотрудника по id
+        Employee GetById(int id);
     }
 }

@@ -12,7 +12,7 @@ namespace DocumentsKM.Models
 
         // Проект
         [Required]
-        [ForeignKey("ProjectFK")]
+        [ForeignKey("ProjectId")]
         public Project Project { get; set; }
 
         // КодУзла
@@ -32,7 +32,7 @@ namespace DocumentsKM.Models
 
         // ГИП
         [Required]
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ChiefEngineerId")]
         public Employee ChiefEngineer { get; set; }
 
         // АктивУзел

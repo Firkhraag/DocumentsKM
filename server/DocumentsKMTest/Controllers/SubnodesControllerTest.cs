@@ -16,7 +16,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllSubnodes_ReturnsUnauthorized()
+        public async Task GetAllByNodeId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
             var endpoint = "/api/nodes/0/subnodes";

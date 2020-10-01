@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Net;
 using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace DocumentsKM.Controllers
 {
@@ -46,8 +48,9 @@ namespace DocumentsKM.Controllers
         //     return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
         // }
 
-        [Route("marks")]
-        [HttpGet("{id}")]
+        [HttpGet, Route("marks/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public ActionResult<MarkReadDto> GetById(int id)
         {
             var mark = _service.GetById(id);

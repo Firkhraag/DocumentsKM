@@ -16,7 +16,7 @@ namespace DocumentsKM.Models
         [MaxLength(255)]
         public string Password { get; set; }
         
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("EmployeeId")]
         public Employee Employee { get; set; }
     }
 }

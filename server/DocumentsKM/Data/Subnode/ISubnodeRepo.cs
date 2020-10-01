@@ -12,8 +12,5 @@ namespace DocumentsKM.Data
 
         // Получить подузел по id
         Subnode GetById(int id);
-
-        // Применить изменения (EF)
-        bool SaveChanges();
     }
 }

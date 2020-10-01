@@ -13,12 +13,20 @@ namespace DocumentsKM.Services
             _repository = EmployeeRepo;
         }
 
-        public IEnumerable<Employee> GetAllApprovalByDepartmentId(int departmentId)
+        public IEnumerable<Employee> GetAllApprovalByDepartmentNumber(int departmentNumber)
         {
             int minPosCode = 1170;
             int maxPosCode = 1251;
-            var employees = _repository.GetAllByDepartmentNumberWithPositions(departmentId, minPosCode, maxPosCode);
+            var employees = _repository.GetAllByDepartmentNumberWithPositions(
+                departmentNumber,
+                minPosCode,
+                maxPosCode);
             return employees;
+        }
+
+        public Employee GetById(int id)
+        {
+            return _repository.GetById(id);
         }
     }
 }

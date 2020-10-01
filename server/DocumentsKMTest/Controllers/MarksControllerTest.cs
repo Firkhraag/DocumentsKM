@@ -16,7 +16,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllMarks_ReturnsUnauthorized()
+        public async Task GetAllBySubnodeId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
             var endpoint = "/api/subnodes/0/marks";

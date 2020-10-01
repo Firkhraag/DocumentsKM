@@ -24,9 +24,9 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("departments/{departmentId}/approval-employees")]
-        public ActionResult<IEnumerable<EmployeeNameResponse>> GetAllApprovalByDepartmentId(int departmentId)
+        public ActionResult<IEnumerable<EmployeeNameResponse>> GetAllApprovalByDepartmentId(int departmentNumber)
         {
-            var employees = _service.GetAllApprovalByDepartmentId(departmentId);
+            var employees = _service.GetAllApprovalByDepartmentNumber(departmentNumber);
             return Ok(_mapper.Map<IEnumerable<EmployeeNameResponse>>(employees));
         }
     }

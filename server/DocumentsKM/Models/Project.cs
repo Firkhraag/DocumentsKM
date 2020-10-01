@@ -29,11 +29,11 @@ namespace DocumentsKM.Models
         public string BaseSeries { get; set; }
 
         // Утвердил1
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("Approved1Id")]
         public Employee Approved1 { get; set; }
 
         // Утвердил2
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("Approved2Id")]
         public Employee Approved2 { get; set; }
     }
 }

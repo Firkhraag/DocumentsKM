@@ -9,8 +9,5 @@ namespace DocumentsKM.Data
         IEnumerable<Node> GetAllByProjectId(int projectId);
         // Получить узел по id
         Node GetById(int id);
-
-        // Применить изменения (EF)
-        bool SaveChanges();
     }
 }

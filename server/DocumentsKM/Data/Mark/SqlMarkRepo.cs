@@ -7,9 +7,9 @@ namespace DocumentsKM.Data
 {
     public class SqlMarkRepo : IMarkRepo
     {
-        private readonly MarkContext _context;
+        private readonly ApplicationContext _context;
 
-        public SqlMarkRepo(MarkContext context)
+        public SqlMarkRepo(ApplicationContext context)
         {
             _context = context;
         }
@@ -47,11 +47,6 @@ namespace DocumentsKM.Data
         public void Update(Mark mark)
         {
             // Do nothing
-        }
-
-        public bool SaveChanges()
-        {
-            return (_context.SaveChanges() >= 0);
         }
     }
 }

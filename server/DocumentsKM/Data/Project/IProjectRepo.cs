@@ -9,8 +9,5 @@ namespace DocumentsKM.Data
         IEnumerable<Project> GetAll();
         // Получить проект по id
         Project GetById(int id);
-
-        // Применить изменения (EF)
-        bool SaveChanges();
     }
 }

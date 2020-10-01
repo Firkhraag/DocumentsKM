@@ -187,6 +187,10 @@
               "target": "Package",
               "version": "[5.6.3, )"
             },
+            "Swashbuckle.AspNetCore.Annotations": {
+              "target": "Package",
+              "version": "[5.6.3, )"
+            },
             "Swashbuckle.AspNetCore.SwaggerGen": {
               "target": "Package",
               "version": "[5.6.3, )"

@@ -13,7 +13,7 @@ namespace DocumentsKM.Models
         // Id_марки
         // FOREIGN KEY т. Марки
         [Required]
-        [ForeignKey("MarkFK")]
+        [ForeignKey("MarkId")]
         public Mark Mark { get; set; }
 
         // выпуск

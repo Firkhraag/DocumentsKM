@@ -1,0 +1,11 @@
+Авторизация
+Используются маложивущий access token и долгоживущий refresh token.
+Access token передается в теле, а refresh token - в cookie.
+
+Server
+Используются 3 слоя:
+Controller -> Service -> Repository
+
+Controller слой отвечает за http логику.
+Service слой содержит в себе всю бизнес логику.
+Repository слой используется для CRUD операций.

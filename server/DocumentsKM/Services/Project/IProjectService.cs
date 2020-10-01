@@ -7,5 +7,8 @@ namespace DocumentsKM.Services
     {
         // Получить все проекты
         IEnumerable<Project> GetAll();
+
+        // Получить проект по id
+        Project GetById(int id);
     }
 }

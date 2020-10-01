@@ -12,8 +12,5 @@ namespace DocumentsKM.Data
         User GetById(int id);
         // Получить пользователя по логину
         User GetByLogin(string login);
-
-        // Применить изменения (EF)
-        bool SaveChanges();
     }
 }

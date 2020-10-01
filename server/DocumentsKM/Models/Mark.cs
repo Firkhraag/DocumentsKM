@@ -11,7 +11,7 @@ namespace DocumentsKM.Models
 
         // ОА_Подузел
         [Required]
-        [ForeignKey("SubnodeFK")]
+        [ForeignKey("SubnodeId")]
         public Subnode Subnode { get; set; }
 
         // КодМарки
@@ -33,48 +33,48 @@ namespace DocumentsKM.Models
 
         // Код_отд
         [Required]
-        [ForeignKey("DepartmentFK")]
+        [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
 
         // Гл_спец
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ChiefSpecialistId")]
         public Employee ChiefSpecialist { get; set; }
 
         // Рук_гр 
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("GroupLeaderId")]
         public Employee GroupLeader { get; set; }
 
         // Гл_стр 
         [Required]
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("MainBulderId")]
         public Employee MainBulder { get; set; }
 
         // Исп1
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ApprovalSpecialist1Id")]
         public Employee ApprovalSpecialist1 { get; set; }
 
         // Исп2
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ApprovalSpecialist2Id")]
         public Employee ApprovalSpecialist2 { get; set; }
 
         // Исп3
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ApprovalSpecialist3Id")]
         public Employee ApprovalSpecialist3 { get; set; }
 
         // Исп4
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ApprovalSpecialist4Id")]
         public Employee ApprovalSpecialist4 { get; set; }
 
         // Исп5
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ApprovalSpecialist5Id")]
         public Employee ApprovalSpecialist5 { get; set; }
 
         // Исп6
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ApprovalSpecialist6Id")]
         public Employee ApprovalSpecialist6 { get; set; }
 
         // Исп7
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("ApprovalSpecialist7Id")]
         public Employee ApprovalSpecialist7 { get; set; }
     }
 }

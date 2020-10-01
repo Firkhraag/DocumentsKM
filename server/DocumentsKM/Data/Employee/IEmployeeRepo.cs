@@ -10,8 +10,5 @@ namespace DocumentsKM.Data
         // Получить всех сотрудников по id отдела с кодом должности в интервале
         IEnumerable<Employee> GetAllByDepartmentNumberWithPositions(
             int departmentNumber, int minPosCode, int maxPosCode);
-
-        // Применить изменения (EF)
-        bool SaveChanges();
     }
 }

@@ -16,7 +16,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllProjects_ReturnsUnauthorized()
+        public async Task GetAll_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
             var endpoint = "/api/projects";

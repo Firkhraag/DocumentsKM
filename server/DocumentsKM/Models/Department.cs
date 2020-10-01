@@ -35,7 +35,7 @@ namespace DocumentsKM.Models
 
         // Нач_отд 
         [Required]
-        [ForeignKey("EmployeeFK")]
+        [ForeignKey("DepartmentHeadId")]
         public Employee DepartmentHead { get; set; }
     }
 }
