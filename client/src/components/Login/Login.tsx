@@ -25,7 +25,7 @@ const Login = () => {
         try {
             await authMethods.login(inputValues.login, inputValues.password)
         } catch (e) {
-            if (e.message === 'Request failed with status code 401') {
+            if (e.message === 'Request failed with status code 400') {
                 e.message = 'Неверный логин или пароль'
             }
             setErrMsg(e.message)

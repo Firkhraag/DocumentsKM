@@ -61,7 +61,7 @@ namespace DocumentsKM.Migrations
                     code = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     is_industrial = table.Column<bool>(type: "boolean", nullable: false),
-                    department_head_id = table.Column<int>(type: "integer", nullable: false)
+                    department_head_id = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -71,7 +71,7 @@ namespace DocumentsKM.Migrations
                         column: x => x.department_head_id,
                         principalTable: "employees",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -279,107 +279,107 @@ namespace DocumentsKM.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_departments_department_head_id",
+                name: "ix_departments_department_head_id",
                 table: "departments",
                 column: "department_head_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_employees_department_number",
+                name: "ix_employees_department_number",
                 table: "employees",
                 column: "department_number");
 
             migrationBuilder.CreateIndex(
-                name: "IX_employees_position_code",
+                name: "ix_employees_position_code",
                 table: "employees",
                 column: "position_code");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_approval_specialist1_id",
+                name: "ix_marks_approval_specialist1_id",
                 table: "marks",
                 column: "approval_specialist1_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_approval_specialist2_id",
+                name: "ix_marks_approval_specialist2_id",
                 table: "marks",
                 column: "approval_specialist2_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_approval_specialist3_id",
+                name: "ix_marks_approval_specialist3_id",
                 table: "marks",
                 column: "approval_specialist3_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_approval_specialist4_id",
+                name: "ix_marks_approval_specialist4_id",
                 table: "marks",
                 column: "approval_specialist4_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_approval_specialist5_id",
+                name: "ix_marks_approval_specialist5_id",
                 table: "marks",
                 column: "approval_specialist5_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_approval_specialist6_id",
+                name: "ix_marks_approval_specialist6_id",
                 table: "marks",
                 column: "approval_specialist6_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_approval_specialist7_id",
+                name: "ix_marks_approval_specialist7_id",
                 table: "marks",
                 column: "approval_specialist7_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_chief_specialist_id",
+                name: "ix_marks_chief_specialist_id",
                 table: "marks",
                 column: "chief_specialist_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_department_id",
+                name: "ix_marks_department_id",
                 table: "marks",
                 column: "department_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_group_leader_id",
+                name: "ix_marks_group_leader_id",
                 table: "marks",
                 column: "group_leader_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_main_bulder_id",
+                name: "ix_marks_main_bulder_id",
                 table: "marks",
                 column: "main_bulder_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_marks_subnode_id",
+                name: "ix_marks_subnode_id",
                 table: "marks",
                 column: "subnode_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_nodes_chief_engineer_id",
+                name: "ix_nodes_chief_engineer_id",
                 table: "nodes",
                 column: "chief_engineer_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_nodes_project_id",
+                name: "ix_nodes_project_id",
                 table: "nodes",
                 column: "project_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_projects_approved1_id",
+                name: "ix_projects_approved1_id",
                 table: "projects",
                 column: "approved1_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_projects_approved2_id",
+                name: "ix_projects_approved2_id",
                 table: "projects",
                 column: "approved2_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_subnodes_node_id",
+                name: "ix_subnodes_node_id",
                 table: "subnodes",
                 column: "node_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_employee_id",
+                name: "ix_users_employee_id",
                 table: "users",
                 column: "employee_id");
 

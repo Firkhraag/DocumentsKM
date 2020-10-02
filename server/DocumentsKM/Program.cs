@@ -1,6 +1,8 @@
 using System;
+using DocumentsKM.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
@@ -20,10 +22,27 @@ namespace DocumentsKM
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
 
+            var host = CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<ApplicationContext>();
+                    DbInitializer.Initialize(context);
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal(ex, "An error occurred while seeding the database");
+                    return;
+                }
+            }
+
             try
             {
                 Log.Information("Application starting up");
-                CreateHostBuilder(args).Build().Run();
+                host.Run();
             }
             catch (Exception ex)
             {
@@ -35,6 +54,22 @@ namespace DocumentsKM
                 // Записываем оставшиеся логи
                 Log.CloseAndFlush();
             }
+
+            // try
+            // {
+            //     Log.Information("Application starting up");
+            //     CreateHostBuilder(args).Build().Run();
+            // }
+            // catch (Exception ex)
+            // {
+            //     Log.Fatal(ex, "Application failed to start");
+            // }
+            // finally
+            // {
+            //     Log.Information("Application is shutting down");
+            //     // Записываем оставшиеся логи
+            //     Log.CloseAndFlush();
+            // }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DocumentsKM.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20201001080219_InitialCreate")]
+    [Migration("20201002041039_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace DocumentsKM.Migrations
                         .HasColumnType("character varying(5)")
                         .HasColumnName("code");
 
-                    b.Property<int>("DepartmentHeadId")
+                    b.Property<int?>("DepartmentHeadId")
                         .HasColumnType("integer")
                         .HasColumnName("department_head_id");
 
@@ -62,7 +62,8 @@ namespace DocumentsKM.Migrations
                     b.HasKey("Number")
                         .HasName("pk_departments");
 
-                    b.HasIndex("DepartmentHeadId");
+                    b.HasIndex("DepartmentHeadId")
+                        .HasDatabaseName("ix_departments_department_head_id");
 
                     b.ToTable("departments");
                 });
@@ -121,9 +122,11 @@ namespace DocumentsKM.Migrations
                     b.HasKey("Id")
                         .HasName("pk_employees");
 
-                    b.HasIndex("DepartmentNumber");
+                    b.HasIndex("DepartmentNumber")
+                        .HasDatabaseName("ix_employees_department_number");
 
-                    b.HasIndex("PositionCode");
+                    b.HasIndex("PositionCode")
+                        .HasDatabaseName("ix_employees_position_code");
 
                     b.ToTable("employees");
                 });
@@ -205,29 +208,41 @@ namespace DocumentsKM.Migrations
                     b.HasKey("Id")
                         .HasName("pk_marks");
 
-                    b.HasIndex("ApprovalSpecialist1Id");
+                    b.HasIndex("ApprovalSpecialist1Id")
+                        .HasDatabaseName("ix_marks_approval_specialist1_id");
 
-                    b.HasIndex("ApprovalSpecialist2Id");
+                    b.HasIndex("ApprovalSpecialist2Id")
+                        .HasDatabaseName("ix_marks_approval_specialist2_id");
 
-                    b.HasIndex("ApprovalSpecialist3Id");
+                    b.HasIndex("ApprovalSpecialist3Id")
+                        .HasDatabaseName("ix_marks_approval_specialist3_id");
 
-                    b.HasIndex("ApprovalSpecialist4Id");
+                    b.HasIndex("ApprovalSpecialist4Id")
+                        .HasDatabaseName("ix_marks_approval_specialist4_id");
 
-                    b.HasIndex("ApprovalSpecialist5Id");
+                    b.HasIndex("ApprovalSpecialist5Id")
+                        .HasDatabaseName("ix_marks_approval_specialist5_id");
 
-                    b.HasIndex("ApprovalSpecialist6Id");
+                    b.HasIndex("ApprovalSpecialist6Id")
+                        .HasDatabaseName("ix_marks_approval_specialist6_id");
 
-                    b.HasIndex("ApprovalSpecialist7Id");
+                    b.HasIndex("ApprovalSpecialist7Id")
+                        .HasDatabaseName("ix_marks_approval_specialist7_id");
 
-                    b.HasIndex("ChiefSpecialistId");
+                    b.HasIndex("ChiefSpecialistId")
+                        .HasDatabaseName("ix_marks_chief_specialist_id");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("DepartmentId")
+                        .HasDatabaseName("ix_marks_department_id");
 
-                    b.HasIndex("GroupLeaderId");
+                    b.HasIndex("GroupLeaderId")
+                        .HasDatabaseName("ix_marks_group_leader_id");
 
-                    b.HasIndex("MainBulderId");
+                    b.HasIndex("MainBulderId")
+                        .HasDatabaseName("ix_marks_main_bulder_id");
 
-                    b.HasIndex("SubnodeId");
+                    b.HasIndex("SubnodeId")
+                        .HasDatabaseName("ix_marks_subnode_id");
 
                     b.ToTable("marks");
                 });
@@ -279,9 +294,11 @@ namespace DocumentsKM.Migrations
                     b.HasKey("Id")
                         .HasName("pk_nodes");
 
-                    b.HasIndex("ChiefEngineerId");
+                    b.HasIndex("ChiefEngineerId")
+                        .HasDatabaseName("ix_nodes_chief_engineer_id");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("ProjectId")
+                        .HasDatabaseName("ix_nodes_project_id");
 
                     b.ToTable("nodes");
                 });
@@ -353,9 +370,11 @@ namespace DocumentsKM.Migrations
                     b.HasKey("Id")
                         .HasName("pk_projects");
 
-                    b.HasIndex("Approved1Id");
+                    b.HasIndex("Approved1Id")
+                        .HasDatabaseName("ix_projects_approved1_id");
 
-                    b.HasIndex("Approved2Id");
+                    b.HasIndex("Approved2Id")
+                        .HasDatabaseName("ix_projects_approved2_id");
 
                     b.ToTable("projects");
                 });
@@ -397,7 +416,8 @@ namespace DocumentsKM.Migrations
                     b.HasKey("Id")
                         .HasName("pk_subnodes");
 
-                    b.HasIndex("NodeId");
+                    b.HasIndex("NodeId")
+                        .HasDatabaseName("ix_subnodes_node_id");
 
                     b.ToTable("subnodes");
                 });
@@ -429,7 +449,8 @@ namespace DocumentsKM.Migrations
                     b.HasKey("Id")
                         .HasName("pk_users");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeId")
+                        .HasDatabaseName("ix_users_employee_id");
 
                     b.HasIndex("Login")
                         .IsUnique();
@@ -442,9 +463,7 @@ namespace DocumentsKM.Migrations
                     b.HasOne("DocumentsKM.Models.Employee", "DepartmentHead")
                         .WithMany()
                         .HasForeignKey("DepartmentHeadId")
-                        .HasConstraintName("fk_departments_employees_department_head_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasConstraintName("fk_departments_employees_department_head_id");
 
                     b.Navigation("DepartmentHead");
                 });

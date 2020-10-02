@@ -35,7 +35,7 @@ namespace DocumentsKM.Services
             // Ищем пользователя с данным логином
             var foundUser = _repository.GetByLogin(user.Login);
             // Если не найден, то возвращаем null
-            if (user == null) return null;
+            if (foundUser == null) return null;
             // Проверяем пароль
             if (!BCrypt.Net.BCrypt.Verify(user.Password, foundUser.Password))
                 return null;

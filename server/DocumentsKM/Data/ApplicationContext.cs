@@ -31,10 +31,10 @@ namespace DocumentsKM.Data
                    key.SetConstraintName(key.GetConstraintName().ToSnakeCase());
                 }
 
-                // foreach(var index in entity.GetIndexes())
-                // {
-                //     index.SetName(index.GetName().ToSnakeCase());
-                // }
+                foreach(var index in entity.GetIndexes())
+                {
+                    index.SetDatabaseName(index.GetDatabaseName().ToSnakeCase());
+                }
             }
 
             // Unique constrains

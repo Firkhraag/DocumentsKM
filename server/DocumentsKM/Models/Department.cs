@@ -34,7 +34,6 @@ namespace DocumentsKM.Models
         public bool IsIndustrial { get; set; }
 
         // Нач_отд 
-        [Required]
         [ForeignKey("DepartmentHeadId")]
         public Employee DepartmentHead { get; set; }
     }
