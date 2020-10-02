@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useAuthMethods } from '../../store/AuthStore'
+import { useAuthMethods } from '../../store/UserStore'
 import Close from '../Svg/Close'
 import './Login.css'
 

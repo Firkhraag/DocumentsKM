@@ -34,12 +34,10 @@ namespace DocumentsKM
             {
                 opt.AddPolicy("EnableCORS", builder =>
                 {
-                    // builder.WithOrigins("https://localhost:8080")
-                    // .AllowAnyHeader()
-                    // .AllowAnyMethod();
-                    builder.AllowAnyOrigin()
+                    builder.WithOrigins("http://localhost:8080")
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
             });
 
@@ -94,9 +92,11 @@ namespace DocumentsKM
 
             // Подключение к базе данных
             // Postgres
-            services.AddDbContext<ApplicationContext>(opt => opt.UseNpgsql(
-                Configuration.GetConnectionString("PostgresConnection")
-            ));
+            services.AddDbContext<ApplicationContext>(
+                opt => opt.UseLazyLoadingProxies()
+                    .UseNpgsql(
+                        Configuration.GetConnectionString("PostgresConnection")
+                    ));
 
             // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(Startup));

@@ -13,7 +13,7 @@ namespace DocumentsKM.Models
         // Узел
         [Required]
         [ForeignKey("NodeId")]
-        public Node Node { get; set; }
+        public virtual Node Node { get; set; }
 
         // КодПодуз
         [Required]

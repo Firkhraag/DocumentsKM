@@ -1,5 +1,5 @@
 import React from 'react'
-import { AuthProvider } from '../store/AuthStore'
+import { AuthProvider } from '../store/UserStore'
 
 type AppProvidersProps = {
 	children: React.ReactNode

@@ -17,6 +17,6 @@ namespace DocumentsKM.Models
         public string Password { get; set; }
         
         [ForeignKey("EmployeeId")]
-        public Employee Employee { get; set; }
+        public virtual Employee Employee { get; set; }
     }
 }

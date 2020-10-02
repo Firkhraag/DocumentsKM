@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Spinner from '../components/Spinner/Spinner'
 import AuthApp from './AuthApp'
 import UnauthApp from './UnauthApp'
-import { useIsAuthenticated } from '../store/AuthStore'
+import { useIsAuthenticated } from '../store/UserStore'
 import './App.css'
 
 const App = () => {

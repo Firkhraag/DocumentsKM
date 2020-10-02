@@ -35,6 +35,6 @@ namespace DocumentsKM.Models
 
         // Нач_отд 
         [ForeignKey("DepartmentHeadId")]
-        public Employee DepartmentHead { get; set; }
+        public virtual Employee DepartmentHead { get; set; }
     }
 }

@@ -64,26 +64,26 @@ const MarkSelect = () => {
 				const projectsFetched = projectsFetchedResponse.data
 
 				// Not very nice, but we are not using GraphQL here
-				const recentMarksFetchedResponse = await httpClient.get(
-					'/api/marks/recent'
-				)
-				const recentMarksFetched = recentMarksFetchedResponse.data
-				console.log(recentMarksFetched)
+				// const recentMarksFetchedResponse = await httpClient.get(
+				// 	'/api/marks/recent'
+				// )
+				// const recentMarksFetched = recentMarksFetchedResponse.data
+				// console.log(recentMarksFetched)
 
-				const recentSubnodesIds: Array<number> = []
-				const recentSubnodesFetched: Array<Subnode> = []
-				for (let mark of recentMarksFetched) {
-					if (!recentSubnodesIds.includes(mark.subnode.id)) {
-						recentSubnodesIds.push(mark.subnode.id)
-						recentSubnodesFetched.push(mark.subnode)
-					}
-				}
+				// const recentSubnodesIds: Array<number> = []
+				// const recentSubnodesFetched: Array<Subnode> = []
+				// for (let mark of recentMarksFetched) {
+				// 	if (!recentSubnodesIds.includes(mark.subnode.id)) {
+				// 		recentSubnodesIds.push(mark.subnode.id)
+				// 		recentSubnodesFetched.push(mark.subnode)
+				// 	}
+				// }
 
 				// Set fetched objects as select options
 				setOptionsObject({
 					...defaultOptionsObject,
-					recentMarks: recentMarksFetched,
-					recentSubnodes: recentSubnodesFetched,
+					// recentMarks: recentMarksFetched,
+					// recentSubnodes: recentSubnodesFetched,
 					projects: projectsFetched,
 				})
 			} catch (e) {

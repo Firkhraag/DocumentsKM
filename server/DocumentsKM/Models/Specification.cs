@@ -14,7 +14,7 @@ namespace DocumentsKM.Models
         // FOREIGN KEY т. Марки
         [Required]
         [ForeignKey("MarkId")]
-        public Mark Mark { get; set; }
+        public virtual Mark Mark { get; set; }
 
         // выпуск
         [Required]

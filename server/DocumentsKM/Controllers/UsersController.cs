@@ -88,7 +88,10 @@ namespace DocumentsKM.Controllers
         {
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
+                // HttpOnly = true,
+                // Secure = true,
+                // Expires = DateTime.UtcNow.AddDays(ttl)
+                HttpOnly = false,
                 Secure = true,
                 Expires = DateTime.UtcNow.AddDays(ttl)
             };

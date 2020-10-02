@@ -30,10 +30,10 @@ namespace DocumentsKM.Models
 
         // Утвердил1
         [ForeignKey("Approved1Id")]
-        public Employee Approved1 { get; set; }
+        public virtual Employee Approved1 { get; set; }
 
         // Утвердил2
         [ForeignKey("Approved2Id")]
-        public Employee Approved2 { get; set; }
+        public virtual Employee Approved2 { get; set; }
     }
 }
