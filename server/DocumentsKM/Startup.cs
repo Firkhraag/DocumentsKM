@@ -9,10 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using StackExchange.Redis;
+using DocumentsKM.Services;
+using DocumentsKM.Helpers;
 
 namespace DocumentsKM
 {
@@ -27,122 +29,140 @@ namespace DocumentsKM
 
         public void ConfigureServices(IServiceCollection services)
         {
-
-            // Add CORS services
-            // services.AddCors();
+            // CORS
             services.AddCors(opt =>
             {
                 opt.AddPolicy("EnableCORS", builder =>
                 {
-                    // builder.WithOrigins("https://localhost:8080")
-                    // .AllowAnyHeader()
-                    // .AllowAnyMethod();
-                    builder.AllowAnyOrigin()
+                    builder.WithOrigins("http://localhost:8080")
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
             });
 
-            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //     .AddJwtBearer(opt =>
-            //     {
-            //         // Resource id of api
-            //         opt.Audience = Configuration["AAD:ResourceId"];
-            //     });
-
-            // services.AddAuthentication(opt =>
-            // {
-            //     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            // })
-            // .AddJwtBearer(opt =>
-            // {
-
-            // });
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opt =>
-            {
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    // Development mode
-                    ValidIssuer = "https://localhost:5001",
-                    // ValidAudience = "https://localhost:5001",
-                    ValidAudience = "http://localhost:8080",
-                    // Should be stored in env
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345")),
-                    ClockSkew = TimeSpan.Zero,
-                };
-            });
+            // Controllers
+            // Игнорировать JsonIgnore свойства
+            services.AddControllers()
+                .AddJsonOptions(
+                    opt => opt.JsonSerializerOptions.IgnoreNullValues = true
+                );
 
             // Add Swagger documentation
             // URI: https://localhost:5001/swagger
             services.AddSwaggerGen(options =>
-                {
-                    options.SwaggerDoc(
-                        "v1",
-                        new OpenApiInfo
-                        {
-                            Title = "Marks Data",
-                            Version = "v1",
-                            Description = "Service is used for reading, creating and updating marks"
-                        }
-                    );
-                });
-
-            // Configure connection to database
-            // Postgres
-            services.AddDbContext<MarkContext>(opt => opt.UseNpgsql(
-                Configuration.GetConnectionString("MarksDataConnection")
-            ));
-
-            services.AddControllers().AddNewtonsoftJson(s => {
-                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            {
+                options.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
+                    {
+                        Title = "DocumentsKM",
+                        Version = "v1",
+                        Description = "Service is used for reading, creating and updating marks"
+                    }
+                );
             });
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            // App settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
 
-            // Inject MockRepos into IRepos
-            services.AddScoped<IProjectRepo, MockProjectRepo>();
-            services.AddScoped<INodeRepo, MockNodeRepo>();
-            services.AddScoped<ISubnodeRepo, MockSubnodeRepo>();
-            services.AddScoped<IMarkRepo, MockMarkRepo>();
-            services.AddScoped<IEmployeeRepo, MockEmployeeRepo>();
-            services.AddScoped<IDepartmentRepo, MockDepartmentRepo>();
-            services.AddScoped<IPositionRepo, MockPositionRepo>();
-            // Inject SqlRepos into IRepos
-            // services.AddScoped<IMarkRepo, SqlMarkRepo>();
+            // Jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.JWTSecret);
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(opt =>
+            {
+                opt.RequireHttpsMetadata = false;
+                opt.SaveToken = true;
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    // Токен будет истекать точно в ExpirationTime
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            // Подключение к базе данных
+            // Postgres
+            services.AddDbContext<ApplicationContext>(
+                opt => opt.UseLazyLoadingProxies()
+                    .UseNpgsql(
+                        Configuration.GetConnectionString("PostgresConnection")
+                    ));
+
+            // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddSingleton<IConnectionMultiplexer>(x =>
+                ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
+            services.AddSingleton<ICacheService, RedisCacheService>();
+
+            // DI for application services
+            services.AddScoped<IUserService, UserService>();
+
+            injectScopedServices(services);
+            injectScopedRepositories(services);
+        }
+
+        private void injectScopedServices(IServiceCollection services)
+        {
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<INodeService, NodeService>();
+            services.AddScoped<ISubnodeService, SubnodeService>();
+            services.AddScoped<IMarkService, MarkService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IUserService, UserService>();
+        }
+
+        private void injectScopedRepositories(IServiceCollection services)
+        {
+            services.AddScoped<IProjectRepo, SqlProjectRepo>();
+            services.AddScoped<INodeRepo, SqlNodeRepo>();
+            services.AddScoped<ISubnodeRepo, SqlSubnodeRepo>();
+            services.AddScoped<IMarkRepo, SqlMarkRepo>();
+            services.AddScoped<IEmployeeRepo, SqlEmployeeRepo>();
+            services.AddScoped<IDepartmentRepo, SqlDepartmentRepo>();
+            services.AddScoped<IPositionRepo, SqlPositionRepo>();
+            services.AddScoped<IUserRepo, SqlUserRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            // add hardcoded test user to db on startup,  
+            // plain text password is used for simplicity, hashed passwords should be used in production applications
+            // context.Users.Add(new User { FirstName = "Test", LastName = "User", Username = "test", Password = "test" });
+            // context.SaveChanges();
 
-            // Enable CORS
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // SECURITY BREACH, REPLACE TO SECOND LINE WHEN USING FRONTEND SERVER
-            // Dev
-            // app.UseCors(builder => builder.AllowAnyOrigin());
-            // Prod
-            // app.UseCors(builder => builder.WithOrigins("http://example.com"));
+            // if (env.IsDevelopment())
+            // {
+            //     app.UseExceptionHandler("/error-local-development");
+            // }
+            // else
+            // {
+            //     app.UseExceptionHandler("/error");
+            // }
+            app.UseExceptionHandler("/error");
+
             app.UseCors("EnableCORS");
 
-            app.UseStaticFiles();
-
+            // Swagger UI
             app.UseSwagger().UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DocumentsKM API");
             });
 
             app.UseHttpsRedirection();
 
+            // Requests logger
             app.UseSerilogRequestLogging();
 
             app.UseRouting();

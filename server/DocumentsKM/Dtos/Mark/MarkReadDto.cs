@@ -1,4 +1,4 @@
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Dtos
 {

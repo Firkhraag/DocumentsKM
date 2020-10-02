@@ -1,18 +1,20 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.ProjectKM
+namespace DocumentsKM.Models
 {
-    public class SpecificationRelease
+    public class Specification
     {
         // Поз_выпуска
         [Key]
-        public ulong Position { get; set; }
+        public int Position { get; set; }
 
         // Id_марки
         // FOREIGN KEY т. Марки
         [Required]
-        public ulong MarkId { get; set; }
+        [ForeignKey("MarkId")]
+        public virtual Mark Mark { get; set; }
 
         // выпуск
         [Required]
@@ -20,13 +22,13 @@ namespace DocumentsKM.ProjectKM
 
         // CREATE UNIQUE INDEX <name> ON (Id_марки, выпуск)
 
-        // дата_созд
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime CreatedDate { get; set; }
-
         // прим
         [MaxLength(255)]
         public string Note { get; set; }
+
+        // дата_созд
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime Created { get; set; }
     }
 }

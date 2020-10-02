@@ -1,6 +1,6 @@
 using AutoMapper;
 using DocumentsKM.Dtos;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Profiles
 {
@@ -9,7 +9,7 @@ namespace DocumentsKM.Profiles
         public EmployeesProfile()
         {
             // Souce -> Target
-            CreateMap<Employee, EmployeeNameReadDto>();
+            CreateMap<Employee, EmployeeNameResponse>();
         }
     }
 }

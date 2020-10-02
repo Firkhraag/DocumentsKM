@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DocumentsKM.Model
+namespace DocumentsKM.Models
 {
     public class Position
     {
         // КодДолжности
         [Key]
-        public uint Code { get; set; }
+        public int Code { get; set; }
 
         // НазваниеДолжности
         [Required]

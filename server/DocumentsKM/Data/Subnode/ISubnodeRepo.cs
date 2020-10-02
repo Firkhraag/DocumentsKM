@@ -1,12 +1,16 @@
 using System.Collections.Generic;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
     public interface ISubnodeRepo
     {
-        IEnumerable<Subnode> GetAllNodeSubnodes(ulong nodeId);
+        // Получить все подузлы по id узла
+        IEnumerable<Subnode> GetAllByNodeId(int nodeId);
+
         // IEnumerable<Subnode> GetUserRecentSubnodes();
-        Subnode GetSubnodeById(ulong id);
+
+        // Получить подузел по id
+        Subnode GetById(int id);
     }
 }

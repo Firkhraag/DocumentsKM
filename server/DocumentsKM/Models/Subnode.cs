@@ -1,20 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.Model
+namespace DocumentsKM.Models
 {
     public class Subnode
     {
         // Подузел
         [Key]
-        public ulong Id { get; set; }
+        public int Id { get; set; }
 
         // Узел
         [Required]
         [ForeignKey("NodeId")]
-        public Node Node { get; set; }
+        public virtual Node Node { get; set; }
 
         // КодПодуз
         [Required]
@@ -34,8 +33,6 @@ namespace DocumentsKM.Model
         // ДатаПодуз
         [Required]
         [DataType(DataType.Date)]
-        public DateTime Date { get; set; }
-
-        // public List<Mark> Marks { get; set; }
+        public DateTime Created { get; set; }
     }
 }

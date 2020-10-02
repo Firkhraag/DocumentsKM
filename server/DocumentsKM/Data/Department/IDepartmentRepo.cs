@@ -1,11 +1,13 @@
 using System.Collections.Generic;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
     public interface IDepartmentRepo
     {
-        Department GetDepartmentByNumber(ulong number);
-        IEnumerable<Department> GetAllActiveDepartments();
+        // Получить все активные отделы
+        IEnumerable<Department> GetAllActive();
+        // Получить отдел по номеру
+        Department GetByNumber(int number);
     }
 }

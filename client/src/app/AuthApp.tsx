@@ -20,6 +20,7 @@ const AuthApp = () => {
 				<Switch>
 					<React.Fragment>
 						{/* <Header /> */}
+                        <Header />
 						<div className="flex-v-cent-h full-height">
 							<Route exact path="/">
 								<Home />

@@ -1,12 +1,9 @@
 using System.Collections.Generic;
 using AutoMapper;
-using DocumentsKM.Data;
 using DocumentsKM.Dtos;
-using DocumentsKM.Model;
+using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace DocumentsKM.Controllers
 {
@@ -15,27 +12,22 @@ namespace DocumentsKM.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly ILogger<ProjectsController> _logger;
-        private readonly IProjectRepo _repository;
+        private readonly IProjectService _service;
         private readonly IMapper _mapper;
 
         public ProjectsController(
-            ILogger<ProjectsController> logger,
-            IProjectRepo repo,
+            IProjectService projectService,
             IMapper mapper
         )
         {
-            _logger = logger;
-            _repository = repo;
+            _service = projectService;
             _mapper = mapper;
         }
 
         [HttpGet, Route("projects")]
-        public ActionResult<IEnumerable<ProjectSeriesReadDto>> GetAllProjects()
+        public ActionResult<IEnumerable<ProjectSeriesReadDto>> GetAll()
         {
-            var projects = _repository.GetAllProjects();
-            // TBD: Should catch Internal server error!
-            // Ok even if array is empty
+            var projects = _service.GetAll();
             return Ok(_mapper.Map<IEnumerable<ProjectSeriesReadDto>>(projects));
         }
     }

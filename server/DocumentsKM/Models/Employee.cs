@@ -2,13 +2,13 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.Model
+namespace DocumentsKM.Models
 {
     public class Employee
     {
         // таб_ном
         [Key]
-        public ulong Id { get; set; }
+        public int Id { get; set; }
 
         // фио
         [Required]
@@ -27,11 +27,11 @@ namespace DocumentsKM.Model
         // ОтделКод, ОтделИмя
         [Required]
         [ForeignKey("DepartmentNumber")]
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
 
         // ДолжностьКод, ДолжностьИмя
         [ForeignKey("PositionCode")]
-        public Position Position { get; set; }
+        public virtual Position Position { get; set; }
 
         // Телефон
         [MaxLength(50)]
@@ -40,11 +40,11 @@ namespace DocumentsKM.Model
 
         // Столовая
         [Required]
-        public bool IsCanteen { get; set; }
+        public bool HasCanteen { get; set; }
 
         // Вид_отпуска
         [Required]
-        public ulong VacationType { get; set; }
+        public int VacationType { get; set; }
 
         // Дата_нач
         [DataType(DataType.Date)]

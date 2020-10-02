@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Dtos
 {

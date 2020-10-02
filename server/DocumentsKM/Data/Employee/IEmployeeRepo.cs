@@ -1,11 +1,14 @@
 using System.Collections.Generic;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
     public interface IEmployeeRepo
     {
-        Employee GetEmployeeById(ulong id);
-        IEnumerable<Employee> GetAllApprovalSpecialists(ulong departmentNumber, uint minPosCode, uint maxPosCode);
+        // Получить сотрудника по id
+        Employee GetById(int id);
+        // Получить всех сотрудников по id отдела с кодом должности в интервале
+        IEnumerable<Employee> GetAllByDepartmentNumberWithPositions(
+            int departmentNumber, int minPosCode, int maxPosCode);
     }
 }

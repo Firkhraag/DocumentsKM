@@ -1,19 +1,21 @@
 using System.Collections.Generic;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
     public interface IMarkRepo
     {
-        bool SaveChanges();
+        // Получить все марки
+        IEnumerable<Mark> GetAll();
+        // Получить все марки по id подузла
+        IEnumerable<Mark> GetAllBySubnodeId(int subnodeId);
+        
+        // IEnumerable<Mark> GetUserRecentMarks();
 
-        IEnumerable<Mark> GetAllSubnodeMarks(ulong subnodeId);
-        IEnumerable<Mark> GetUserRecentMarks();
-        Mark GetMarkById(ulong id);
+        // Получить марку по id
+        Mark GetById(int id);
 
-
-        IEnumerable<Mark> GetAllMarks();
-        void CreateMark(Mark mark);
-        void UpdateMark(Mark mark);
+        void Create(Mark mark);
+        void Update(Mark mark);
     }
 }

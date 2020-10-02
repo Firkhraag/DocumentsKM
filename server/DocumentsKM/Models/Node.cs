@@ -1,20 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.Model
+namespace DocumentsKM.Models
 {
     public class Node
     {
         // Узел
         [Key]
-        public ulong Id { get; set; }
+        public int Id { get; set; }
 
         // Проект
         [Required]
         [ForeignKey("ProjectId")]
-        public Project Project { get; set; }
+        public virtual Project Project { get; set; }
 
         // КодУзла
         [Required]
@@ -33,8 +32,8 @@ namespace DocumentsKM.Model
 
         // ГИП
         [Required]
-        [ForeignKey("EmployeeId")]
-        public Employee ChiefEngineer { get; set; }
+        [ForeignKey("ChiefEngineerId")]
+        public virtual Employee ChiefEngineer { get; set; }
 
         // АктивУзел
         [Required]
@@ -44,8 +43,6 @@ namespace DocumentsKM.Model
         // ДатаУзел
         [Required]
         [DataType(DataType.Date)]
-        public DateTime Date { get; set; }
-
-        // public List<Subnode> Subnodes { get; set; }
+        public DateTime Created { get; set; }
     }
 }

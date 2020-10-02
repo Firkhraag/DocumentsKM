@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useAuthMethods } from '../../store/AuthStore'
+import { useAuthMethods } from '../../store/UserStore'
 import Close from '../Svg/Close'
 import './Login.css'
 
@@ -25,9 +25,7 @@ const Login = () => {
         try {
             await authMethods.login(inputValues.login, inputValues.password)
         } catch (e) {
-            if (e.message === 'Network Error') {
-                e.message = 'Ошибка сети'
-            } else if (e.message === 'Request failed with status code 401') {
+            if (e.message === 'Request failed with status code 400') {
                 e.message = 'Неверный логин или пароль'
             }
             setErrMsg(e.message)
@@ -54,7 +52,8 @@ const Login = () => {
 						onBlur={onLoginChange}
 						type="text"
 						placeholder="Введите ваш логин"
-						spellCheck="false"
+                        spellCheck="false"
+                        maxLength={255}
 						required
 					/>
 				</div>
@@ -69,8 +68,9 @@ const Login = () => {
 						type="password"
 						onBlur={onPasswordChange}
 						placeholder="Введите ваш пароль"
-						spellCheck="false"
-						required
+                        spellCheck="false"
+                        maxLength={255}
+                        required
 					/>
 				</div>
 

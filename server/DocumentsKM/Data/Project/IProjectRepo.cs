@@ -1,11 +1,13 @@
 using System.Collections.Generic;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
     public interface IProjectRepo
     {
-        IEnumerable<Project> GetAllProjects();
-        Project GetProjectById(ulong id);
+        // Получить все проекты
+        IEnumerable<Project> GetAll();
+        // Получить проект по id
+        Project GetById(int id);
     }
 }

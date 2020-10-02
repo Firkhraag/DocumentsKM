@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
     public interface IPositionRepo
     {
-        Position GetPositionByCode(uint code);
+        // Получить должность по коду
+        Position GetByCode(int code);
     }
 }

@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
-using DocumentsKM.Model;
+using DocumentsKM.Models;
+using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -15,27 +16,22 @@ namespace DocumentsKM.Controllers
     [ApiController]
     public class NodesController : ControllerBase
     {
-        private readonly ILogger<NodesController> _logger;
-        private readonly INodeRepo _repository;
+        private readonly INodeService _service;
         private readonly IMapper _mapper;
 
         public NodesController(
-            ILogger<NodesController> logger,
-            INodeRepo repo,
+            INodeService nodeService,
             IMapper mapper
         )
         {
-            _logger = logger;
-            _repository = repo;
+            _service = nodeService;
             _mapper = mapper;
         }
 
         [HttpGet, Route("projects/{projectId}/nodes")]
-        public ActionResult<IEnumerable<NodeCodeReadDto>> GetAllProjectNodes(ulong projectId)
+        public ActionResult<IEnumerable<NodeCodeReadDto>> GetAllByProjectId(int projectId)
         {
-            var nodes = _repository.GetAllProjectNodes(projectId);
-            // TBD: Should catch Internal server error!
-            // Ok even if array is empty
+            var nodes = _service.GetAllByProjectId(projectId);
             return Ok(_mapper.Map<IEnumerable<NodeCodeReadDto>>(nodes));
         }
     }

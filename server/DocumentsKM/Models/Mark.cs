@@ -1,19 +1,18 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.Model
+namespace DocumentsKM.Models
 {
     public class Mark
     {
         // Id_Марки
         [Key]
-        public ulong Id { get; set; }
+        public int Id { get; set; }
 
         // ОА_Подузел
         [Required]
         [ForeignKey("SubnodeId")]
-        public Subnode Subnode { get; set; }
+        public virtual Subnode Subnode { get; set; }
 
         // КодМарки
         [Required]
@@ -35,47 +34,47 @@ namespace DocumentsKM.Model
         // Код_отд
         [Required]
         [ForeignKey("DepartmentId")]
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
 
         // Гл_спец
-        [ForeignKey("EmployeeId")]
-        public Employee ChiefSpecialist { get; set; }
+        [ForeignKey("ChiefSpecialistId")]
+        public virtual Employee ChiefSpecialist { get; set; }
 
         // Рук_гр 
-        [ForeignKey("EmployeeId")]
-        public Employee GroupLeader { get; set; }
+        [ForeignKey("GroupLeaderId")]
+        public virtual Employee GroupLeader { get; set; }
 
         // Гл_стр 
         [Required]
-        [ForeignKey("EmployeeId")]
-        public Employee MainBulder { get; set; }
+        [ForeignKey("MainBulderId")]
+        public virtual Employee MainBulder { get; set; }
 
         // Исп1
-        [ForeignKey("EmployeeId")]
-        public Employee ApprovalSpecialist1 { get; set; }
+        [ForeignKey("ApprovalSpecialist1Id")]
+        public virtual Employee ApprovalSpecialist1 { get; set; }
 
         // Исп2
-        [ForeignKey("EmployeeId")]
-        public Employee ApprovalSpecialist2 { get; set; }
+        [ForeignKey("ApprovalSpecialist2Id")]
+        public virtual Employee ApprovalSpecialist2 { get; set; }
 
         // Исп3
-        [ForeignKey("EmployeeId")]
-        public Employee ApprovalSpecialist3 { get; set; }
+        [ForeignKey("ApprovalSpecialist3Id")]
+        public virtual Employee ApprovalSpecialist3 { get; set; }
 
         // Исп4
-        [ForeignKey("EmployeeId")]
-        public Employee ApprovalSpecialist4 { get; set; }
+        [ForeignKey("ApprovalSpecialist4Id")]
+        public virtual Employee ApprovalSpecialist4 { get; set; }
 
         // Исп5
-        [ForeignKey("EmployeeId")]
-        public Employee ApprovalSpecialist5 { get; set; }
+        [ForeignKey("ApprovalSpecialist5Id")]
+        public virtual Employee ApprovalSpecialist5 { get; set; }
 
         // Исп6
-        [ForeignKey("EmployeeId")]
-        public Employee ApprovalSpecialist6 { get; set; }
+        [ForeignKey("ApprovalSpecialist6Id")]
+        public virtual Employee ApprovalSpecialist6 { get; set; }
 
         // Исп7
-        [ForeignKey("EmployeeId")]
-        public Employee ApprovalSpecialist7 { get; set; }
+        [ForeignKey("ApprovalSpecialist7Id")]
+        public virtual Employee ApprovalSpecialist7 { get; set; }
     }
 }

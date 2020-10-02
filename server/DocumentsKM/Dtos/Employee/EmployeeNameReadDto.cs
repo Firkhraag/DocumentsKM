@@ -1,6 +1,6 @@
 namespace DocumentsKM.Dtos
 {
-    public class EmployeeNameReadDto
+    public class EmployeeNameResponse
     {
         public ulong Id { get; set; }
 

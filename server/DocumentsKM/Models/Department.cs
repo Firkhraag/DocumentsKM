@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.Model
+namespace DocumentsKM.Models
 {
     public class Department
     {
         // НомОтдела
         [Key]
-        public ulong Number { get; set; }
+        public int Number { get; set; }
 
         // НазваниеОтдела
         [Required]
@@ -34,10 +34,7 @@ namespace DocumentsKM.Model
         public bool IsIndustrial { get; set; }
 
         // Нач_отд 
-        [Required]
-        [ForeignKey("EmployeeId")]
-        public Employee DepartmentHead { get; set; }
-
-        // public List<Employee> Employees { get; set; }
+        [ForeignKey("DepartmentHeadId")]
+        public virtual Employee DepartmentHead { get; set; }
     }
 }
