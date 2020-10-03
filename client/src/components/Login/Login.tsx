@@ -22,14 +22,14 @@ const Login = () => {
 	}
 
 	const onButtonClick = async () => {
-        try {
-            await authMethods.login(inputValues.login, inputValues.password)
-        } catch (e) {
-            if (e.message === 'Request failed with status code 400') {
-                e.message = 'Неверный логин или пароль'
-            }
-            setErrMsg(e.message)
-        }
+		try {
+			await authMethods.login(inputValues.login, inputValues.password)
+		} catch (e) {
+			if (e.message === 'Request failed with status code 400') {
+				e.message = 'Неверный логин или пароль'
+			}
+			setErrMsg(e.message)
+		}
 	}
 
 	return (
@@ -42,7 +42,7 @@ const Login = () => {
 							{errMsg}
 							<Close onClick={() => setErrMsg('')} />
 						</div>
-					) }
+					)}
 					<label htmlFor="login" className="login-label-area">
 						Логин
 					</label>
@@ -52,8 +52,8 @@ const Login = () => {
 						onBlur={onLoginChange}
 						type="text"
 						placeholder="Введите ваш логин"
-                        spellCheck="false"
-                        maxLength={255}
+						spellCheck="false"
+						maxLength={255}
 						required
 					/>
 				</div>
@@ -68,9 +68,9 @@ const Login = () => {
 						type="password"
 						onBlur={onPasswordChange}
 						placeholder="Введите ваш пароль"
-                        spellCheck="false"
-                        maxLength={255}
-                        required
+						spellCheck="false"
+						maxLength={255}
+						required
 					/>
 				</div>
 

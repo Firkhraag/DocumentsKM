@@ -21,11 +21,11 @@ namespace DocumentsKM.Tests
             var filteredEmployees = TestData.employees.FindAll(e => e.Department.Number == depatmentNumber);
             var mockEmployeeRepo = new Mock<IEmployeeRepo>();
             mockEmployeeRepo.Setup(mock =>
-                mock.GetAllByDepartmentNumberWithPositions(depatmentNumber, minPosCode, maxPosCode)).Returns(filteredEmployees);
+                mock.GetAllByDepartmentNumberAndPositionRange(depatmentNumber, minPosCode, maxPosCode)).Returns(filteredEmployees);
             var service = new EmployeeService(mockEmployeeRepo.Object);
             
             // Act
-            var returnedEmployees = service.GetAllApprovalByDepartmentNumber(depatmentNumber).ToList();
+            var returnedEmployees = service.GetMarkApprovalEmployeesByDepartmentNumber(depatmentNumber).ToList();
 
             // Assert
             Assert.Equal(filteredEmployees, returnedEmployees);

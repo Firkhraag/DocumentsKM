@@ -46,8 +46,8 @@ namespace DocumentsKM.Models
 
         // Гл_стр 
         [Required]
-        [ForeignKey("MainBulderId")]
-        public virtual Employee MainBulder { get; set; }
+        [ForeignKey("MainBuilderId")]
+        public virtual Employee MainBuilder { get; set; }
 
         // Исп1
         [ForeignKey("ApprovalSpecialist1Id")]

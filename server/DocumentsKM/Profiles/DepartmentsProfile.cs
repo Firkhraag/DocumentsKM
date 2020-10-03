@@ -10,6 +10,7 @@ namespace DocumentsKM.Profiles
         {
             // Souce -> Target
             CreateMap<Department, DepartmentCodeResponse>();
+            CreateMap<Department, DepartmentResponse>();
         }
     }
 }

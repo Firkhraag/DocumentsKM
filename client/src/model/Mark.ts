@@ -11,7 +11,7 @@ interface IMark {
 	// department: Department
 	// chiefSpecialist: Employee
 	// groupLeader: Employee
-	// mainBulder: Employee
+	// mainBuilder: Employee
 	// approvalSpecialist1: Employee
 	// approvalSpecialist2: Employee
 	// approvalSpecialist3: Employee
@@ -30,7 +30,7 @@ class Mark {
 	// department: Department
 	// chiefSpecialist: Employee
 	// groupLeader: Employee
-	// mainBulder: Employee
+	// mainBuilder: Employee
 	// approvalSpecialist1: Employee
 	// approvalSpecialist2: Employee
 	// approvalSpecialist3: Employee
@@ -48,7 +48,7 @@ class Mark {
 		// this.department = (obj && obj.department) || null
 		// this.chiefSpecialist = (obj && obj.chiefSpecialist) || null
 		// this.groupLeader = (obj && obj.groupLeader) || null
-		// this.mainBulder = (obj && obj.mainBulder) || null
+		// this.mainBuilder = (obj && obj.mainBuilder) || null
 		// this.approvalSpecialist1 = (obj && obj.approvalSpecialist1) || null
 		// this.approvalSpecialist2 = (obj && obj.approvalSpecialist2) || null
 		// this.approvalSpecialist3 = (obj && obj.approvalSpecialist3) || null

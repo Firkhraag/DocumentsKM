@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			password.length > 0 &&
 			password.length < 256
 		) {
-			const response = await httpClient.post('/api/users/login', {
+			const response = await httpClient.post('/users/login', {
 				login: login,
 				password: password,
             })
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     }
     const logout = async () => {
-        await httpClient.post('/api/users/logout')
+        await httpClient.post('/users/logout')
         localStorage.removeItem('selectedMark')
         localStorage.removeItem('recentSubnodes')
         localStorage.removeItem('recentMarks')
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await httpClient.post('/api/users/refresh-token')
+                const response = await httpClient.post('/users/refresh-token')
                 // setToken(response.data.token)
                 setUserName(response.data.fullName)
             } catch (e) {

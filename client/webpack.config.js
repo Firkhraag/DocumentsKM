@@ -7,9 +7,11 @@ module.exports = {
     mode: 'development',
     output: {
         path: path.join(__dirname, "../public"),
-        filename: "assets/[contenthash].js"
+        filename: "assets/[contenthash].js",
+        sourceMapFilename: "[name].js.map"
         // publicPath: '/'
     },
+    devtool: "source-map",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"]
     },

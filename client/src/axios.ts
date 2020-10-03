@@ -3,13 +3,14 @@ import axios from 'axios'
 const httpClient = axios.create({
 	// baseURL: process.env.APP_API_BASE_URL,
 	// or use window.location.host
-	baseURL: 'https://localhost:5001',
+	baseURL: 'https://localhost:5001/api',
 	withCredentials: true,
 	timeout: 3000,
 })
 
 let tokenValue = ''
 // export const setToken = (token: string) => tokenValue = token
+// 1
 
 httpClient.interceptors.request.use((config) => {
 	config.headers.Authorization = `Bearer ${tokenValue}`
@@ -20,13 +21,13 @@ httpClient.interceptors.response.use(
 	(response) => {
 		const originalRequest = response.config
 		if (
-			(originalRequest.url === '/api/users/refresh-token' ||
-				originalRequest.url === '/api/users/login') &&
+			(originalRequest.url === '/users/refresh-token' ||
+				originalRequest.url === '/users/login') &&
 			response.status === 200
 		) {
 			tokenValue = response.data.accessToken
 		} else if (
-			originalRequest.url === '/api/users/logout' &&
+			originalRequest.url === '/users/logout' &&
 			response.status === 204
 		) {
 			tokenValue = ''
@@ -42,9 +43,9 @@ httpClient.interceptors.response.use(
 		const originalRequest = error.config
 		if (
 			error.response.status === 401 &&
-			originalRequest.url !== '/api/users/refresh-token'
+			originalRequest.url !== '/users/refresh-token'
 		) {
-			const response = await httpClient.post('/api/users/refresh-token')
+			const response = await httpClient.post('/users/refresh-token')
 			tokenValue = response.data.accessToken
 			return httpClient(originalRequest)
 

@@ -10,7 +10,7 @@ namespace DocumentsKM.Profiles
         {
             // Souce -> Target
             CreateMap<Subnode, SubnodeCodeResponse>();
-            CreateMap<Subnode, SubnodeWithNodeReadDto>();
+            // CreateMap<Subnode, SubnodeWithNodeReadDto>();
         }
     }
 }

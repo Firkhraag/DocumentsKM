@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
+using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,21 +13,28 @@ namespace DocumentsKM.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        private readonly IDepartmentRepo _repository;
+        private readonly IDepartmentService _service;
         private readonly IMapper _mapper;
 
         public DepartmentsController(
-            IDepartmentRepo repo,
+            IDepartmentService service,
             IMapper mapper)
         {
-            _repository = repo;
+            _service = service;
             _mapper = mapper;
         }
 
         [HttpGet, Route("departments")]
-        public ActionResult<IEnumerable<DepartmentCodeResponse>> GetAllActive()
+        public ActionResult<IEnumerable<DepartmentResponse>> GetAllActive()
         {
-            var departments = _repository.GetAllActive();
+            var departments = _service.GetAllActive();
+            return Ok(_mapper.Map<IEnumerable<DepartmentResponse>>(departments));
+        }
+
+        [HttpGet, Route("approval-departments")]
+        public ActionResult<IEnumerable<DepartmentCodeResponse>> GetAllApprovalDepartments()
+        {
+            var departments = _service.GetAllActive();
             return Ok(_mapper.Map<IEnumerable<DepartmentCodeResponse>>(departments));
         }
     }

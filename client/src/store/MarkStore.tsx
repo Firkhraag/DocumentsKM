@@ -17,8 +17,6 @@ export const MarkProvider = ({ children }: MarkProviderProps) => {
         if (!markStr) {
             return null
         }
-        console.log(markStr)
-        console.log(JSON.parse(markStr))
         return JSON.parse(markStr) as Mark
     }
 

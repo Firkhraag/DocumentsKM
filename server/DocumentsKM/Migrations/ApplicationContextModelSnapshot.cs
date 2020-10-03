@@ -189,9 +189,9 @@ namespace DocumentsKM.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("group_leader_id");
 
-                    b.Property<int>("MainBulderId")
+                    b.Property<int>("MainBuilderId")
                         .HasColumnType("integer")
-                        .HasColumnName("main_bulder_id");
+                        .HasColumnName("main_builder_id");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -236,8 +236,8 @@ namespace DocumentsKM.Migrations
                     b.HasIndex("GroupLeaderId")
                         .HasDatabaseName("ix_marks_group_leader_id");
 
-                    b.HasIndex("MainBulderId")
-                        .HasDatabaseName("ix_marks_main_bulder_id");
+                    b.HasIndex("MainBuilderId")
+                        .HasDatabaseName("ix_marks_main_builder_id");
 
                     b.HasIndex("SubnodeId")
                         .HasDatabaseName("ix_marks_subnode_id");
@@ -539,10 +539,10 @@ namespace DocumentsKM.Migrations
                         .HasForeignKey("GroupLeaderId")
                         .HasConstraintName("fk_marks_employees_group_leader_id");
 
-                    b.HasOne("DocumentsKM.Models.Employee", "MainBulder")
+                    b.HasOne("DocumentsKM.Models.Employee", "MainBuilder")
                         .WithMany()
-                        .HasForeignKey("MainBulderId")
-                        .HasConstraintName("fk_marks_employees_main_bulder_id")
+                        .HasForeignKey("MainBuilderId")
+                        .HasConstraintName("fk_marks_employees_main_builder_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -573,7 +573,7 @@ namespace DocumentsKM.Migrations
 
                     b.Navigation("GroupLeader");
 
-                    b.Navigation("MainBulder");
+                    b.Navigation("MainBuilder");
 
                     b.Navigation("Subnode");
                 });

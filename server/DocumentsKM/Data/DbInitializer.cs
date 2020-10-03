@@ -233,7 +233,7 @@ namespace DocumentsKM
                     AdditionalCode="C1",
                     Name="Name 1",
                     Department=departments[0],
-                    MainBulder=employees[0],
+                    MainBuilder=employees[0],
                 },
                 new Mark
                 {
@@ -242,7 +242,7 @@ namespace DocumentsKM
                     AdditionalCode="C2",
                     Name="Name 2",
                     Department=departments[1],
-                    MainBulder=employees[1],
+                    MainBuilder=employees[1],
                 },
                 new Mark
                 {
@@ -251,7 +251,7 @@ namespace DocumentsKM
                     AdditionalCode="C3",
                     Name="Name 3",
                     Department=departments[2],
-                    MainBulder=employees[2],
+                    MainBuilder=employees[2],
                 },
             };
             if (!ctx.Marks.Any())

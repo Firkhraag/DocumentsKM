@@ -32,7 +32,7 @@ const MarkApproval = () => {
 			try {
 				// Fetch departments
 				const departmentsFetchedResponse = await httpClient.get(
-					'/api/departments'
+					'/departments'
 				)
 				const departmentsFetched = departmentsFetchedResponse.data
 
@@ -63,7 +63,7 @@ const MarkApproval = () => {
         //     return
         // }
         // try {
-        //     const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/api/subnodes/${id}/marks`)
+        //     const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/subnodes/${id}/marks`)
         //     const fetchedMarks = fetchedMarksResponse.data
         //     setOptionsObject({
         //         ...defaultOptionsObject,
