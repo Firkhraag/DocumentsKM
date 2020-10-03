@@ -1,6 +1,6 @@
 namespace DocumentsKM.Dtos
 {
-    public class NodeCodeReadDto
+    public class SubnodeCodeResponse
     {
         public ulong Id { get; set; }
 

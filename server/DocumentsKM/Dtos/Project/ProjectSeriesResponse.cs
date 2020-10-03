@@ -1,6 +1,6 @@
 namespace DocumentsKM.Dtos
 {
-    public class ProjectSeriesReadDto
+    public class ProjectSeriesResponse
     {
         public ulong Id { get; set; }
 

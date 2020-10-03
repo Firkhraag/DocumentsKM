@@ -1,45 +1,26 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Profile from '../Svg/Profile'
+import { useMark } from '../../store/MarkStore'
 import './Header.css'
 
 const Header = () => {
-
-    const getSelectedMark = () => {
-        const markStr = localStorage.getItem('selectedMark')
-        if (!markStr) {
-            return '-'
-        }
-        const mark = JSON.parse(markStr)
-        const now = new Date()
-        if (now.getTime() > mark.expiry) {
-            localStorage.removeItem('selectedMark')
-            return '-'
-        }
-        return mark.name
-    }
+	const mark = useMark()
 
 	return (
-        <div>
-            Выбранная марка: {getSelectedMark()}
-            <Profile />
-        </div>
-		// <div className="header sticky white-bg space-between">
-		// 	<ul className="flex-cent-v semibold">
-		// 		<Link to="/">
-		// 			<li className="pointer border-radius">Главная</li>
-		// 		</Link>
-		// 		<Link to="/">
-		// 			<li className="pointer border-radius">Выйти</li>
-		// 		</Link>
-		// 	</ul>
-
-		// 	<ul className="flex-cent-v semibold">
-		// 		<Link to="/login">
-		// 			<li className="pointer border-radius">Выбранная марка</li>
-		// 		</Link>
-		// 	</ul>
-		// </div>
+		<div className="space-between-cent-v header white-bg">
+			<Link to="/" className="pointer bold">
+				Главная
+			</Link>
+			<Link to="/mark-select" className="pointer bold">
+				{mark == null
+					? '-'
+					: `${mark.subnode.node.project.baseSeries}.${mark.subnode.node.code}.${mark.subnode.code}-${mark.code}`}
+			</Link>
+			<div className="pointer profile-icon-cnt">
+				<Profile />
+			</div>
+		</div>
 	)
 }
 

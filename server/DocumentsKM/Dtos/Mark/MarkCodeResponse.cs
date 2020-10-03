@@ -1,6 +1,6 @@
 namespace DocumentsKM.Dtos
 {
-    public class SubnodeCodeReadDto
+    public class MarkCodeResponse
     {
         public ulong Id { get; set; }
 

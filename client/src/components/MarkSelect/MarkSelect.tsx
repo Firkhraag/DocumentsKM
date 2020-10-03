@@ -7,6 +7,7 @@ import Node from '../../model/Node'
 import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
 import Dropdown from '../Dropdown/Dropdown'
+import { useSetMark } from '../../store/MarkStore'
 import './MarkSelect.css'
 
 const MarkSelect = () => {
@@ -16,7 +17,23 @@ const MarkSelect = () => {
 	const subnodeCodeStringLength = 10
 	const markCodeStringLength = 40
 	const subnodeNameStringLength = 50
-	const markNameStringLength = 90
+    const markNameStringLength = 90
+    
+    const getRecentMarks = () => {
+        const recentMarksStr = localStorage.getItem("recentMarks")
+        if (!recentMarksStr) {
+            return [] as Mark[]
+        }
+        return JSON.parse(recentMarksStr) as Mark[]
+    }
+
+    const getRecentSubnodes = () => {
+        const recentSubnodesStr = localStorage.getItem("recentSubnodes")
+        if (!recentSubnodesStr) {
+            return [] as Subnode[]
+        }
+        return JSON.parse(recentSubnodesStr) as Subnode[]
+    }
 
 	// Default state objects
 	const defaultSelectedObject = {
@@ -28,13 +45,15 @@ const MarkSelect = () => {
 		mark: null as Mark,
 	}
 	const defaultOptionsObject = {
-		recentMarks: [] as Mark[],
-		recentSubnodes: [] as Subnode[],
+		recentMarks: getRecentMarks(),
+		recentSubnodes: getRecentSubnodes(),
 		projects: [] as Project[],
 		nodes: [] as Node[],
 		subnodes: [] as Subnode[],
 		marks: [] as Mark[],
 	}
+
+	const setMark = useSetMark()
 
 	// States
 	// Select and Create modes
@@ -61,7 +80,7 @@ const MarkSelect = () => {
 				const projectsFetchedResponse = await httpClient.get(
 					'/api/projects'
 				)
-				const projectsFetched = projectsFetchedResponse.data
+                const projectsFetched = projectsFetchedResponse.data
 
 				// Not very nice, but we are not using GraphQL here
 				// const recentMarksFetchedResponse = await httpClient.get(
@@ -120,7 +139,6 @@ const MarkSelect = () => {
 		}
 	}, [nodeHeightRef, markHeightRef, buttonHeightRef])
 
-	// getSpringStyle returns spring animation style
 	const getSpringStyle = (isClosed: boolean, height: number) => {
 		return useSpring({
 			from: {
@@ -378,21 +396,70 @@ const MarkSelect = () => {
 	}
 
 	const onSelectMarkButtonClick = () => {
-        // 7 Days
-        const ttl = 604800000
-		const now = new Date()
-		const selectedMark = {
-			id: selectedObject.mark.id,
-			name: `${selectedObject.project.baseSeries}.${selectedObject.node.code}.${selectedObject.subnode.code}-${selectedObject.mark.code}`,
-			expiry: now.getTime() + ttl,
-		}
-		localStorage.setItem('selectedMark', JSON.stringify(selectedMark))
+        const mark = selectedObject.mark
+        mark.subnode = selectedObject.subnode
+        mark.subnode.node = selectedObject.node
+        mark.subnode.node.project = selectedObject.project
+        localStorage.setItem('selectedMark', JSON.stringify(mark))
+        setMark(mark)
+        
+        let contains = false
+        let elementIndex = 0
+        for (let [index, m] of defaultOptionsObject.recentMarks.entries()) {
+            if (m.id === mark.id) {
+                elementIndex = index
+                contains = true
+                break
+            }
+        }
+        if (contains) {
+            if (elementIndex !== 0) {
+                // O(n)
+                defaultOptionsObject.recentMarks.splice(elementIndex, 1)
+                defaultOptionsObject.recentMarks.splice(0, 0, mark)
+                localStorage.setItem('recentMarks', JSON.stringify(defaultOptionsObject.recentMarks))
+            }
+        } else {
+            if (defaultOptionsObject.recentMarks.length > 7) {
+                // O(n)
+                defaultOptionsObject.recentMarks.shift()
+            }
+            // O(n)
+            defaultOptionsObject.recentMarks.unshift(mark)
+            localStorage.setItem('recentMarks', JSON.stringify(defaultOptionsObject.recentMarks))
+        }
+        
+        contains = false
+        elementIndex = 0
+        for (let [index, s] of defaultOptionsObject.recentSubnodes.entries()) {
+            if (s.id === mark.subnode.id) {
+                elementIndex = index
+                contains = true
+                break
+            }
+        }
+        if (contains) {
+            if (elementIndex !== 0) {
+                // O(n)
+                defaultOptionsObject.recentSubnodes.splice(elementIndex, 1)
+                defaultOptionsObject.recentSubnodes.splice(0, 0, mark.subnode)
+                localStorage.setItem('recentSubnodes', JSON.stringify(defaultOptionsObject.recentSubnodes))
+            }
+        } else {
+            if (defaultOptionsObject.recentSubnodes.length > 7) {
+                // O(n)
+                defaultOptionsObject.recentSubnodes.shift()
+            }
+            // O(n)
+            defaultOptionsObject.recentSubnodes.unshift(mark.subnode)
+            localStorage.setItem('recentSubnodes', JSON.stringify(defaultOptionsObject.recentSubnodes))
+        }
 	}
 
 	return (
 		<div className="mark-data-cnt">
-			<h1 className="text-centered">Выбрать марку</h1>
-			<div className="tabs component-width">
+			<h1 className="text-centered">Выбрать / добавить марку</h1>
+			<div className="tabs component-width white-bg">
 				<input
 					type="radio"
 					name="tab-btn"
@@ -575,9 +642,12 @@ const MarkSelect = () => {
 						)}
 					>
 						<div ref={buttonHeightRef}>
-							<button className="final-btn input-border-radius pointer">
+							<button
+								onClick={onSelectMarkButtonClick}
+								className="final-btn input-border-radius pointer"
+							>
 								{isCreateMode
-									? 'Добавить новую марку'
+									? 'Выбрать подузел'
 									: 'Выбрать марку'}
 							</button>
 						</div>

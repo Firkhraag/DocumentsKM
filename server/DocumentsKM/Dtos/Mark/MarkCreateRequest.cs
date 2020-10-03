@@ -1,9 +1,10 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Dtos
 {
-    public class MarkUpdateDto
+    public class MarkCreateRequest
     {
         [Required]
         public Subnode Subnode { get; set; }

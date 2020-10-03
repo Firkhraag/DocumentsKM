@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import Spinner from '../components/Spinner/Spinner'
 import AuthApp from './AuthApp'
 import UnauthApp from './UnauthApp'

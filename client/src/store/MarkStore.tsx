@@ -3,9 +3,8 @@ import Mark from '../model/Mark'
 
 const MarkContext = createContext<Mark>(null)
 const MarkDispatchContext = createContext(null)
-export const useMark = () => {
-	return [useContext(MarkContext), useContext(MarkDispatchContext)]
-}
+export const useMark = () => useContext(MarkContext)
+export const useSetMark = () => useContext(MarkDispatchContext)
 
 type MarkProviderProps = {
 	children: React.ReactNode
@@ -16,18 +15,14 @@ export const MarkProvider = ({ children }: MarkProviderProps) => {
     const getSelectedMark = () => {
         const markStr = localStorage.getItem('selectedMark')
         if (!markStr) {
-            return '-'
+            return null
         }
-        const mark = JSON.parse(markStr)
-        const now = new Date()
-        if (now.getTime() > mark.expiry) {
-            localStorage.removeItem('selectedMark')
-            return '-'
-        }
-        return mark.name
+        console.log(markStr)
+        console.log(JSON.parse(markStr))
+        return JSON.parse(markStr) as Mark
     }
 
-	const [mark, setMark] = useState<Mark>(null)
+	const [mark, setMark] = useState<Mark>(getSelectedMark())
 	return (
 		<MarkContext.Provider value={mark}>
 			<MarkDispatchContext.Provider value={setMark}>

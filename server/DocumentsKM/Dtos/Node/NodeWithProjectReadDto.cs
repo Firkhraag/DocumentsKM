@@ -6,7 +6,7 @@ namespace DocumentsKM.Dtos
     {
         public ulong Id { get; set; }
 
-        public ProjectSeriesReadDto Project { get; set; }
+        public ProjectSeriesResponse Project { get; set; }
 
         public string Code { get; set; }
 

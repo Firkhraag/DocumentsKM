@@ -37,6 +37,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
     const logout = async () => {
         await httpClient.post('/api/users/logout')
+        localStorage.removeItem('selectedMark')
+        localStorage.removeItem('recentSubnodes')
+        localStorage.removeItem('recentMarks')
     }
     
     useEffect(() => {
@@ -47,6 +50,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 setUserName(response.data.fullName)
             } catch (e) {
                 setUserName('')
+                localStorage.removeItem('selectedMark')
+                localStorage.removeItem('recentSubnodes')
+                localStorage.removeItem('recentMarks')
             }
         }
         fetchData()

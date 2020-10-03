@@ -27,38 +27,23 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("subnodes/{subnodeId}/marks")]
-        public ActionResult<IEnumerable<SubnodeCodeReadDto>> GetAllBySubnodeId(int subnodeId)
+        public ActionResult<IEnumerable<MarkCodeResponse>> GetAllBySubnodeId(int subnodeId)
         {
             var marks = _service.GetAllBySubnodeId(subnodeId);
-            return Ok(_mapper.Map<IEnumerable<MarkCodeReadDto>>(marks));
+            return Ok(_mapper.Map<IEnumerable<MarkCodeResponse>>(marks));
         }
 
-        // // TBD
-        // [HttpGet, Route("marks/recent")]
-        // public ActionResult<IEnumerable<MarkWithSubnodeReadDto>> GetUserRecentMarks()
+        // [HttpGet, Route("marks/{id}")]
+        // [ProducesResponseType((int)HttpStatusCode.OK)]
+        // [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        // public ActionResult<MarkReadDto> GetById(int id)
         // {
-        //     var marks = _service.GetUserRecentMarks();
-        //     return Ok(_mapper.Map<IEnumerable<MarkWithSubnodeReadDto>>(marks));
+        //     var mark = _service.GetById(id);
+        //     if (mark != null) {
+        //         return Ok(_mapper.Map<MarkReadDto>(mark));
+        //     }
+        //     return NotFound();
         // }
-
-        // [HttpGet, Route("marks")]
-        // public ActionResult<IEnumerable<MarkReadDto>> GetAll()
-        // {
-        //     var marks = _service.GetAll();
-        //     return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
-        // }
-
-        [HttpGet, Route("marks/{id}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public ActionResult<MarkReadDto> GetById(int id)
-        {
-            var mark = _service.GetById(id);
-            if (mark != null) {
-                return Ok(_mapper.Map<MarkReadDto>(mark));
-            }
-            return NotFound();
-        }
 
         // [HttpPost, Route("marks")]
         // public ActionResult<MarkReadDto> CreateMark(MarkCreateDto markCreateDto)
