@@ -5,6 +5,7 @@ import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import Dropdown from '../Dropdown/Dropdown'
+import { useMark } from '../../store/MarkStore'
 import './MarkData.css'
 
 const MarkData = () => {
@@ -22,7 +23,9 @@ const MarkData = () => {
 		chiefSpecialists: [] as Employee[],
 		groupLeaders: [] as Employee[],
 		mainBuilders: [] as Employee[],
-	}
+    }
+    
+    const mark = useMark()
 
 	// Object that holds selected values
 	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
@@ -37,7 +40,6 @@ const MarkData = () => {
 		// Function for fetching data
 		const fetchData = async () => {
 			try {
-				// Fetch departments
 				const departmentsFetchedResponse = await httpClient.get(
 					'/departments'
 				)
@@ -101,12 +103,10 @@ const MarkData = () => {
 			return
 		}
 		try {
-			console.log('selected')
 			const fetchedMainEmployeesResponse = await httpClient.get(
 				`departments/${number}/mark-main-employees`
 			)
             const fetchedMainEmployees = fetchedMainEmployeesResponse.data
-            console.log(fetchedMainEmployees)
 			setOptionsObject({
 				...defaultOptionsObject,
 				departments: optionsObject.departments,
@@ -121,6 +121,75 @@ const MarkData = () => {
 		} catch (e) {
 			console.log('Failed to fetch the data')
 		}
+    }
+    
+    const onGroupLeaderSelect = async (id: number) => {
+		let e: Employee = null
+		for (let employee of optionsObject.groupLeaders) {
+			if (employee.id === id) {
+				e = employee
+				break
+			}
+		}
+		if (e == null) {
+			return
+		}
+		if (
+			selectedObject.groupLeader !== null &&
+			e.id === selectedObject.groupLeader.id
+		) {
+			return
+		}
+		setSelectedObject({
+            ...selectedObject,
+            groupLeader: e,
+        })
+    }
+
+    const onChiefSpecialistSelect = async (id: number) => {
+		let e: Employee = null
+		for (let employee of optionsObject.chiefSpecialists) {
+			if (employee.id === id) {
+				e = employee
+				break
+			}
+		}
+		if (e == null) {
+			return
+		}
+		if (
+			selectedObject.chiefSpecialist !== null &&
+			e.id === selectedObject.chiefSpecialist.id
+		) {
+			return
+		}
+		setSelectedObject({
+            ...selectedObject,
+            chiefSpecialist: e,
+        })
+    }
+    
+    const onMainBuilderSelect = async (id: number) => {
+		let e: Employee = null
+		for (let employee of optionsObject.mainBuilders) {
+			if (employee.id === id) {
+				e = employee
+				break
+			}
+		}
+		if (e == null) {
+			return
+		}
+		if (
+			selectedObject.mainBuilder !== null &&
+			e.id === selectedObject.mainBuilder.id
+		) {
+			return
+		}
+		setSelectedObject({
+            ...selectedObject,
+            mainBuilder: e,
+        })
 	}
 
 	return (
@@ -132,20 +201,20 @@ const MarkData = () => {
 				</p>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Обозначение марки</p>
-					<div className="info-area">Тест</div>
+					<p>Тест</p>
 				</div>
 
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование комплекса</p>
-					<div className="info-area">Тест</div>
+					<p>Тест</p>
 				</div>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование объекта</p>
-					<div className="info-area">Тест</div>
+					<p>Тест</p>
 				</div>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Главный инженер проекта</p>
-					<div className="info-area">Тест</div>
+					<p>Тест</p>
 				</div>
 
 				<p className="text-centered data-section-label label-mrgn-top-2">
@@ -195,7 +264,7 @@ const MarkData = () => {
 							cntStyle="flex-v mrg-bot"
 							label="Заведующий группы"
 							maxInputLength={specialistNameStringLength}
-							onClickFunc={null}
+							onClickFunc={onGroupLeaderSelect}
 							value={selectedObject.groupLeader == null ? '' : selectedObject.groupLeader.fullName}
 							options={optionsObject.groupLeaders.map(gl => {
                                 return {
@@ -208,7 +277,7 @@ const MarkData = () => {
 							cntStyle="flex-v mrg-bot"
 							label="Главный специалист"
 							maxInputLength={specialistNameStringLength}
-							onClickFunc={null}
+							onClickFunc={onChiefSpecialistSelect}
 							value={selectedObject.chiefSpecialist == null ? '' : selectedObject.chiefSpecialist.fullName}
 							options={optionsObject.chiefSpecialists.map(cs => {
                                 return {
@@ -232,7 +301,7 @@ const MarkData = () => {
 							cntStyle="flex-v"
 							label="Главный строитель"
 							maxInputLength={specialistNameStringLength}
-							onClickFunc={null}
+							onClickFunc={onMainBuilderSelect}
 							value={selectedObject.mainBuilder == null ? '' : selectedObject.mainBuilder.fullName}
 							options={optionsObject.mainBuilders.map(mb => {
                                 return {

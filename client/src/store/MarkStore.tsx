@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import Mark from '../model/Mark'
 
 const MarkContext = createContext<Mark>(null)
@@ -11,14 +11,13 @@ type MarkProviderProps = {
 }
 
 export const MarkProvider = ({ children }: MarkProviderProps) => {
-
-    const getSelectedMark = () => {
-        const markStr = localStorage.getItem('selectedMark')
-        if (!markStr) {
-            return null
-        }
-        return JSON.parse(markStr) as Mark
-    }
+	const getSelectedMark = () => {
+		const markStr = localStorage.getItem('selectedMark')
+		if (!markStr) {
+			return null
+		}
+		return JSON.parse(markStr) as Mark
+	}
 
 	const [mark, setMark] = useState<Mark>(getSelectedMark())
 	return (

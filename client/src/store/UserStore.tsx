@@ -4,8 +4,8 @@ import httpClient from '../axios'
 const AuthContext = createContext<string>(null)
 
 type DispatchContextType = {
-    login: (login: string, password: string) => void
-    logout: () => void
+	login: (login: string, password: string) => void
+	logout: () => void
 }
 
 const AuthDispatchContext = createContext(null as DispatchContextType)
@@ -17,10 +17,10 @@ type AuthProviderProps = {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [userName, setUserName] = useState<string>(null)
+	const [userName, setUserName] = useState<string>(null)
 
-    const login = async (login: string, password: string) => {
-        if (
+	const login = async (login: string, password: string) => {
+		if (
 			login.length > 0 &&
 			login.length < 256 &&
 			password.length > 0 &&
@@ -29,38 +29,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			const response = await httpClient.post('/users/login', {
 				login: login,
 				password: password,
-            })
-            setUserName(response.data.fullName)
+			})
+			setUserName(response.data.fullName)
 		} else {
-            throw new Error('Неверный логин или пароль')
-        }
-    }
-    const logout = async () => {
-        await httpClient.post('/users/logout')
-        localStorage.removeItem('selectedMark')
-        localStorage.removeItem('recentSubnodes')
-        localStorage.removeItem('recentMarks')
-    }
-    
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await httpClient.post('/users/refresh-token')
-                // setToken(response.data.token)
-                setUserName(response.data.fullName)
-            } catch (e) {
-                setUserName('')
-                localStorage.removeItem('selectedMark')
-                localStorage.removeItem('recentSubnodes')
-                localStorage.removeItem('recentMarks')
-            }
-        }
-        fetchData()
-    }, []);
+			throw new Error('Неверный логин или пароль')
+		}
+	}
+	const logout = async () => {
+		await httpClient.post('/users/logout')
+		localStorage.removeItem('selectedMark')
+		localStorage.removeItem('recentSubnodes')
+		localStorage.removeItem('recentMarks')
+	}
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await httpClient.post('/users/refresh-token')
+				setUserName(response.data.fullName)
+			} catch (e) {
+				setUserName('')
+				localStorage.removeItem('selectedMark')
+				localStorage.removeItem('recentSubnodes')
+				localStorage.removeItem('recentMarks')
+			}
+		}
+		fetchData()
+	}, [])
 
 	return (
 		<AuthContext.Provider value={userName}>
-			<AuthDispatchContext.Provider value={{login, logout}}>
+			<AuthDispatchContext.Provider value={{ login, logout }}>
 				{children}
 			</AuthDispatchContext.Provider>
 		</AuthContext.Provider>

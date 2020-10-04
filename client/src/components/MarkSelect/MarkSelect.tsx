@@ -9,6 +9,7 @@ import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
 import Dropdown from '../Dropdown/Dropdown'
 import { useSetMark } from '../../store/MarkStore'
+import { makeMarkOrSubnodeName } from '../../util/make-name'
 import './MarkSelect.css'
 
 // MARK CREATE TBD
@@ -200,8 +201,7 @@ const MarkSelect = () => {
 		}
 		setSelectedObject({
 			...defaultSelectedObject,
-			recentMarkString: `${p.baseSeries}.${n.code}.${s.code}-${v.code}`,
-			recentSubnodeString: `${p.baseSeries}.${n.code}.${s.code}`,
+			recentMarkString: makeMarkOrSubnodeName(p.baseSeries, n.code, s.code, v.code),
 			project: p,
 			node: n,
 			subnode: s,
@@ -248,7 +248,7 @@ const MarkSelect = () => {
 		}
 		setSelectedObject({
 			...defaultSelectedObject,
-			recentSubnodeString: `${p.baseSeries}.${n.code}.${v.code}`,
+			recentSubnodeString: makeMarkOrSubnodeName(p.baseSeries, n.code, v.code),
 			project: p,
 			node: n,
 			subnode: v,
@@ -515,22 +515,20 @@ const MarkSelect = () => {
 						}
 						options={
 							isCreateMode
-								? optionsObject.recentSubnodes.map((s) => {
+								? optionsObject.recentSubnodes.map(s => {
 										const n = s.node
 										const p = n.project
-										const fullName = `${p.baseSeries}.${n.code}.${s.code}`
+										const fullName = makeMarkOrSubnodeName(p.baseSeries, n.code, s.code)
 										return {
 											id: s.id,
 											val: fullName,
 										}
 								  })
-								: optionsObject.recentMarks.map((m) => {
+								: optionsObject.recentMarks.map(m => {
 										const s = m.subnode
 										const n = s.node
 										const p = n.project
-										const fullName = isCreateMode
-											? `${p.baseSeries}.${n.code}.${s.code}`
-											: `${p.baseSeries}.${n.code}.${s.code}-${m.code}`
+										const fullName = makeMarkOrSubnodeName(p.baseSeries, n.code, s.code, m.code)
 										return {
 											id: m.id,
 											val: fullName,
@@ -659,22 +657,6 @@ const MarkSelect = () => {
 							</button>
 						</div>
 					</animated.div>
-
-					{/* <animated.div style={getSpringStyle(selectedObject.node, buttonHeight)}>
-                        <div ref={buttonHeightRef}>
-                            {isCreateMode ? (
-                                selectedObject.subnode === null ? null : (
-                                    <button className="final-btn input-border-radius pointer">
-                                        Добавить новую марку
-                                    </button>
-                                )
-                            ) : (
-                                selectedObject.mark === null ? null : <button className="final-btn input-border-radius pointer">
-                                    Выбрать марку
-                                </button>
-                            )}
-                        </div>
-                    </animated.div> */}
 				</div>
 			</div>
 		</div>
