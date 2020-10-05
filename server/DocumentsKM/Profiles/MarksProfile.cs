@@ -10,6 +10,7 @@ namespace DocumentsKM.Profiles
         {
             // Souce -> Target
             CreateMap<Mark, MarkCodeResponse>();
+            CreateMap<Mark, MarkResponse>();
             CreateMap<MarkCreateRequest, Mark>();
         }
     }

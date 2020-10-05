@@ -38,7 +38,7 @@ export const makeComplexAndObjectName = (
 ) => {
     // Стандартный случай
     let complexName = projectName
-    let objectName = nodeName + subnodeName + markName
+    let objectName = nodeName + '. ' + subnodeName + '. ' + markName
 
 	return { complexName, objectName }
 }

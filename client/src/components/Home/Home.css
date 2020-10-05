@@ -17,6 +17,7 @@
     color: #333;
     backface-visibility: hidden;
     transition: all .15s ease-in-out;
+    user-select: none;
 }
 
 .home-link:hover {
@@ -29,5 +30,4 @@
     border: none;
     pointer-events: none;
     box-shadow: none;
-    user-select: none;
 }

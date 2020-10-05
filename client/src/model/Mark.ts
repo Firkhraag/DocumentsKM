@@ -7,7 +7,7 @@ interface IMark {
 	subnode: Subnode
 	code: string
 	// additionalCode: string
-	// name: string
+	name: string
 	// department: Department
 	// chiefSpecialist: Employee
 	// groupLeader: Employee
@@ -26,7 +26,7 @@ class Mark {
 	subnode: Subnode
 	code: string
 	// additionalCode: string
-	// name: string
+	name: string
 	// department: Department
 	// chiefSpecialist: Employee
 	// groupLeader: Employee
@@ -44,7 +44,7 @@ class Mark {
 		this.subnode = (obj && obj.subnode) || null
 		this.code = (obj && obj.code) || ''
 		// this.additionalCode = (obj && obj.additionalCode) || ''
-		// this.name = (obj && obj.name) || ''
+		this.name = (obj && obj.name) || ''
 		// this.department = (obj && obj.department) || null
 		// this.chiefSpecialist = (obj && obj.chiefSpecialist) || null
 		// this.groupLeader = (obj && obj.groupLeader) || null
@@ -56,7 +56,20 @@ class Mark {
 		// this.approvalSpecialist5 = (obj && obj.approvalSpecialist5) || null
 		// this.approvalSpecialist6 = (obj && obj.approvalSpecialist6) || null
 		// this.approvalSpecialist7 = (obj && obj.approvalSpecialist7) || null
-	}
+    }
+    
+    // sanitize = () => {
+    //     const m = { ...this }
+    //     m.name = ''
+    //     const s = m.subnode
+    //     s.name = ''
+    //     const n = s.node
+    //     n.name = ''
+    //     n.chiefEngineer = null
+    //     const p = n.project
+    //     p.name = ''
+    //     return m
+    // }
 }
 
 export default Mark

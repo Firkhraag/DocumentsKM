@@ -30,5 +30,15 @@ namespace DocumentsKM.Controllers
             var subnodes = _service.GetAllByNodeId(nodeId);
             return Ok(_mapper.Map<IEnumerable<SubnodeCodeResponse>>(subnodes));
         }
+
+        [HttpGet, Route("subnodes/{id}")]
+        public ActionResult<SubnodeResponse> GetById(int id)
+        {
+            var subnode = _service.GetById(id);
+            if (subnode != null) {
+                return Ok(_mapper.Map<SubnodeResponse>(subnode));
+            }
+            return NotFound();
+        }
     }
 }

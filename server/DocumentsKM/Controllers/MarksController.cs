@@ -27,23 +27,24 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("subnodes/{subnodeId}/marks")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult<IEnumerable<MarkCodeResponse>> GetAllBySubnodeId(int subnodeId)
         {
             var marks = _service.GetAllBySubnodeId(subnodeId);
             return Ok(_mapper.Map<IEnumerable<MarkCodeResponse>>(marks));
         }
 
-        // [HttpGet, Route("marks/{id}")]
-        // [ProducesResponseType((int)HttpStatusCode.OK)]
-        // [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        // public ActionResult<MarkReadDto> GetById(int id)
-        // {
-        //     var mark = _service.GetById(id);
-        //     if (mark != null) {
-        //         return Ok(_mapper.Map<MarkReadDto>(mark));
-        //     }
-        //     return NotFound();
-        // }
+        [HttpGet, Route("marks/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public ActionResult<MarkResponse> GetById(int id)
+        {
+            var mark = _service.GetById(id);
+            if (mark != null) {
+                return Ok(_mapper.Map<MarkResponse>(mark));
+            }
+            return NotFound();
+        }
 
         // [HttpPost, Route("marks")]
         // public ActionResult<MarkReadDto> CreateMark(MarkCreateDto markCreateDto)

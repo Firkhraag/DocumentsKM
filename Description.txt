@@ -1,6 +1,7 @@
 Авторизация
 Используются маложивущий access token и долгоживущий refresh token.
 Access token передается в теле, а refresh token - в cookie.
+Access token кэшируется с user id в Redis
 
 Server
 Используются 3 слоя:

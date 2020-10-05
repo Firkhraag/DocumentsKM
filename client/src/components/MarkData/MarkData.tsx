@@ -5,8 +5,14 @@ import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import Dropdown from '../Dropdown/Dropdown'
-import { useMark } from '../../store/MarkStore'
+import { useMark, useSetMark } from '../../store/MarkStore'
+import { makeMarkOrSubnodeName, makeComplexAndObjectName } from '../../util/make-name'
 import './MarkData.css'
+
+type MarkDataProps = {
+    // -1 - создание новой марки
+    markId: number
+}
 
 const MarkData = () => {
 	const specialistNameStringLength = 50
@@ -26,6 +32,7 @@ const MarkData = () => {
     }
     
     const mark = useMark()
+    const setMark = useSetMark()
 
 	// Object that holds selected values
 	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
@@ -37,14 +44,23 @@ const MarkData = () => {
 
 	useEffect(() => {
 		// Cannot use async func as callback in useEffect
-		// Function for fetching data
+        // Function for fetching data
+        const selectedMarkId = localStorage.getItem('selectedMarkId')
+        if (selectedMarkId == null) {
+            return
+        }
 		const fetchData = async () => {
 			try {
 				const departmentsFetchedResponse = await httpClient.get(
 					'/departments'
 				)
-				const departmentsFetched = departmentsFetchedResponse.data
-				console.log(departmentsFetched)
+                const departmentsFetched = departmentsFetchedResponse.data
+                
+                const markFetchedResponse = await httpClient.get(
+					`/marks/${selectedMarkId}`
+				)
+                setMark(markFetchedResponse.data)
+                // console.log(markFetchedResponse.data)
 
 				// Set fetched objects as select options
 				setOptionsObject({
@@ -192,7 +208,7 @@ const MarkData = () => {
         })
 	}
 
-	return (
+	return mark == null ? null : (
 		<div className="component-cnt component-width">
 			<h1 className="text-centered">Данные марки</h1>
 			<div>
@@ -201,33 +217,48 @@ const MarkData = () => {
 				</p>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Обозначение марки</p>
-					<p>Тест</p>
+					<p>{makeMarkOrSubnodeName(
+                        mark.subnode.node.project.baseSeries,
+                        mark.subnode.node.code,
+                        mark.subnode.code,
+                        mark.code,
+                    )}</p>
 				</div>
 
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование комплекса</p>
-					<p>Тест</p>
+                    <p>{makeComplexAndObjectName(
+                        mark.subnode.node.project.name,
+                        mark.subnode.node.name,
+                        mark.subnode.name,
+                        mark.name,
+                    ).complexName}</p>
 				</div>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование объекта</p>
-					<p>Тест</p>
+					<p>{makeComplexAndObjectName(
+                        mark.subnode.node.project.name,
+                        mark.subnode.node.name,
+                        mark.subnode.name,
+                        mark.name,
+                    ).objectName}</p>
 				</div>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Главный инженер проекта</p>
-					<p>Тест</p>
+                    <p>{mark.subnode.node.chiefEngineer.fullName}</p>
 				</div>
 
 				<p className="text-centered data-section-label label-mrgn-top-2">
-					Редактируемая информация
+					Информация марки
 				</p>
 
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Шифр марки</p>
-					<div className="info-area">Тест</div>
+                    <div className="info-area">{mark.code}</div>
 				</div>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование марки</p>
-					<div className="info-area">Тест</div>
+                    <div className="info-area">{mark.name}</div>
 				</div>
 				<Dropdown
 					cntStyle="flex-v mrg-bot"

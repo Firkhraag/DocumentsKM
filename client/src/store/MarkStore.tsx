@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
+import httpClient from '../axios'
 import Mark from '../model/Mark'
 
 const MarkContext = createContext<Mark>(null)
@@ -11,15 +12,25 @@ type MarkProviderProps = {
 }
 
 export const MarkProvider = ({ children }: MarkProviderProps) => {
-	const getSelectedMark = () => {
-		const markStr = localStorage.getItem('selectedMark')
-		if (!markStr) {
-			return null
-		}
-		return JSON.parse(markStr) as Mark
-	}
+    const [mark, setMark] = useState<Mark>(null)
+    
+    useEffect(() => {
+        const selectedMarkId = localStorage.getItem('selectedMarkId')
+        if (selectedMarkId != null) {
+            const fetchData = async () => {
+                try {
+                    const response = await httpClient.get(`/marks/${selectedMarkId}`)
+                    setMark(response.data)
+                } catch (e) {
+                    localStorage.removeItem('selectedMarkId')
+                    localStorage.removeItem('recentSubnodeIds')
+                    localStorage.removeItem('recentMarkIds')
+                }
+            }
+            fetchData()
+        }
+	}, [])
 
-	const [mark, setMark] = useState<Mark>(getSelectedMark())
 	return (
 		<MarkContext.Provider value={mark}>
 			<MarkDispatchContext.Provider value={setMark}>
