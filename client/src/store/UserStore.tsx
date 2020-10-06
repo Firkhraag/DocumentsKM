@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import httpClient from '../axios'
 
-const AuthContext = createContext<string>(null)
+const UserContext = createContext<string>(null)
 
 type DispatchContextType = {
 	login: (login: string, password: string) => void
@@ -9,14 +9,14 @@ type DispatchContextType = {
 }
 
 const AuthDispatchContext = createContext(null as DispatchContextType)
-export const useIsAuthenticated = () => useContext(AuthContext)
+export const useUser = () => useContext(UserContext)
 export const useAuthMethods = () => useContext(AuthDispatchContext)
 
-type AuthProviderProps = {
+type UserProviderProps = {
 	children: React.ReactNode
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const UserProvider = ({ children }: UserProviderProps) => {
 	const [userName, setUserName] = useState<string>(null)
 
 	const login = async (login: string, password: string) => {
@@ -36,10 +36,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		}
 	}
 	const logout = async () => {
-		await httpClient.post('/users/logout')
-		localStorage.removeItem('selectedMark')
-		localStorage.removeItem('recentSubnodes')
-		localStorage.removeItem('recentMarks')
+        await httpClient.post('/users/logout')
+        setUserName('')
+		localStorage.removeItem('selectedMarkId')
+		localStorage.removeItem('recentSubnodeIds')
+		localStorage.removeItem('recentMarkIds')
 	}
 
 	useEffect(() => {
@@ -49,19 +50,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 				setUserName(response.data.fullName)
 			} catch (e) {
 				setUserName('')
-				localStorage.removeItem('selectedMark')
-				localStorage.removeItem('recentSubnodes')
-				localStorage.removeItem('recentMarks')
+				localStorage.removeItem('selectedMarkId')
+				localStorage.removeItem('recentSubnodeIds')
+				localStorage.removeItem('recentMarkIds')
 			}
 		}
 		fetchData()
 	}, [])
 
 	return (
-		<AuthContext.Provider value={userName}>
+		<UserContext.Provider value={userName}>
 			<AuthDispatchContext.Provider value={{ login, logout }}>
 				{children}
 			</AuthDispatchContext.Provider>
-		</AuthContext.Provider>
+		</UserContext.Provider>
 	)
 }

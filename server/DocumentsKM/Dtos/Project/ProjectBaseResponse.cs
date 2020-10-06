@@ -1,9 +1,8 @@
 namespace DocumentsKM.Dtos
 {
-    public class ProjectSeriesResponse
+    public class ProjectBaseResponse
     {
         public int Id { get; set; }
-
         public string BaseSeries { get; set; }
     }
 }

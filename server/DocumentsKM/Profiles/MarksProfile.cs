@@ -9,7 +9,8 @@ namespace DocumentsKM.Profiles
         public MarksProfile()
         {
             // Souce -> Target
-            CreateMap<Mark, MarkCodeResponse>();
+            CreateMap<Mark, MarkBaseResponse>();
+            CreateMap<Mark, MarkParentResponse>();
             CreateMap<Mark, MarkResponse>();
             CreateMap<MarkCreateRequest, Mark>();
         }

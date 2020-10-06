@@ -8,7 +8,7 @@ namespace DocumentsKM.Dtos
         public string FullName { get; set; }
         public string AccessToken { get; set; }
 
-        // Refresh token возвращается только в http only cookie
+        // Refresh token возвращается только в cookie
         [JsonIgnore] 
         public string RefreshToken { get; set; }
 

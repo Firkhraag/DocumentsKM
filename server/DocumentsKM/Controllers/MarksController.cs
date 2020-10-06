@@ -5,7 +5,6 @@ using DocumentsKM.Dtos;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace DocumentsKM.Controllers
 {
@@ -28,10 +27,10 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("subnodes/{subnodeId}/marks")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public ActionResult<IEnumerable<MarkCodeResponse>> GetAllBySubnodeId(int subnodeId)
+        public ActionResult<IEnumerable<MarkBaseResponse>> GetAllBySubnodeId(int subnodeId)
         {
             var marks = _service.GetAllBySubnodeId(subnodeId);
-            return Ok(_mapper.Map<IEnumerable<MarkCodeResponse>>(marks));
+            return Ok(_mapper.Map<IEnumerable<MarkBaseResponse>>(marks));
         }
 
         [HttpGet, Route("marks/{id}")]
@@ -42,6 +41,18 @@ namespace DocumentsKM.Controllers
             var mark = _service.GetById(id);
             if (mark != null) {
                 return Ok(_mapper.Map<MarkResponse>(mark));
+            }
+            return NotFound();
+        }
+
+        [HttpGet, Route("marks/{id}/parents")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public ActionResult<MarkParentResponse> GetMarkParentResponseById(int id)
+        {
+            var mark = _service.GetById(id);
+            if (mark != null) {
+                return Ok(_mapper.Map<MarkParentResponse>(mark));
             }
             return NotFound();
         }

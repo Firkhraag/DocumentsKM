@@ -24,10 +24,10 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("departments/{departmentNumber}/mark-approval-employees")]
-        public ActionResult<IEnumerable<EmployeeNameResponse>> GetMarkApprovalEmployeesByDepartmentNumber(int departmentNumber)
+        public ActionResult<IEnumerable<EmployeeBaseResponse>> GetMarkApprovalEmployeesByDepartmentNumber(int departmentNumber)
         {
             var employees = _service.GetMarkApprovalEmployeesByDepartmentNumber(departmentNumber);
-            return Ok(_mapper.Map<IEnumerable<EmployeeNameResponse>>(employees));
+            return Ok(_mapper.Map<IEnumerable<EmployeeBaseResponse>>(employees));
         }
 
         [HttpGet, Route("departments/{departmentNumber}/mark-main-employees")]
@@ -36,9 +36,9 @@ namespace DocumentsKM.Controllers
             (var chiefSpecialists, var groupLeaders, var mainBuilders) = _service
                 .GetMarkMainEmployeesByDepartmentNumber(departmentNumber);
             return Ok(new MarkMainEmployeesResponse(
-                _mapper.Map<IEnumerable<EmployeeNameResponse>>(chiefSpecialists),
-                _mapper.Map<IEnumerable<EmployeeNameResponse>>(groupLeaders),
-                _mapper.Map<IEnumerable<EmployeeNameResponse>>(mainBuilders)));
+                _mapper.Map<IEnumerable<EmployeeBaseResponse>>(chiefSpecialists),
+                _mapper.Map<IEnumerable<EmployeeBaseResponse>>(groupLeaders),
+                _mapper.Map<IEnumerable<EmployeeBaseResponse>>(mainBuilders)));
         }
     }
 }

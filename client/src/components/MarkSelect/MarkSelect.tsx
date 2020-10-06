@@ -22,22 +22,6 @@ const MarkSelect = () => {
 	const subnodeNameStringLength = 50
 	const markNameStringLength = 90
 
-	// const getRecentMarks = () => {
-	// 	const recentMarksStr = localStorage.getItem('recentMarks')
-	// 	if (!recentMarksStr) {
-	// 		return [] as Mark[]
-	// 	}
-	// 	return JSON.parse(recentMarksStr) as Mark[]
-	// }
-
-	// const getRecentSubnodes = () => {
-	// 	const recentSubnodesStr = localStorage.getItem('recentSubnodes')
-	// 	if (!recentSubnodesStr) {
-	// 		return [] as Subnode[]
-	// 	}
-	// 	return JSON.parse(recentSubnodesStr) as Subnode[]
-	// }
-
 	// Default state objects
 	const defaultSelectedObject = {
 		recentMarkString: '',
@@ -48,7 +32,7 @@ const MarkSelect = () => {
 		mark: null as Mark,
 	}
 	const defaultOptionsObject = {
-		recentMarks: [] as Mark [],
+		recentMarks: [] as Mark[],
 		recentSubnodes: [] as Subnode[],
 		projects: [] as Project[],
 		nodes: [] as Node[],
@@ -79,67 +63,40 @@ const MarkSelect = () => {
 		// Function for fetching data
 		const fetchData = async () => {
 			try {
-				// Fetch projects
 				const projectsFetchedResponse = await httpClient.get(
 					'/projects'
 				)
-                const projectsFetched = projectsFetchedResponse.data
-                
-                const recentMarks = [] as Mark []
-                const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
-                if (recentMarkIdsStr != null) {
-                    const recentMarkIds = JSON.parse(recentMarkIdsStr) as number[]
-                    for (let id of recentMarkIds) {
-                        const markFetchedResponse = await httpClient.get(
-                            `/marks/${id}`,
-                        ) 
-                        recentMarks.push(markFetchedResponse.data)
-                    }
-                    
-                    // recentMarkIds.forEach( async id => {
-                    //     const markFetchedResponse = await httpClient.get(
-                    //         `/marks/${id}`
-                    //     )
-                    //     recentMarks.push(markFetchedResponse.data)
-                    // })
-                }
+				const projectsFetched = projectsFetchedResponse.data
 
-                const recentSubnodes = [] as Subnode []
-                const recentSubnodeIdsStr = localStorage.getItem('recentSubnodeIds')
-                if (recentSubnodeIdsStr != null) {
-                    const recentSubnodeIds = JSON.parse(recentSubnodeIdsStr) as number[]
-                    for (let id of recentSubnodeIds) {
-                        const subnodeFetchedResponse = await httpClient.get(
-                            `/subnodes/${id}`
-                        )
-                        recentSubnodes.push(subnodeFetchedResponse.data)
-                    }
-                    
-                    // recentSubnodeIds.forEach( async id => {
-                    //     const subnodeFetchedResponse = await httpClient.get(
-                    //         `/subnodes/${id}`
-                    //     )
-                    //     recentSubnodes.push(subnodeFetchedResponse.data)
-                    // })
-                }
+				const recentMarks = [] as Mark[]
+				const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
+				if (recentMarkIdsStr != null) {
+					const recentMarkIds = JSON.parse(
+						recentMarkIdsStr
+					) as number[]
+					for (let id of recentMarkIds) {
+						const markFetchedResponse = await httpClient.get(
+							`/marks/${id}/parents`
+						)
+						recentMarks.push(markFetchedResponse.data)
+					}
+				}
 
-
-
-				// Not very nice, but we are not using GraphQL here
-				// const recentMarksFetchedResponse = await httpClient.get(
-				// 	'/marks/recent'
-				// )
-				// const recentMarksFetched = recentMarksFetchedResponse.data
-				// console.log(recentMarksFetched)
-
-				// const recentSubnodesIds: Array<number> = []
-				// const recentSubnodesFetched: Array<Subnode> = []
-				// for (let mark of recentMarksFetched) {
-				// 	if (!recentSubnodesIds.includes(mark.subnode.id)) {
-				// 		recentSubnodesIds.push(mark.subnode.id)
-				// 		recentSubnodesFetched.push(mark.subnode)
-				// 	}
-				// }
+				const recentSubnodes = [] as Subnode[]
+				const recentSubnodeIdsStr = localStorage.getItem(
+					'recentSubnodeIds'
+				)
+				if (recentSubnodeIdsStr != null) {
+					const recentSubnodeIds = JSON.parse(
+						recentSubnodeIdsStr
+					) as number[]
+					for (let id of recentSubnodeIds) {
+						const subnodeFetchedResponse = await httpClient.get(
+							`/subnodes/${id}/parents`
+						)
+						recentSubnodes.push(subnodeFetchedResponse.data)
+					}
+				}
 
 				// Set fetched objects as select options
 				setOptionsObject({
@@ -205,10 +162,10 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
-		if (selectedObject.mark !== null && v.id === selectedObject.mark.id) {
+		if (
+			v == null ||
+			(selectedObject.mark !== null && v.id === selectedObject.mark.id)
+		) {
 			return
 		}
 		const s = v.subnode
@@ -228,8 +185,8 @@ const MarkSelect = () => {
 			)
 			const fetchedMarks = fetchedMarksResponse.data
 			setOptionsObject({
-                ...defaultOptionsObject,
-                recentMarks: optionsObject.recentMarks,
+				...defaultOptionsObject,
+				recentMarks: optionsObject.recentMarks,
 				recentSubnodes: optionsObject.recentSubnodes,
 				projects: optionsObject.projects,
 				nodes: fetchedNodes,
@@ -241,7 +198,12 @@ const MarkSelect = () => {
 		}
 		setSelectedObject({
 			...defaultSelectedObject,
-			recentMarkString: makeMarkOrSubnodeName(p.baseSeries, n.code, s.code, v.code),
+			recentMarkString: makeMarkOrSubnodeName(
+				p.baseSeries,
+				n.code,
+				s.code,
+				v.code
+			),
 			project: p,
 			node: n,
 			subnode: s,
@@ -257,12 +219,10 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
 		if (
-			selectedObject.subnode !== null &&
-			v.id === selectedObject.subnode.id
+			v == null ||
+			(selectedObject.subnode !== null &&
+				v.id === selectedObject.subnode.id)
 		) {
 			return
 		}
@@ -278,8 +238,8 @@ const MarkSelect = () => {
 			)
 			const fetchedSubnodes = fetchedSubnodesResponse.data
 			setOptionsObject({
-                ...defaultOptionsObject,
-                recentMarks: optionsObject.recentMarks,
+				...defaultOptionsObject,
+				recentMarks: optionsObject.recentMarks,
 				recentSubnodes: optionsObject.recentSubnodes,
 				projects: optionsObject.projects,
 				nodes: fetchedNodes,
@@ -290,7 +250,11 @@ const MarkSelect = () => {
 		}
 		setSelectedObject({
 			...defaultSelectedObject,
-			recentSubnodeString: makeMarkOrSubnodeName(p.baseSeries, n.code, v.code),
+			recentSubnodeString: makeMarkOrSubnodeName(
+				p.baseSeries,
+				n.code,
+				v.code
+			),
 			project: p,
 			node: n,
 			subnode: v,
@@ -298,7 +262,6 @@ const MarkSelect = () => {
 	}
 
 	const onProjectSelect = async (id: number) => {
-        console.log('Project ', optionsObject.recentMarks)
 		let v: Project = null
 		for (let project of optionsObject.projects) {
 			if (project.id === id) {
@@ -306,12 +269,10 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
 		if (
-			selectedObject.project !== null &&
-			v.id === selectedObject.project.id
+			v == null ||
+			(selectedObject.project !== null &&
+				v.id === selectedObject.project.id)
 		) {
 			return
 		}
@@ -321,8 +282,8 @@ const MarkSelect = () => {
 			)
 			const fetchedNodes = fetchedNodesResponse.data
 			setOptionsObject({
-                ...defaultOptionsObject,
-                recentMarks: optionsObject.recentMarks,
+				...defaultOptionsObject,
+				recentMarks: optionsObject.recentMarks,
 				recentSubnodes: optionsObject.recentSubnodes,
 				projects: optionsObject.projects,
 				nodes: fetchedNodes,
@@ -337,7 +298,6 @@ const MarkSelect = () => {
 	}
 
 	const onNodeSelect = async (id: number) => {
-        console.log('Node ', optionsObject.recentMarks)
 		let v: Node = null
 		for (let node of optionsObject.nodes) {
 			if (node.id === id) {
@@ -345,10 +305,10 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
-		if (selectedObject.node !== null && v.id === selectedObject.node.id) {
+		if (
+			v == null ||
+			(selectedObject.node !== null && v.id === selectedObject.node.id)
+		) {
 			return
 		}
 		try {
@@ -357,8 +317,8 @@ const MarkSelect = () => {
 			)
 			const fetchedSubnodes = fetchedSubnodesResponse.data
 			setOptionsObject({
-                ...defaultOptionsObject,
-                recentMarks: optionsObject.recentMarks,
+				...defaultOptionsObject,
+				recentMarks: optionsObject.recentMarks,
 				recentSubnodes: optionsObject.recentSubnodes,
 				projects: optionsObject.projects,
 				nodes: optionsObject.nodes,
@@ -375,7 +335,6 @@ const MarkSelect = () => {
 	}
 
 	const onSubnodeSelect = async (id: number) => {
-        console.log('Subnode ', optionsObject.recentMarks)
 		let v: Subnode = null
 		for (let subnode of optionsObject.subnodes) {
 			if (subnode.id === id) {
@@ -383,12 +342,10 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
 		if (
-			selectedObject.subnode !== null &&
-			v.id === selectedObject.subnode.id
+			v == null ||
+			(selectedObject.subnode !== null &&
+				v.id === selectedObject.subnode.id)
 		) {
 			return
 		}
@@ -398,8 +355,8 @@ const MarkSelect = () => {
 			)
 			const fetchedMarks = fetchedMarksResponse.data
 			setOptionsObject({
-                ...defaultOptionsObject,
-                recentMarks: optionsObject.recentMarks,
+				...defaultOptionsObject,
+				recentMarks: optionsObject.recentMarks,
 				recentSubnodes: optionsObject.recentSubnodes,
 				projects: optionsObject.projects,
 				nodes: optionsObject.nodes,
@@ -418,7 +375,6 @@ const MarkSelect = () => {
 	}
 
 	const onMarkSelect = (id: number) => {
-        console.log('Mark ', optionsObject.recentMarks)
 		let v: Mark = null
 		for (let mark of optionsObject.marks) {
 			if (mark.id === id) {
@@ -426,20 +382,19 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
+		if (
+			v == null ||
+			(selectedObject.mark !== null && v.id === selectedObject.mark.id)
+		) {
 			return
 		}
-		if (selectedObject.mark !== null && v.id === selectedObject.mark.id) {
-			return
-        }
 		setSelectedObject({
 			...defaultSelectedObject,
 			project: selectedObject.project,
 			node: selectedObject.node,
 			subnode: selectedObject.subnode,
 			mark: v,
-        })
-        
+		})
 	}
 
 	const onSelectMarkButtonClick = () => {
@@ -448,94 +403,31 @@ const MarkSelect = () => {
 		mark.subnode.node = selectedObject.node
 		mark.subnode.node.project = selectedObject.project
 		localStorage.setItem('selectedMarkId', mark.id.toString())
-        // setMark(mark)
-        
-        const filteredRecentMarks = optionsObject.recentMarks.filter(m => m.id !== mark.id)
-        console.log(filteredRecentMarks)
-        if (filteredRecentMarks.length >= 5) {
-            // O(n)
-            filteredRecentMarks.shift()
-        }
-        console.log(filteredRecentMarks)
-        // O(n)
-        filteredRecentMarks.unshift(mark)
-        console.log(filteredRecentMarks)
-        let resStr = JSON.stringify(filteredRecentMarks.map(m => m.id))
-        localStorage.setItem('recentMarkIds', resStr)
 
-		// let contains = false
-		// let elementIndex = 0
-		// for (let [index, m] of defaultOptionsObject.recentMarks.entries()) {
-		// 	if (m.id === mark.id) {
-		// 		elementIndex = index
-		// 		contains = true
-		// 		break
-		// 	}
-		// }
-		// if (contains) {
-		// 	if (elementIndex !== 0) {
-		// 		// O(n)
-		// 		defaultOptionsObject.recentMarks.splice(elementIndex, 1)
-		// 		defaultOptionsObject.recentMarks.splice(0, 0, mark)
-		// 		localStorage.setItem(
-		// 			'recentMarks',
-		// 			JSON.stringify(defaultOptionsObject.recentMarks)
-		// 		)
-		// 	}
-		// } else {
-		// 	if (defaultOptionsObject.recentMarks.length > 7) {
-		// 		// O(n)
-		// 		defaultOptionsObject.recentMarks.shift()
-		// 	}
-		// 	// O(n)
-		// 	defaultOptionsObject.recentMarks.unshift(mark)
-		// 	localStorage.setItem(
-		// 		'recentMarks',
-		// 		JSON.stringify(defaultOptionsObject.recentMarks)
-		// 	)
-        // }
-        
-        const filteredRecentSubnodes = optionsObject.recentSubnodes.filter(s => s.id !== mark.subnode.id)
-        if (filteredRecentSubnodes.length >= 5) {
-            // O(n)
-            filteredRecentSubnodes.shift()
-        }
-        // O(n)
-        filteredRecentSubnodes.unshift(mark.subnode)
-        resStr = JSON.stringify(filteredRecentSubnodes.map(s => s.id))
-        localStorage.setItem('recentSubnodeIds', resStr)
+		const filteredRecentMarks = optionsObject.recentMarks.filter(
+			(m) => m.id !== mark.id
+		)
+		if (filteredRecentMarks.length >= 5) {
+			// O(n)
+			filteredRecentMarks.shift()
+		}
+		// O(n)
+		filteredRecentMarks.unshift(mark)
+		let resStr = JSON.stringify(filteredRecentMarks.map((m) => m.id))
+		localStorage.setItem('recentMarkIds', resStr)
 
-		// contains = false
-		// elementIndex = 0
-		// for (let [index, s] of defaultOptionsObject.recentSubnodes.entries()) {
-		// 	if (s.id === mark.subnode.id) {
-		// 		elementIndex = index
-		// 		contains = true
-		// 		break
-		// 	}
-		// }
-		// if (contains) {
-		// 	if (elementIndex !== 0) {
-		// 		// O(n)
-		// 		defaultOptionsObject.recentSubnodes.splice(elementIndex, 1)
-		// 		defaultOptionsObject.recentSubnodes.splice(0, 0, mark.subnode)
-		// 		localStorage.setItem(
-		// 			'recentSubnodes',
-		// 			JSON.stringify(defaultOptionsObject.recentSubnodes)
-		// 		)
-		// 	}
-		// } else {
-		// 	if (defaultOptionsObject.recentSubnodes.length > 7) {
-		// 		// O(n)
-		// 		defaultOptionsObject.recentSubnodes.shift()
-		// 	}
-		// 	// O(n)
-		// 	defaultOptionsObject.recentSubnodes.unshift(mark.subnode)
-		// 	localStorage.setItem(
-		// 		'recentSubnodes',
-		// 		JSON.stringify(defaultOptionsObject.recentSubnodes)
-		// 	)
-		// }
+		const filteredRecentSubnodes = optionsObject.recentSubnodes.filter(
+			(s) => s.id !== mark.subnode.id
+		)
+		if (filteredRecentSubnodes.length >= 5) {
+			// O(n)
+			filteredRecentSubnodes.shift()
+		}
+		// O(n)
+		filteredRecentSubnodes.unshift(mark.subnode)
+		resStr = JSON.stringify(filteredRecentSubnodes.map((s) => s.id))
+		localStorage.setItem('recentSubnodeIds', resStr)
+
 		history.push('/mark-data')
 	}
 
@@ -574,6 +466,7 @@ const MarkSelect = () => {
 								? 'Последние подузлы'
 								: 'Последние марки'
 						}
+						placeholder={'Не выбрано'}
 						maxInputLength={
 							isCreateMode
 								? subnodeNameStringLength
@@ -591,20 +484,29 @@ const MarkSelect = () => {
 						}
 						options={
 							isCreateMode
-								? optionsObject.recentSubnodes.map(s => {
+								? optionsObject.recentSubnodes.map((s) => {
 										const n = s.node
 										const p = n.project
-										const fullName = makeMarkOrSubnodeName(p.baseSeries, n.code, s.code)
+										const fullName = makeMarkOrSubnodeName(
+											p.baseSeries,
+											n.code,
+											s.code
+										)
 										return {
 											id: s.id,
 											val: fullName,
 										}
 								  })
-								: optionsObject.recentMarks.map(m => {
+								: optionsObject.recentMarks.map((m) => {
 										const s = m.subnode
 										const n = s.node
 										const p = n.project
-										const fullName = makeMarkOrSubnodeName(p.baseSeries, n.code, s.code, m.code)
+										const fullName = makeMarkOrSubnodeName(
+											p.baseSeries,
+											n.code,
+											s.code,
+											m.code
+										)
 										return {
 											id: m.id,
 											val: fullName,
@@ -618,6 +520,7 @@ const MarkSelect = () => {
 					<Dropdown
 						cntStyle="flex-v mrg-bot"
 						label="Базовая серия"
+						placeholder={'Выберите базовую серию'}
 						maxInputLength={projectSeriesStringLength}
 						onClickFunc={onProjectSelect}
 						value={
@@ -625,7 +528,7 @@ const MarkSelect = () => {
 								? ''
 								: selectedObject.project.baseSeries
 						}
-						options={optionsObject.projects.map(p => {
+						options={optionsObject.projects.map((p) => {
 							return {
 								id: p.id,
 								val: p.baseSeries,
@@ -643,6 +546,7 @@ const MarkSelect = () => {
 							<Dropdown
 								cntStyle="flex-v mrg-bot"
 								label="Узел"
+								placeholder={'Выберите узел'}
 								maxInputLength={nodeCodeStringLength}
 								onClickFunc={onNodeSelect}
 								value={
@@ -650,7 +554,7 @@ const MarkSelect = () => {
 										? ''
 										: selectedObject.node.code
 								}
-								options={optionsObject.nodes.map(n => {
+								options={optionsObject.nodes.map((n) => {
 									return {
 										id: n.id,
 										val: n.code,
@@ -671,6 +575,7 @@ const MarkSelect = () => {
 								isCreateMode ? 'flex-v' : 'flex-v mrg-bot'
 							}
 							label="Подузел"
+							placeholder={'Выберите подузел'}
 							maxInputLength={subnodeCodeStringLength}
 							onClickFunc={onSubnodeSelect}
 							value={
@@ -678,7 +583,7 @@ const MarkSelect = () => {
 									? ''
 									: selectedObject.subnode.code
 							}
-							options={optionsObject.subnodes.map(s => {
+							options={optionsObject.subnodes.map((s) => {
 								return {
 									id: s.id,
 									val: s.code,
@@ -697,6 +602,7 @@ const MarkSelect = () => {
 							<Dropdown
 								cntStyle="flex-v"
 								label="Марка"
+								placeholder={'Выберите марку'}
 								maxInputLength={markCodeStringLength}
 								onClickFunc={onMarkSelect}
 								value={
@@ -704,7 +610,7 @@ const MarkSelect = () => {
 										? ''
 										: selectedObject.mark.code
 								}
-								options={optionsObject.marks.map(m => {
+								options={optionsObject.marks.map((m) => {
 									return {
 										id: m.id,
 										val: m.code,

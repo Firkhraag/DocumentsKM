@@ -1,9 +1,8 @@
 namespace DocumentsKM.Dtos
 {
-    public class SubnodeCodeResponse
+    public class NodeBaseResponse
     {
         public int Id { get; set; }
-
         public string Code { get; set; }
     }
 }

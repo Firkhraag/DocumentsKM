@@ -1,12 +1,12 @@
 import React from 'react'
-import { AuthProvider } from '../store/UserStore'
+import { UserProvider } from '../store/UserStore'
 
 type AppProvidersProps = {
 	children: React.ReactNode
 }
 
 const AppProviders = ({ children }: AppProvidersProps) => {
-	return <AuthProvider>{children}</AuthProvider>
+	return <UserProvider>{children}</UserProvider>
 }
 
 export default AppProviders

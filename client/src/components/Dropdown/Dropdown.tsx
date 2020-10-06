@@ -10,19 +10,21 @@ type IOption = {
 }
 
 type DropdownProps = {
-    cntStyle: string
+	cntStyle: string
 	label: string
+	placeholder: string
 	maxInputLength: number
 	onClickFunc: (id: number) => void
-    value: string
-    // TBD
+	value: string
+	// TBD
 	// changeValue: (newValue: string) => void
 	options: Array<IOption>
 }
 
 const Dropdown = ({
-    cntStyle,
+	cntStyle,
 	label,
+	placeholder,
 	maxInputLength,
 	onClickFunc,
 	value,
@@ -31,7 +33,7 @@ const Dropdown = ({
 	const [isInputFocused, setInputFocused] = useState(false)
 	const [dropdownHeight, setDropdownHeight] = useState(0)
 
-    // Input ref for focusing input field
+	// Input ref for focusing input field
 	const inputRef = useRef()
 	const dropdownRef = useRef()
 
@@ -100,7 +102,7 @@ const Dropdown = ({
 					onChange={onInputChange}
 					onFocus={onInputFocus}
 					onBlur={onInputBlur}
-					placeholder="Не выбрано"
+					placeholder={placeholder}
 					spellCheck="false"
 					maxLength={maxInputLength}
 				/>

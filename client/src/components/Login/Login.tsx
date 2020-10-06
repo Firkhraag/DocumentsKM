@@ -23,7 +23,7 @@ const Login = () => {
 
 	const onButtonClick = async () => {
 		try {
-			await authMethods.login(inputValues.login, inputValues.password)
+			authMethods.login(inputValues.login, inputValues.password)
 		} catch (e) {
 			if (e.message === 'Request failed with status code 400') {
 				e.message = 'Неверный логин или пароль'
@@ -43,9 +43,10 @@ const Login = () => {
 							<Close onClick={() => setErrMsg('')} />
 						</div>
 					)}
-					<label htmlFor="login" className="login-label-area">
+					<label htmlFor="login" className="label-area">
 						Логин
 					</label>
+                    <div>
 					<input
 						id="login"
 						className="input-area"
@@ -56,12 +57,14 @@ const Login = () => {
 						maxLength={255}
 						required
 					/>
+                    </div>
 				</div>
 
 				<div className="flex-v">
-					<label htmlFor="password" className="login-label-area">
+					<label htmlFor="password" className="label-area">
 						Пароль
 					</label>
+                    <div>
 					<input
 						id="password"
 						className="input-area"
@@ -72,6 +75,7 @@ const Login = () => {
 						maxLength={255}
 						required
 					/>
+                    </div>
 				</div>
 
 				<button

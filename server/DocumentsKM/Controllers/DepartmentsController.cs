@@ -32,10 +32,10 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("approval-departments")]
-        public ActionResult<IEnumerable<DepartmentCodeResponse>> GetAllApprovalDepartments()
+        public ActionResult<IEnumerable<DepartmentBaseResponse>> GetAllApprovalDepartments()
         {
             var departments = _service.GetAllActive();
-            return Ok(_mapper.Map<IEnumerable<DepartmentCodeResponse>>(departments));
+            return Ok(_mapper.Map<IEnumerable<DepartmentBaseResponse>>(departments));
         }
     }
 }

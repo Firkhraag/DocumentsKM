@@ -9,9 +9,9 @@ namespace DocumentsKM.Profiles
         public NodesProfile()
         {
             // Souce -> Target
-            CreateMap<Node, NodeCodeResponse>();
+            CreateMap<Node, NodeBaseResponse>();
+            CreateMap<Node, NodeParentResponse>();
             CreateMap<Node, NodeResponse>();
-            // CreateMap<Node, NodeWithProjectReadDto>();
         }
     }
 }

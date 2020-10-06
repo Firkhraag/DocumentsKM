@@ -25,18 +25,18 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("nodes/{nodeId}/subnodes")]
-        public ActionResult<IEnumerable<SubnodeCodeResponse>> GetAllByNodeId(int nodeId)
+        public ActionResult<IEnumerable<SubnodeBaseResponse>> GetAllByNodeId(int nodeId)
         {
             var subnodes = _service.GetAllByNodeId(nodeId);
-            return Ok(_mapper.Map<IEnumerable<SubnodeCodeResponse>>(subnodes));
+            return Ok(_mapper.Map<IEnumerable<SubnodeBaseResponse>>(subnodes));
         }
 
-        [HttpGet, Route("subnodes/{id}")]
-        public ActionResult<SubnodeResponse> GetById(int id)
+        [HttpGet, Route("subnodes/{id}/parents")]
+        public ActionResult<SubnodeParentResponse> GetSubnodeParentResponseById(int id)
         {
             var subnode = _service.GetById(id);
             if (subnode != null) {
-                return Ok(_mapper.Map<SubnodeResponse>(subnode));
+                return Ok(_mapper.Map<SubnodeParentResponse>(subnode));
             }
             return NotFound();
         }

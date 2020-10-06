@@ -4,16 +4,14 @@ namespace DocumentsKM.Dtos
 {
     public class MarkMainEmployeesResponse
     {
-        public IEnumerable<EmployeeNameResponse> ChiefSpecialists { get; set; }
-
-        public IEnumerable<EmployeeNameResponse> GroupLeaders { get; set; }
-
-        public IEnumerable<EmployeeNameResponse> MainBuilders { get; set; }
+        public IEnumerable<EmployeeBaseResponse> ChiefSpecialists { get; set; }
+        public IEnumerable<EmployeeBaseResponse> GroupLeaders { get; set; }
+        public IEnumerable<EmployeeBaseResponse> MainBuilders { get; set; }
 
         public MarkMainEmployeesResponse(
-            IEnumerable<EmployeeNameResponse> chiefSpecialists,
-            IEnumerable<EmployeeNameResponse> groupLeaders,
-            IEnumerable<EmployeeNameResponse> mainBuilders)
+            IEnumerable<EmployeeBaseResponse> chiefSpecialists,
+            IEnumerable<EmployeeBaseResponse> groupLeaders,
+            IEnumerable<EmployeeBaseResponse> mainBuilders)
         {
             ChiefSpecialists = chiefSpecialists;
             GroupLeaders = groupLeaders;

@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { MarkProvider } from '../store/MarkStore'
 import Header from '../components/Header/Header'
+import Drawer from '../components/Drawer/Drawer'
 import Home from '../components/Home/Home'
 import MarkSelect from '../components/MarkSelect/MarkSelect'
 import MarkData from '../components/MarkData/MarkData'
@@ -14,11 +15,23 @@ import LinkedDocs from '../components/LinkedDocs/LinkedDocs'
 import Exploitation from '../components/Exploitation/Exploitation'
 
 const AuthApp = () => {
+
+    const [isDrawerShown, setDrawerShown] = useState(false)
+
+    // useEffect(() => {
+    //     document.body.addEventListener('click', (e) => {
+    //         if((e.target as HTMLElement).id != 'user-drawer') {
+    //             setDrawerShown(false)
+    //         } 
+    //     });
+    // }, [])
+
 	return (
 		<MarkProvider>
 			<Switch>
 				<React.Fragment>
-					<Header />
+					<Header showDrawer={() => setDrawerShown(true)} />
+                    {/* <Drawer closeButtonClick={null} isShown={isDrawerShown} /> */}
 					<div>
 						<Route exact path="/">
 							<Home />

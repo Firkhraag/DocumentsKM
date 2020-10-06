@@ -1,9 +1,8 @@
 namespace DocumentsKM.Dtos
 {
-    public class MarkCodeResponse
+    public class MarkBaseResponse
     {
         public int Id { get; set; }
-
         public string Code { get; set; }
     }
 }

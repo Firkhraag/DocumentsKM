@@ -6,12 +6,15 @@ import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import Dropdown from '../Dropdown/Dropdown'
 import { useMark, useSetMark } from '../../store/MarkStore'
-import { makeMarkOrSubnodeName, makeComplexAndObjectName } from '../../util/make-name'
+import {
+	makeMarkOrSubnodeName,
+	makeComplexAndObjectName,
+} from '../../util/make-name'
 import './MarkData.css'
 
 type MarkDataProps = {
-    // -1 - создание новой марки
-    markId: number
+	// -1 - создание новой марки
+	markId: number
 }
 
 const MarkData = () => {
@@ -29,38 +32,35 @@ const MarkData = () => {
 		chiefSpecialists: [] as Employee[],
 		groupLeaders: [] as Employee[],
 		mainBuilders: [] as Employee[],
-    }
-    
-    const mark = useMark()
-    const setMark = useSetMark()
+	}
+
+	const mark = useMark()
+	const setMark = useSetMark()
 
 	// Object that holds selected values
 	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
 	// Object that holds select options
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
-	const [height, setHeight] = useState(0)
-	const heightRef = useRef()
-
 	useEffect(() => {
 		// Cannot use async func as callback in useEffect
-        // Function for fetching data
-        const selectedMarkId = localStorage.getItem('selectedMarkId')
-        if (selectedMarkId == null) {
-            return
-        }
+		// Function for fetching data
+		const selectedMarkId = localStorage.getItem('selectedMarkId')
+		if (selectedMarkId == null) {
+			return
+		}
 		const fetchData = async () => {
 			try {
 				const departmentsFetchedResponse = await httpClient.get(
 					'/departments'
 				)
-                const departmentsFetched = departmentsFetchedResponse.data
-                
-                const markFetchedResponse = await httpClient.get(
+				const departmentsFetched = departmentsFetchedResponse.data
+
+				const markFetchedResponse = await httpClient.get(
 					`/marks/${selectedMarkId}`
 				)
-                setMark(markFetchedResponse.data)
-                // console.log(markFetchedResponse.data)
+				setMark(markFetchedResponse.data)
+				// console.log(markFetchedResponse.data)
 
 				// Set fetched objects as select options
 				setOptionsObject({
@@ -72,18 +72,7 @@ const MarkData = () => {
 			}
 		}
 		fetchData()
-
-		// Observe the heights
-		const heightObserver = new ResizeObserver(([entry]) => {
-			setHeight(entry.target.scrollHeight)
-		})
-		if (heightRef.current) {
-			heightObserver.observe(heightRef.current)
-		}
-		return () => {
-			heightObserver.disconnect()
-		}
-	}, [heightRef])
+	}, [])
 
 	const springStyle = useSpring({
 		from: {
@@ -93,7 +82,7 @@ const MarkData = () => {
 		},
 		to: {
 			opacity: selectedObject.department == null ? (0 as any) : 1,
-			height: selectedObject.department == null ? 0 : height,
+			height: selectedObject.department == null ? 0 : 302,
 			overflowY:
 				selectedObject.department == null
 					? ('hidden' as any)
@@ -122,7 +111,7 @@ const MarkData = () => {
 			const fetchedMainEmployeesResponse = await httpClient.get(
 				`departments/${number}/mark-main-employees`
 			)
-            const fetchedMainEmployees = fetchedMainEmployeesResponse.data
+			const fetchedMainEmployees = fetchedMainEmployeesResponse.data
 			setOptionsObject({
 				...defaultOptionsObject,
 				departments: optionsObject.departments,
@@ -137,9 +126,9 @@ const MarkData = () => {
 		} catch (e) {
 			console.log('Failed to fetch the data')
 		}
-    }
-    
-    const onGroupLeaderSelect = async (id: number) => {
+	}
+
+	const onGroupLeaderSelect = async (id: number) => {
 		let e: Employee = null
 		for (let employee of optionsObject.groupLeaders) {
 			if (employee.id === id) {
@@ -157,12 +146,12 @@ const MarkData = () => {
 			return
 		}
 		setSelectedObject({
-            ...selectedObject,
-            groupLeader: e,
-        })
-    }
+			...selectedObject,
+			groupLeader: e,
+		})
+	}
 
-    const onChiefSpecialistSelect = async (id: number) => {
+	const onChiefSpecialistSelect = async (id: number) => {
 		let e: Employee = null
 		for (let employee of optionsObject.chiefSpecialists) {
 			if (employee.id === id) {
@@ -180,12 +169,12 @@ const MarkData = () => {
 			return
 		}
 		setSelectedObject({
-            ...selectedObject,
-            chiefSpecialist: e,
-        })
-    }
-    
-    const onMainBuilderSelect = async (id: number) => {
+			...selectedObject,
+			chiefSpecialist: e,
+		})
+	}
+
+	const onMainBuilderSelect = async (id: number) => {
 		let e: Employee = null
 		for (let employee of optionsObject.mainBuilders) {
 			if (employee.id === id) {
@@ -203,9 +192,9 @@ const MarkData = () => {
 			return
 		}
 		setSelectedObject({
-            ...selectedObject,
-            mainBuilder: e,
-        })
+			...selectedObject,
+			mainBuilder: e,
+		})
 	}
 
 	return mark == null ? null : (
@@ -215,37 +204,49 @@ const MarkData = () => {
 				<p className="text-centered data-section-label label-mrgn-top-1">
 					Общая информация
 				</p>
-				<div className="flex-v mrg-bot">
+				<div className="flex-v mrg-bot-info">
 					<p className="label-area">Обозначение марки</p>
-					<p>{makeMarkOrSubnodeName(
-                        mark.subnode.node.project.baseSeries,
-                        mark.subnode.node.code,
-                        mark.subnode.code,
-                        mark.code,
-                    )}</p>
+					<div className="info-area">
+						{makeMarkOrSubnodeName(
+							mark.subnode.node.project.baseSeries,
+							mark.subnode.node.code,
+							mark.subnode.code,
+							mark.code
+						)}
+					</div>
 				</div>
 
-				<div className="flex-v mrg-bot">
+				<div className="flex-v mrg-bot-info">
 					<p className="label-area">Наименование комплекса</p>
-                    <p>{makeComplexAndObjectName(
-                        mark.subnode.node.project.name,
-                        mark.subnode.node.name,
-                        mark.subnode.name,
-                        mark.name,
-                    ).complexName}</p>
+					<div className="info-area">
+						{
+							makeComplexAndObjectName(
+								mark.subnode.node.project.name,
+								mark.subnode.node.name,
+								mark.subnode.name,
+								mark.name
+							).complexName
+						}
+					</div>
 				</div>
-				<div className="flex-v mrg-bot">
+				<div className="flex-v mrg-bot-info">
 					<p className="label-area">Наименование объекта</p>
-					<p>{makeComplexAndObjectName(
-                        mark.subnode.node.project.name,
-                        mark.subnode.node.name,
-                        mark.subnode.name,
-                        mark.name,
-                    ).objectName}</p>
+					<div className="info-area">
+						{
+							makeComplexAndObjectName(
+								mark.subnode.node.project.name,
+								mark.subnode.node.name,
+								mark.subnode.name,
+								mark.name
+							).objectName
+						}
+					</div>
 				</div>
-				<div className="flex-v mrg-bot">
+				<div className="flex-v mrg-bot-info">
 					<p className="label-area">Главный инженер проекта</p>
-                    <p>{mark.subnode.node.chiefEngineer.fullName}</p>
+					<div className="info-area">
+						{mark.subnode.node.chiefEngineer.fullName}
+					</div>
 				</div>
 
 				<p className="text-centered data-section-label label-mrgn-top-2">
@@ -254,15 +255,30 @@ const MarkData = () => {
 
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Шифр марки</p>
-                    <div className="info-area">{mark.code}</div>
+					{/* <div className="info-area">{mark.code}</div> */}
+					<div>
+						<input
+							type="text"
+							className="input-area"
+							placeholder="Введите шифр марки"
+						/>
+					</div>
 				</div>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование марки</p>
-                    <div className="info-area">{mark.name}</div>
+					{/* <div className="info-area">{mark.name}</div> */}
+					<div>
+						<input
+							type="text"
+							className="input-area"
+							placeholder="Введите наименование марки"
+						/>
+					</div>
 				</div>
 				<Dropdown
 					cntStyle="flex-v mrg-bot"
 					label="Отдел"
+					placeholder={'Выберите отдел'}
 					maxInputLength={specialistNameStringLength}
 					onClickFunc={onDepartmentSelect}
 					value={
@@ -279,69 +295,70 @@ const MarkData = () => {
 				/>
 
 				<animated.div style={springStyle}>
-					<div ref={heightRef}>
-						<div className="flex-v mrg-bot">
-							<p className="label-area">Начальник отдела</p>
-							<div className="info-area">
-								{selectedObject.department == null ||
-								selectedObject.department.departmentHead == null
-									? '-'
-									: selectedObject.department.departmentHead
-											.fullName}
-							</div>
+					<div className="flex-v mrg-bot">
+						<p className="label-area">Начальник отдела</p>
+						<div className="info-area">
+							{selectedObject.department == null ||
+							selectedObject.department.departmentHead == null
+								? '-'
+								: selectedObject.department.departmentHead
+										.fullName}
 						</div>
-
-						<Dropdown
-							cntStyle="flex-v mrg-bot"
-							label="Заведующий группы"
-							maxInputLength={specialistNameStringLength}
-							onClickFunc={onGroupLeaderSelect}
-							value={selectedObject.groupLeader == null ? '' : selectedObject.groupLeader.fullName}
-							options={optionsObject.groupLeaders.map(gl => {
-                                return {
-                                    id: gl.id,
-                                    val: gl.fullName,
-                                }
-                            })}
-						/>
-						<Dropdown
-							cntStyle="flex-v mrg-bot"
-							label="Главный специалист"
-							maxInputLength={specialistNameStringLength}
-							onClickFunc={onChiefSpecialistSelect}
-							value={selectedObject.chiefSpecialist == null ? '' : selectedObject.chiefSpecialist.fullName}
-							options={optionsObject.chiefSpecialists.map(cs => {
-                                return {
-                                    id: cs.id,
-                                    val: cs.fullName,
-                                }
-                            })}
-						/>
-						{/* <Dropdown
-                            cntStyle="flex-v mrg-bot"
-                            label="Начальник отдела"
-                            maxInputLength={specialistNameStringLength}
-                            onClickFunc={null}
-                            value={''}
-                            options={[{
-                                id: 0,
-                                val: 'Test',
-                            }]}
-                        /> */}
-						<Dropdown
-							cntStyle="flex-v"
-							label="Главный строитель"
-							maxInputLength={specialistNameStringLength}
-							onClickFunc={onMainBuilderSelect}
-							value={selectedObject.mainBuilder == null ? '' : selectedObject.mainBuilder.fullName}
-							options={optionsObject.mainBuilders.map(mb => {
-                                return {
-                                    id: mb.id,
-                                    val: mb.fullName,
-                                }
-                            })}
-						/>
 					</div>
+					<Dropdown
+						cntStyle="flex-v mrg-bot"
+						label="Заведующий группы"
+						placeholder={'Не выбрано'}
+						maxInputLength={specialistNameStringLength}
+						onClickFunc={onGroupLeaderSelect}
+						value={
+							selectedObject.groupLeader == null
+								? ''
+								: selectedObject.groupLeader.fullName
+						}
+						options={optionsObject.groupLeaders.map((gl) => {
+							return {
+								id: gl.id,
+								val: gl.fullName,
+							}
+						})}
+					/>
+					<Dropdown
+						cntStyle="flex-v mrg-bot"
+						label="Главный специалист"
+						placeholder={'Не выбрано'}
+						maxInputLength={specialistNameStringLength}
+						onClickFunc={onChiefSpecialistSelect}
+						value={
+							selectedObject.chiefSpecialist == null
+								? ''
+								: selectedObject.chiefSpecialist.fullName
+						}
+						options={optionsObject.chiefSpecialists.map((cs) => {
+							return {
+								id: cs.id,
+								val: cs.fullName,
+							}
+						})}
+					/>
+					<Dropdown
+						cntStyle="flex-v"
+						label="Главный строитель"
+						placeholder={'Выберите главного строителя'}
+						maxInputLength={specialistNameStringLength}
+						onClickFunc={onMainBuilderSelect}
+						value={
+							selectedObject.mainBuilder == null
+								? ''
+								: selectedObject.mainBuilder.fullName
+						}
+						options={optionsObject.mainBuilders.map((mb) => {
+							return {
+								id: mb.id,
+								val: mb.fullName,
+							}
+						})}
+					/>
 				</animated.div>
 
 				<button className="final-btn input-border-radius pointer">

@@ -9,7 +9,7 @@ namespace DocumentsKM.Profiles
         public EmployeesProfile()
         {
             // Souce -> Target
-            CreateMap<Employee, EmployeeNameResponse>();
+            CreateMap<Employee, EmployeeBaseResponse>();
         }
     }
 }
