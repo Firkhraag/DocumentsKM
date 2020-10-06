@@ -4,7 +4,7 @@ import Node from './Node'
 interface IProject {
 	id: number
 	// type: number
-	// name: string
+	name: string
 	// additionalName: string
 	baseSeries: string
 	// approved1: Employee
@@ -15,7 +15,7 @@ interface IProject {
 class Project {
 	id: number
 	// type: number
-	// name: string
+	name: string
 	// additionalName: string
 	baseSeries: string
 	// approved1: Employee
@@ -25,7 +25,7 @@ class Project {
 	constructor(obj?: IProject) {
 		this.id = (obj && obj.id) || 0
 		// this.type = (obj && obj.type) || 0
-		// this.name = (obj && obj.name) || ''
+		this.name = (obj && obj.name) || ''
 		// this.additionalName = (obj && obj.additionalName) || ''
 		this.baseSeries = (obj && obj.baseSeries) || ''
 		// this.approved1 = (obj && obj.approved1) || null

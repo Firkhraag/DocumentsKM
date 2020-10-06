@@ -1,9 +1,8 @@
 namespace DocumentsKM.Dtos
 {
-    public class MarkCodeReadDto
+    public class NodeBaseResponse
     {
-        public ulong Id { get; set; }
-
+        public int Id { get; set; }
         public string Code { get; set; }
     }
 }

@@ -9,19 +9,10 @@ namespace DocumentsKM.Profiles
         public MarksProfile()
         {
             // Souce -> Target
-            CreateMap<Mark, MarkCodeReadDto>();
-            CreateMap<Mark, MarkWithSubnodeReadDto>();
-
-            CreateMap<Mark, MarkReadDto>();
-            CreateMap<MarkCreateDto, Mark>();
-            CreateMap<MarkUpdateDto, Mark>();
-            CreateMap<Mark, MarkUpdateDto>();
-
-            // CreateMap<Book, BookDTO>()
-            //     .ForMember(m => m.Id, opt => opt.Ignore());
-
-            // CreateMap<Author, AuthorDTO>()
-            //     .ForMember(m => m.Id, opt => opt.Ignore());
+            CreateMap<Mark, MarkBaseResponse>();
+            CreateMap<Mark, MarkParentResponse>();
+            CreateMap<Mark, MarkResponse>();
+            CreateMap<MarkCreateRequest, Mark>();
         }
     }
 }

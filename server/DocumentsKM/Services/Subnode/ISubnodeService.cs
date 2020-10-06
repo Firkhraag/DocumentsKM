@@ -7,5 +7,7 @@ namespace DocumentsKM.Services
     {
         // Получить все подузлы по id узла
         IEnumerable<Subnode> GetAllByNodeId(int nodeId);
+        // Получить подузел по id
+        Subnode GetById(int id);
     }
 }

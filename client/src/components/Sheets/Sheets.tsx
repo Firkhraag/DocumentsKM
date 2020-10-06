@@ -11,7 +11,7 @@ const Sheets = () => {
             <span className="pointer">
                 <Add />
             </span>
-			<table className="spec-table">
+			<table className="spec-table white-bg">
 				<tbody>
 					<tr className="head-tr">
 						<td>№</td>

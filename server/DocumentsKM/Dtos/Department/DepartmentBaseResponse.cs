@@ -1,9 +1,8 @@
 namespace DocumentsKM.Dtos
 {
-    public class NodeCodeReadDto
+    public class DepartmentBaseResponse
     {
-        public ulong Id { get; set; }
-
+        public int Number { get; set; }
         public string Code { get; set; }
     }
 }

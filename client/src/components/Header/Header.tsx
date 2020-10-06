@@ -1,45 +1,44 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Profile from '../Svg/Profile'
+import { useMark } from '../../store/MarkStore'
+import Drawer from '../Drawer/Drawer'
 import './Header.css'
 
-const Header = () => {
+type HeaderProps = {
+    showDrawer: () => void
+}
 
-    const getSelectedMark = () => {
-        const markStr = localStorage.getItem('selectedMark')
-        if (!markStr) {
-            return '-'
+const Header = ({ showDrawer }: HeaderProps) => {
+    const mark = useMark()
+    
+    const [isDrawerShown, setDrawerShown] = useState(false)
+
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if((e.target as HTMLElement).id != 'user-drawer') {
+                setDrawerShown(false)
+            } 
         }
-        const mark = JSON.parse(markStr)
-        const now = new Date()
-        if (now.getTime() > mark.expiry) {
-            localStorage.removeItem('selectedMark')
-            return '-'
-        }
-        return mark.name
-    }
+        document.body.addEventListener('click', handler);
+        return () => document.body.removeEventListener('click', handler)
+    }, [])
 
 	return (
-        <div>
-            Выбранная марка: {getSelectedMark()}
-            <Profile />
-        </div>
-		// <div className="header sticky white-bg space-between">
-		// 	<ul className="flex-cent-v semibold">
-		// 		<Link to="/">
-		// 			<li className="pointer border-radius">Главная</li>
-		// 		</Link>
-		// 		<Link to="/">
-		// 			<li className="pointer border-radius">Выйти</li>
-		// 		</Link>
-		// 	</ul>
-
-		// 	<ul className="flex-cent-v semibold">
-		// 		<Link to="/login">
-		// 			<li className="pointer border-radius">Выбранная марка</li>
-		// 		</Link>
-		// 	</ul>
-		// </div>
+		<div className="space-between-cent-v header white-bg">
+			<Link to="/" className="pointer bold">
+				Главная
+			</Link>
+			<Link to="/mark-select" className="pointer bold">
+				{mark == null
+					? '-'
+					: `${mark.subnode.node.project.baseSeries}.${mark.subnode.node.code}.${mark.subnode.code}-${mark.code}`}
+			</Link>
+			<div className="profile-icon-cnt relative" onClick={() => setDrawerShown(true)}>
+                <Drawer closeButtonClick={null} isShown={isDrawerShown} />
+				<div className="pointer"><Profile /></div>
+			</div>
+		</div>
 	)
 }
 

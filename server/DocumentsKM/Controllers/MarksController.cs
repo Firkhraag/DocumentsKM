@@ -5,7 +5,6 @@ using DocumentsKM.Dtos;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace DocumentsKM.Controllers
 {
@@ -27,35 +26,33 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("subnodes/{subnodeId}/marks")]
-        public ActionResult<IEnumerable<SubnodeCodeReadDto>> GetAllBySubnodeId(int subnodeId)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public ActionResult<IEnumerable<MarkBaseResponse>> GetAllBySubnodeId(int subnodeId)
         {
             var marks = _service.GetAllBySubnodeId(subnodeId);
-            return Ok(_mapper.Map<IEnumerable<MarkCodeReadDto>>(marks));
+            return Ok(_mapper.Map<IEnumerable<MarkBaseResponse>>(marks));
         }
-
-        // // TBD
-        // [HttpGet, Route("marks/recent")]
-        // public ActionResult<IEnumerable<MarkWithSubnodeReadDto>> GetUserRecentMarks()
-        // {
-        //     var marks = _service.GetUserRecentMarks();
-        //     return Ok(_mapper.Map<IEnumerable<MarkWithSubnodeReadDto>>(marks));
-        // }
-
-        // [HttpGet, Route("marks")]
-        // public ActionResult<IEnumerable<MarkReadDto>> GetAll()
-        // {
-        //     var marks = _service.GetAll();
-        //     return Ok(_mapper.Map<IEnumerable<MarkReadDto>>(marks));
-        // }
 
         [HttpGet, Route("marks/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public ActionResult<MarkReadDto> GetById(int id)
+        public ActionResult<MarkResponse> GetById(int id)
         {
             var mark = _service.GetById(id);
             if (mark != null) {
-                return Ok(_mapper.Map<MarkReadDto>(mark));
+                return Ok(_mapper.Map<MarkResponse>(mark));
+            }
+            return NotFound();
+        }
+
+        [HttpGet, Route("marks/{id}/parents")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public ActionResult<MarkParentResponse> GetMarkParentResponseById(int id)
+        {
+            var mark = _service.GetById(id);
+            if (mark != null) {
+                return Ok(_mapper.Map<MarkParentResponse>(mark));
             }
             return NotFound();
         }

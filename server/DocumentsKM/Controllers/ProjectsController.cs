@@ -25,10 +25,10 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("projects")]
-        public ActionResult<IEnumerable<ProjectSeriesReadDto>> GetAll()
+        public ActionResult<IEnumerable<ProjectBaseResponse>> GetAll()
         {
             var projects = _service.GetAll();
-            return Ok(_mapper.Map<IEnumerable<ProjectSeriesReadDto>>(projects));
+            return Ok(_mapper.Map<IEnumerable<ProjectBaseResponse>>(projects));
         }
     }
 }

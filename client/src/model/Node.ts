@@ -6,7 +6,7 @@ interface INode {
 	id: number
 	project: Project
 	code: string
-	// name: string
+	name: string
 	// additionalName: string
 	chiefEngineer: Employee
     // activeNode: string
@@ -17,7 +17,7 @@ class Node {
 	id: number
 	project: Project
 	code: string
-	// name: string
+	name: string
 	// additionalName: string
 	chiefEngineer: Employee
     // activeNode: string
@@ -27,7 +27,7 @@ class Node {
 		this.id = (obj && obj.id) || 0
 		this.project = (obj && obj.project) || null
 		this.code = (obj && obj.code) || ''
-		// this.name = (obj && obj.name) || ''
+		this.name = (obj && obj.name) || ''
 		// this.additionalName = (obj && obj.additionalName) || ''
 		this.chiefEngineer = (obj && obj.chiefEngineer) || null
 		// this.activeNode = (obj && obj.activeNode) || ''

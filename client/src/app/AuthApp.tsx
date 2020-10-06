@@ -1,7 +1,8 @@
-import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Switch, Route } from 'react-router-dom'
 import { MarkProvider } from '../store/MarkStore'
 import Header from '../components/Header/Header'
+import Drawer from '../components/Drawer/Drawer'
 import Home from '../components/Home/Home'
 import MarkSelect from '../components/MarkSelect/MarkSelect'
 import MarkData from '../components/MarkData/MarkData'
@@ -14,47 +15,67 @@ import LinkedDocs from '../components/LinkedDocs/LinkedDocs'
 import Exploitation from '../components/Exploitation/Exploitation'
 
 const AuthApp = () => {
+
+    const [isDrawerShown, setDrawerShown] = useState(false)
+
+    // useEffect(() => {
+    //     document.body.addEventListener('click', (e) => {
+    //         if((e.target as HTMLElement).id != 'user-drawer') {
+    //             setDrawerShown(false)
+    //         } 
+    //     });
+    // }, [])
+
 	return (
 		<MarkProvider>
-			{/* <Router> */}
-				<Switch>
-					<React.Fragment>
-						{/* <Header /> */}
-                        <Header />
-						<div className="flex-v-cent-h full-height">
-							<Route exact path="/">
-								<Home />
-							</Route>
-							<Route exact path="/mark-select">
+			<Switch>
+				<React.Fragment>
+					<Header showDrawer={() => setDrawerShown(true)} />
+                    {/* <Drawer closeButtonClick={null} isShown={isDrawerShown} /> */}
+					<div>
+						<Route exact path="/">
+							<Home />
+						</Route>
+						<Route exact path="/mark-select">
+							<div className="full-width container">
 								<MarkSelect />
-							</Route>
-							<Route exact path="/mark-data">
+							</div>
+						</Route>
+						<Route exact path="/mark-data">
+							<div className="full-width container">
 								<MarkData />
-							</Route>
-							<Route exact path="/mark-data">
-								<MarkData />
-							</Route>
-							<Route exact path="/mark-approval">
+							</div>
+						</Route>
+						<Route exact path="/mark-approval">
+							<div className="full-width container">
 								<MarkApproval />
-							</Route>
-							<Route exact path="/specifications">
+							</div>
+						</Route>
+						<Route exact path="/specifications">
+							<div className="full-width container">
 								<Specifications />
-							</Route>
-							<Route exact path="/sheets">
+							</div>
+						</Route>
+						<Route exact path="/sheets">
+							<div className="full-width container">
 								<Sheets />
-							</Route>
-							<Route exact path="/documents">
+							</div>
+						</Route>
+						<Route exact path="/documents">
+							<div className="full-width container">
 								<AttachedDocs />
-							</Route>
-							<Route exact path="/exploitation">
+							</div>
+						</Route>
+						<Route exact path="/exploitation">
+							<div className="full-width container">
 								<Exploitation />
-							</Route>
-							{/* <SpecificationData /> */}
-							{/* <LinkedDocs /> */}
-						</div>
-					</React.Fragment>
-				</Switch>
-			{/* </Router> */}
+							</div>
+						</Route>
+						{/* <SpecificationData /> */}
+						{/* <LinkedDocs /> */}
+					</div>
+				</React.Fragment>
+			</Switch>
 		</MarkProvider>
 	)
 }

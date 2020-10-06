@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSpring, animated } from 'react-spring'
 import ResizeObserver from 'resize-observer-polyfill'
+import { useHistory } from 'react-router-dom'
 import httpClient from '../../axios'
 import Project from '../../model/Project'
 import Node from '../../model/Node'
 import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
 import Dropdown from '../Dropdown/Dropdown'
+import { makeMarkOrSubnodeName } from '../../util/make-name'
 import './MarkSelect.css'
+
+// MARK CREATE TBD
 
 const MarkSelect = () => {
 	// Max lengths of input fields strings
@@ -36,6 +40,8 @@ const MarkSelect = () => {
 		marks: [] as Mark[],
 	}
 
+	const history = useHistory()
+
 	// States
 	// Select and Create modes
 	const [isCreateMode, setIsCreateMode] = useState(false)
@@ -57,33 +63,46 @@ const MarkSelect = () => {
 		// Function for fetching data
 		const fetchData = async () => {
 			try {
-				// Fetch projects
 				const projectsFetchedResponse = await httpClient.get(
-					'/api/projects'
+					'/projects'
 				)
 				const projectsFetched = projectsFetchedResponse.data
 
-				// Not very nice, but we are not using GraphQL here
-				// const recentMarksFetchedResponse = await httpClient.get(
-				// 	'/api/marks/recent'
-				// )
-				// const recentMarksFetched = recentMarksFetchedResponse.data
-				// console.log(recentMarksFetched)
+				const recentMarks = [] as Mark[]
+				const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
+				if (recentMarkIdsStr != null) {
+					const recentMarkIds = JSON.parse(
+						recentMarkIdsStr
+					) as number[]
+					for (let id of recentMarkIds) {
+						const markFetchedResponse = await httpClient.get(
+							`/marks/${id}/parents`
+						)
+						recentMarks.push(markFetchedResponse.data)
+					}
+				}
 
-				// const recentSubnodesIds: Array<number> = []
-				// const recentSubnodesFetched: Array<Subnode> = []
-				// for (let mark of recentMarksFetched) {
-				// 	if (!recentSubnodesIds.includes(mark.subnode.id)) {
-				// 		recentSubnodesIds.push(mark.subnode.id)
-				// 		recentSubnodesFetched.push(mark.subnode)
-				// 	}
-				// }
+				const recentSubnodes = [] as Subnode[]
+				const recentSubnodeIdsStr = localStorage.getItem(
+					'recentSubnodeIds'
+				)
+				if (recentSubnodeIdsStr != null) {
+					const recentSubnodeIds = JSON.parse(
+						recentSubnodeIdsStr
+					) as number[]
+					for (let id of recentSubnodeIds) {
+						const subnodeFetchedResponse = await httpClient.get(
+							`/subnodes/${id}/parents`
+						)
+						recentSubnodes.push(subnodeFetchedResponse.data)
+					}
+				}
 
 				// Set fetched objects as select options
 				setOptionsObject({
 					...defaultOptionsObject,
-					// recentMarks: recentMarksFetched,
-					// recentSubnodes: recentSubnodesFetched,
+					recentMarks: recentMarks,
+					recentSubnodes: recentSubnodes,
 					projects: projectsFetched,
 				})
 			} catch (e) {
@@ -120,7 +139,6 @@ const MarkSelect = () => {
 		}
 	}, [nodeHeightRef, markHeightRef, buttonHeightRef])
 
-	// getSpringStyle returns spring animation style
 	const getSpringStyle = (isClosed: boolean, height: number) => {
 		return useSpring({
 			from: {
@@ -144,10 +162,10 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
-		if (selectedObject.mark !== null && v.id === selectedObject.mark.id) {
+		if (
+			v == null ||
+			(selectedObject.mark !== null && v.id === selectedObject.mark.id)
+		) {
 			return
 		}
 		const s = v.subnode
@@ -155,15 +173,15 @@ const MarkSelect = () => {
 		const p = n.project
 		try {
 			const fetchedNodesResponse = await httpClient.get(
-				`/api/projects/${p.id}/nodes`
+				`/projects/${p.id}/nodes`
 			)
 			const fetchedNodes = fetchedNodesResponse.data
 			const fetchedSubnodesResponse = await httpClient.get(
-				`/api/nodes/${n.id}/subnodes`
+				`/nodes/${n.id}/subnodes`
 			)
 			const fetchedSubnodes = fetchedSubnodesResponse.data
 			const fetchedMarksResponse = await httpClient.get(
-				`/api/subnodes/${s.id}/marks`
+				`/subnodes/${s.id}/marks`
 			)
 			const fetchedMarks = fetchedMarksResponse.data
 			setOptionsObject({
@@ -180,8 +198,12 @@ const MarkSelect = () => {
 		}
 		setSelectedObject({
 			...defaultSelectedObject,
-			recentMarkString: `${p.baseSeries}.${n.code}.${s.code}-${v.code}`,
-			recentSubnodeString: `${p.baseSeries}.${n.code}.${s.code}`,
+			recentMarkString: makeMarkOrSubnodeName(
+				p.baseSeries,
+				n.code,
+				s.code,
+				v.code
+			),
 			project: p,
 			node: n,
 			subnode: s,
@@ -197,12 +219,10 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
 		if (
-			selectedObject.subnode !== null &&
-			v.id === selectedObject.subnode.id
+			v == null ||
+			(selectedObject.subnode !== null &&
+				v.id === selectedObject.subnode.id)
 		) {
 			return
 		}
@@ -210,11 +230,11 @@ const MarkSelect = () => {
 		const p = n.project
 		try {
 			const fetchedNodesResponse = await httpClient.get(
-				`/api/projects/${p.id}/nodes`
+				`/projects/${p.id}/nodes`
 			)
 			const fetchedNodes = fetchedNodesResponse.data
 			const fetchedSubnodesResponse = await httpClient.get(
-				`/api/nodes/${n.id}/subnodes`
+				`/nodes/${n.id}/subnodes`
 			)
 			const fetchedSubnodes = fetchedSubnodesResponse.data
 			setOptionsObject({
@@ -230,7 +250,11 @@ const MarkSelect = () => {
 		}
 		setSelectedObject({
 			...defaultSelectedObject,
-			recentSubnodeString: `${p.baseSeries}.${n.code}.${v.code}`,
+			recentSubnodeString: makeMarkOrSubnodeName(
+				p.baseSeries,
+				n.code,
+				v.code
+			),
 			project: p,
 			node: n,
 			subnode: v,
@@ -245,18 +269,16 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
 		if (
-			selectedObject.project !== null &&
-			v.id === selectedObject.project.id
+			v == null ||
+			(selectedObject.project !== null &&
+				v.id === selectedObject.project.id)
 		) {
 			return
 		}
 		try {
 			const fetchedNodesResponse = await httpClient.get(
-				`/api/projects/${id}/nodes`
+				`/projects/${id}/nodes`
 			)
 			const fetchedNodes = fetchedNodesResponse.data
 			setOptionsObject({
@@ -283,15 +305,15 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
-		if (selectedObject.node !== null && v.id === selectedObject.node.id) {
+		if (
+			v == null ||
+			(selectedObject.node !== null && v.id === selectedObject.node.id)
+		) {
 			return
 		}
 		try {
 			const fetchedSubnodesResponse = await httpClient.get(
-				`/api/nodes/${id}/subnodes`
+				`/nodes/${id}/subnodes`
 			)
 			const fetchedSubnodes = fetchedSubnodesResponse.data
 			setOptionsObject({
@@ -320,18 +342,16 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
 		if (
-			selectedObject.subnode !== null &&
-			v.id === selectedObject.subnode.id
+			v == null ||
+			(selectedObject.subnode !== null &&
+				v.id === selectedObject.subnode.id)
 		) {
 			return
 		}
 		try {
 			const fetchedMarksResponse = await httpClient.get(
-				`/api/subnodes/${id}/marks`
+				`/subnodes/${id}/marks`
 			)
 			const fetchedMarks = fetchedMarksResponse.data
 			setOptionsObject({
@@ -362,10 +382,10 @@ const MarkSelect = () => {
 				break
 			}
 		}
-		if (v == null) {
-			return
-		}
-		if (selectedObject.mark !== null && v.id === selectedObject.mark.id) {
+		if (
+			v == null ||
+			(selectedObject.mark !== null && v.id === selectedObject.mark.id)
+		) {
 			return
 		}
 		setSelectedObject({
@@ -378,21 +398,43 @@ const MarkSelect = () => {
 	}
 
 	const onSelectMarkButtonClick = () => {
-        // 7 Days
-        const ttl = 604800000
-		const now = new Date()
-		const selectedMark = {
-			id: selectedObject.mark.id,
-			name: `${selectedObject.project.baseSeries}.${selectedObject.node.code}.${selectedObject.subnode.code}-${selectedObject.mark.code}`,
-			expiry: now.getTime() + ttl,
+		const mark = selectedObject.mark
+		mark.subnode = selectedObject.subnode
+		mark.subnode.node = selectedObject.node
+		mark.subnode.node.project = selectedObject.project
+		localStorage.setItem('selectedMarkId', mark.id.toString())
+
+		const filteredRecentMarks = optionsObject.recentMarks.filter(
+			(m) => m.id !== mark.id
+		)
+		if (filteredRecentMarks.length >= 5) {
+			// O(n)
+			filteredRecentMarks.shift()
 		}
-		localStorage.setItem('selectedMark', JSON.stringify(selectedMark))
+		// O(n)
+		filteredRecentMarks.unshift(mark)
+		let resStr = JSON.stringify(filteredRecentMarks.map((m) => m.id))
+		localStorage.setItem('recentMarkIds', resStr)
+
+		const filteredRecentSubnodes = optionsObject.recentSubnodes.filter(
+			(s) => s.id !== mark.subnode.id
+		)
+		if (filteredRecentSubnodes.length >= 5) {
+			// O(n)
+			filteredRecentSubnodes.shift()
+		}
+		// O(n)
+		filteredRecentSubnodes.unshift(mark.subnode)
+		resStr = JSON.stringify(filteredRecentSubnodes.map((s) => s.id))
+		localStorage.setItem('recentSubnodeIds', resStr)
+
+		history.push('/mark-data')
 	}
 
 	return (
 		<div className="mark-data-cnt">
-			<h1 className="text-centered">Выбрать марку</h1>
-			<div className="tabs component-width">
+			<h1 className="text-centered">Выбрать / добавить марку</h1>
+			<div className="tabs component-width white-bg">
 				<input
 					type="radio"
 					name="tab-btn"
@@ -424,6 +466,7 @@ const MarkSelect = () => {
 								? 'Последние подузлы'
 								: 'Последние марки'
 						}
+						placeholder={'Не выбрано'}
 						maxInputLength={
 							isCreateMode
 								? subnodeNameStringLength
@@ -444,7 +487,11 @@ const MarkSelect = () => {
 								? optionsObject.recentSubnodes.map((s) => {
 										const n = s.node
 										const p = n.project
-										const fullName = `${p.baseSeries}.${n.code}.${s.code}`
+										const fullName = makeMarkOrSubnodeName(
+											p.baseSeries,
+											n.code,
+											s.code
+										)
 										return {
 											id: s.id,
 											val: fullName,
@@ -454,9 +501,12 @@ const MarkSelect = () => {
 										const s = m.subnode
 										const n = s.node
 										const p = n.project
-										const fullName = isCreateMode
-											? `${p.baseSeries}.${n.code}.${s.code}`
-											: `${p.baseSeries}.${n.code}.${s.code}-${m.code}`
+										const fullName = makeMarkOrSubnodeName(
+											p.baseSeries,
+											n.code,
+											s.code,
+											m.code
+										)
 										return {
 											id: m.id,
 											val: fullName,
@@ -470,6 +520,7 @@ const MarkSelect = () => {
 					<Dropdown
 						cntStyle="flex-v mrg-bot"
 						label="Базовая серия"
+						placeholder={'Выберите базовую серию'}
 						maxInputLength={projectSeriesStringLength}
 						onClickFunc={onProjectSelect}
 						value={
@@ -495,6 +546,7 @@ const MarkSelect = () => {
 							<Dropdown
 								cntStyle="flex-v mrg-bot"
 								label="Узел"
+								placeholder={'Выберите узел'}
 								maxInputLength={nodeCodeStringLength}
 								onClickFunc={onNodeSelect}
 								value={
@@ -523,6 +575,7 @@ const MarkSelect = () => {
 								isCreateMode ? 'flex-v' : 'flex-v mrg-bot'
 							}
 							label="Подузел"
+							placeholder={'Выберите подузел'}
 							maxInputLength={subnodeCodeStringLength}
 							onClickFunc={onSubnodeSelect}
 							value={
@@ -549,6 +602,7 @@ const MarkSelect = () => {
 							<Dropdown
 								cntStyle="flex-v"
 								label="Марка"
+								placeholder={'Выберите марку'}
 								maxInputLength={markCodeStringLength}
 								onClickFunc={onMarkSelect}
 								value={
@@ -575,29 +629,16 @@ const MarkSelect = () => {
 						)}
 					>
 						<div ref={buttonHeightRef}>
-							<button className="final-btn input-border-radius pointer">
+							<button
+								onClick={onSelectMarkButtonClick}
+								className="final-btn input-border-radius pointer"
+							>
 								{isCreateMode
-									? 'Добавить новую марку'
+									? 'Выбрать подузел'
 									: 'Выбрать марку'}
 							</button>
 						</div>
 					</animated.div>
-
-					{/* <animated.div style={getSpringStyle(selectedObject.node, buttonHeight)}>
-                        <div ref={buttonHeightRef}>
-                            {isCreateMode ? (
-                                selectedObject.subnode === null ? null : (
-                                    <button className="final-btn input-border-radius pointer">
-                                        Добавить новую марку
-                                    </button>
-                                )
-                            ) : (
-                                selectedObject.mark === null ? null : <button className="final-btn input-border-radius pointer">
-                                    Выбрать марку
-                                </button>
-                            )}
-                        </div>
-                    </animated.div> */}
 				</div>
 			</div>
 		</div>

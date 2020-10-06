@@ -9,8 +9,9 @@ namespace DocumentsKM.Profiles
         public SubnodesProfile()
         {
             // Souce -> Target
-            CreateMap<Subnode, SubnodeCodeReadDto>();
-            CreateMap<Subnode, SubnodeWithNodeReadDto>();
+            CreateMap<Subnode, SubnodeBaseResponse>();
+            CreateMap<Subnode, SubnodeParentResponse>();
+            CreateMap<Subnode, SubnodeResponse>();
         }
     }
 }

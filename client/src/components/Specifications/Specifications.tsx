@@ -27,7 +27,7 @@ const Specifications = () => {
             <span className="pointer">
                 <Add />
             </span>
-			<table className="spec-table">
+			<table className="spec-table white-bg">
 				<tbody>
 					<tr className="head-tr">
 						<td>№</td>
@@ -116,6 +116,9 @@ const Specifications = () => {
 					</tr>
 				</tbody>
 			</table>
+            <button className="final-btn input-border-radius pointer">
+				Сохранить изменения
+			</button>
 		</div>
 	)
 }

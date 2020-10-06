@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
+using DocumentsKM.Dtos;
 
 namespace DocumentsKM.Services
 {
@@ -13,15 +14,35 @@ namespace DocumentsKM.Services
             _repository = EmployeeRepo;
         }
 
-        public IEnumerable<Employee> GetAllApprovalByDepartmentNumber(int departmentNumber)
+        public IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentNumber(int departmentNumber)
         {
             int minPosCode = 1170;
             int maxPosCode = 1251;
-            var employees = _repository.GetAllByDepartmentNumberWithPositions(
+            var employees = _repository.GetAllByDepartmentNumberAndPositionRange(
                 departmentNumber,
                 minPosCode,
                 maxPosCode);
             return employees;
+        }
+
+        public (IEnumerable<Employee>,IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentNumber(
+            int departmentNumber)
+        {
+            var chiefSpecialistPosCode = 1100;
+            var groupLeaderPosCode = 1185;
+            var mainBuilderPosCode = 1285;
+
+            var chiefSpecialists = _repository.GetAllByDepartmentNumberAndPosition(
+                departmentNumber,
+                chiefSpecialistPosCode);
+            var groupLeaders = _repository.GetAllByDepartmentNumberAndPosition(
+                departmentNumber,
+                groupLeaderPosCode);
+            var mainBuilders = _repository.GetAllByDepartmentNumberAndPosition(
+                departmentNumber,
+                mainBuilderPosCode);
+
+            return (chiefSpecialists, groupLeaders, mainBuilders);
         }
 
         public Employee GetById(int id)

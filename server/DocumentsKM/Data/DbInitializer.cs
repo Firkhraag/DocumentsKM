@@ -121,21 +121,21 @@ namespace DocumentsKM
                 new Project
                 {
                     Type=0,
-                    Name="Name 1",
+                    Name="Project name 1",
                     AdditionalName="Additional name 1",
                     BaseSeries="M32788",
                 },
                 new Project
                 {
                     Type=0,
-                    Name="Name 2",
+                    Name="Project name 2",
                     AdditionalName="Additional name 2",
                     BaseSeries="V14578",
                 },
                 new Project
                 {
                     Type=0,
-                    Name="Name 3",
+                    Name="Project name 3",
                     AdditionalName="Additional name 3",
                     BaseSeries="G29856",
                 },
@@ -153,7 +153,7 @@ namespace DocumentsKM
                 {
                     Project=projects[0],
                     Code="111",
-                    Name="Name 1",
+                    Name="Node name 1",
                     AdditionalName="AdditionalName 1",
                     ChiefEngineer=employees[0],
                     ActiveNode="1",
@@ -163,7 +163,7 @@ namespace DocumentsKM
                 {
                     Project=projects[0],
                     Code="222",
-                    Name="Name 2",
+                    Name="Node name 2",
                     AdditionalName="AdditionalName 2",
                     ChiefEngineer=employees[1],
                     ActiveNode="1",
@@ -173,7 +173,7 @@ namespace DocumentsKM
                 {
                     Project=projects[1],
                     Code="333",
-                    Name="Name 3",
+                    Name="Node name 3",
                     AdditionalName="AdditionalName 3",
                     ChiefEngineer=employees[2],
                     ActiveNode="1",
@@ -195,7 +195,7 @@ namespace DocumentsKM
                 {
                     Node=nodes[0],
                     Code="Code1",
-                    Name="Name 1",
+                    Name="Subnode name 1",
                     AdditionalName="AdditionalName 1",
                     Created=DateTime.Parse("2020-09-01"),
                 },
@@ -203,7 +203,7 @@ namespace DocumentsKM
                 {
                     Node=nodes[1],
                     Code="Code2",
-                    Name="Name 2",
+                    Name="Subnode name 2",
                     AdditionalName="AdditionalName 2",
                     Created=DateTime.Parse("2020-09-01"),
                 },
@@ -211,7 +211,7 @@ namespace DocumentsKM
                 {
                     Node=nodes[1],
                     Code="Code3",
-                    Name="Name 3",
+                    Name="Subnode name 3",
                     AdditionalName="AdditionalName 3",
                     Created=DateTime.Parse("2020-09-01"),
                 },
@@ -231,27 +231,27 @@ namespace DocumentsKM
                     Subnode=subnodes[0],
                     Code="Test mark1",
                     AdditionalCode="C1",
-                    Name="Name 1",
+                    Name="Mark name 1",
                     Department=departments[0],
-                    MainBulder=employees[0],
+                    MainBuilder=employees[0],
                 },
                 new Mark
                 {
                     Subnode=subnodes[0],
                     Code="Test mark2",
                     AdditionalCode="C2",
-                    Name="Name 2",
+                    Name="Mark name 2",
                     Department=departments[1],
-                    MainBulder=employees[1],
+                    MainBuilder=employees[1],
                 },
                 new Mark
                 {
                     Subnode=subnodes[1],
                     Code="Test mark3",
                     AdditionalCode="C3",
-                    Name="Name 3",
+                    Name="Mark name 3",
                     Department=departments[2],
-                    MainBulder=employees[2],
+                    MainBuilder=employees[2],
                 },
             };
             if (!ctx.Marks.Any())

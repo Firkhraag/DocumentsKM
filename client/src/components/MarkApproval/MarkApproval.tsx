@@ -32,7 +32,7 @@ const MarkApproval = () => {
 			try {
 				// Fetch departments
 				const departmentsFetchedResponse = await httpClient.get(
-					'/api/departments'
+					'/departments'
 				)
 				const departmentsFetched = departmentsFetchedResponse.data
 
@@ -63,7 +63,7 @@ const MarkApproval = () => {
         //     return
         // }
         // try {
-        //     const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/api/subnodes/${id}/marks`)
+        //     const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/subnodes/${id}/marks`)
         //     const fetchedMarks = fetchedMarksResponse.data
         //     setOptionsObject({
         //         ...defaultOptionsObject,
@@ -86,9 +86,9 @@ const MarkApproval = () => {
     }
 
 	return (
-		<div className="component-cnt component-width">
+		<div className="component-cnt">
 			<h1 className="text-centered">Согласования</h1>
-			<table className="agreements-table">
+			<table className="agreements-table white-bg">
 				<tbody>
 					<tr className="head-tr">
 						<td>Отдел</td>
@@ -98,7 +98,8 @@ const MarkApproval = () => {
 						<td className="td-no-border">
 							<Dropdown
 								cntStyle="flex-v"
-								label=""
+                                label=""
+                                placeholder="Выберите отдел"
 								maxInputLength={departmentStringLength}
 								onClickFunc={null}
 								value={''}
@@ -113,7 +114,8 @@ const MarkApproval = () => {
 						<td className="td-no-border">
 							<Dropdown
 								cntStyle="flex-v"
-								label=""
+                                label=""
+                                placeholder="Выберите специалиста"
 								maxInputLength={employeeStringLength}
 								onClickFunc={null}
 								value={''}

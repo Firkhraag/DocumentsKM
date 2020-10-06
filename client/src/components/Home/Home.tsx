@@ -1,29 +1,38 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useMark } from '../../store/MarkStore'
 import './Home.css'
 
 const Home = () => {
+
+    const mark = useMark()
+
+    let tileClassName = "home-link container white-bg text-centered"
+    if (mark == null) {
+        tileClassName += ' disabled'
+    }
+
     return (
-        <div className="flex-v">
-            <Link to="/mark-select" className="home-link">
-                Выбрать марку
+        <div className="home-cnt">
+            <Link to="/mark-select" className="home-link container white-bg text-centered">
+                Выбрать / добавить марку
             </Link>
-            <Link to="/mark-data" className="home-link">
+            <Link to="/mark-data" className={tileClassName}>
                 Данные марки
             </Link>
-            <Link to="/mark-approval" className="home-link">
+            <Link to="/mark-approval" className={tileClassName}>
                 Согласования
             </Link>
-            <Link to="/specifications" className="home-link">
+            <Link to="/specifications" className={tileClassName}>
                 Выпуски спецификаций
             </Link>
-            <Link to="/sheets" className="home-link">
+            <Link to="/sheets" className={tileClassName}>
                 Листы
             </Link>
-            <Link to="/documents" className="home-link">
+            <Link to="/documents" className={tileClassName}>
                 Прилагаемые документы
             </Link>
-            <Link to="/exploitation" className="home-link">
+            <Link to="/exploitation" className={tileClassName}>
                 Условия эксплуатации
             </Link>
         </div>

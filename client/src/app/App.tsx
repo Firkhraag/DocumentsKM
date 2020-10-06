@@ -1,20 +1,20 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import Spinner from '../components/Spinner/Spinner'
 import AuthApp from './AuthApp'
 import UnauthApp from './UnauthApp'
-import { useIsAuthenticated } from '../store/UserStore'
+import { useUser } from '../store/UserStore'
 import './App.css'
 
 const App = () => {
-	const isAuthenticated = useIsAuthenticated()
+	const user = useUser()
 	return (
 		<Router>
-			{isAuthenticated == null ? (
+			{user == null ? (
 				<div className="container full-height">
 					<Spinner />
 				</div>
-			) : isAuthenticated ? (
+			) : user ? (
 				<AuthApp />
 			) : (
 				<UnauthApp />

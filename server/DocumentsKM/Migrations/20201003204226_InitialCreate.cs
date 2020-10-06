@@ -192,7 +192,7 @@ namespace DocumentsKM.Migrations
                     department_id = table.Column<int>(type: "integer", nullable: false),
                     chief_specialist_id = table.Column<int>(type: "integer", nullable: true),
                     group_leader_id = table.Column<int>(type: "integer", nullable: true),
-                    main_bulder_id = table.Column<int>(type: "integer", nullable: false),
+                    main_builder_id = table.Column<int>(type: "integer", nullable: false),
                     approval_specialist1_id = table.Column<int>(type: "integer", nullable: true),
                     approval_specialist2_id = table.Column<int>(type: "integer", nullable: true),
                     approval_specialist3_id = table.Column<int>(type: "integer", nullable: true),
@@ -265,8 +265,8 @@ namespace DocumentsKM.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "fk_marks_employees_main_bulder_id",
-                        column: x => x.main_bulder_id,
+                        name: "fk_marks_employees_main_builder_id",
+                        column: x => x.main_builder_id,
                         principalTable: "employees",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -344,9 +344,9 @@ namespace DocumentsKM.Migrations
                 column: "group_leader_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_marks_main_bulder_id",
+                name: "ix_marks_main_builder_id",
                 table: "marks",
-                column: "main_bulder_id");
+                column: "main_builder_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_marks_subnode_id",
