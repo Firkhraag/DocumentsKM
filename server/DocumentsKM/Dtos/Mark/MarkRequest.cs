@@ -1,10 +1,9 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Dtos
 {
-    public class MarkCreateRequest
+    public class MarkRequest
     {
         [Required]
         public Subnode Subnode { get; set; }
@@ -12,10 +11,6 @@ namespace DocumentsKM.Dtos
         [Required]
         [MaxLength(40)]
         public string Code { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string AdditionalCode { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -30,19 +25,5 @@ namespace DocumentsKM.Dtos
 
         [Required]
         public Employee MainBulder { get; set; }
-
-        public Employee ApprovalSpecialist1 { get; set; }
-
-        public Employee ApprovalSpecialist2 { get; set; }
-
-        public Employee ApprovalSpecialist3 { get; set; }
-
-        public Employee ApprovalSpecialist4 { get; set; }
-
-        public Employee ApprovalSpecialist5 { get; set; }
-
-        public Employee ApprovalSpecialist6 { get; set; }
-
-        public Employee ApprovalSpecialist7 { get; set; }
     }
 }

@@ -15,7 +15,9 @@ namespace DocumentsKM.Data
         // Получить марку по id
         Mark GetById(int id);
 
+        // Добавить новую марку
         void Create(Mark mark);
+        // Изменить имеющуюся марку
         void Update(Mark mark);
     }
 }

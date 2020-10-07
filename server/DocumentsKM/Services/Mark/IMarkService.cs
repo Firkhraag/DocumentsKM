@@ -9,5 +9,7 @@ namespace DocumentsKM.Services
         IEnumerable<Mark> GetAllBySubnodeId(int subnodeId);
         // Получить марку по id
         Mark GetById(int id);
+        // Создать новую марку
+        void Create(Mark mark);
     }
 }

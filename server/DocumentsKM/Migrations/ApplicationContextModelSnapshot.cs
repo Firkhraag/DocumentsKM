@@ -143,34 +143,6 @@ namespace DocumentsKM.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("additional_code");
 
-                    b.Property<int?>("ApprovalSpecialist1Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("approval_specialist1_id");
-
-                    b.Property<int?>("ApprovalSpecialist2Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("approval_specialist2_id");
-
-                    b.Property<int?>("ApprovalSpecialist3Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("approval_specialist3_id");
-
-                    b.Property<int?>("ApprovalSpecialist4Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("approval_specialist4_id");
-
-                    b.Property<int?>("ApprovalSpecialist5Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("approval_specialist5_id");
-
-                    b.Property<int?>("ApprovalSpecialist6Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("approval_specialist6_id");
-
-                    b.Property<int?>("ApprovalSpecialist7Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("approval_specialist7_id");
-
                     b.Property<int?>("ChiefSpecialistId")
                         .HasColumnType("integer")
                         .HasColumnName("chief_specialist_id");
@@ -206,27 +178,6 @@ namespace DocumentsKM.Migrations
                     b.HasKey("Id")
                         .HasName("pk_marks");
 
-                    b.HasIndex("ApprovalSpecialist1Id")
-                        .HasDatabaseName("ix_marks_approval_specialist1_id");
-
-                    b.HasIndex("ApprovalSpecialist2Id")
-                        .HasDatabaseName("ix_marks_approval_specialist2_id");
-
-                    b.HasIndex("ApprovalSpecialist3Id")
-                        .HasDatabaseName("ix_marks_approval_specialist3_id");
-
-                    b.HasIndex("ApprovalSpecialist4Id")
-                        .HasDatabaseName("ix_marks_approval_specialist4_id");
-
-                    b.HasIndex("ApprovalSpecialist5Id")
-                        .HasDatabaseName("ix_marks_approval_specialist5_id");
-
-                    b.HasIndex("ApprovalSpecialist6Id")
-                        .HasDatabaseName("ix_marks_approval_specialist6_id");
-
-                    b.HasIndex("ApprovalSpecialist7Id")
-                        .HasDatabaseName("ix_marks_approval_specialist7_id");
-
                     b.HasIndex("ChiefSpecialistId")
                         .HasDatabaseName("ix_marks_chief_specialist_id");
 
@@ -243,6 +194,25 @@ namespace DocumentsKM.Migrations
                         .HasDatabaseName("ix_marks_subnode_id");
 
                     b.ToTable("marks");
+                });
+
+            modelBuilder.Entity("DocumentsKM.Models.MarksApprovals", b =>
+                {
+                    b.Property<int>("MarkId")
+                        .HasColumnType("integer")
+                        .HasColumnName("mark_id");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employee_id");
+
+                    b.HasKey("MarkId", "EmployeeId")
+                        .HasName("pk_marks_approvals");
+
+                    b.HasIndex("EmployeeId")
+                        .HasDatabaseName("ix_marks_approvals_employee_id");
+
+                    b.ToTable("marks_approvals");
                 });
 
             modelBuilder.Entity("DocumentsKM.Models.Node", b =>
@@ -451,7 +421,8 @@ namespace DocumentsKM.Migrations
                         .HasDatabaseName("ix_users_employee_id");
 
                     b.HasIndex("Login")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_login");
 
                     b.ToTable("users");
                 });
@@ -487,41 +458,6 @@ namespace DocumentsKM.Migrations
 
             modelBuilder.Entity("DocumentsKM.Models.Mark", b =>
                 {
-                    b.HasOne("DocumentsKM.Models.Employee", "ApprovalSpecialist1")
-                        .WithMany()
-                        .HasForeignKey("ApprovalSpecialist1Id")
-                        .HasConstraintName("fk_marks_employees_approval_specialist1_id");
-
-                    b.HasOne("DocumentsKM.Models.Employee", "ApprovalSpecialist2")
-                        .WithMany()
-                        .HasForeignKey("ApprovalSpecialist2Id")
-                        .HasConstraintName("fk_marks_employees_approval_specialist2_id");
-
-                    b.HasOne("DocumentsKM.Models.Employee", "ApprovalSpecialist3")
-                        .WithMany()
-                        .HasForeignKey("ApprovalSpecialist3Id")
-                        .HasConstraintName("fk_marks_employees_approval_specialist3_id");
-
-                    b.HasOne("DocumentsKM.Models.Employee", "ApprovalSpecialist4")
-                        .WithMany()
-                        .HasForeignKey("ApprovalSpecialist4Id")
-                        .HasConstraintName("fk_marks_employees_approval_specialist4_id");
-
-                    b.HasOne("DocumentsKM.Models.Employee", "ApprovalSpecialist5")
-                        .WithMany()
-                        .HasForeignKey("ApprovalSpecialist5Id")
-                        .HasConstraintName("fk_marks_employees_approval_specialist5_id");
-
-                    b.HasOne("DocumentsKM.Models.Employee", "ApprovalSpecialist6")
-                        .WithMany()
-                        .HasForeignKey("ApprovalSpecialist6Id")
-                        .HasConstraintName("fk_marks_employees_approval_specialist6_id");
-
-                    b.HasOne("DocumentsKM.Models.Employee", "ApprovalSpecialist7")
-                        .WithMany()
-                        .HasForeignKey("ApprovalSpecialist7Id")
-                        .HasConstraintName("fk_marks_employees_approval_specialist7_id");
-
                     b.HasOne("DocumentsKM.Models.Employee", "ChiefSpecialist")
                         .WithMany()
                         .HasForeignKey("ChiefSpecialistId")
@@ -553,20 +489,6 @@ namespace DocumentsKM.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApprovalSpecialist1");
-
-                    b.Navigation("ApprovalSpecialist2");
-
-                    b.Navigation("ApprovalSpecialist3");
-
-                    b.Navigation("ApprovalSpecialist4");
-
-                    b.Navigation("ApprovalSpecialist5");
-
-                    b.Navigation("ApprovalSpecialist6");
-
-                    b.Navigation("ApprovalSpecialist7");
-
                     b.Navigation("ChiefSpecialist");
 
                     b.Navigation("Department");
@@ -576,6 +498,27 @@ namespace DocumentsKM.Migrations
                     b.Navigation("MainBuilder");
 
                     b.Navigation("Subnode");
+                });
+
+            modelBuilder.Entity("DocumentsKM.Models.MarksApprovals", b =>
+                {
+                    b.HasOne("DocumentsKM.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .HasConstraintName("fk_marks_approvals_employees_employee_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocumentsKM.Models.Mark", "Mark")
+                        .WithMany()
+                        .HasForeignKey("MarkId")
+                        .HasConstraintName("fk_marks_approvals_marks_mark_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Mark");
                 });
 
             modelBuilder.Entity("DocumentsKM.Models.Node", b =>

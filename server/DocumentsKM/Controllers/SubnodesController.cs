@@ -3,6 +3,7 @@ using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsKM.Controllers
@@ -10,6 +11,7 @@ namespace DocumentsKM.Controllers
     [Route("api")]
     [Authorize]
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class SubnodesController : ControllerBase
     {
         private readonly ISubnodeService _service;
@@ -25,6 +27,7 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("nodes/{nodeId}/subnodes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<SubnodeBaseResponse>> GetAllByNodeId(int nodeId)
         {
             var subnodes = _service.GetAllByNodeId(nodeId);
@@ -32,6 +35,8 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("subnodes/{id}/parents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<SubnodeParentResponse> GetSubnodeParentResponseById(int id)
         {
             var subnode = _service.GetById(id);

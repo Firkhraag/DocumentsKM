@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using AutoMapper;
-using DocumentsKM.Data;
 using DocumentsKM.Dtos;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsKM.Controllers
@@ -11,6 +11,7 @@ namespace DocumentsKM.Controllers
     [Route("api")]
     [Authorize]
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class DepartmentsController : ControllerBase
     {
         private readonly IDepartmentService _service;
@@ -25,6 +26,7 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("departments")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<DepartmentResponse>> GetAllActive()
         {
             var departments = _service.GetAllActive();
@@ -32,6 +34,7 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("approval-departments")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<DepartmentBaseResponse>> GetAllApprovalDepartments()
         {
             var departments = _service.GetAllActive();

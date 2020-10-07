@@ -49,32 +49,32 @@ namespace DocumentsKM.Models
         [ForeignKey("MainBuilderId")]
         public virtual Employee MainBuilder { get; set; }
 
-        // Исп1
-        [ForeignKey("ApprovalSpecialist1Id")]
-        public virtual Employee ApprovalSpecialist1 { get; set; }
+        // // Исп1
+        // [ForeignKey("ApprovalSpecialist1Id")]
+        // public virtual Employee ApprovalSpecialist1 { get; set; }
 
-        // Исп2
-        [ForeignKey("ApprovalSpecialist2Id")]
-        public virtual Employee ApprovalSpecialist2 { get; set; }
+        // // Исп2
+        // [ForeignKey("ApprovalSpecialist2Id")]
+        // public virtual Employee ApprovalSpecialist2 { get; set; }
 
-        // Исп3
-        [ForeignKey("ApprovalSpecialist3Id")]
-        public virtual Employee ApprovalSpecialist3 { get; set; }
+        // // Исп3
+        // [ForeignKey("ApprovalSpecialist3Id")]
+        // public virtual Employee ApprovalSpecialist3 { get; set; }
 
-        // Исп4
-        [ForeignKey("ApprovalSpecialist4Id")]
-        public virtual Employee ApprovalSpecialist4 { get; set; }
+        // // Исп4
+        // [ForeignKey("ApprovalSpecialist4Id")]
+        // public virtual Employee ApprovalSpecialist4 { get; set; }
 
-        // Исп5
-        [ForeignKey("ApprovalSpecialist5Id")]
-        public virtual Employee ApprovalSpecialist5 { get; set; }
+        // // Исп5
+        // [ForeignKey("ApprovalSpecialist5Id")]
+        // public virtual Employee ApprovalSpecialist5 { get; set; }
 
-        // Исп6
-        [ForeignKey("ApprovalSpecialist6Id")]
-        public virtual Employee ApprovalSpecialist6 { get; set; }
+        // // Исп6
+        // [ForeignKey("ApprovalSpecialist6Id")]
+        // public virtual Employee ApprovalSpecialist6 { get; set; }
 
-        // Исп7
-        [ForeignKey("ApprovalSpecialist7Id")]
-        public virtual Employee ApprovalSpecialist7 { get; set; }
+        // // Исп7
+        // [ForeignKey("ApprovalSpecialist7Id")]
+        // public virtual Employee ApprovalSpecialist7 { get; set; }
     }
 }

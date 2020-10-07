@@ -5,12 +5,19 @@ namespace DocumentsKM.Models
 {
     public class MarksApprovals
     {
+        // Id_Марки
         [Required]
         [ForeignKey("MarkId")]
-        public Mark Mark { get; set; }
+        public virtual Mark Mark { get; set; }
 
+        public int MarkId { get; set; }
+
+        // Исп
         [Required]
         [ForeignKey("EmployeeId")]
-        public Employee Employee { get; set; }
+        public virtual Employee Employee { get; set; }
+
+        public int EmployeeId { get; set; }
+
     }
 }

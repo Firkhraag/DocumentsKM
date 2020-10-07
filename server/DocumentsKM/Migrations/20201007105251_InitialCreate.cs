@@ -192,14 +192,7 @@ namespace DocumentsKM.Migrations
                     department_id = table.Column<int>(type: "integer", nullable: false),
                     chief_specialist_id = table.Column<int>(type: "integer", nullable: true),
                     group_leader_id = table.Column<int>(type: "integer", nullable: true),
-                    main_builder_id = table.Column<int>(type: "integer", nullable: false),
-                    approval_specialist1_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist2_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist3_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist4_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist5_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist6_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist7_id = table.Column<int>(type: "integer", nullable: true)
+                    main_builder_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -210,48 +203,6 @@ namespace DocumentsKM.Migrations
                         principalTable: "departments",
                         principalColumn: "number",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist1_id",
-                        column: x => x.approval_specialist1_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist2_id",
-                        column: x => x.approval_specialist2_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist3_id",
-                        column: x => x.approval_specialist3_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist4_id",
-                        column: x => x.approval_specialist4_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist5_id",
-                        column: x => x.approval_specialist5_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist6_id",
-                        column: x => x.approval_specialist6_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist7_id",
-                        column: x => x.approval_specialist7_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_marks_employees_chief_specialist_id",
                         column: x => x.chief_specialist_id,
@@ -278,6 +229,30 @@ namespace DocumentsKM.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "marks_approvals",
+                columns: table => new
+                {
+                    mark_id = table.Column<int>(type: "integer", nullable: false),
+                    employee_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_marks_approvals", x => new { x.mark_id, x.employee_id });
+                    table.ForeignKey(
+                        name: "fk_marks_approvals_employees_employee_id",
+                        column: x => x.employee_id,
+                        principalTable: "employees",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_marks_approvals_marks_mark_id",
+                        column: x => x.mark_id,
+                        principalTable: "marks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "ix_departments_department_head_id",
                 table: "departments",
@@ -292,41 +267,6 @@ namespace DocumentsKM.Migrations
                 name: "ix_employees_position_code",
                 table: "employees",
                 column: "position_code");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist1_id",
-                table: "marks",
-                column: "approval_specialist1_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist2_id",
-                table: "marks",
-                column: "approval_specialist2_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist3_id",
-                table: "marks",
-                column: "approval_specialist3_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist4_id",
-                table: "marks",
-                column: "approval_specialist4_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist5_id",
-                table: "marks",
-                column: "approval_specialist5_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist6_id",
-                table: "marks",
-                column: "approval_specialist6_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist7_id",
-                table: "marks",
-                column: "approval_specialist7_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_marks_chief_specialist_id",
@@ -352,6 +292,11 @@ namespace DocumentsKM.Migrations
                 name: "ix_marks_subnode_id",
                 table: "marks",
                 column: "subnode_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_marks_approvals_employee_id",
+                table: "marks_approvals",
+                column: "employee_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_nodes_chief_engineer_id",
@@ -384,7 +329,7 @@ namespace DocumentsKM.Migrations
                 column: "employee_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_login",
+                name: "ix_users_login",
                 table: "users",
                 column: "login",
                 unique: true);
@@ -405,10 +350,13 @@ namespace DocumentsKM.Migrations
                 table: "departments");
 
             migrationBuilder.DropTable(
-                name: "marks");
+                name: "marks_approvals");
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "marks");
 
             migrationBuilder.DropTable(
                 name: "subnodes");

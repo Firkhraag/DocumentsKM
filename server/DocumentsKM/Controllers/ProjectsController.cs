@@ -3,6 +3,7 @@ using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsKM.Controllers
@@ -10,6 +11,7 @@ namespace DocumentsKM.Controllers
     [Route("api")]
     [Authorize]
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _service;
@@ -25,6 +27,7 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("projects")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<ProjectBaseResponse>> GetAll()
         {
             var projects = _service.GetAll();

@@ -2,18 +2,17 @@ using System.Collections.Generic;
 using AutoMapper;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
-using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace DocumentsKM.Controllers
 {
     [Route("api")]
     [Authorize]
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class NodesController : ControllerBase
     {
         private readonly INodeService _service;
@@ -29,6 +28,7 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("projects/{projectId}/nodes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<NodeBaseResponse>> GetAllByProjectId(int projectId)
         {
             var nodes = _service.GetAllByProjectId(projectId);

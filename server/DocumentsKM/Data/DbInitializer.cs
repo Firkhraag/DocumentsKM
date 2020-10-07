@@ -53,21 +53,33 @@ namespace DocumentsKM
             {
                 new Position
                 {
-                    Code=1100,
+                    Code=1077,
                     Name="Test position1",
-                    ShortName="Position3",
+                    ShortName="Position1",
                 },
                 new Position
                 {
-                    Code=1185,
+                    Code=1100,
                     Name="Test position2",
                     ShortName="Position2",
                 },
                 new Position
                 {
-                    Code=1285,
+                    Code=1185,
                     Name="Test position3",
                     ShortName="Position3",
+                },
+                new Position
+                {
+                    Code=1285,
+                    Name="Test position4",
+                    ShortName="Position4",
+                },
+                new Position
+                {
+                    Code=1290,
+                    Name="Test position5",
+                    ShortName="Position5",
                 },
             };
             if (!ctx.Positions.Any())
@@ -100,8 +112,71 @@ namespace DocumentsKM
                 new Employee
                 {
                     FullName="Test employee3",
+                    Department=departments[0],
+                    Position=positions[2],
+                    RecruitedDate=DateTime.Parse("2020-09-01"),
+                    HasCanteen=false,
+                    VacationType=1,
+                },
+                new Employee
+                {
+                    FullName="Test employee4",
+                    Department=departments[0],
+                    Position=positions[3],
+                    RecruitedDate=DateTime.Parse("2020-09-01"),
+                    HasCanteen=false,
+                    VacationType=1,
+                },
+                new Employee
+                {
+                    FullName="Test employee5",
+                    Department=departments[0],
+                    Position=positions[0],
+                    RecruitedDate=DateTime.Parse("2020-09-01"),
+                    HasCanteen=false,
+                    VacationType=1,
+                },
+                new Employee
+                {
+                    FullName="Test employee6",
+                    Department=departments[0],
+                    Position=positions[4],
+                    RecruitedDate=DateTime.Parse("2020-09-01"),
+                    HasCanteen=false,
+                    VacationType=1,
+                },
+                new Employee
+                {
+                    FullName="Test employee7",
                     Department=departments[1],
                     Position=positions[2],
+                    RecruitedDate=DateTime.Parse("2020-09-01"),
+                    HasCanteen=false,
+                    VacationType=1,
+                },
+                new Employee
+                {
+                    FullName="Test employee8",
+                    Department=departments[1],
+                    Position=positions[2],
+                    RecruitedDate=DateTime.Parse("2020-09-01"),
+                    HasCanteen=false,
+                    VacationType=1,
+                },
+                new Employee
+                {
+                    FullName="Test employee8",
+                    Department=departments[1],
+                    Position=positions[3],
+                    RecruitedDate=DateTime.Parse("2020-09-01"),
+                    HasCanteen=false,
+                    VacationType=1,
+                },
+                new Employee
+                {
+                    FullName="Test employee8",
+                    Department=departments[1],
+                    Position=positions[4],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
                     HasCanteen=false,
                     VacationType=1,
@@ -179,6 +254,16 @@ namespace DocumentsKM
                     ActiveNode="1",
                     Created=DateTime.Parse("2020-09-01"),
                 },
+                new Node
+                {
+                    Project=projects[1],
+                    Code="444",
+                    Name="Node name 4",
+                    AdditionalName="AdditionalName 4",
+                    ChiefEngineer=employees[3],
+                    ActiveNode="1",
+                    Created=DateTime.Parse("2020-09-01"),
+                },
             };
             if (!ctx.Nodes.Any())
             {
@@ -213,6 +298,30 @@ namespace DocumentsKM
                     Code="Code3",
                     Name="Subnode name 3",
                     AdditionalName="AdditionalName 3",
+                    Created=DateTime.Parse("2020-09-01"),
+                },
+                new Subnode
+                {
+                    Node=nodes[2],
+                    Code="Code4",
+                    Name="Subnode name 4",
+                    AdditionalName="AdditionalName 4",
+                    Created=DateTime.Parse("2020-09-01"),
+                },
+                new Subnode
+                {
+                    Node=nodes[2],
+                    Code="Code5",
+                    Name="Subnode name 5",
+                    AdditionalName="AdditionalName 5",
+                    Created=DateTime.Parse("2020-09-01"),
+                },
+                new Subnode
+                {
+                    Node=nodes[3],
+                    Code="Code6",
+                    Name="Subnode name 6",
+                    AdditionalName="AdditionalName 6",
                     Created=DateTime.Parse("2020-09-01"),
                 },
             };
@@ -253,6 +362,33 @@ namespace DocumentsKM
                     Department=departments[2],
                     MainBuilder=employees[2],
                 },
+                new Mark
+                {
+                    Subnode=subnodes[2],
+                    Code="Test mark4",
+                    AdditionalCode="C4",
+                    Name="Mark name 4",
+                    Department=departments[0],
+                    MainBuilder=employees[0],
+                },
+                new Mark
+                {
+                    Subnode=subnodes[3],
+                    Code="Test mark5",
+                    AdditionalCode="C5",
+                    Name="Mark name 5",
+                    Department=departments[1],
+                    MainBuilder=employees[3],
+                },
+                new Mark
+                {
+                    Subnode=subnodes[4],
+                    Code="Test mark6",
+                    AdditionalCode="C6",
+                    Name="Mark name 6",
+                    Department=departments[0],
+                    MainBuilder=employees[4],
+                },
             };
             if (!ctx.Marks.Any())
             {
@@ -262,6 +398,29 @@ namespace DocumentsKM
                 ctx.Marks.AddRange(marks);
                 ctx.SaveChanges();
                 ctx.Marks.AttachRange(marks);
+            }
+
+            List<MarksApprovals> markApprovals = new List<MarksApprovals>
+            {
+                new MarksApprovals
+                {
+                    Mark=marks[0],
+                    Employee=employees[1],
+                },
+                new MarksApprovals
+                {
+                    Mark=marks[0],
+                    Employee=employees[2],
+                },
+            };
+            if (!ctx.MarksApprovals.Any())
+            {
+                // ctx.Subnodes.AttachRange(subnodes);
+                // ctx.Departments.AttachRange(departments);
+                // ctx.Employees.AttachRange(employees);
+                ctx.MarksApprovals.AddRange(markApprovals);
+                ctx.SaveChanges();
+                ctx.MarksApprovals.AttachRange(markApprovals);
             }
 
             List<User> users = new List<User>

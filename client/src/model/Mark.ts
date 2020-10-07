@@ -8,10 +8,10 @@ interface IMark {
 	code: string
 	// additionalCode: string
 	name: string
-	// department: Department
-	// chiefSpecialist: Employee
-	// groupLeader: Employee
-	// mainBuilder: Employee
+	department: Department
+	chiefSpecialist: Employee
+	groupLeader: Employee
+	mainBuilder: Employee
 	// approvalSpecialist1: Employee
 	// approvalSpecialist2: Employee
 	// approvalSpecialist3: Employee
@@ -27,10 +27,10 @@ class Mark {
 	code: string
 	// additionalCode: string
 	name: string
-	// department: Department
-	// chiefSpecialist: Employee
-	// groupLeader: Employee
-	// mainBuilder: Employee
+	department: Department
+	chiefSpecialist: Employee
+	groupLeader: Employee
+	mainBuilder: Employee
 	// approvalSpecialist1: Employee
 	// approvalSpecialist2: Employee
 	// approvalSpecialist3: Employee
@@ -45,10 +45,10 @@ class Mark {
 		this.code = (obj && obj.code) || ''
 		// this.additionalCode = (obj && obj.additionalCode) || ''
 		this.name = (obj && obj.name) || ''
-		// this.department = (obj && obj.department) || null
-		// this.chiefSpecialist = (obj && obj.chiefSpecialist) || null
-		// this.groupLeader = (obj && obj.groupLeader) || null
-		// this.mainBuilder = (obj && obj.mainBuilder) || null
+		this.department = (obj && obj.department) || null
+		this.chiefSpecialist = (obj && obj.chiefSpecialist) || null
+		this.groupLeader = (obj && obj.groupLeader) || null
+		this.mainBuilder = (obj && obj.mainBuilder) || null
 		// this.approvalSpecialist1 = (obj && obj.approvalSpecialist1) || null
 		// this.approvalSpecialist2 = (obj && obj.approvalSpecialist2) || null
 		// this.approvalSpecialist3 = (obj && obj.approvalSpecialist3) || null
@@ -57,19 +57,6 @@ class Mark {
 		// this.approvalSpecialist6 = (obj && obj.approvalSpecialist6) || null
 		// this.approvalSpecialist7 = (obj && obj.approvalSpecialist7) || null
     }
-    
-    // sanitize = () => {
-    //     const m = { ...this }
-    //     m.name = ''
-    //     const s = m.subnode
-    //     s.name = ''
-    //     const n = s.node
-    //     n.name = ''
-    //     n.chiefEngineer = null
-    //     const p = n.project
-    //     p.name = ''
-    //     return m
-    // }
 }
 
 export default Mark

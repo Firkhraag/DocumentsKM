@@ -12,7 +12,7 @@ namespace DocumentsKM.Profiles
             CreateMap<Mark, MarkBaseResponse>();
             CreateMap<Mark, MarkParentResponse>();
             CreateMap<Mark, MarkResponse>();
-            CreateMap<MarkCreateRequest, Mark>();
+            CreateMap<MarkRequest, Mark>();
         }
     }
 }

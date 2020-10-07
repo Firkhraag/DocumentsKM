@@ -49,16 +49,15 @@ const MarkApproval = () => {
     }, [])
     
     const onDepartmentSelect = async (number: number) => {
-        let v: Department = null
-        for (let department of optionsObject.departments) {
-            if (department.number === number) {
-                v = department
-                break
-            }
-        }
-        if (v == null) {
-            return
-        }
+        // const v = getFromOptions(
+		// 	id,
+		// 	optionsObject.departments,
+        // 	selecteObject.department,
+		// )
+		// if (v != null) {
+
+        // }
+
         // if ((selectedObject.subnode !== null) && (v.id === selectedObject.subnode.id)) {
         //     return
         // }
@@ -91,10 +90,12 @@ const MarkApproval = () => {
 			<table className="agreements-table white-bg">
 				<tbody>
 					<tr className="head-tr">
+						<td>№</td>
 						<td>Отдел</td>
 						<td>Специалист</td>
 					</tr>
 					<tr>
+                        <td>1</td>
 						<td className="td-no-border">
 							<Dropdown
 								cntStyle="flex-v"

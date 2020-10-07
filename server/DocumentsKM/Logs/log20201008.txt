@@ -1,0 +1,2 @@
+10/08/2020 00:00:00 HTTP "GET" "/api/projects" responded 401 in 201.0926 ms
+10/08/2020 00:00:14 Application is shutting down

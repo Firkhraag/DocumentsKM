@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
+using System;
 
 namespace DocumentsKM.Services
 {
@@ -21,6 +22,15 @@ namespace DocumentsKM.Services
         public Mark GetById(int id)
         {
             return _repository.GetById(id);
+        }
+
+        public void Create(Mark mark)
+        {
+            if (mark == null)
+            {
+                throw new ArgumentNullException(nameof(mark));
+            }
+            _repository.Create(mark);
         }
     }
 }

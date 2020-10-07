@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using DocumentsKM.Services;
 using DocumentsKM.Dtos;
 using System.Threading.Tasks;
-using Serilog;
-using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Net.Mime;
 
 namespace DocumentsKM.Controllers
 {
@@ -23,6 +22,9 @@ namespace DocumentsKM.Controllers
 
         // Аутентификация
         [HttpPost("login")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody] UserRequest user)
         {
             var res = await _service.Authenticate(user);
@@ -34,6 +36,8 @@ namespace DocumentsKM.Controllers
 
         // Обновление access token
         [HttpPost("refresh-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
@@ -48,6 +52,7 @@ namespace DocumentsKM.Controllers
         // Выход из аккаунта
         [Authorize]
         [HttpPost("logout")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Logout()
         {
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -89,8 +94,6 @@ namespace DocumentsKM.Controllers
             var cookieOptions = new CookieOptions
             {
                 // HttpOnly = true,
-                // Secure = true,
-                // Expires = DateTime.UtcNow.AddDays(ttl)
                 HttpOnly = false,
                 Secure = true,
                 Expires = DateTime.UtcNow.AddDays(ttl)

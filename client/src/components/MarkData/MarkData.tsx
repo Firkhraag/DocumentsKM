@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSpring, animated } from 'react-spring'
-import ResizeObserver from 'resize-observer-polyfill'
 import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import Dropdown from '../Dropdown/Dropdown'
+import Mark from '../../model/Mark'
 import { useMark, useSetMark } from '../../store/MarkStore'
 import {
 	makeMarkOrSubnodeName,
 	makeComplexAndObjectName,
 } from '../../util/make-name'
+import getFromOptions from '../../util/get-from-options'
 import './MarkData.css'
 
 type MarkDataProps = {
@@ -18,15 +19,11 @@ type MarkDataProps = {
 }
 
 const MarkData = () => {
+	const bottomDivHeight = 302
+
 	const specialistNameStringLength = 50
 
 	// Default state objects
-	const defaultSelectedObject = {
-		department: null as Department,
-		chiefSpecialist: null as Employee,
-		groupLeader: null as Employee,
-		mainBuilder: null as Employee,
-	}
 	const defaultOptionsObject = {
 		departments: [] as Department[],
 		chiefSpecialists: [] as Employee[],
@@ -38,7 +35,16 @@ const MarkData = () => {
 	const setMark = useSetMark()
 
 	// Object that holds selected values
-	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
+	const [selectedMark, setSelectedMark] = useState<Mark>({
+		id: 0,
+		code: '',
+		name: '',
+		subnode: null,
+		department: null,
+		chiefSpecialist: null,
+		groupLeader: null,
+		mainBuilder: null,
+	})
 	// Object that holds select options
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
@@ -46,32 +52,31 @@ const MarkData = () => {
 		// Cannot use async func as callback in useEffect
 		// Function for fetching data
 		const selectedMarkId = localStorage.getItem('selectedMarkId')
-		if (selectedMarkId == null) {
-			return
-		}
-		const fetchData = async () => {
-			try {
-				const departmentsFetchedResponse = await httpClient.get(
-					'/departments'
-				)
-				const departmentsFetched = departmentsFetchedResponse.data
+		if (selectedMarkId != null) {
+			const fetchData = async () => {
+				try {
+					const departmentsFetchedResponse = await httpClient.get(
+						'/departments'
+					)
+					const departmentsFetched = departmentsFetchedResponse.data
 
-				const markFetchedResponse = await httpClient.get(
-					`/marks/${selectedMarkId}`
-				)
-				setMark(markFetchedResponse.data)
-				// console.log(markFetchedResponse.data)
+					const markFetchedResponse = await httpClient.get(
+						`/marks/${selectedMarkId}`
+					)
+					setMark(markFetchedResponse.data)
 
-				// Set fetched objects as select options
-				setOptionsObject({
-					...defaultOptionsObject,
-					departments: departmentsFetched,
-				})
-			} catch (e) {
-				console.log('Failed to fetch the data')
+					// Set fetched objects as select options
+					setSelectedMark({ ...markFetchedResponse.data })
+					setOptionsObject({
+						...defaultOptionsObject,
+						departments: departmentsFetched,
+					})
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
 			}
+			fetchData()
 		}
-		fetchData()
 	}, [])
 
 	const springStyle = useSpring({
@@ -81,120 +86,102 @@ const MarkData = () => {
 			overflowY: 'hidden' as any,
 		},
 		to: {
-			opacity: selectedObject.department == null ? (0 as any) : 1,
-			height: selectedObject.department == null ? 0 : 302,
+			opacity: selectedMark.department == null ? (0 as any) : 1,
+			height: selectedMark.department == null ? 0 : bottomDivHeight,
 			overflowY:
-				selectedObject.department == null
+				selectedMark.department == null
 					? ('hidden' as any)
 					: ('visible' as any),
 		},
 	})
 
-	const onDepartmentSelect = async (number: number) => {
-		let d: Department = null
-		for (let department of optionsObject.departments) {
-			if (department.number === number) {
-				d = department
-				break
+	const onMarkCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
+		setSelectedMark({
+			...selectedMark,
+			code: event.currentTarget.value,
+		})
+	}
+
+	const onMarkNameChange = (event: React.FormEvent<HTMLInputElement>) => {
+		setSelectedMark({
+			...selectedMark,
+			name: event.currentTarget.value,
+		})
+	}
+
+	const onDepartmentSelect = async (id: number) => {
+		const v = getFromOptions(
+			id,
+			optionsObject.departments,
+			selectedMark.department,
+			true
+		)
+		if (v != null) {
+			try {
+				const fetchedMainEmployeesResponse = await httpClient.get(
+					`departments/${id}/mark-main-employees`
+				)
+				const fetchedMainEmployees = fetchedMainEmployeesResponse.data
+				setOptionsObject({
+					...defaultOptionsObject,
+					departments: optionsObject.departments,
+					chiefSpecialists: fetchedMainEmployees.chiefSpecialists,
+					groupLeaders: fetchedMainEmployees.groupLeaders,
+					mainBuilders: fetchedMainEmployees.mainBuilders,
+				})
+				setSelectedMark({
+					...selectedMark,
+					department: v,
+					chiefSpecialist: null,
+					groupLeader: null,
+					mainBuilder: null,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
 			}
-		}
-		if (d == null) {
-			return
-		}
-		if (
-			selectedObject.department !== null &&
-			d.number === selectedObject.department.number
-		) {
-			return
-		}
-		try {
-			const fetchedMainEmployeesResponse = await httpClient.get(
-				`departments/${number}/mark-main-employees`
-			)
-			const fetchedMainEmployees = fetchedMainEmployeesResponse.data
-			setOptionsObject({
-				...defaultOptionsObject,
-				departments: optionsObject.departments,
-				chiefSpecialists: fetchedMainEmployees.chiefSpecialists,
-				groupLeaders: fetchedMainEmployees.groupLeaders,
-				mainBuilders: fetchedMainEmployees.mainBuilders,
-			})
-			setSelectedObject({
-				...defaultSelectedObject,
-				department: d,
-			})
-		} catch (e) {
-			console.log('Failed to fetch the data')
 		}
 	}
 
 	const onGroupLeaderSelect = async (id: number) => {
-		let e: Employee = null
-		for (let employee of optionsObject.groupLeaders) {
-			if (employee.id === id) {
-				e = employee
-				break
-			}
+		const v = getFromOptions(
+			id,
+			optionsObject.groupLeaders,
+			selectedMark.groupLeader
+		)
+		if (v != null) {
+			setSelectedMark({
+				...selectedMark,
+				groupLeader: v,
+			})
 		}
-		if (e == null) {
-			return
-		}
-		if (
-			selectedObject.groupLeader !== null &&
-			e.id === selectedObject.groupLeader.id
-		) {
-			return
-		}
-		setSelectedObject({
-			...selectedObject,
-			groupLeader: e,
-		})
 	}
 
 	const onChiefSpecialistSelect = async (id: number) => {
-		let e: Employee = null
-		for (let employee of optionsObject.chiefSpecialists) {
-			if (employee.id === id) {
-				e = employee
-				break
-			}
+		const v = getFromOptions(
+			id,
+			optionsObject.chiefSpecialists,
+			selectedMark.chiefSpecialist
+		)
+		if (v != null) {
+			setSelectedMark({
+				...selectedMark,
+				chiefSpecialist: v,
+			})
 		}
-		if (e == null) {
-			return
-		}
-		if (
-			selectedObject.chiefSpecialist !== null &&
-			e.id === selectedObject.chiefSpecialist.id
-		) {
-			return
-		}
-		setSelectedObject({
-			...selectedObject,
-			chiefSpecialist: e,
-		})
 	}
 
 	const onMainBuilderSelect = async (id: number) => {
-		let e: Employee = null
-		for (let employee of optionsObject.mainBuilders) {
-			if (employee.id === id) {
-				e = employee
-				break
-			}
+		const v = getFromOptions(
+			id,
+			optionsObject.mainBuilders,
+			selectedMark.mainBuilder
+		)
+		if (v != null) {
+			setSelectedMark({
+				...selectedMark,
+				mainBuilder: v,
+			})
 		}
-		if (e == null) {
-			return
-		}
-		if (
-			selectedObject.mainBuilder !== null &&
-			e.id === selectedObject.mainBuilder.id
-		) {
-			return
-		}
-		setSelectedObject({
-			...selectedObject,
-			mainBuilder: e,
-		})
 	}
 
 	return mark == null ? null : (
@@ -204,6 +191,7 @@ const MarkData = () => {
 				<p className="text-centered data-section-label label-mrgn-top-1">
 					Общая информация
 				</p>
+
 				<div className="flex-v mrg-bot-info">
 					<p className="label-area">Обозначение марки</p>
 					<div className="info-area">
@@ -215,7 +203,6 @@ const MarkData = () => {
 						)}
 					</div>
 				</div>
-
 				<div className="flex-v mrg-bot-info">
 					<p className="label-area">Наименование комплекса</p>
 					<div className="info-area">
@@ -255,9 +242,10 @@ const MarkData = () => {
 
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Шифр марки</p>
-					{/* <div className="info-area">{mark.code}</div> */}
 					<div>
 						<input
+							value={selectedMark.code}
+							onChange={onMarkCodeChange}
 							type="text"
 							className="input-area"
 							placeholder="Введите шифр марки"
@@ -266,9 +254,10 @@ const MarkData = () => {
 				</div>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование марки</p>
-					{/* <div className="info-area">{mark.name}</div> */}
 					<div>
 						<input
+							value={selectedMark.name}
+							onChange={onMarkNameChange}
 							type="text"
 							className="input-area"
 							placeholder="Введите наименование марки"
@@ -282,9 +271,9 @@ const MarkData = () => {
 					maxInputLength={specialistNameStringLength}
 					onClickFunc={onDepartmentSelect}
 					value={
-						selectedObject.department == null
+						selectedMark.department == null
 							? ''
-							: selectedObject.department.code
+							: selectedMark.department.code
 					}
 					options={optionsObject.departments.map((d) => {
 						return {
@@ -293,15 +282,14 @@ const MarkData = () => {
 						}
 					})}
 				/>
-
 				<animated.div style={springStyle}>
 					<div className="flex-v mrg-bot">
 						<p className="label-area">Начальник отдела</p>
 						<div className="info-area">
-							{selectedObject.department == null ||
-							selectedObject.department.departmentHead == null
+							{selectedMark.department == null ||
+							selectedMark.department.departmentHead == null
 								? '-'
-								: selectedObject.department.departmentHead
+								: selectedMark.department.departmentHead
 										.fullName}
 						</div>
 					</div>
@@ -312,9 +300,9 @@ const MarkData = () => {
 						maxInputLength={specialistNameStringLength}
 						onClickFunc={onGroupLeaderSelect}
 						value={
-							selectedObject.groupLeader == null
+							selectedMark.groupLeader == null
 								? ''
-								: selectedObject.groupLeader.fullName
+								: selectedMark.groupLeader.fullName
 						}
 						options={optionsObject.groupLeaders.map((gl) => {
 							return {
@@ -330,9 +318,9 @@ const MarkData = () => {
 						maxInputLength={specialistNameStringLength}
 						onClickFunc={onChiefSpecialistSelect}
 						value={
-							selectedObject.chiefSpecialist == null
+							selectedMark.chiefSpecialist == null
 								? ''
-								: selectedObject.chiefSpecialist.fullName
+								: selectedMark.chiefSpecialist.fullName
 						}
 						options={optionsObject.chiefSpecialists.map((cs) => {
 							return {
@@ -348,9 +336,9 @@ const MarkData = () => {
 						maxInputLength={specialistNameStringLength}
 						onClickFunc={onMainBuilderSelect}
 						value={
-							selectedObject.mainBuilder == null
+							selectedMark.mainBuilder == null
 								? ''
-								: selectedObject.mainBuilder.fullName
+								: selectedMark.mainBuilder.fullName
 						}
 						options={optionsObject.mainBuilders.map((mb) => {
 							return {
@@ -360,7 +348,6 @@ const MarkData = () => {
 						})}
 					/>
 				</animated.div>
-
 				<button className="final-btn input-border-radius pointer">
 					Сохранить изменения
 				</button>

@@ -12,6 +12,13 @@ namespace DocumentsKM.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<MarksApprovals>().HasKey(e => new { e.MarkId, e.EmployeeId });
+
+            // Unique constrains
+            builder.Entity<User>()
+                .HasIndex(u => u.Login)
+                .IsUnique();
+
             foreach(var entity in builder.Model.GetEntityTypes())
             {
                 entity.SetTableName(entity.GetTableName().ToSnakeCase());
@@ -36,11 +43,6 @@ namespace DocumentsKM.Data
                     index.SetDatabaseName(index.GetDatabaseName().ToSnakeCase());
                 }
             }
-
-            // Unique constrains
-            builder.Entity<User>()
-                .HasIndex(u => u.Login)
-                .IsUnique();
         }
 
         public DbSet<Department> Departments { get; set; }
@@ -50,6 +52,7 @@ namespace DocumentsKM.Data
         public DbSet<Node> Nodes { get; set; }
         public DbSet<Subnode> Subnodes { get; set; }
         public DbSet<Mark> Marks { get; set; }
+        public DbSet<MarksApprovals> MarksApprovals { get; set; }
         public DbSet<User> Users { get; set; }
     }
 }
