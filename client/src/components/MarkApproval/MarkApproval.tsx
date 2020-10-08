@@ -3,6 +3,7 @@ import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import Dropdown from '../Dropdown/Dropdown'
+import getFromOptions from '../../util/get-from-options'
 import './MarkApproval.css'
 
 const MarkApproval = () => {
@@ -10,20 +11,16 @@ const MarkApproval = () => {
 	const departmentStringLength = 50
 	const employeeStringLength = 50
 
-	// Default state objects
-	const defaultSelectedObject = {
+	// Object that holds selected values
+	const [selectedObject, setSelectedObject] = useState({
 		departments: [] as Department[],
 		employees: [] as Employee[],
-	}
-	const defaultOptionsObject = {
+	})
+	// Object that holds select options
+	const [optionsObject, setOptionsObject] = useState({
 		departments: [] as Department[],
 		employees: [[]] as Array<Employee[]>,
-	}
-
-	// Object that holds selected values
-	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
-	// Object that holds select options
-	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
+	})
 
 	useEffect(() => {
 		// Cannot use async func as callback in useEffect
@@ -38,7 +35,7 @@ const MarkApproval = () => {
 
 				// Set fetched objects as select options
 				setOptionsObject({
-					...defaultOptionsObject,
+					...optionsObject,
 					departments: departmentsFetched,
 				})
 			} catch (e) {
@@ -46,43 +43,59 @@ const MarkApproval = () => {
 			}
 		}
 		fetchData()
-    }, [])
-    
-    const onDepartmentSelect = async (number: number) => {
-        // const v = getFromOptions(
-		// 	id,
-		// 	optionsObject.departments,
-        // 	selecteObject.department,
-		// )
-		// if (v != null) {
+	}, [])
 
-        // }
+	const onDepartmentSelect = (rowNumber: number) => {
+		return async (number: number) => {
+			const v = getFromOptions(
+				number,
+				optionsObject.departments,
+				selectedObject.departments[rowNumber],
+				true
+			)
+			if (v != null) {
+				try {
+					const fetchedmployeesResponse = await httpClient.get(
+						`/departments/${number}/mark-approval-employees`
+					)
+					const fetchedEmployees = fetchedmployeesResponse.data
 
-        // if ((selectedObject.subnode !== null) && (v.id === selectedObject.subnode.id)) {
-        //     return
-        // }
-        // try {
-        //     const fetchedMarksResponse = await axios.get(protocol + '://' + host + `/subnodes/${id}/marks`)
-        //     const fetchedMarks = fetchedMarksResponse.data
-        //     setOptionsObject({
-        //         ...defaultOptionsObject,
-        //         recentMarks: optionsObject.recentMarks,
-        //         recentSubnodes: optionsObject.recentSubnodes,
-        //         projects: optionsObject.projects,
-        //         nodes: optionsObject.nodes,
-        //         subnodes: optionsObject.subnodes,
-        //         marks: fetchedMarks
-        //     })
-        //     setSelectedObject({
-        //         ...defaultSelectedObject,
-        //         project: selectedObject.project,
-        //         node: selectedObject.node,
-        //         subnode: v
-        //     })
-        // } catch (e) {
-        //     console.log('Failed to fetch the data')
-        // }
-    }
+					const e = optionsObject.employees
+					e[rowNumber] = fetchedEmployees
+					setOptionsObject({
+						...optionsObject,
+						employees: e,
+					})
+					const d = selectedObject.departments
+					d[rowNumber] = v
+					setSelectedObject({
+						...selectedObject,
+						departments: d,
+					})
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
+			}
+		}
+	}
+
+	const onEmployeeSelect = (rowNumber: number) => {
+		return async (id: number) => {
+			const v = getFromOptions(
+				id,
+				optionsObject.employees[rowNumber],
+				selectedObject.employees[rowNumber],
+            )
+			if (v != null) {
+				const e = selectedObject.employees
+				e[rowNumber] = v
+				setSelectedObject({
+					...selectedObject,
+					employees: e,
+				})
+			}
+		}
+	}
 
 	return (
 		<div className="component-cnt">
@@ -95,15 +108,19 @@ const MarkApproval = () => {
 						<td>Специалист</td>
 					</tr>
 					<tr>
-                        <td>1</td>
-						<td className="td-no-border">
+						<td>1</td>
+						<td>
 							<Dropdown
 								cntStyle="flex-v"
-                                label=""
-                                placeholder="Выберите отдел"
+								label=""
+								placeholder="Выберите отдел"
 								maxInputLength={departmentStringLength}
-								onClickFunc={null}
-								value={''}
+								onClickFunc={onDepartmentSelect(0)}
+								value={
+									selectedObject.departments[0] == null
+										? ''
+										: selectedObject.departments[0].code
+								}
 								options={optionsObject.departments.map((d) => {
 									return {
 										id: d.number,
@@ -112,20 +129,24 @@ const MarkApproval = () => {
 								})}
 							/>
 						</td>
-						<td className="td-no-border">
+						<td>
 							<Dropdown
 								cntStyle="flex-v"
-                                label=""
-                                placeholder="Выберите специалиста"
+								label=""
+								placeholder="Выберите специалиста"
 								maxInputLength={employeeStringLength}
-								onClickFunc={null}
-								value={''}
-								options={[
-									{
-										id: 0,
-										val: 'test',
-									},
-								]}
+								onClickFunc={onEmployeeSelect(0)}
+								value={
+									selectedObject.employees[0] == null
+										? ''
+										: selectedObject.employees[0].fullName
+								}
+								options={optionsObject.employees[0].map((e) => {
+									return {
+										id: e.id,
+										val: e.fullName,
+									}
+								})}
 							/>
 						</td>
 					</tr>

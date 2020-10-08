@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from 'react-router-dom'
 import httpClient from '../../axios'
@@ -10,8 +10,6 @@ import Dropdown from '../Dropdown/Dropdown'
 import { makeMarkOrSubnodeName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
 import './MarkSelect.css'
-
-// MARK CREATE TBD
 
 const MarkSelect = () => {
 	// Can use resize-observer-polyfill instead
@@ -348,11 +346,29 @@ const MarkSelect = () => {
 		localStorage.setItem('recentSubnodeIds', resStr)
 
 		history.push('/mark-data')
+    }
+    
+    const onSelectSubnodeButtonClick = () => {
+		const subnode = selectedObject.subnode
+		subnode.node = selectedObject.node
+		subnode.node.project = selectedObject.project
+
+		const filteredRecentSubnodes = optionsObject.recentSubnodes.filter(
+			(s) => s.id !== subnode.id
+		)
+		if (filteredRecentSubnodes.length >= 5) {
+			filteredRecentSubnodes.shift()
+		}
+		filteredRecentSubnodes.unshift(subnode)
+		const resStr = JSON.stringify(filteredRecentSubnodes.map((s) => s.id))
+		localStorage.setItem('recentSubnodeIds', resStr)
+
+        history.push('/mark-create')
 	}
 
 	return (
 		<div className="mark-data-cnt">
-			<h1 className="text-centered">Выбрать / добавить марку</h1>
+			<h1 className="text-centered">Выбрать / создать марку</h1>
 			<div className="tabs component-width white-bg">
 				<input
 					type="radio"
@@ -371,7 +387,7 @@ const MarkSelect = () => {
 					onChange={() => setIsCreateMode(true)}
 					checked={isCreateMode ? true : false}
 				/>
-				<label htmlFor="tab-btn-2">Добавить</label>
+				<label htmlFor="tab-btn-2">Создать</label>
 
 				<div className="flex-v">
 					<p className="text-centered section-label">
@@ -540,7 +556,7 @@ const MarkSelect = () => {
 						)}
 					>
 						<button
-							onClick={onSelectMarkButtonClick}
+							onClick={isCreateMode ? onSelectSubnodeButtonClick : onSelectMarkButtonClick}
 							className="final-btn input-border-radius pointer"
 						>
 							{isCreateMode ? 'Выбрать подузел' : 'Выбрать марку'}

@@ -14,11 +14,10 @@ import getFromOptions from '../../util/get-from-options'
 import './MarkData.css'
 
 type MarkDataProps = {
-	// -1 - создание новой марки
-	markId: number
+	isCreateMode: boolean
 }
 
-const MarkData = () => {
+const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	const bottomDivHeight = 302
 
 	const specialistNameStringLength = 50
@@ -32,51 +31,76 @@ const MarkData = () => {
 	}
 
 	const mark = useMark()
-	const setMark = useSetMark()
+    const setMark = useSetMark()
 
 	// Object that holds selected values
-	const [selectedMark, setSelectedMark] = useState<Mark>({
-		id: 0,
-		code: '',
-		name: '',
-		subnode: null,
-		department: null,
-		chiefSpecialist: null,
-		groupLeader: null,
-		mainBuilder: null,
-	})
+	const [selectedMark, setSelectedMark] = useState<Mark>(null)
 	// Object that holds select options
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
 	useEffect(() => {
-		// Cannot use async func as callback in useEffect
-		// Function for fetching data
-		const selectedMarkId = localStorage.getItem('selectedMarkId')
-		if (selectedMarkId != null) {
-			const fetchData = async () => {
-				try {
-					const departmentsFetchedResponse = await httpClient.get(
-						'/departments'
-					)
-					const departmentsFetched = departmentsFetchedResponse.data
 
-					const markFetchedResponse = await httpClient.get(
-						`/marks/${selectedMarkId}`
-					)
-					setMark(markFetchedResponse.data)
+        const fetchDepartments = async () => {
+            try {
+                const departmentsFetchedResponse = await httpClient.get(
+                    '/departments'
+                )
+                const departmentsFetched = departmentsFetchedResponse.data
 
-					// Set fetched objects as select options
-					setSelectedMark({ ...markFetchedResponse.data })
-					setOptionsObject({
-						...defaultOptionsObject,
-						departments: departmentsFetched,
-					})
-				} catch (e) {
-					console.log('Failed to fetch the data')
-				}
-			}
-			fetchData()
-		}
+                setOptionsObject({
+                    ...defaultOptionsObject,
+                    departments: departmentsFetched,
+                })
+            } catch (e) {
+                console.log('Failed to fetch departments')
+            }
+        }
+        fetchDepartments()
+        if (isCreateMode) {
+            const recentSubnodeIdsStr = localStorage.getItem('recentSubnodeIds')
+            const recentSubnodeIds = JSON.parse(
+                recentSubnodeIdsStr
+            ) as number[]
+            const selectedSubnodeId = recentSubnodeIds[0]
+            if (selectedSubnodeId != null) {
+                const fetchSubnode = async () => {
+                    try {
+                        const subnodeFetchedResponse = await httpClient.get(
+                            `/subnodes/${selectedSubnodeId}`
+                        )
+                        setSelectedMark({
+                            id: 0,
+                            code: '',
+                            name: '',
+                            subnode: subnodeFetchedResponse.data,
+                            department: null,
+                            chiefSpecialist: null,
+                            groupLeader: null,
+                            mainBuilder: null,
+                        })
+                    } catch (e) {
+                        console.log('Failed to fetch the mark')
+                    }
+                }
+                fetchSubnode()
+            }
+        } else {
+            const selectedMarkId = localStorage.getItem('selectedMarkId')
+            if (selectedMarkId != null) {
+                const fetchMark = async () => {
+                    try {
+                        const markFetchedResponse = await httpClient.get(
+                            `/marks/${selectedMarkId}`
+                        )
+                        setMark(markFetchedResponse.data)
+                        setSelectedMark({ ...markFetchedResponse.data })
+                    } catch (e) {
+                        console.log('Failed to fetch the mark')
+                    }
+                }
+                fetchMark()
+            }
+        }
 	}, [])
 
 	const springStyle = useSpring({
@@ -86,10 +110,10 @@ const MarkData = () => {
 			overflowY: 'hidden' as any,
 		},
 		to: {
-			opacity: selectedMark.department == null ? (0 as any) : 1,
-			height: selectedMark.department == null ? 0 : bottomDivHeight,
+			opacity: (selectedMark == null || selectedMark.department == null) ? (0 as any) : 1,
+			height: (selectedMark == null || selectedMark.department == null) ? 0 : bottomDivHeight,
 			overflowY:
-				selectedMark.department == null
+				(selectedMark == null || selectedMark.department) == null
 					? ('hidden' as any)
 					: ('visible' as any),
 		},
@@ -109,9 +133,9 @@ const MarkData = () => {
 		})
 	}
 
-	const onDepartmentSelect = async (id: number) => {
+	const onDepartmentSelect = async (number: number) => {
 		const v = getFromOptions(
-			id,
+			number,
 			optionsObject.departments,
 			selectedMark.department,
 			true
@@ -119,7 +143,7 @@ const MarkData = () => {
 		if (v != null) {
 			try {
 				const fetchedMainEmployeesResponse = await httpClient.get(
-					`departments/${id}/mark-main-employees`
+					`departments/${number}/mark-main-employees`
 				)
 				const fetchedMainEmployees = fetchedMainEmployeesResponse.data
 				setOptionsObject({
@@ -182,57 +206,54 @@ const MarkData = () => {
 				mainBuilder: v,
 			})
 		}
-	}
+    }
+    
+    const onCreateButtonClick = () => {
 
-	return mark == null ? null : (
+    }
+    
+    const onChangeButtonClick = () => {
+        
+    }
+
+	return selectedMark == null ? null : (
 		<div className="component-cnt component-width">
-			<h1 className="text-centered">Данные марки</h1>
+			<h1 className="text-centered">{isCreateMode ? 'Создание марки' : 'Данные марки'}</h1>
 			<div>
 				<p className="text-centered data-section-label label-mrgn-top-1">
 					Общая информация
 				</p>
 
-				<div className="flex-v mrg-bot-info">
-					<p className="label-area">Обозначение марки</p>
-					<div className="info-area">
-						{makeMarkOrSubnodeName(
-							mark.subnode.node.project.baseSeries,
-							mark.subnode.node.code,
-							mark.subnode.code,
-							mark.code
-						)}
-					</div>
-				</div>
-				<div className="flex-v mrg-bot-info">
+				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование комплекса</p>
 					<div className="info-area">
 						{
 							makeComplexAndObjectName(
-								mark.subnode.node.project.name,
-								mark.subnode.node.name,
-								mark.subnode.name,
-								mark.name
+								selectedMark.subnode.node.project.name,
+								selectedMark.subnode.node.name,
+								selectedMark.subnode.name,
+								selectedMark.name
 							).complexName
 						}
 					</div>
 				</div>
-				<div className="flex-v mrg-bot-info">
+				<div className="flex-v mrg-bot">
 					<p className="label-area">Наименование объекта</p>
 					<div className="info-area">
 						{
 							makeComplexAndObjectName(
-								mark.subnode.node.project.name,
-								mark.subnode.node.name,
-								mark.subnode.name,
-								mark.name
+								selectedMark.subnode.node.project.name,
+								selectedMark.subnode.node.name,
+								selectedMark.subnode.name,
+								selectedMark.name
 							).objectName
 						}
 					</div>
 				</div>
-				<div className="flex-v mrg-bot-info">
+				<div className="flex-v mrg-bot">
 					<p className="label-area">Главный инженер проекта</p>
 					<div className="info-area">
-						{mark.subnode.node.chiefEngineer.fullName}
+						{selectedMark.subnode.node.chiefEngineer.fullName}
 					</div>
 				</div>
 
@@ -240,6 +261,17 @@ const MarkData = () => {
 					Информация марки
 				</p>
 
+                <div className="flex-v mrg-bot">
+					<p className="label-area">Обозначение марки</p>
+					<div className="info-area">
+						{makeMarkOrSubnodeName(
+							selectedMark.subnode.node.project.baseSeries,
+							selectedMark.subnode.node.code,
+							selectedMark.subnode.code,
+							selectedMark.code
+						)}
+					</div>
+				</div>
 				<div className="flex-v mrg-bot">
 					<p className="label-area">Шифр марки</p>
 					<div>
@@ -348,8 +380,8 @@ const MarkData = () => {
 						})}
 					/>
 				</animated.div>
-				<button className="final-btn input-border-radius pointer">
-					Сохранить изменения
+				<button className="final-btn input-border-radius pointer" onClick={isCreateMode ? onCreateButtonClick : onChangeButtonClick}>
+					{ isCreateMode ? 'Создать марку' : 'Сохранить изменения' }
 				</button>
 			</div>
 		</div>

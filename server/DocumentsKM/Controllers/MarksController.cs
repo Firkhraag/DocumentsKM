@@ -6,6 +6,7 @@ using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsKM.Controllers
@@ -64,7 +65,7 @@ namespace DocumentsKM.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<MarkResponse> Create(MarkRequest markRequest)
+        public ActionResult<MarkResponse> Create([FromBody] MarkRequest markRequest)
         {
             var markModel = _mapper.Map<Mark>(markRequest);
             _service.Create(markModel);
@@ -72,49 +73,27 @@ namespace DocumentsKM.Controllers
             return CreatedAtRoute(nameof(GetById), new {Id = markResponse.Id}, markResponse);
         }
 
-        // [HttpPatch, Route("marks/{id}")]
-        // [Consumes(MediaTypeNames.Application.Json)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // public ActionResult Update(int id, JsonPatchDocument<MarkUpdateDto> patchDoc)
-        // {
-        //     var markModel = _service.GetMarkById(id);
-        //     if (markModel == null) {
-        //         return NotFound();
-        //     }
-        //     var markToPatch = _mapper.Map<MarkUpdateDto>(markModel);
-        //     patchDoc.ApplyTo(markToPatch, ModelState);
-        //     if (!TryValidateModel(markToPatch))
-        //     {
-        //         return ValidationProblem(ModelState);
-        //     }
-        //     _mapper.Map(markToPatch, markModel);
-        //     _service.UpdateMark(markModel);
-        //     _service.SaveChanges();
+        [HttpPatch, Route("marks/{id}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult Update(int id, [FromBody] JsonPatchDocument<MarkRequest> patchDoc)
+        {
+            var markModel = _service.GetById(id);
+            if (markModel == null) {
+                return NotFound();
+            }
+            var markToPatch = _mapper.Map<MarkRequest>(markModel);
+            patchDoc.ApplyTo(markToPatch, ModelState);
+            if (!TryValidateModel(markToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+            _mapper.Map(markToPatch, markModel);
+            _service.Update(markModel);
             
-        //     return NoContent();
-        // }
-
-        // [Route("marks")]
-        // [HttpPatch("{id}")]
-        // public ActionResult Update(int id, JsonPatchDocument<MarkUpdateDto> patchDoc)
-        // {
-        //     var markModel = _service.GetMarkById(id);
-        //     if (markModel == null) {
-        //         return NotFound();
-        //     }
-        //     var markToPatch = _mapper.Map<MarkUpdateDto>(markModel);
-        //     patchDoc.ApplyTo(markToPatch, ModelState);
-        //     if (!TryValidateModel(markToPatch))
-        //     {
-        //         return ValidationProblem(ModelState);
-        //     }
-        //     _mapper.Map(markToPatch, markModel);
-        //     _service.UpdateMark(markModel);
-        //     _service.SaveChanges();
-            
-        //     return NoContent();
-        // }
+            return NoContent();
+        }
     }
 }

@@ -11,5 +11,7 @@ namespace DocumentsKM.Services
         Mark GetById(int id);
         // Создать новую марку
         void Create(Mark mark);
+        // Обновить существующую марку
+        void Update(Mark mark);
     }
 }

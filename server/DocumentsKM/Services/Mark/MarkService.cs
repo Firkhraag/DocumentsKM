@@ -32,5 +32,14 @@ namespace DocumentsKM.Services
             }
             _repository.Create(mark);
         }
+
+        public void Update(Mark mark)
+        {
+            if (mark == null)
+            {
+                throw new ArgumentNullException(nameof(mark));
+            }
+            _repository.Update(mark);
+        }
     }
 }

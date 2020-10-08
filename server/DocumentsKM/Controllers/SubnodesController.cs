@@ -34,6 +34,18 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<SubnodeBaseResponse>>(subnodes));
         }
 
+        [HttpGet, Route("subnodes/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<SubnodeResponse> GetSubnodeResponseById(int id)
+        {
+            var subnode = _service.GetById(id);
+            if (subnode != null) {
+                return Ok(_mapper.Map<SubnodeResponse>(subnode));
+            }
+            return NotFound();
+        }
+
         [HttpGet, Route("subnodes/{id}/parents")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -18,7 +18,7 @@ type DropdownProps = {
 	value: string
 	// TBD
 	// changeValue: (newValue: string) => void
-	options: Array<IOption>
+	options: Array<any>
 }
 
 const Dropdown = ({
