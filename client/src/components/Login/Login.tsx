@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useAuthMethods } from '../../store/UserStore'
-import Close from '../Svg/Close'
-import './Login.css'
+import ErrorMsg from '../ErrorMsg/ErrorMsg'
 
 const Login = () => {
 	const authMethods = useAuthMethods()
@@ -23,7 +22,7 @@ const Login = () => {
 
 	const onButtonClick = async () => {
 		try {
-			authMethods.login(inputValues.login, inputValues.password)
+			await authMethods.login(inputValues.login, inputValues.password)
 		} catch (e) {
 			if (e.message === 'Request failed with status code 400') {
 				e.message = 'Неверный логин или пароль'
@@ -37,45 +36,40 @@ const Login = () => {
 			<h1 className="text-centered">Вход в систему</h1>
 			<div>
 				<div className="flex-v mrg-bot">
-					{errMsg === '' ? null : (
-						<div className="login-err-msg space-between-cent-v">
-							{errMsg}
-							<Close onClick={() => setErrMsg('')} />
-						</div>
-					)}
+					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 					<label htmlFor="login" className="label-area">
 						Логин
 					</label>
-                    <div>
-					<input
-						id="login"
-						className="input-area"
-						onBlur={onLoginChange}
-						type="text"
-						placeholder="Введите ваш логин"
-						spellCheck="false"
-						maxLength={255}
-						required
-					/>
-                    </div>
+					<div>
+						<input
+							id="login"
+							className="input-area"
+							onBlur={onLoginChange}
+							type="text"
+							placeholder="Введите ваш логин"
+							spellCheck="false"
+							maxLength={255}
+							required
+						/>
+					</div>
 				</div>
 
 				<div className="flex-v">
 					<label htmlFor="password" className="label-area">
 						Пароль
 					</label>
-                    <div>
-					<input
-						id="password"
-						className="input-area"
-						type="password"
-						onBlur={onPasswordChange}
-						placeholder="Введите ваш пароль"
-						spellCheck="false"
-						maxLength={255}
-						required
-					/>
-                    </div>
+					<div>
+						<input
+							id="password"
+							className="input-area"
+							type="password"
+							onBlur={onPasswordChange}
+							placeholder="Введите ваш пароль"
+							spellCheck="false"
+							maxLength={255}
+							required
+						/>
+					</div>
 				</div>
 
 				<button

@@ -4,8 +4,8 @@ import httpClient from '../axios'
 const UserContext = createContext<string>(null)
 
 type DispatchContextType = {
-	login: (login: string, password: string) => void
-	logout: () => void
+	login: (login: string, password: string) => Promise<void>
+	logout: () => Promise<void>
 }
 
 const AuthDispatchContext = createContext(null as DispatchContextType)

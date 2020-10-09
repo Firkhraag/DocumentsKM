@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSpring, animated } from 'react-spring'
+import { useHistory } from 'react-router-dom'
 import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
@@ -31,76 +32,75 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}
 
 	const mark = useMark()
-    const setMark = useSetMark()
+	const setMark = useSetMark()
 
 	// Object that holds selected values
 	const [selectedMark, setSelectedMark] = useState<Mark>(null)
 	// Object that holds select options
-	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
+    const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
+    
+    const history = useHistory()
 
 	useEffect(() => {
+		const fetchDepartments = async () => {
+			try {
+				const departmentsFetchedResponse = await httpClient.get(
+					'/departments'
+				)
+				const departmentsFetched = departmentsFetchedResponse.data
 
-        const fetchDepartments = async () => {
-            try {
-                const departmentsFetchedResponse = await httpClient.get(
-                    '/departments'
-                )
-                const departmentsFetched = departmentsFetchedResponse.data
-
-                setOptionsObject({
-                    ...defaultOptionsObject,
-                    departments: departmentsFetched,
-                })
-            } catch (e) {
-                console.log('Failed to fetch departments')
-            }
-        }
-        fetchDepartments()
-        if (isCreateMode) {
-            const recentSubnodeIdsStr = localStorage.getItem('recentSubnodeIds')
-            const recentSubnodeIds = JSON.parse(
-                recentSubnodeIdsStr
-            ) as number[]
-            const selectedSubnodeId = recentSubnodeIds[0]
-            if (selectedSubnodeId != null) {
-                const fetchSubnode = async () => {
-                    try {
-                        const subnodeFetchedResponse = await httpClient.get(
-                            `/subnodes/${selectedSubnodeId}`
-                        )
-                        setSelectedMark({
-                            id: 0,
-                            code: '',
-                            name: '',
-                            subnode: subnodeFetchedResponse.data,
-                            department: null,
-                            chiefSpecialist: null,
-                            groupLeader: null,
-                            mainBuilder: null,
-                        })
-                    } catch (e) {
-                        console.log('Failed to fetch the mark')
-                    }
-                }
-                fetchSubnode()
-            }
-        } else {
-            const selectedMarkId = localStorage.getItem('selectedMarkId')
-            if (selectedMarkId != null) {
-                const fetchMark = async () => {
-                    try {
-                        const markFetchedResponse = await httpClient.get(
-                            `/marks/${selectedMarkId}`
-                        )
-                        setMark(markFetchedResponse.data)
-                        setSelectedMark({ ...markFetchedResponse.data })
-                    } catch (e) {
-                        console.log('Failed to fetch the mark')
-                    }
-                }
-                fetchMark()
-            }
-        }
+				setOptionsObject({
+					...defaultOptionsObject,
+					departments: departmentsFetched,
+				})
+			} catch (e) {
+				console.log('Failed to fetch departments')
+			}
+		}
+		fetchDepartments()
+		if (isCreateMode) {
+			const recentSubnodeIdsStr = localStorage.getItem('recentSubnodeIds')
+			const recentSubnodeIds = JSON.parse(recentSubnodeIdsStr) as number[]
+			const selectedSubnodeId = recentSubnodeIds[0]
+			if (selectedSubnodeId != null) {
+				const fetchSubnode = async () => {
+					try {
+						const subnodeFetchedResponse = await httpClient.get(
+							`/subnodes/${selectedSubnodeId}`
+						)
+						setSelectedMark({
+							id: 0,
+							code: '',
+							name: '',
+							subnode: subnodeFetchedResponse.data,
+							department: null,
+							chiefSpecialist: null,
+							groupLeader: null,
+							mainBuilder: null,
+						})
+					} catch (e) {
+						console.log('Failed to fetch the mark')
+					}
+				}
+				fetchSubnode()
+			}
+		} else {
+			const selectedMarkId = localStorage.getItem('selectedMarkId')
+			if (selectedMarkId != null) {
+				const fetchMark = async () => {
+					try {
+						const markFetchedResponse = await httpClient.get(
+							`/marks/${selectedMarkId}`
+						)
+						setMark(markFetchedResponse.data)
+						setSelectedMark({ ...markFetchedResponse.data })
+					} catch (e) {
+						console.log('Failed to fetch the mark')
+					}
+				}
+				fetchMark()
+			}
+		}
 	}, [])
 
 	const springStyle = useSpring({
@@ -110,8 +110,14 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 			overflowY: 'hidden' as any,
 		},
 		to: {
-			opacity: (selectedMark == null || selectedMark.department == null) ? (0 as any) : 1,
-			height: (selectedMark == null || selectedMark.department == null) ? 0 : bottomDivHeight,
+			opacity:
+				selectedMark == null || selectedMark.department == null
+					? (0 as any)
+					: 1,
+			height:
+				selectedMark == null || selectedMark.department == null
+					? 0
+					: bottomDivHeight,
 			overflowY:
 				(selectedMark == null || selectedMark.department) == null
 					? ('hidden' as any)
@@ -206,19 +212,30 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 				mainBuilder: v,
 			})
 		}
-    }
-    
-    const onCreateButtonClick = () => {
+	}
 
-    }
-    
-    const onChangeButtonClick = () => {
-        
-    }
+	const onCreateButtonClick = async () => {
+		try {
+            const response = await httpClient.post('/marks', selectedMark)
+            history.push('/')
+		} catch (e) {}
+	}
+
+	const onChangeButtonClick = async () => {
+		try {
+			const response = await httpClient.patch(
+				`/marks/${selectedMark.id}`,
+				selectedMark
+            )
+            history.push('/')
+		} catch (e) {}
+	}
 
 	return selectedMark == null ? null : (
 		<div className="component-cnt component-width">
-			<h1 className="text-centered">{isCreateMode ? 'Создание марки' : 'Данные марки'}</h1>
+			<h1 className="text-centered">
+				{isCreateMode ? 'Создание марки' : 'Данные марки'}
+			</h1>
 			<div>
 				<p className="text-centered data-section-label label-mrgn-top-1">
 					Общая информация
@@ -261,7 +278,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					Информация марки
 				</p>
 
-                <div className="flex-v mrg-bot">
+				<div className="flex-v mrg-bot">
 					<p className="label-area">Обозначение марки</p>
 					<div className="info-area">
 						{makeMarkOrSubnodeName(
@@ -380,8 +397,13 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						})}
 					/>
 				</animated.div>
-				<button className="final-btn input-border-radius pointer" onClick={isCreateMode ? onCreateButtonClick : onChangeButtonClick}>
-					{ isCreateMode ? 'Создать марку' : 'Сохранить изменения' }
+				<button
+					className="final-btn input-border-radius pointer"
+					onClick={
+						isCreateMode ? onCreateButtonClick : onChangeButtonClick
+					}
+				>
+					{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
 				</button>
 			</div>
 		</div>

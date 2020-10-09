@@ -3,5 +3,6 @@ public/
 
 bin/
 obj/
+logs/
 
 secrets.json
