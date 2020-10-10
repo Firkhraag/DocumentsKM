@@ -40,9 +40,8 @@ namespace DocumentsKM.Controllers
         public ActionResult<SubnodeResponse> GetSubnodeResponseById(int id)
         {
             var subnode = _service.GetById(id);
-            if (subnode != null) {
+            if (subnode != null)
                 return Ok(_mapper.Map<SubnodeResponse>(subnode));
-            }
             return NotFound();
         }
 
@@ -52,9 +51,8 @@ namespace DocumentsKM.Controllers
         public ActionResult<SubnodeParentResponse> GetSubnodeParentResponseById(int id)
         {
             var subnode = _service.GetById(id);
-            if (subnode != null) {
+            if (subnode != null)
                 return Ok(_mapper.Map<SubnodeParentResponse>(subnode));
-            }
             return NotFound();
         }
     }

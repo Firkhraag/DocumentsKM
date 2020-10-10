@@ -22,7 +22,6 @@ namespace DocumentsKM.Models
         // CREATE UNIQUE INDEX <name> ON (ОА_Подузел, КодМарки)
 
         // ДопКод
-        [Required]
         [MaxLength(50)]
         public string AdditionalCode { get; set; }
 

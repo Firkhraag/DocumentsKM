@@ -46,8 +46,7 @@ namespace DocumentsKM
             services.AddControllers()
                 .AddJsonOptions(
                     opt => opt.JsonSerializerOptions.IgnoreNullValues = true
-                )
-                .AddNewtonsoftJson();
+                );
 
             // Add Swagger documentation
             // URI: https://localhost:5001/swagger

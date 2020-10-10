@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Mime;
 using AutoMapper;
@@ -6,7 +7,6 @@ using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsKM.Controllers
@@ -43,9 +43,8 @@ namespace DocumentsKM.Controllers
         public ActionResult<MarkResponse> GetById(int id)
         {
             var mark = _service.GetById(id);
-            if (mark != null) {
+            if (mark != null)
                 return Ok(_mapper.Map<MarkResponse>(mark));
-            }
             return NotFound();
         }
 
@@ -55,9 +54,8 @@ namespace DocumentsKM.Controllers
         public ActionResult<MarkParentResponse> GetMarkParentResponseById(int id)
         {
             var mark = _service.GetById(id);
-            if (mark != null) {
+            if (mark != null)
                 return Ok(_mapper.Map<MarkParentResponse>(mark));
-            }
             return NotFound();
         }
 
@@ -68,30 +66,49 @@ namespace DocumentsKM.Controllers
         public ActionResult<MarkResponse> Create([FromBody] MarkRequest markRequest)
         {
             var markModel = _mapper.Map<Mark>(markRequest);
-            _service.Create(markModel);
+            try
+            {
+                _service.Create(
+                    markModel,
+                    markRequest.SubnodeId,
+                    markRequest.DepartmentNumber,
+                    markRequest.MainBuilderId,
+                    markRequest.ChiefSpecialistId,
+                    markRequest.GroupLeaderId);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            
             var markResponse = _mapper.Map<MarkResponse>(markModel);
-            return CreatedAtRoute(nameof(GetById), new {Id = markResponse.Id}, markResponse);
+            return CreatedAtAction(nameof(GetById), new {Id = markResponse.Id}, markResponse);
         }
 
-        [HttpPatch, Route("marks/{id}")]
+        // Consider PATCH in the future
+        [HttpPut, Route("marks/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Update(int id, [FromBody] JsonPatchDocument<MarkRequest> patchDoc)
+        public ActionResult Update(int id, [FromBody] MarkRequest markRequest)
         {
-            var markModel = _service.GetById(id);
-            if (markModel == null) {
+            var markModel = _mapper.Map<Mark>(markRequest);
+            markModel.Id = id;
+            try
+            {
+                _service.Update(
+                    markModel,
+                    markRequest.SubnodeId,
+                    markRequest.DepartmentNumber,
+                    markRequest.MainBuilderId,
+                    markRequest.ChiefSpecialistId,
+                    markRequest.GroupLeaderId);
+            }
+            catch (ArgumentNullException)
+            {
                 return NotFound();
             }
-            var markToPatch = _mapper.Map<MarkRequest>(markModel);
-            patchDoc.ApplyTo(markToPatch, ModelState);
-            if (!TryValidateModel(markToPatch))
-            {
-                return ValidationProblem(ModelState);
-            }
-            _mapper.Map(markToPatch, markModel);
-            _service.Update(markModel);
             
             return NoContent();
         }

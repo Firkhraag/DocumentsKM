@@ -11,13 +11,13 @@ const Header = () => {
 	const [isDrawerShown, setDrawerShown] = useState(false)
 
 	useEffect(() => {
-		const handler = (e: MouseEvent) => {
+		const clickHandler = (e: MouseEvent) => {
 			if ((e.target as HTMLElement).id != 'user-drawer') {
 				setDrawerShown(false)
 			}
 		}
-		document.body.addEventListener('click', handler)
-		return () => document.body.removeEventListener('click', handler)
+		document.body.addEventListener('click', clickHandler)
+		return () => document.body.removeEventListener('click', clickHandler)
 	}, [])
 
 	return (

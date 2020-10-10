@@ -6,7 +6,8 @@ namespace DocumentsKM.Dtos
     public class MarkRequest
     {
         [Required]
-        public Subnode Subnode { get; set; }
+        public int SubnodeId { get; set; }
+        // public SubnodeResponse Subnode { get; set; }
 
         [Required]
         [MaxLength(40)]
@@ -17,13 +18,23 @@ namespace DocumentsKM.Dtos
         public string Name { get; set; }
 
         [Required]
-        public Department Department { get; set; }
+        public int DepartmentNumber { get; set; }
+        // public DepartmentBaseResponse Department { get; set; }
 
-        public Employee ChiefSpecialist { get; set; }
+        public int ChiefSpecialistId { get; set; }
+        // public EmployeeBaseResponse ChiefSpecialist { get; set; }
 
-        public Employee GroupLeader { get; set; }
+        public int GroupLeaderId { get; set; }
+        // public EmployeeBaseResponse GroupLeader { get; set; }
 
         [Required]
-        public Employee MainBulder { get; set; }
+        public int MainBuilderId { get; set; }
+        // public EmployeeBaseResponse MainBuilder { get; set; }
+
+        public MarkRequest()
+        {
+            ChiefSpecialistId = -1;
+            GroupLeaderId = -1;
+        }
     }
 }

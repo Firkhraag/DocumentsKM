@@ -5,6 +5,7 @@ import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import Dropdown from '../Dropdown/Dropdown'
+import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Mark from '../../model/Mark'
 import { useMark, useSetMark } from '../../store/MarkStore'
 import {
@@ -31,7 +32,6 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		mainBuilders: [] as Employee[],
 	}
 
-	const mark = useMark()
 	const setMark = useSetMark()
 
 	// Object that holds selected values
@@ -39,33 +39,29 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	// Object that holds select options
     const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
     
-    const history = useHistory()
+    const [errMsg, setErrMsg] = useState('')
+
+	const history = useHistory()
 
 	useEffect(() => {
-		const fetchDepartments = async () => {
-			try {
-				const departmentsFetchedResponse = await httpClient.get(
-					'/departments'
-				)
-				const departmentsFetched = departmentsFetchedResponse.data
-
-				setOptionsObject({
-					...defaultOptionsObject,
-					departments: departmentsFetched,
-				})
-			} catch (e) {
-				console.log('Failed to fetch departments')
-			}
-		}
-		fetchDepartments()
 		if (isCreateMode) {
-			const recentSubnodeIdsStr = localStorage.getItem('recentSubnodeIds')
+            const recentSubnodeIdsStr = localStorage.getItem('recentSubnodeIds')
 			const recentSubnodeIds = JSON.parse(recentSubnodeIdsStr) as number[]
-			const selectedSubnodeId = recentSubnodeIds[0]
-			if (selectedSubnodeId != null) {
-				const fetchSubnode = async () => {
-					try {
-						const subnodeFetchedResponse = await httpClient.get(
+            const selectedSubnodeId = recentSubnodeIds[0]
+            if (selectedSubnodeId != null) {
+                const fetchData = async () => {
+                    try {
+                        const departmentsFetchedResponse = await httpClient.get(
+                            '/departments'
+                        )
+                        const departmentsFetched = departmentsFetchedResponse.data
+        
+                        setOptionsObject({
+                            ...defaultOptionsObject,
+                            departments: departmentsFetched,
+                        })
+
+                        const subnodeFetchedResponse = await httpClient.get(
 							`/subnodes/${selectedSubnodeId}`
 						)
 						setSelectedMark({
@@ -78,27 +74,44 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							groupLeader: null,
 							mainBuilder: null,
 						})
-					} catch (e) {
-						console.log('Failed to fetch the mark')
-					}
-				}
-				fetchSubnode()
-			}
+                    } catch (e) {
+                        console.log('Failed to fetch departments')
+                    }
+                }
+                fetchData()
+            }
 		} else {
-			const selectedMarkId = localStorage.getItem('selectedMarkId')
+            const selectedMarkId = localStorage.getItem('selectedMarkId')
 			if (selectedMarkId != null) {
-				const fetchMark = async () => {
+				const fetchData = async () => {
 					try {
 						const markFetchedResponse = await httpClient.get(
 							`/marks/${selectedMarkId}`
 						)
 						setMark(markFetchedResponse.data)
-						setSelectedMark({ ...markFetchedResponse.data })
+                        setSelectedMark({ ...markFetchedResponse.data })
+
+                        const departmentsFetchedResponse = await httpClient.get(
+                            '/departments'
+                        )
+                        const departmentsFetched = departmentsFetchedResponse.data
+                        const fetchedMainEmployeesResponse = await httpClient.get(
+                            `departments/${markFetchedResponse.data.department.number}/mark-main-employees`
+                        )
+                        const fetchedMainEmployees = fetchedMainEmployeesResponse.data
+                        
+                        setOptionsObject({
+                            ...defaultOptionsObject,
+                            departments: departmentsFetched,
+                            chiefSpecialists: fetchedMainEmployees.chiefSpecialists,
+                            groupLeaders: fetchedMainEmployees.groupLeaders,
+                            mainBuilders: fetchedMainEmployees.mainBuilders,
+                        })
 					} catch (e) {
 						console.log('Failed to fetch the mark')
 					}
 				}
-				fetchMark()
+                fetchData()
 			}
 		}
 	}, [])
@@ -212,23 +225,81 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 				mainBuilder: v,
 			})
 		}
-	}
+    }
+    
+    const checkIfValid = () => {
+        if (selectedMark.code === '') {
+            setErrMsg('Пожалуйста, введите шифр марки')
+			return false
+        }
+        if (selectedMark.name === '') {
+            setErrMsg('Пожалуйста, введите наименование марки')
+			return false
+        }
+        if (selectedMark.subnode == null) {
+            setErrMsg('Ошибка')
+			return false
+        }
+        if (selectedMark.department == null) {
+            setErrMsg('Пожалуйста, выберите отдел')
+			return false
+        }
+        if (selectedMark.mainBuilder == null) {
+            setErrMsg('Пожалуйста, выберите главного строителя')
+			return false
+        }
+        return true
+    }
 
 	const onCreateButtonClick = async () => {
-		try {
-            const response = await httpClient.post('/marks', selectedMark)
-            history.push('/')
-		} catch (e) {}
+		if (checkIfValid()) {
+            try {
+                const response = await httpClient.post('/marks', {
+                    code: selectedMark.code,
+                    name: selectedMark.name,
+                    subnodeId: selectedMark.subnode.id,
+                    departmentNumber: selectedMark.department.number,
+                    chiefSpecialistId: selectedMark.chiefSpecialist?.id,
+                    groupLeaderId: selectedMark.groupLeader?.id,
+                    mainBuilderId: selectedMark.mainBuilder.id,
+                })
+                localStorage.setItem("selectedMarkId", response.data.id)
+
+				const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
+				if (recentMarkIdsStr != null) {
+					const recentMarkIds = JSON.parse(
+						recentMarkIdsStr
+                    ) as number[]
+                    
+                    if (recentMarkIds.length >= 5) {
+                        recentMarkIds.shift()
+                    }
+                    recentMarkIds.unshift(response.data.id)
+                    let resStr = JSON.stringify(recentMarkIds)
+                    localStorage.setItem('recentMarkIds', resStr)
+                    setMark(response.data)
+                    history.push('/')
+				}
+            } catch (e) {}
+        }
 	}
 
 	const onChangeButtonClick = async () => {
-		try {
-			const response = await httpClient.patch(
-				`/marks/${selectedMark.id}`,
-				selectedMark
-            )
-            history.push('/')
-		} catch (e) {}
+        if (checkIfValid()) {
+            try {
+                await httpClient.put(`/marks/${selectedMark.id}`, {
+                    code: selectedMark.code,
+                    name: selectedMark.name,
+                    subnodeId: selectedMark.subnode.id,
+                    departmentNumber: selectedMark.department.number,
+                    chiefSpecialistId: selectedMark.chiefSpecialist?.id,
+                    groupLeaderId: selectedMark.groupLeader?.id,
+                    mainBuilderId: selectedMark.mainBuilder.id,
+                })
+                setMark(selectedMark)
+                history.push('/')
+            } catch (e) {}
+        }
 	}
 
 	return selectedMark == null ? null : (
@@ -405,6 +476,9 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 				>
 					{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
 				</button>
+                <div className="mrg-top">
+                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+                </div>
 			</div>
 		</div>
 	)

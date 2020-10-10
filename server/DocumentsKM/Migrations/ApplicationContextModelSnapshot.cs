@@ -138,7 +138,6 @@ namespace DocumentsKM.Migrations
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("AdditionalCode")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("additional_code");
@@ -230,7 +229,6 @@ namespace DocumentsKM.Migrations
                         .HasColumnName("active_node");
 
                     b.Property<string>("AdditionalName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("additional_name");
@@ -306,7 +304,6 @@ namespace DocumentsKM.Migrations
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("AdditionalName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("additional_name");
@@ -356,7 +353,6 @@ namespace DocumentsKM.Migrations
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("AdditionalName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("additional_name");

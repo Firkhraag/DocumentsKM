@@ -10,8 +10,18 @@ namespace DocumentsKM.Services
         // Получить марку по id
         Mark GetById(int id);
         // Создать новую марку
-        void Create(Mark mark);
+        void Create(Mark mark,
+            int subnodeId,
+            int departmentNumber,
+            int mainBuilderId,
+            int chiefSpecialistId,
+            int groupLeaderId);
         // Обновить существующую марку
-        void Update(Mark mark);
+        void Update(Mark mark,
+            int subnodeId,
+            int departmentNumber,
+            int mainBuilderId,
+            int chiefSpecialistId,
+            int groupLeaderId);
     }
 }

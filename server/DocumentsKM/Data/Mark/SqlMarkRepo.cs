@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data
 {
@@ -36,6 +37,7 @@ namespace DocumentsKM.Data
 
         public void Update(Mark mark)
         {
+            _context.Entry(mark).State = EntityState.Modified;
             _context.SaveChanges();
         }
     }

@@ -1,11 +1,12 @@
 .header {
 	padding: 0.66em 1.48em;
+	position: sticky;
 	top: 0px;
 	border-bottom: 1px solid #d0d0d0;
-    z-index: 100;
+	z-index: 100;
 }
 
 .profile-icon-cnt {
-    width: 30px;
-    height: 34px;
+	width: 30px;
+	height: 34px;
 }

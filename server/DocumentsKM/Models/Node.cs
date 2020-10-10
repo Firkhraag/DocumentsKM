@@ -26,7 +26,6 @@ namespace DocumentsKM.Models
         public string Name { get; set; }
 
         // НазвУзлаДоп
-        [Required]
         [MaxLength(255)]
         public string AdditionalName { get; set; }
 

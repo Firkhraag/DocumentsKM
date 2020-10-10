@@ -82,7 +82,7 @@ namespace DocumentsKM.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     type = table.Column<int>(type: "integer", nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     base_series = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     approved1_id = table.Column<int>(type: "integer", nullable: true),
                     approved2_id = table.Column<int>(type: "integer", nullable: true)
@@ -134,7 +134,7 @@ namespace DocumentsKM.Migrations
                     project_id = table.Column<int>(type: "integer", nullable: false),
                     code = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     chief_engineer_id = table.Column<int>(type: "integer", nullable: false),
                     active_node = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -165,7 +165,7 @@ namespace DocumentsKM.Migrations
                     node_id = table.Column<int>(type: "integer", nullable: false),
                     code = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
@@ -187,7 +187,7 @@ namespace DocumentsKM.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     subnode_id = table.Column<int>(type: "integer", nullable: false),
                     code = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
-                    additional_code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    additional_code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     department_id = table.Column<int>(type: "integer", nullable: false),
                     chief_specialist_id = table.Column<int>(type: "integer", nullable: true),
