@@ -68,25 +68,6 @@ namespace DocumentsKM.Controllers
             return NoContent();
         }
 
-        // // Получить всех пользователей системы
-        // [Authorize]
-        // [HttpGet]
-        // public IActionResult GetAll()
-        // {
-        //     var users = _service.GetAll();
-        //     return Ok(users);
-        // }
-
-        // // Получить конкретного пользователя
-        // [Authorize]
-        // [HttpGet("{id}")]
-        // public IActionResult GetById(int id)
-        // {
-        //     var user = _service.GetById(id);
-        //     if (user == null) return NotFound();
-        //     return Ok(user);
-        // }
-
         //------------------------HELPERS------------------------
         // Добавляет refresh token в cookie
         private void setTokenCookie(string token, int ttl)

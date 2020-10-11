@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using AutoMapper;
-using DocumentsKM.Data;
 using DocumentsKM.Dtos;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
