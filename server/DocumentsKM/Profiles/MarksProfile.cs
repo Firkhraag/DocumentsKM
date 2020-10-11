@@ -8,11 +8,14 @@ namespace DocumentsKM.Profiles
     {
         public MarksProfile()
         {
-            // Souce -> Target
             CreateMap<Mark, MarkBaseResponse>();
             CreateMap<Mark, MarkParentResponse>();
             CreateMap<Mark, MarkResponse>();
-            CreateMap<MarkRequest, Mark>();
+            CreateMap<MarkCreateRequest, Mark>();
+            // Delete ?
+            // CreateMap<MarkUpdateRequest, Mark>();
+            // CreateMap<MarkApprovalsRequest, Mark>();
+            CreateMap<Mark, MarkApprovalsResponse>();
         }
     }
 }

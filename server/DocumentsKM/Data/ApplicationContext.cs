@@ -12,12 +12,21 @@ namespace DocumentsKM.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<MarksApprovals>().HasKey(e => new { e.MarkId, e.EmployeeId });
+            // Composite primary key
+            // builder.Entity<EntityName>().HasKey(e => new { e.MarkId, e.EmployeeId });
 
             // Unique constrains
             builder.Entity<User>()
-                .HasIndex(u => u.Login)
+                .HasIndex(e => e.Login)
                 .IsUnique();
+            // Composite
+            builder.Entity<Mark>().HasIndex(e => new { e.SubnodeId, e.Code }).IsUnique();
+            builder.Entity<Specification>().HasIndex(e => new { e.MarkId, e.ReleaseNumber }).IsUnique();
+
+            // Default datetime
+            builder.Entity<Node>().Property(e => e.Created).HasDefaultValueSql("now()");
+            builder.Entity<Subnode>().Property(e => e.Created).HasDefaultValueSql("now()");
+            builder.Entity<Specification>().Property(e => e.Created).HasDefaultValueSql("now()");
 
             foreach(var entity in builder.Model.GetEntityTypes())
             {
@@ -52,7 +61,7 @@ namespace DocumentsKM.Data
         public DbSet<Node> Nodes { get; set; }
         public DbSet<Subnode> Subnodes { get; set; }
         public DbSet<Mark> Marks { get; set; }
-        public DbSet<MarksApprovals> MarksApprovals { get; set; }
+        public DbSet<Specification> Specifications { get; set; }
         public DbSet<User> Users { get; set; }
     }
 }

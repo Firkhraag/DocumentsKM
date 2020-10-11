@@ -1,3 +1,4 @@
+using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 using System.Collections.Generic;
 
@@ -14,14 +15,11 @@ namespace DocumentsKM.Services
             int subnodeId,
             int departmentNumber,
             int mainBuilderId,
-            int chiefSpecialistId,
-            int groupLeaderId);
+            int? chiefSpecialistId,
+            int? groupLeaderId);
         // Обновить существующую марку
-        void Update(Mark mark,
-            int subnodeId,
-            int departmentNumber,
-            int mainBuilderId,
-            int chiefSpecialistId,
-            int groupLeaderId);
+        void Update(int id, MarkUpdateRequest mark);
+        // Обновить согласования у текущей марки
+        void UpdateApprovals(int id, MarkApprovalsRequest mark);
     }
 }

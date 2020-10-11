@@ -63,7 +63,7 @@ namespace DocumentsKM.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<MarkResponse> Create([FromBody] MarkRequest markRequest)
+        public ActionResult<MarkResponse> Create([FromBody] MarkCreateRequest markRequest)
         {
             var markModel = _mapper.Map<Mark>(markRequest);
             try
@@ -85,31 +85,50 @@ namespace DocumentsKM.Controllers
             return CreatedAtAction(nameof(GetById), new {Id = markResponse.Id}, markResponse);
         }
 
-        // Consider PATCH in the future
-        [HttpPut, Route("marks/{id}")]
+        [HttpPatch, Route("marks/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Update(int id, [FromBody] MarkRequest markRequest)
+        public ActionResult Update(int id, [FromBody] MarkUpdateRequest markRequest)
         {
-            var markModel = _mapper.Map<Mark>(markRequest);
-            markModel.Id = id;
+            // DEBUG
+            // Log.Information(JsonSerializer.Serialize(markRequest));
             try
             {
-                _service.Update(
-                    markModel,
-                    markRequest.SubnodeId,
-                    markRequest.DepartmentNumber,
-                    markRequest.MainBuilderId,
-                    markRequest.ChiefSpecialistId,
-                    markRequest.GroupLeaderId);
+                _service.Update(id, markRequest);
             }
             catch (ArgumentNullException)
             {
                 return NotFound();
             }
             
+            return NoContent();
+        }
+
+        [HttpGet, Route("marks/{id}/approvals")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<MarkApprovalsResponse> GetApprovals(int id)
+        {
+            var mark = _service.GetById(id);
+            if (mark != null)
+                return Ok(_mapper.Map<MarkApprovalsResponse>(mark));
+            return NotFound();
+        }
+
+        [HttpPatch, Route("marks/{id}/approvals")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult UpdateApprovals(int id, [FromBody] MarkApprovalsRequest markRequest)
+        {
+            try
+            {
+                _service.UpdateApprovals(id, markRequest);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
     }

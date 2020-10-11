@@ -1,4 +1,8 @@
+.vscode
+
 node_modules/
+public/
 
 bin/
 obj/
+logs/

@@ -8,7 +8,6 @@ namespace DocumentsKM.Profiles
     {
         public DepartmentsProfile()
         {
-            // Souce -> Target
             CreateMap<Department, DepartmentBaseResponse>();
             CreateMap<Department, DepartmentResponse>();
         }

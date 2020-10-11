@@ -8,7 +8,6 @@ namespace DocumentsKM.Profiles
     {
         public SubnodesProfile()
         {
-            // Souce -> Target
             CreateMap<Subnode, SubnodeBaseResponse>();
             CreateMap<Subnode, SubnodeParentResponse>();
             CreateMap<Subnode, SubnodeResponse>();

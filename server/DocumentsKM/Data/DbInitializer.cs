@@ -184,8 +184,6 @@ namespace DocumentsKM
             };
             if (!ctx.Employees.Any())
             {
-                // ctx.Departments.AttachRange(departments);
-                // ctx.Positions.AttachRange(positions);
                 ctx.Employees.AddRange(employees);
                 ctx.SaveChanges();
                 ctx.Employees.AttachRange(employees);
@@ -232,7 +230,6 @@ namespace DocumentsKM
                     AdditionalName="AdditionalName 1",
                     ChiefEngineer=employees[0],
                     ActiveNode="1",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
                 new Node
                 {
@@ -242,7 +239,6 @@ namespace DocumentsKM
                     AdditionalName="AdditionalName 2",
                     ChiefEngineer=employees[1],
                     ActiveNode="1",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
                 new Node
                 {
@@ -252,7 +248,6 @@ namespace DocumentsKM
                     AdditionalName="AdditionalName 3",
                     ChiefEngineer=employees[2],
                     ActiveNode="1",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
                 new Node
                 {
@@ -262,13 +257,10 @@ namespace DocumentsKM
                     AdditionalName="AdditionalName 4",
                     ChiefEngineer=employees[3],
                     ActiveNode="1",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
             };
             if (!ctx.Nodes.Any())
             {
-                // ctx.Projects.AttachRange(projects);
-                // ctx.Employees.AttachRange(employees);
                 ctx.Nodes.AddRange(nodes);
                 ctx.SaveChanges();
                 ctx.Nodes.AttachRange(nodes);
@@ -282,7 +274,6 @@ namespace DocumentsKM
                     Code="Code1",
                     Name="Subnode name 1",
                     AdditionalName="AdditionalName 1",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
                 new Subnode
                 {
@@ -290,7 +281,6 @@ namespace DocumentsKM
                     Code="Code2",
                     Name="Subnode name 2",
                     AdditionalName="AdditionalName 2",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
                 new Subnode
                 {
@@ -298,7 +288,6 @@ namespace DocumentsKM
                     Code="Code3",
                     Name="Subnode name 3",
                     AdditionalName="AdditionalName 3",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
                 new Subnode
                 {
@@ -306,7 +295,6 @@ namespace DocumentsKM
                     Code="Code4",
                     Name="Subnode name 4",
                     AdditionalName="AdditionalName 4",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
                 new Subnode
                 {
@@ -314,7 +302,6 @@ namespace DocumentsKM
                     Code="Code5",
                     Name="Subnode name 5",
                     AdditionalName="AdditionalName 5",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
                 new Subnode
                 {
@@ -322,12 +309,10 @@ namespace DocumentsKM
                     Code="Code6",
                     Name="Subnode name 6",
                     AdditionalName="AdditionalName 6",
-                    Created=DateTime.Parse("2020-09-01"),
                 },
             };
             if (!ctx.Subnodes.Any())
             {
-                // ctx.Nodes.AttachRange(nodes);
                 ctx.Subnodes.AddRange(subnodes);
                 ctx.SaveChanges();
                 ctx.Subnodes.AttachRange(subnodes);
@@ -392,35 +377,9 @@ namespace DocumentsKM
             };
             if (!ctx.Marks.Any())
             {
-                // ctx.Subnodes.AttachRange(subnodes);
-                // ctx.Departments.AttachRange(departments);
-                // ctx.Employees.AttachRange(employees);
                 ctx.Marks.AddRange(marks);
                 ctx.SaveChanges();
                 ctx.Marks.AttachRange(marks);
-            }
-
-            List<MarksApprovals> markApprovals = new List<MarksApprovals>
-            {
-                new MarksApprovals
-                {
-                    Mark=marks[0],
-                    Employee=employees[1],
-                },
-                new MarksApprovals
-                {
-                    Mark=marks[0],
-                    Employee=employees[2],
-                },
-            };
-            if (!ctx.MarksApprovals.Any())
-            {
-                // ctx.Subnodes.AttachRange(subnodes);
-                // ctx.Departments.AttachRange(departments);
-                // ctx.Employees.AttachRange(employees);
-                ctx.MarksApprovals.AddRange(markApprovals);
-                ctx.SaveChanges();
-                ctx.MarksApprovals.AttachRange(markApprovals);
             }
 
             List<User> users = new List<User>
@@ -446,7 +405,6 @@ namespace DocumentsKM
             };
             if (!ctx.Users.Any())
             {
-                // ctx.Employees.AttachRange(employees);
                 ctx.Users.AddRange(users);
                 ctx.SaveChanges();
                 ctx.Users.AttachRange(users);

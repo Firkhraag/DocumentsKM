@@ -54,8 +54,6 @@ const MarkSelect = () => {
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
 	useEffect(() => {
-		// Cannot use async func as callback in useEffect
-		// Function for fetching data
 		const fetchData = async () => {
 			try {
 				const projectsFetchedResponse = await httpClient.get(

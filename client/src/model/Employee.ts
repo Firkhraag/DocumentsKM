@@ -4,7 +4,7 @@ import Position from './Position'
 interface IEmployee {
 	id: number
     fullName: string
-	// department: Department
+	department: Department
 	// position: Position
 	// phoneNumber: string
 	// isCanteen: boolean
@@ -14,7 +14,7 @@ interface IEmployee {
 class Employee {
 	id: number
 	fullName: string
-	// department: Department
+	department: Department
 	// position: Position
 	// phoneNumber: string
 	// isCanteen: boolean
@@ -23,7 +23,7 @@ class Employee {
 	constructor(obj?: IEmployee) {
 		this.id = (obj && obj.id) || 0
 		this.fullName = (obj && obj.fullName) || ''
-		// this.department = (obj && obj.department) || null
+		this.department = (obj && obj.department) || null
 		// this.position = (obj && obj.position) || null
 		// this.phoneNumber = (obj && obj.phoneNumber) || ''
 		// this.isCanteen = (obj && obj.isCanteen) || false

@@ -11,16 +11,14 @@ namespace DocumentsKM.Models
         public int Position { get; set; }
 
         // Id_марки
-        // FOREIGN KEY т. Марки
         [Required]
         [ForeignKey("MarkId")]
         public virtual Mark Mark { get; set; }
+        public int MarkId { get; set; }
 
         // выпуск
         [Required]
         public byte ReleaseNumber { get; set; }
-
-        // CREATE UNIQUE INDEX <name> ON (Id_марки, выпуск)
 
         // прим
         [MaxLength(255)]
