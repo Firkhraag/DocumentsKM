@@ -9,6 +9,19 @@ namespace DocumentsKM.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "document_types",
+                columns: table => new
+                {
+                    type = table.Column<byte>(type: "smallint", nullable: false),
+                    code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: false),
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_document_types", x => x.type);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "positions",
                 columns: table => new
                 {
@@ -193,13 +206,15 @@ namespace DocumentsKM.Migrations
                     chief_specialist_id = table.Column<int>(type: "integer", nullable: true),
                     group_leader_id = table.Column<int>(type: "integer", nullable: true),
                     main_builder_id = table.Column<int>(type: "integer", nullable: false),
+                    current_specification_id = table.Column<int>(type: "integer", nullable: true),
                     approval_specialist1_id = table.Column<int>(type: "integer", nullable: true),
                     approval_specialist2_id = table.Column<int>(type: "integer", nullable: true),
                     approval_specialist3_id = table.Column<int>(type: "integer", nullable: true),
                     approval_specialist4_id = table.Column<int>(type: "integer", nullable: true),
                     approval_specialist5_id = table.Column<int>(type: "integer", nullable: true),
                     approval_specialist6_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist7_id = table.Column<int>(type: "integer", nullable: true)
+                    approval_specialist7_id = table.Column<int>(type: "integer", nullable: true),
+                    edited = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -274,6 +289,59 @@ namespace DocumentsKM.Migrations
                         name: "fk_marks_subnodes_subnode_id",
                         column: x => x.subnode_id,
                         principalTable: "subnodes",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "sheets",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    mark_id = table.Column<int>(type: "integer", nullable: false),
+                    number = table.Column<int>(type: "integer", nullable: false),
+                    document_type_id = table.Column<byte>(type: "smallint", nullable: false),
+                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    format = table.Column<float>(type: "real", nullable: false),
+                    developer_id = table.Column<int>(type: "integer", nullable: false),
+                    inspector_id = table.Column<int>(type: "integer", nullable: true),
+                    norm_controller_id = table.Column<int>(type: "integer", nullable: true),
+                    release = table.Column<byte>(type: "smallint", nullable: false),
+                    number_of_pages = table.Column<byte>(type: "smallint", nullable: false),
+                    note = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_sheets", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_sheets_document_types_document_type_id",
+                        column: x => x.document_type_id,
+                        principalTable: "document_types",
+                        principalColumn: "type",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_sheets_employees_developer_id",
+                        column: x => x.developer_id,
+                        principalTable: "employees",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_sheets_employees_inspector_id",
+                        column: x => x.inspector_id,
+                        principalTable: "employees",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_sheets_employees_norm_controller_id",
+                        column: x => x.norm_controller_id,
+                        principalTable: "employees",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_sheets_marks_mark_id",
+                        column: x => x.mark_id,
+                        principalTable: "marks",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -356,6 +424,18 @@ namespace DocumentsKM.Migrations
                 column: "chief_specialist_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_marks_code",
+                table: "marks",
+                column: "code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_marks_current_specification_id",
+                table: "marks",
+                column: "current_specification_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_marks_department_id",
                 table: "marks",
                 column: "department_id");
@@ -382,6 +462,12 @@ namespace DocumentsKM.Migrations
                 column: "chief_engineer_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_nodes_code",
+                table: "nodes",
+                column: "code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_nodes_project_id",
                 table: "nodes",
                 column: "project_id");
@@ -397,9 +483,47 @@ namespace DocumentsKM.Migrations
                 column: "approved2_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_projects_base_series",
+                table: "projects",
+                column: "base_series",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_sheets_developer_id",
+                table: "sheets",
+                column: "developer_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_sheets_document_type_id",
+                table: "sheets",
+                column: "document_type_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_sheets_inspector_id",
+                table: "sheets",
+                column: "inspector_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_sheets_mark_id_number_document_type_id",
+                table: "sheets",
+                columns: new[] { "mark_id", "number", "document_type_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_sheets_norm_controller_id",
+                table: "sheets",
+                column: "norm_controller_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_specifications_mark_id_release_number",
                 table: "specifications",
                 columns: new[] { "mark_id", "release_number" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_subnodes_code",
+                table: "subnodes",
+                column: "code",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -425,6 +549,14 @@ namespace DocumentsKM.Migrations
                 principalTable: "departments",
                 principalColumn: "number",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "fk_marks_specifications_current_specification_id",
+                table: "marks",
+                column: "current_specification_id",
+                principalTable: "specifications",
+                principalColumn: "position",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -433,11 +565,154 @@ namespace DocumentsKM.Migrations
                 name: "fk_departments_employees_department_head_id",
                 table: "departments");
 
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist1_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist2_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist3_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist4_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist5_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist6_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist7_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_chief_specialist_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_group_leader_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_main_builder_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist1_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist2_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist3_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist4_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist5_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist6_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist7_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_chief_specialist_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_group_leader_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_main_builder_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist1_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist2_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist3_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist4_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist5_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist6_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_approval_specialist7_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_chief_specialist_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_group_leader_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_employees_main_builder_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_departments_department_id",
+                table: "marks");
+
+            migrationBuilder.DropForeignKey(
+                name: "fk_marks_specifications_current_specification_id",
+                table: "marks");
+
             migrationBuilder.DropTable(
-                name: "specifications");
+                name: "sheets");
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "document_types");
+
+            migrationBuilder.DropTable(
+                name: "employees");
+
+            migrationBuilder.DropTable(
+                name: "positions");
+
+            migrationBuilder.DropTable(
+                name: "departments");
+
+            migrationBuilder.DropTable(
+                name: "specifications");
 
             migrationBuilder.DropTable(
                 name: "marks");
@@ -450,15 +725,6 @@ namespace DocumentsKM.Migrations
 
             migrationBuilder.DropTable(
                 name: "projects");
-
-            migrationBuilder.DropTable(
-                name: "employees");
-
-            migrationBuilder.DropTable(
-                name: "departments");
-
-            migrationBuilder.DropTable(
-                name: "positions");
         }
     }
 }

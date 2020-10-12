@@ -56,6 +56,15 @@ const MarkApproval = () => {
 					const markApprovalsFetched =
 						markApprovalsFetchedResponse.data
                     setMarkApprovalsObj(markApprovalsFetched)
+                    const selectedEmployees = [
+                        markApprovalsFetched.approvalSpecialist1,
+                        markApprovalsFetched.approvalSpecialist2,
+                        markApprovalsFetched.approvalSpecialist3,
+                        markApprovalsFetched.approvalSpecialist4,
+                        markApprovalsFetched.approvalSpecialist5,
+                        markApprovalsFetched.approvalSpecialist6,
+                        markApprovalsFetched.approvalSpecialist7,
+                    ]
                     setSelectedObject({
                         departments: [
                             markApprovalsFetched.approvalSpecialist1?.department,
@@ -66,15 +75,7 @@ const MarkApproval = () => {
                             markApprovalsFetched.approvalSpecialist6?.department,
                             markApprovalsFetched.approvalSpecialist7?.department,
                         ],
-                        employees: [
-                            markApprovalsFetched.approvalSpecialist1,
-                            markApprovalsFetched.approvalSpecialist2,
-                            markApprovalsFetched.approvalSpecialist3,
-                            markApprovalsFetched.approvalSpecialist4,
-                            markApprovalsFetched.approvalSpecialist5,
-                            markApprovalsFetched.approvalSpecialist6,
-                            markApprovalsFetched.approvalSpecialist7,
-                        ],
+                        employees: selectedEmployees,
                     })
 
 					const fetchEmployees = async (
@@ -86,8 +87,16 @@ const MarkApproval = () => {
 							const fetchedEmployeesResponse = await httpClient.get(
 								`/departments/${approvalSpecialist.department.number}/mark-approval-employees`
 							)
-							const fetchedEmployees =
-								fetchedEmployeesResponse.data
+							let fetchedEmployees =
+                                fetchedEmployeesResponse.data as Employee[]
+
+                            for (let e of selectedEmployees) {
+                                if (e != null) {
+                                    fetchedEmployees = fetchedEmployees.filter(
+                                        (e2) => e2.id !== e.id
+                                    )
+                                }
+                            }
 							options[rowNumber] = fetchedEmployees
 						}
 					}
@@ -157,7 +166,6 @@ const MarkApproval = () => {
 					)
                     let fetchedEmployees = fetchedEmployeesResponse.data as Employee[]
 					for (let e of selectedObject.employees) {
-                        console.log('1')
                         if (e != null) {
                             fetchedEmployees = fetchedEmployees.filter(
                                 (e2) => e2.id !== e.id
@@ -272,6 +280,7 @@ const MarkApproval = () => {
 	}
 
 	return (
+        mark == null ? null :
 		<div className="component-cnt">
 			<h1 className="text-centered">Согласования</h1>
 			<table className="agreements-table white-bg">

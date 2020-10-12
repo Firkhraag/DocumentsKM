@@ -1,14 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useHistory } from 'react-router-dom'
 import Add from '../Svg/Add'
 import Edit from '../Svg/Edit'
 import Delete from '../Svg/Delete'
 import Specification from '../../model/Specification'
+import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
 import './Specifications.css'
 
-const Specifications = () => {
+type SpecificationsProps = {
+    setPopupObj: (popupObj: IPopupObj) => void
+}
+
+const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 
     const [specList, setSpecList] = useState<Array<Specification>>([])
     const radioRef = useRef()
+
+    const history = useHistory()
 
     useEffect(() => {
         
@@ -54,8 +62,13 @@ const Specifications = () => {
 								name="currentRelease"
 							/>
 						</td>
-                        <td className="pointer action-cell-width text-centered"><Edit /></td>
-                        <td className="pointer action-cell-width text-centered"><Delete /></td>
+                        <td onClick={() => history.push('/specification-data')} className="pointer action-cell-width text-centered"><Edit /></td>
+                        <td onClick={() => setPopupObj({
+                            isShown: true,
+                            msg: 'Вы действительно хотите удалить выпуск спецификации №0?',
+                            onAccept: () => setPopupObj(defaultPopupObj),
+                            onCancel: () => setPopupObj(defaultPopupObj),
+                        })} className="pointer action-cell-width text-centered"><Delete /></td>
 					</tr>
 					<tr>
 						<td>1</td>
@@ -72,53 +85,16 @@ const Specifications = () => {
 								name="currentRelease"
 							/>
 						</td>
-                        <td className="pointer action-cell-width text-centered"><Edit /></td>
-                        <td className="pointer action-cell-width text-centered"><Delete /></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>18.04.2017</td>
-						<td className="note-cell-width">
-							Lorem Ipsum - это текст-"рыба", часто используемый в
-							печати и вэб-дизайне.
-						</td>
-						<td className="pointer text-centered">
-							<input
-								className="pointer"
-								type="radio"
-								id="is2"
-								name="currentRelease"
-							/>
-						</td>
-                        <td className="pointer action-cell-width text-centered"><Edit /></td>
-                        <td className="pointer action-cell-width text-centered"><Delete /></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>18.04.2017</td>
-						<td className="note-cell-width">
-							Lorem Ipsum - это текст-"рыба", часто используемый в
-							печати и вэб-дизайне. Lorem Ipsum - это текст-"рыба", часто используемый в
-							печати и вэб-дизайне. Lorem Ipsum - это текст-"рыба", часто используемый в
-							печати и вэб-дизайне. Lorem Ipsum - это текст-"рыба", часто используемый в
-							печати и вэб-дизайне.
-						</td>
-						<td className="pointer text-centered">
-							<input
-								className="pointer"
-								type="radio"
-								id="is3"
-								name="currentRelease"
-							/>
-						</td>
-                        <td className="pointer action-cell-width text-centered"><Edit /></td>
-                        <td className="pointer action-cell-width text-centered"><Delete /></td>
+                        <td onClick={() => history.push('/specification-data')} className="pointer action-cell-width text-centered"><Edit /></td>
+                        <td onClick={() => setPopupObj({
+                            isShown: true,
+                            msg: 'Вы действительно хотите удалить выпуск спецификации №1?',
+                            onAccept: () => setPopupObj(defaultPopupObj),
+                            onCancel: () => setPopupObj(defaultPopupObj),
+                        })} className="pointer action-cell-width text-centered"><Delete /></td>
 					</tr>
 				</tbody>
 			</table>
-            {/* <button className="final-btn input-border-radius pointer">
-				Сохранить изменения
-			</button> */}
 		</div>
 	)
 }

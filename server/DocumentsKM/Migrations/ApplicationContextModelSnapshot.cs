@@ -66,6 +66,30 @@ namespace DocumentsKM.Migrations
                     b.ToTable("departments");
                 });
 
+            modelBuilder.Entity("DocumentsKM.Models.DocumentType", b =>
+                {
+                    b.Property<byte>("Type")
+                        .HasColumnType("smallint")
+                        .HasColumnName("type");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)")
+                        .HasColumnName("code");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Type")
+                        .HasName("pk_document_types");
+
+                    b.ToTable("document_types");
+                });
+
             modelBuilder.Entity("DocumentsKM.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
@@ -180,9 +204,19 @@ namespace DocumentsKM.Migrations
                         .HasColumnType("character varying(40)")
                         .HasColumnName("code");
 
+                    b.Property<int?>("CurrentSpecificationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("current_specification_id");
+
                     b.Property<int>("DepartmentId")
                         .HasColumnType("integer")
                         .HasColumnName("department_id");
+
+                    b.Property<DateTime>("Edited")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("edited")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int?>("GroupLeaderId")
                         .HasColumnType("integer")
@@ -228,6 +262,14 @@ namespace DocumentsKM.Migrations
 
                     b.HasIndex("ChiefSpecialistId")
                         .HasDatabaseName("ix_marks_chief_specialist_id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_marks_code");
+
+                    b.HasIndex("CurrentSpecificationId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_marks_current_specification_id");
 
                     b.HasIndex("DepartmentId")
                         .HasDatabaseName("ix_marks_department_id");
@@ -295,6 +337,10 @@ namespace DocumentsKM.Migrations
 
                     b.HasIndex("ChiefEngineerId")
                         .HasDatabaseName("ix_nodes_chief_engineer_id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_nodes_code");
 
                     b.HasIndex("ProjectId")
                         .HasDatabaseName("ix_nodes_project_id");
@@ -374,7 +420,88 @@ namespace DocumentsKM.Migrations
                     b.HasIndex("Approved2Id")
                         .HasDatabaseName("ix_projects_approved2_id");
 
+                    b.HasIndex("BaseSeries")
+                        .IsUnique()
+                        .HasDatabaseName("ix_projects_base_series");
+
                     b.ToTable("projects");
+                });
+
+            modelBuilder.Entity("DocumentsKM.Models.Sheet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<int>("DeveloperId")
+                        .HasColumnType("integer")
+                        .HasColumnName("developer_id");
+
+                    b.Property<byte>("DocumentTypeId")
+                        .HasColumnType("smallint")
+                        .HasColumnName("document_type_id");
+
+                    b.Property<float>("Format")
+                        .HasColumnType("real")
+                        .HasColumnName("format");
+
+                    b.Property<int?>("InspectorId")
+                        .HasColumnType("integer")
+                        .HasColumnName("inspector_id");
+
+                    b.Property<int>("MarkId")
+                        .HasColumnType("integer")
+                        .HasColumnName("mark_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("NormControllerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("norm_controller_id");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("note");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer")
+                        .HasColumnName("number");
+
+                    b.Property<byte>("NumberOfPages")
+                        .HasColumnType("smallint")
+                        .HasColumnName("number_of_pages");
+
+                    b.Property<byte>("Release")
+                        .HasColumnType("smallint")
+                        .HasColumnName("release");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sheets");
+
+                    b.HasIndex("DeveloperId")
+                        .HasDatabaseName("ix_sheets_developer_id");
+
+                    b.HasIndex("DocumentTypeId")
+                        .HasDatabaseName("ix_sheets_document_type_id");
+
+                    b.HasIndex("InspectorId")
+                        .HasDatabaseName("ix_sheets_inspector_id");
+
+                    b.HasIndex("NormControllerId")
+                        .HasDatabaseName("ix_sheets_norm_controller_id");
+
+                    b.HasIndex("MarkId", "Number", "DocumentTypeId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_sheets_mark_id_number_document_type_id");
+
+                    b.ToTable("sheets");
                 });
 
             modelBuilder.Entity("DocumentsKM.Models.Specification", b =>
@@ -451,6 +578,10 @@ namespace DocumentsKM.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_subnodes");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_subnodes_code");
 
                     b.HasIndex("NodeId")
                         .HasDatabaseName("ix_subnodes_node_id");
@@ -566,6 +697,11 @@ namespace DocumentsKM.Migrations
                         .HasForeignKey("ChiefSpecialistId")
                         .HasConstraintName("fk_marks_employees_chief_specialist_id");
 
+                    b.HasOne("DocumentsKM.Models.Specification", "CurrentSpecification")
+                        .WithOne()
+                        .HasForeignKey("DocumentsKM.Models.Mark", "CurrentSpecificationId")
+                        .HasConstraintName("fk_marks_specifications_current_specification_id");
+
                     b.HasOne("DocumentsKM.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
@@ -607,6 +743,8 @@ namespace DocumentsKM.Migrations
                     b.Navigation("ApprovalSpecialist7");
 
                     b.Navigation("ChiefSpecialist");
+
+                    b.Navigation("CurrentSpecification");
 
                     b.Navigation("Department");
 
@@ -653,6 +791,50 @@ namespace DocumentsKM.Migrations
                     b.Navigation("Approved1");
 
                     b.Navigation("Approved2");
+                });
+
+            modelBuilder.Entity("DocumentsKM.Models.Sheet", b =>
+                {
+                    b.HasOne("DocumentsKM.Models.Employee", "Developer")
+                        .WithMany()
+                        .HasForeignKey("DeveloperId")
+                        .HasConstraintName("fk_sheets_employees_developer_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocumentsKM.Models.DocumentType", "DocumentType")
+                        .WithMany()
+                        .HasForeignKey("DocumentTypeId")
+                        .HasConstraintName("fk_sheets_document_types_document_type_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocumentsKM.Models.Employee", "Inspector")
+                        .WithMany()
+                        .HasForeignKey("InspectorId")
+                        .HasConstraintName("fk_sheets_employees_inspector_id");
+
+                    b.HasOne("DocumentsKM.Models.Mark", "Mark")
+                        .WithMany()
+                        .HasForeignKey("MarkId")
+                        .HasConstraintName("fk_sheets_marks_mark_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocumentsKM.Models.Employee", "NormController")
+                        .WithMany()
+                        .HasForeignKey("NormControllerId")
+                        .HasConstraintName("fk_sheets_employees_norm_controller_id");
+
+                    b.Navigation("Developer");
+
+                    b.Navigation("DocumentType");
+
+                    b.Navigation("Inspector");
+
+                    b.Navigation("Mark");
+
+                    b.Navigation("NormController");
                 });
 
             modelBuilder.Entity("DocumentsKM.Models.Specification", b =>

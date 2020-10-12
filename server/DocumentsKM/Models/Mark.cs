@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -47,6 +48,10 @@ namespace DocumentsKM.Models
         [ForeignKey("MainBuilderId")]
         public virtual Employee MainBuilder { get; set; }
 
+        // ТекВыпуск
+        [ForeignKey("CurrentSpecificationId")]
+        public virtual Specification CurrentSpecification { get; set; }
+
         // Исп1
         [ForeignKey("ApprovalSpecialist1Id")]
         public virtual Employee ApprovalSpecialist1 { get; set; }
@@ -74,5 +79,10 @@ namespace DocumentsKM.Models
         // Исп7
         [ForeignKey("ApprovalSpecialist7Id")]
         public virtual Employee ApprovalSpecialist7 { get; set; }
+
+        // Дата_ред
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime Edited { get; set; }
     }
 }

@@ -165,7 +165,7 @@ namespace DocumentsKM
                 },
                 new Employee
                 {
-                    FullName="Test employee8",
+                    FullName="Test employee9",
                     Department=departments[1],
                     Position=positions[3],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
@@ -174,7 +174,7 @@ namespace DocumentsKM
                 },
                 new Employee
                 {
-                    FullName="Test employee8",
+                    FullName="Test employee10",
                     Department=departments[1],
                     Position=positions[4],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
@@ -380,6 +380,134 @@ namespace DocumentsKM
                 ctx.Marks.AddRange(marks);
                 ctx.SaveChanges();
                 ctx.Marks.AttachRange(marks);
+            }
+
+            List<Specification> specifications = new List<Specification>
+            {
+                new Specification
+                {
+                    Mark=marks[0],
+                    ReleaseNumber=0,
+                },
+                new Specification
+                {
+                    Mark=marks[0],
+                    ReleaseNumber=1,
+                },
+                new Specification
+                {
+                    Mark=marks[1],
+                    ReleaseNumber=0,
+                },
+                new Specification
+                {
+                    Mark=marks[1],
+                    ReleaseNumber=1,
+                },
+                new Specification
+                {
+                    Mark=marks[2],
+                    ReleaseNumber=0,
+                },
+                new Specification
+                {
+                    Mark=marks[2],
+                    ReleaseNumber=1,
+                },
+                new Specification
+                {
+                    Mark=marks[3],
+                    ReleaseNumber=0,
+                },
+                new Specification
+                {
+                    Mark=marks[3],
+                    ReleaseNumber=1,
+                },
+            };
+            if (!ctx.Specifications.Any())
+            {
+                ctx.Specifications.AddRange(specifications);
+                ctx.SaveChanges();
+                ctx.Specifications.AttachRange(specifications);
+            }
+
+            List<DocumentType> documentTypes = new List<DocumentType>
+            {
+                new DocumentType
+                {
+                    Type=1,
+                    Code="C1",
+                    Name="Name 1",
+                },
+                new DocumentType
+                {
+                    Type=2,
+                    Code="C2",
+                    Name="Name 2",
+                },
+                new DocumentType
+                {
+                    Type=3,
+                    Code="C3",
+                    Name="Name 3",
+                },
+            };
+            if (!ctx.DocumentTypes.Any())
+            {
+                ctx.DocumentTypes.AddRange(documentTypes);
+                ctx.SaveChanges();
+                ctx.DocumentTypes.AttachRange(documentTypes);
+            }
+
+            List<Sheet> sheets = new List<Sheet>
+            {
+                new Sheet
+                {
+                    Mark=marks[0],
+                    DocumentType=documentTypes[0],
+                    Name="Name",
+                    Developer=employees[0],
+                    NumberOfPages=1,
+                },
+                new Sheet
+                {
+                    Mark=marks[1],
+                    DocumentType=documentTypes[0],
+                    Name="Name",
+                    Developer=employees[0],
+                    NumberOfPages=1,
+                },
+                new Sheet
+                {
+                    Mark=marks[2],
+                    DocumentType=documentTypes[0],
+                    Name="Name",
+                    Developer=employees[0],
+                    NumberOfPages=1,
+                },
+                new Sheet
+                {
+                    Mark=marks[3],
+                    DocumentType=documentTypes[0],
+                    Name="Name",
+                    Developer=employees[0],
+                    NumberOfPages=1,
+                },
+                new Sheet
+                {
+                    Mark=marks[4],
+                    DocumentType=documentTypes[0],
+                    Name="Name",
+                    Developer=employees[0],
+                    NumberOfPages=1,
+                },
+            };
+            if (!ctx.Sheets.Any())
+            {
+                ctx.Sheets.AddRange(sheets);
+                ctx.SaveChanges();
+                ctx.Sheets.AttachRange(sheets);
             }
 
             List<User> users = new List<User>
