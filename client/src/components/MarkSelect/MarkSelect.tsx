@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSpring, animated } from 'react-spring'
-import ResizeObserver from 'resize-observer-polyfill'
 import { useHistory } from 'react-router-dom'
 import httpClient from '../../axios'
 import Project from '../../model/Project'
@@ -9,11 +8,15 @@ import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
 import Dropdown from '../Dropdown/Dropdown'
 import { makeMarkOrSubnodeName } from '../../util/make-name'
+import getFromOptions from '../../util/get-from-options'
 import './MarkSelect.css'
 
-// MARK CREATE TBD
-
 const MarkSelect = () => {
+	// Can use resize-observer-polyfill instead
+	const nodeDivHeight = 82
+	const markDivHeight = 62
+	const buttonDivHeight = 72
+
 	// Max lengths of input fields strings
 	const projectSeriesStringLength = 30
 	const nodeCodeStringLength = 10
@@ -49,18 +52,8 @@ const MarkSelect = () => {
 	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
 	// Object that holds select options
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
-	// Heights
-	const [nodeHeight, setNodeHeight] = useState(0)
-	const [markHeight, setMarkHeight] = useState(0)
-	const [buttonHeight, setButtonHeight] = useState(0)
-	// Reference for getting heights
-	const nodeHeightRef = useRef()
-	const markHeightRef = useRef()
-	const buttonHeightRef = useRef()
 
 	useEffect(() => {
-		// Cannot use async func as callback in useEffect
-		// Function for fetching data
 		const fetchData = async () => {
 			try {
 				const projectsFetchedResponse = await httpClient.get(
@@ -110,34 +103,7 @@ const MarkSelect = () => {
 			}
 		}
 		fetchData()
-
-		// Observe the heights
-		const nodeHeightObserver = new ResizeObserver(([entry]) => {
-			setNodeHeight(entry.target.scrollHeight)
-		})
-		if (nodeHeightRef.current) {
-			nodeHeightObserver.observe(nodeHeightRef.current)
-		}
-
-		const markHeightObserver = new ResizeObserver(([entry]) => {
-			setMarkHeight(entry.target.scrollHeight)
-		})
-		if (markHeightRef.current) {
-			markHeightObserver.observe(markHeightRef.current)
-		}
-
-		const buttonResizeObserver = new ResizeObserver(([entry]) => {
-			setButtonHeight(entry.target.scrollHeight)
-		})
-		if (buttonHeightRef.current) {
-			buttonResizeObserver.observe(buttonHeightRef.current)
-		}
-		return () => {
-			nodeHeightObserver.disconnect()
-			markHeightObserver.disconnect()
-			buttonResizeObserver.disconnect()
-		}
-	}, [nodeHeightRef, markHeightRef, buttonHeightRef])
+	}, [])
 
 	const getSpringStyle = (isClosed: boolean, height: number) => {
 		return useSpring({
@@ -155,246 +121,199 @@ const MarkSelect = () => {
 	}
 
 	const onRecentMarkSelect = async (id: number) => {
-		let v: Mark = null
-		for (let mark of optionsObject.recentMarks) {
-			if (mark.id === id) {
-				v = mark
-				break
+		const v = getFromOptions(
+			id,
+			optionsObject.recentMarks,
+			selectedObject.mark
+		)
+		if (v != null) {
+			const s = v.subnode
+			const n = s.node
+			const p = n.project
+			try {
+				const fetchedNodesResponse = await httpClient.get(
+					`/projects/${p.id}/nodes`
+				)
+				const fetchedNodes = fetchedNodesResponse.data
+				const fetchedSubnodesResponse = await httpClient.get(
+					`/nodes/${n.id}/subnodes`
+				)
+				const fetchedSubnodes = fetchedSubnodesResponse.data
+				const fetchedMarksResponse = await httpClient.get(
+					`/subnodes/${s.id}/marks`
+				)
+				const fetchedMarks = fetchedMarksResponse.data
+				setOptionsObject({
+					...defaultOptionsObject,
+					recentMarks: optionsObject.recentMarks,
+					recentSubnodes: optionsObject.recentSubnodes,
+					projects: optionsObject.projects,
+					nodes: fetchedNodes,
+					subnodes: fetchedSubnodes,
+					marks: fetchedMarks,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
 			}
-		}
-		if (
-			v == null ||
-			(selectedObject.mark !== null && v.id === selectedObject.mark.id)
-		) {
-			return
-		}
-		const s = v.subnode
-		const n = s.node
-		const p = n.project
-		try {
-			const fetchedNodesResponse = await httpClient.get(
-				`/projects/${p.id}/nodes`
-			)
-			const fetchedNodes = fetchedNodesResponse.data
-			const fetchedSubnodesResponse = await httpClient.get(
-				`/nodes/${n.id}/subnodes`
-			)
-			const fetchedSubnodes = fetchedSubnodesResponse.data
-			const fetchedMarksResponse = await httpClient.get(
-				`/subnodes/${s.id}/marks`
-			)
-			const fetchedMarks = fetchedMarksResponse.data
-			setOptionsObject({
-				...defaultOptionsObject,
-				recentMarks: optionsObject.recentMarks,
-				recentSubnodes: optionsObject.recentSubnodes,
-				projects: optionsObject.projects,
-				nodes: fetchedNodes,
-				subnodes: fetchedSubnodes,
-				marks: fetchedMarks,
+			setSelectedObject({
+				...defaultSelectedObject,
+				recentMarkString: makeMarkOrSubnodeName(
+					p.baseSeries,
+					n.code,
+					s.code,
+					v.code
+				),
+				project: p,
+				node: n,
+				subnode: s,
+				mark: v,
 			})
-		} catch (e) {
-			console.log('Failed to fetch the data')
 		}
-		setSelectedObject({
-			...defaultSelectedObject,
-			recentMarkString: makeMarkOrSubnodeName(
-				p.baseSeries,
-				n.code,
-				s.code,
-				v.code
-			),
-			project: p,
-			node: n,
-			subnode: s,
-			mark: v,
-		})
 	}
 
 	const onRecentSubnodeSelect = async (id: number) => {
-		let v: Subnode = null
-		for (let subnode of optionsObject.recentSubnodes) {
-			if (subnode.id === id) {
-				v = subnode
-				break
+		const v = getFromOptions(
+			id,
+			optionsObject.recentSubnodes,
+			selectedObject.subnode
+		)
+		if (v != null) {
+			const n = v.node
+			const p = n.project
+			try {
+				const fetchedNodesResponse = await httpClient.get(
+					`/projects/${p.id}/nodes`
+				)
+				const fetchedNodes = fetchedNodesResponse.data
+				const fetchedSubnodesResponse = await httpClient.get(
+					`/nodes/${n.id}/subnodes`
+				)
+				const fetchedSubnodes = fetchedSubnodesResponse.data
+				setOptionsObject({
+					...defaultOptionsObject,
+					recentMarks: optionsObject.recentMarks,
+					recentSubnodes: optionsObject.recentSubnodes,
+					projects: optionsObject.projects,
+					nodes: fetchedNodes,
+					subnodes: fetchedSubnodes,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
 			}
-		}
-		if (
-			v == null ||
-			(selectedObject.subnode !== null &&
-				v.id === selectedObject.subnode.id)
-		) {
-			return
-		}
-		const n = v.node
-		const p = n.project
-		try {
-			const fetchedNodesResponse = await httpClient.get(
-				`/projects/${p.id}/nodes`
-			)
-			const fetchedNodes = fetchedNodesResponse.data
-			const fetchedSubnodesResponse = await httpClient.get(
-				`/nodes/${n.id}/subnodes`
-			)
-			const fetchedSubnodes = fetchedSubnodesResponse.data
-			setOptionsObject({
-				...defaultOptionsObject,
-				recentMarks: optionsObject.recentMarks,
-				recentSubnodes: optionsObject.recentSubnodes,
-				projects: optionsObject.projects,
-				nodes: fetchedNodes,
-				subnodes: fetchedSubnodes,
+			setSelectedObject({
+				...defaultSelectedObject,
+				recentSubnodeString: makeMarkOrSubnodeName(
+					p.baseSeries,
+					n.code,
+					v.code
+				),
+				project: p,
+				node: n,
+				subnode: v,
 			})
-		} catch (e) {
-			console.log('Failed to fetch the data')
 		}
-		setSelectedObject({
-			...defaultSelectedObject,
-			recentSubnodeString: makeMarkOrSubnodeName(
-				p.baseSeries,
-				n.code,
-				v.code
-			),
-			project: p,
-			node: n,
-			subnode: v,
-		})
 	}
 
 	const onProjectSelect = async (id: number) => {
-		let v: Project = null
-		for (let project of optionsObject.projects) {
-			if (project.id === id) {
-				v = project
-				break
+		const v = getFromOptions(
+			id,
+			optionsObject.projects,
+			selectedObject.project
+		)
+		if (v != null) {
+			try {
+				const fetchedNodesResponse = await httpClient.get(
+					`/projects/${id}/nodes`
+				)
+				const fetchedNodes = fetchedNodesResponse.data
+				setOptionsObject({
+					...defaultOptionsObject,
+					recentMarks: optionsObject.recentMarks,
+					recentSubnodes: optionsObject.recentSubnodes,
+					projects: optionsObject.projects,
+					nodes: fetchedNodes,
+				})
+				setSelectedObject({
+					...defaultSelectedObject,
+					project: v,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
 			}
-		}
-		if (
-			v == null ||
-			(selectedObject.project !== null &&
-				v.id === selectedObject.project.id)
-		) {
-			return
-		}
-		try {
-			const fetchedNodesResponse = await httpClient.get(
-				`/projects/${id}/nodes`
-			)
-			const fetchedNodes = fetchedNodesResponse.data
-			setOptionsObject({
-				...defaultOptionsObject,
-				recentMarks: optionsObject.recentMarks,
-				recentSubnodes: optionsObject.recentSubnodes,
-				projects: optionsObject.projects,
-				nodes: fetchedNodes,
-			})
-			setSelectedObject({
-				...defaultSelectedObject,
-				project: v,
-			})
-		} catch (e) {
-			console.log('Failed to fetch the data')
 		}
 	}
 
 	const onNodeSelect = async (id: number) => {
-		let v: Node = null
-		for (let node of optionsObject.nodes) {
-			if (node.id === id) {
-				v = node
-				break
+		const v = getFromOptions(id, optionsObject.nodes, selectedObject.node)
+		if (v != null) {
+			try {
+				const fetchedSubnodesResponse = await httpClient.get(
+					`/nodes/${id}/subnodes`
+				)
+				const fetchedSubnodes = fetchedSubnodesResponse.data
+				setOptionsObject({
+					...defaultOptionsObject,
+					recentMarks: optionsObject.recentMarks,
+					recentSubnodes: optionsObject.recentSubnodes,
+					projects: optionsObject.projects,
+					nodes: optionsObject.nodes,
+					subnodes: fetchedSubnodes,
+				})
+				setSelectedObject({
+					...defaultSelectedObject,
+					project: selectedObject.project,
+					node: v,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
 			}
-		}
-		if (
-			v == null ||
-			(selectedObject.node !== null && v.id === selectedObject.node.id)
-		) {
-			return
-		}
-		try {
-			const fetchedSubnodesResponse = await httpClient.get(
-				`/nodes/${id}/subnodes`
-			)
-			const fetchedSubnodes = fetchedSubnodesResponse.data
-			setOptionsObject({
-				...defaultOptionsObject,
-				recentMarks: optionsObject.recentMarks,
-				recentSubnodes: optionsObject.recentSubnodes,
-				projects: optionsObject.projects,
-				nodes: optionsObject.nodes,
-				subnodes: fetchedSubnodes,
-			})
-			setSelectedObject({
-				...defaultSelectedObject,
-				project: selectedObject.project,
-				node: v,
-			})
-		} catch (e) {
-			console.log('Failed to fetch the data')
 		}
 	}
 
 	const onSubnodeSelect = async (id: number) => {
-		let v: Subnode = null
-		for (let subnode of optionsObject.subnodes) {
-			if (subnode.id === id) {
-				v = subnode
-				break
+		const v = getFromOptions(
+			id,
+			optionsObject.subnodes,
+			selectedObject.subnode
+		)
+		if (v != null) {
+			try {
+				const fetchedMarksResponse = await httpClient.get(
+					`/subnodes/${id}/marks`
+				)
+				const fetchedMarks = fetchedMarksResponse.data
+				setOptionsObject({
+					...defaultOptionsObject,
+					recentMarks: optionsObject.recentMarks,
+					recentSubnodes: optionsObject.recentSubnodes,
+					projects: optionsObject.projects,
+					nodes: optionsObject.nodes,
+					subnodes: optionsObject.subnodes,
+					marks: fetchedMarks,
+				})
+				setSelectedObject({
+					...defaultSelectedObject,
+					project: selectedObject.project,
+					node: selectedObject.node,
+					subnode: v,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
 			}
-		}
-		if (
-			v == null ||
-			(selectedObject.subnode !== null &&
-				v.id === selectedObject.subnode.id)
-		) {
-			return
-		}
-		try {
-			const fetchedMarksResponse = await httpClient.get(
-				`/subnodes/${id}/marks`
-			)
-			const fetchedMarks = fetchedMarksResponse.data
-			setOptionsObject({
-				...defaultOptionsObject,
-				recentMarks: optionsObject.recentMarks,
-				recentSubnodes: optionsObject.recentSubnodes,
-				projects: optionsObject.projects,
-				nodes: optionsObject.nodes,
-				subnodes: optionsObject.subnodes,
-				marks: fetchedMarks,
-			})
-			setSelectedObject({
-				...defaultSelectedObject,
-				project: selectedObject.project,
-				node: selectedObject.node,
-				subnode: v,
-			})
-		} catch (e) {
-			console.log('Failed to fetch the data')
 		}
 	}
 
 	const onMarkSelect = (id: number) => {
-		let v: Mark = null
-		for (let mark of optionsObject.marks) {
-			if (mark.id === id) {
-				v = mark
-				break
-			}
+		const v = getFromOptions(id, optionsObject.marks, selectedObject.mark)
+		if (v != null) {
+			setSelectedObject({
+				...defaultSelectedObject,
+				project: selectedObject.project,
+				node: selectedObject.node,
+				subnode: selectedObject.subnode,
+				mark: v,
+			})
 		}
-		if (
-			v == null ||
-			(selectedObject.mark !== null && v.id === selectedObject.mark.id)
-		) {
-			return
-		}
-		setSelectedObject({
-			...defaultSelectedObject,
-			project: selectedObject.project,
-			node: selectedObject.node,
-			subnode: selectedObject.subnode,
-			mark: v,
-		})
 	}
 
 	const onSelectMarkButtonClick = () => {
@@ -408,10 +327,8 @@ const MarkSelect = () => {
 			(m) => m.id !== mark.id
 		)
 		if (filteredRecentMarks.length >= 5) {
-			// O(n)
 			filteredRecentMarks.shift()
 		}
-		// O(n)
 		filteredRecentMarks.unshift(mark)
 		let resStr = JSON.stringify(filteredRecentMarks.map((m) => m.id))
 		localStorage.setItem('recentMarkIds', resStr)
@@ -420,20 +337,36 @@ const MarkSelect = () => {
 			(s) => s.id !== mark.subnode.id
 		)
 		if (filteredRecentSubnodes.length >= 5) {
-			// O(n)
 			filteredRecentSubnodes.shift()
 		}
-		// O(n)
 		filteredRecentSubnodes.unshift(mark.subnode)
 		resStr = JSON.stringify(filteredRecentSubnodes.map((s) => s.id))
 		localStorage.setItem('recentSubnodeIds', resStr)
 
 		history.push('/mark-data')
+    }
+    
+    const onSelectSubnodeButtonClick = () => {
+		const subnode = selectedObject.subnode
+		subnode.node = selectedObject.node
+		subnode.node.project = selectedObject.project
+
+		const filteredRecentSubnodes = optionsObject.recentSubnodes.filter(
+			(s) => s.id !== subnode.id
+		)
+		if (filteredRecentSubnodes.length >= 5) {
+			filteredRecentSubnodes.shift()
+		}
+		filteredRecentSubnodes.unshift(subnode)
+		const resStr = JSON.stringify(filteredRecentSubnodes.map((s) => s.id))
+		localStorage.setItem('recentSubnodeIds', resStr)
+
+        history.push('/mark-create')
 	}
 
 	return (
 		<div className="mark-data-cnt">
-			<h1 className="text-centered">Выбрать / добавить марку</h1>
+			<h1 className="text-centered">Выбрать / создать марку</h1>
 			<div className="tabs component-width white-bg">
 				<input
 					type="radio"
@@ -452,7 +385,7 @@ const MarkSelect = () => {
 					onChange={() => setIsCreateMode(true)}
 					checked={isCreateMode ? true : false}
 				/>
-				<label htmlFor="tab-btn-2">Добавить</label>
+				<label htmlFor="tab-btn-2">Создать</label>
 
 				<div className="flex-v">
 					<p className="text-centered section-label">
@@ -535,39 +468,35 @@ const MarkSelect = () => {
 							}
 						})}
 					/>
-
 					<animated.div
 						style={getSpringStyle(
 							selectedObject.project == null,
-							nodeHeight
+							nodeDivHeight
 						)}
 					>
-						<div ref={nodeHeightRef}>
-							<Dropdown
-								cntStyle="flex-v mrg-bot"
-								label="Узел"
-								placeholder={'Выберите узел'}
-								maxInputLength={nodeCodeStringLength}
-								onClickFunc={onNodeSelect}
-								value={
-									selectedObject.node == null
-										? ''
-										: selectedObject.node.code
+						<Dropdown
+							cntStyle="flex-v mrg-bot"
+							label="Узел"
+							placeholder={'Выберите узел'}
+							maxInputLength={nodeCodeStringLength}
+							onClickFunc={onNodeSelect}
+							value={
+								selectedObject.node == null
+									? ''
+									: selectedObject.node.code
+							}
+							options={optionsObject.nodes.map((n) => {
+								return {
+									id: n.id,
+									val: n.code,
 								}
-								options={optionsObject.nodes.map((n) => {
-									return {
-										id: n.id,
-										val: n.code,
-									}
-								})}
-							/>
-						</div>
+							})}
+						/>
 					</animated.div>
-
 					<animated.div
 						style={getSpringStyle(
 							selectedObject.node == null,
-							isCreateMode ? markHeight : nodeHeight
+							isCreateMode ? markDivHeight : nodeDivHeight
 						)}
 					>
 						<Dropdown
@@ -591,53 +520,45 @@ const MarkSelect = () => {
 							})}
 						/>
 					</animated.div>
-
 					<animated.div
 						style={getSpringStyle(
 							selectedObject.subnode == null || isCreateMode,
-							markHeight
+							markDivHeight
 						)}
 					>
-						<div ref={markHeightRef}>
-							<Dropdown
-								cntStyle="flex-v"
-								label="Марка"
-								placeholder={'Выберите марку'}
-								maxInputLength={markCodeStringLength}
-								onClickFunc={onMarkSelect}
-								value={
-									selectedObject.mark == null
-										? ''
-										: selectedObject.mark.code
+						<Dropdown
+							cntStyle="flex-v"
+							label="Марка"
+							placeholder={'Выберите марку'}
+							maxInputLength={markCodeStringLength}
+							onClickFunc={onMarkSelect}
+							value={
+								selectedObject.mark == null
+									? ''
+									: selectedObject.mark.code
+							}
+							options={optionsObject.marks.map((m) => {
+								return {
+									id: m.id,
+									val: m.code,
 								}
-								options={optionsObject.marks.map((m) => {
-									return {
-										id: m.id,
-										val: m.code,
-									}
-								})}
-							/>
-						</div>
+							})}
+						/>
 					</animated.div>
-
 					<animated.div
 						style={getSpringStyle(
 							isCreateMode
 								? selectedObject.subnode == null
 								: selectedObject.mark == null,
-							buttonHeight
+							buttonDivHeight
 						)}
 					>
-						<div ref={buttonHeightRef}>
-							<button
-								onClick={onSelectMarkButtonClick}
-								className="final-btn input-border-radius pointer"
-							>
-								{isCreateMode
-									? 'Выбрать подузел'
-									: 'Выбрать марку'}
-							</button>
-						</div>
+						<button
+							onClick={isCreateMode ? onSelectSubnodeButtonClick : onSelectMarkButtonClick}
+							className="final-btn input-border-radius pointer"
+						>
+							{isCreateMode ? 'Выбрать подузел' : 'Выбрать марку'}
+						</button>
 					</animated.div>
 				</div>
 			</div>

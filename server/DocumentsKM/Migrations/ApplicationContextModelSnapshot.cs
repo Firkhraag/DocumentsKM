@@ -138,7 +138,6 @@ namespace DocumentsKM.Migrations
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("AdditionalCode")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("additional_code");
@@ -239,8 +238,9 @@ namespace DocumentsKM.Migrations
                     b.HasIndex("MainBuilderId")
                         .HasDatabaseName("ix_marks_main_builder_id");
 
-                    b.HasIndex("SubnodeId")
-                        .HasDatabaseName("ix_marks_subnode_id");
+                    b.HasIndex("SubnodeId", "Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_marks_subnode_id_code");
 
                     b.ToTable("marks");
                 });
@@ -260,7 +260,6 @@ namespace DocumentsKM.Migrations
                         .HasColumnName("active_node");
 
                     b.Property<string>("AdditionalName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("additional_name");
@@ -276,8 +275,10 @@ namespace DocumentsKM.Migrations
                         .HasColumnName("code");
 
                     b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("created");
+                        .HasColumnName("created")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -336,7 +337,6 @@ namespace DocumentsKM.Migrations
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("AdditionalName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("additional_name");
@@ -377,6 +377,43 @@ namespace DocumentsKM.Migrations
                     b.ToTable("projects");
                 });
 
+            modelBuilder.Entity("DocumentsKM.Models.Specification", b =>
+                {
+                    b.Property<int>("Position")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("position")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("MarkId")
+                        .HasColumnType("integer")
+                        .HasColumnName("mark_id");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("note");
+
+                    b.Property<byte>("ReleaseNumber")
+                        .HasColumnType("smallint")
+                        .HasColumnName("release_number");
+
+                    b.HasKey("Position")
+                        .HasName("pk_specifications");
+
+                    b.HasIndex("MarkId", "ReleaseNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_specifications_mark_id_release_number");
+
+                    b.ToTable("specifications");
+                });
+
             modelBuilder.Entity("DocumentsKM.Models.Subnode", b =>
                 {
                     b.Property<int>("Id")
@@ -386,7 +423,6 @@ namespace DocumentsKM.Migrations
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("AdditionalName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("additional_name");
@@ -398,8 +434,10 @@ namespace DocumentsKM.Migrations
                         .HasColumnName("code");
 
                     b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("created");
+                        .HasColumnName("created")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -451,7 +489,8 @@ namespace DocumentsKM.Migrations
                         .HasDatabaseName("ix_users_employee_id");
 
                     b.HasIndex("Login")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_login");
 
                     b.ToTable("users");
                 });
@@ -614,6 +653,18 @@ namespace DocumentsKM.Migrations
                     b.Navigation("Approved1");
 
                     b.Navigation("Approved2");
+                });
+
+            modelBuilder.Entity("DocumentsKM.Models.Specification", b =>
+                {
+                    b.HasOne("DocumentsKM.Models.Mark", "Mark")
+                        .WithMany()
+                        .HasForeignKey("MarkId")
+                        .HasConstraintName("fk_specifications_marks_mark_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mark");
                 });
 
             modelBuilder.Entity("DocumentsKM.Models.Subnode", b =>

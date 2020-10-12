@@ -13,16 +13,14 @@ namespace DocumentsKM.Models
         [Required]
         [ForeignKey("SubnodeId")]
         public virtual Subnode Subnode { get; set; }
+        public int SubnodeId { get; set; }
 
         // КодМарки
         [Required]
         [MaxLength(40)]
         public string Code { get; set; }
 
-        // CREATE UNIQUE INDEX <name> ON (ОА_Подузел, КодМарки)
-
         // ДопКод
-        [Required]
         [MaxLength(50)]
         public string AdditionalCode { get; set; }
 

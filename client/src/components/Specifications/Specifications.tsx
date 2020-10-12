@@ -116,9 +116,9 @@ const Specifications = () => {
 					</tr>
 				</tbody>
 			</table>
-            <button className="final-btn input-border-radius pointer">
+            {/* <button className="final-btn input-border-radius pointer">
 				Сохранить изменения
-			</button>
+			</button> */}
 		</div>
 	)
 }

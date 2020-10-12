@@ -82,7 +82,7 @@ namespace DocumentsKM.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     type = table.Column<int>(type: "integer", nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     base_series = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     approved1_id = table.Column<int>(type: "integer", nullable: true),
                     approved2_id = table.Column<int>(type: "integer", nullable: true)
@@ -134,10 +134,10 @@ namespace DocumentsKM.Migrations
                     project_id = table.Column<int>(type: "integer", nullable: false),
                     code = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     chief_engineer_id = table.Column<int>(type: "integer", nullable: false),
                     active_node = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -165,8 +165,8 @@ namespace DocumentsKM.Migrations
                     node_id = table.Column<int>(type: "integer", nullable: false),
                     code = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    additional_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
@@ -187,7 +187,7 @@ namespace DocumentsKM.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     subnode_id = table.Column<int>(type: "integer", nullable: false),
                     code = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
-                    additional_code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    additional_code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     department_id = table.Column<int>(type: "integer", nullable: false),
                     chief_specialist_id = table.Column<int>(type: "integer", nullable: true),
@@ -278,6 +278,28 @@ namespace DocumentsKM.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "specifications",
+                columns: table => new
+                {
+                    position = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    mark_id = table.Column<int>(type: "integer", nullable: false),
+                    release_number = table.Column<byte>(type: "smallint", nullable: false),
+                    note = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_specifications", x => x.position);
+                    table.ForeignKey(
+                        name: "fk_specifications_marks_mark_id",
+                        column: x => x.mark_id,
+                        principalTable: "marks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "ix_departments_department_head_id",
                 table: "departments",
@@ -349,9 +371,10 @@ namespace DocumentsKM.Migrations
                 column: "main_builder_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_marks_subnode_id",
+                name: "ix_marks_subnode_id_code",
                 table: "marks",
-                column: "subnode_id");
+                columns: new[] { "subnode_id", "code" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_nodes_chief_engineer_id",
@@ -374,6 +397,12 @@ namespace DocumentsKM.Migrations
                 column: "approved2_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_specifications_mark_id_release_number",
+                table: "specifications",
+                columns: new[] { "mark_id", "release_number" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_subnodes_node_id",
                 table: "subnodes",
                 column: "node_id");
@@ -384,7 +413,7 @@ namespace DocumentsKM.Migrations
                 column: "employee_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_login",
+                name: "ix_users_login",
                 table: "users",
                 column: "login",
                 unique: true);
@@ -405,10 +434,13 @@ namespace DocumentsKM.Migrations
                 table: "departments");
 
             migrationBuilder.DropTable(
-                name: "marks");
+                name: "specifications");
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "marks");
 
             migrationBuilder.DropTable(
                 name: "subnodes");

@@ -1,0 +1,22 @@
+.side-drawer {
+	width: 200px;
+	border: 1px solid #d0d0d0;
+	padding: 1em;
+	top: 150%;
+	right: 0;
+	z-index: 100;
+}
+
+.logout-btn {
+	width: 100%;
+	margin-top: 1em;
+	font-size: 15px;
+	background: #ededed;
+	border: 1px solid #cdcdcd;
+	padding: 0.5em;
+	transition: all 0.1s ease-in-out;
+}
+
+.logout-btn:hover {
+	background: #dcdcdc;
+}

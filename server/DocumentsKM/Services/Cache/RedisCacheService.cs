@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using DocumentsKM.Dtos;
 using DocumentsKM.Helpers;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { MarkProvider } from '../store/MarkStore'
 import Header from '../components/Header/Header'
-import Drawer from '../components/Drawer/Drawer'
 import Home from '../components/Home/Home'
 import MarkSelect from '../components/MarkSelect/MarkSelect'
 import MarkData from '../components/MarkData/MarkData'
@@ -16,22 +15,11 @@ import Exploitation from '../components/Exploitation/Exploitation'
 
 const AuthApp = () => {
 
-    const [isDrawerShown, setDrawerShown] = useState(false)
-
-    // useEffect(() => {
-    //     document.body.addEventListener('click', (e) => {
-    //         if((e.target as HTMLElement).id != 'user-drawer') {
-    //             setDrawerShown(false)
-    //         } 
-    //     });
-    // }, [])
-
 	return (
 		<MarkProvider>
 			<Switch>
 				<React.Fragment>
-					<Header showDrawer={() => setDrawerShown(true)} />
-                    {/* <Drawer closeButtonClick={null} isShown={isDrawerShown} /> */}
+					<Header />
 					<div>
 						<Route exact path="/">
 							<Home />
@@ -43,7 +31,12 @@ const AuthApp = () => {
 						</Route>
 						<Route exact path="/mark-data">
 							<div className="full-width container">
-								<MarkData />
+                                <MarkData isCreateMode={false} />
+							</div>
+						</Route>
+                        <Route exact path="/mark-create">
+							<div className="full-width container">
+								<MarkData isCreateMode={true} />
 							</div>
 						</Route>
 						<Route exact path="/mark-approval">

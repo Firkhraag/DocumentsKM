@@ -15,7 +15,7 @@ const Home = () => {
     return (
         <div className="home-cnt">
             <Link to="/mark-select" className="home-link container white-bg text-centered">
-                Выбрать / добавить марку
+                Выбрать / создать марку
             </Link>
             <Link to="/mark-data" className={tileClassName}>
                 Данные марки

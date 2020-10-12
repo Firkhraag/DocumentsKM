@@ -4,11 +4,6 @@ import ResizeObserver from 'resize-observer-polyfill'
 import ArrowSvg from './Svg/ArrowSvg'
 import './Dropdown.css'
 
-type IOption = {
-	id: number
-	val: string
-}
-
 type DropdownProps = {
 	cntStyle: string
 	label: string
@@ -18,7 +13,7 @@ type DropdownProps = {
 	value: string
 	// TBD
 	// changeValue: (newValue: string) => void
-	options: Array<IOption>
+	options: Array<any>
 }
 
 const Dropdown = ({
@@ -59,9 +54,8 @@ const Dropdown = ({
 		setInputFocused(true)
 	}
 
-	const onInputBlur = () => {
-		// Timeout gives the time to register a click on select option
-		setTimeout(() => setInputFocused(false), 100)
+	const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+		setInputFocused(false)
 	}
 
 	const onArrowClick = () => {
@@ -123,7 +117,7 @@ const Dropdown = ({
 					<div ref={dropdownRef} className="options-cnt">
 						{options.map((option) => (
 							<div
-								onClick={() => onClickFunc(option.id)}
+								onMouseDown={() => onClickFunc(option.id)}
 								key={option.id}
 								className="option-area"
 							>

@@ -1,3 +1,4 @@
+using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 using System.Collections.Generic;
 
@@ -9,5 +10,16 @@ namespace DocumentsKM.Services
         IEnumerable<Mark> GetAllBySubnodeId(int subnodeId);
         // Получить марку по id
         Mark GetById(int id);
+        // Создать новую марку
+        void Create(Mark mark,
+            int subnodeId,
+            int departmentNumber,
+            int mainBuilderId,
+            int? chiefSpecialistId,
+            int? groupLeaderId);
+        // Обновить существующую марку
+        void Update(int id, MarkUpdateRequest mark);
+        // Обновить согласования у текущей марки
+        void UpdateApprovals(int id, MarkApprovalsRequest mark);
     }
 }

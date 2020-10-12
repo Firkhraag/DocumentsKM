@@ -72,6 +72,10 @@
 	}
 }
 
+.action-cell-width {
+    width: 2em;
+}
+
 /* Section */
 
 table {

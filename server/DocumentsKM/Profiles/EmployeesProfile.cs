@@ -8,8 +8,8 @@ namespace DocumentsKM.Profiles
     {
         public EmployeesProfile()
         {
-            // Souce -> Target
             CreateMap<Employee, EmployeeBaseResponse>();
+            CreateMap<Employee, EmployeeDepartmentResponse>();
         }
     }
 }
