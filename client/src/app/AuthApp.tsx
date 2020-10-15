@@ -16,7 +16,6 @@ import Exploitation from '../components/Exploitation/Exploitation'
 import { defaultPopupObj } from '../components/Popup/Popup'
 
 const AuthApp = () => {
-    // const [isPopupShown, setPopupShown] = useState(true)
     const [popupObj, setPopupObj] = useState(defaultPopupObj)
 
 	return (
@@ -26,12 +25,6 @@ const AuthApp = () => {
 					<Header />
 					<Popup
                         popupObj={popupObj}
-						// isShown={isPopupShown}
-						// msg={
-						// 	'Вы действительно хотите удалить выпуск спецификации №1?'
-						// }
-						// onAccept={() => setPopupShown(false)}
-						// onCancel={() => setPopupShown(false)}
 					/>
 					<div>
 						<Route exact path="/">

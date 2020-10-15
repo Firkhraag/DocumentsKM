@@ -1,33 +1,14 @@
 .home-cnt {
 	margin: 2em;
 	display: grid;
-	gap: 45px;
+	gap: 25px;
 	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 	justify-items: center;
 }
 
-.home-link {
-	padding: 1em;
-	border: 1px solid #d0d0d0;
-	border-radius: 5px;
+.home-cnt button {
 	width: 150px;
-	height: 85px;
-	font-weight: bold;
-	font-size: 1.1em;
-	color: #333;
-	backface-visibility: hidden;
-	transition: all 0.15s ease-in-out;
-	user-select: none;
-}
-
-.home-link:hover {
-	transform: scale(1.05333333);
-}
-
-.disabled {
-	background: #ececec;
-	color: #888;
-	border: none;
-	pointer-events: none;
-	box-shadow: none;
+    height: 85px;
+    color: #000;
+    font-weight: 500;
 }

@@ -1,9 +1,13 @@
 .header {
-	padding: 0.66em 1.48em;
+	padding: 0 1.48em;
 	position: sticky;
 	top: 0px;
 	border-bottom: 1px solid #d0d0d0;
 	z-index: 100;
+}
+
+.header-link-pad {
+    padding: 0.66em 0;
 }
 
 .profile-icon-cnt {

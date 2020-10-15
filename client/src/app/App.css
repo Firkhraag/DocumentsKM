@@ -1,3 +1,41 @@
+.input-width {
+    width: 25vw;
+}
+
+.input-width-2 {
+    width: 18vw;
+}
+
+.input-width-3 {
+    width: 13vw;
+}
+
+.border-radius {
+    border-radius: 0.25rem;
+}
+
+.btn-mrg-top {
+    margin-top: 0.8em;
+}
+
+.btn-mrg-top-2 {
+    margin-top: 1.75em;
+}
+
+.mrg-top {
+    margin-top: 0.5em;
+}
+
+.mrg-top-2 {
+    margin-top: 1.25em;
+}
+
+.mrg-left {
+    margin-left: 0.75em;
+}
+
+
+
 .component-cnt {
     margin: 10vh 0;
 }
@@ -10,91 +48,18 @@
     border: 1px solid #d0d0d0;
 	padding: 1.25em;
     font-size: 16px;
-    background: #fff;
-}
-
-.final-btn {
-    width: 100%;
-    margin-top: 2.5em;
-    font-size: 15px;
-	background: #ededed;
-	border: 1px solid #cdcdcd;
-    padding: 0.5em;
-    transition: all .1s ease-in-out;
-}
-
-.final-btn:hover {
-	background: #dcdcdc;
-}
-
-.label-area {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.mrg-bot {
-    margin-bottom: 1.25em;
+    border-radius: .25rem;
 }
 
 .component-width {
-    width: 30vw;
-}
-
-@media (max-width: 1366px) {
-	.component-width {
-		width: 35vw;
-	}
-}
-
-@media (max-width: 1200px) {
-	.component-width {
-		width: 40vw;
-	}
-}
-
-@media (max-width: 992px) {
-	.component-width {
-		width: 45vw;
-	}
-}
-
-@media (max-width: 768px) {
-	.component-width {
-		width: 50vw;
-	}
-}
-
-@media (max-width: 576px) {
-	.component-width {
-		width: 55vw;
-	}
-}
-
-.action-cell-width {
-    width: 2em;
+    width: 35vw;
 }
 
 /* Section */
 
-table {
-    border-collapse: collapse;
+.flex-grow {
+    flex-grow: 1;
 }
-
-table .head-tr {
-    background: #efefef;
-    font-size: 14px;
-    font-weight: bold;
-    color: #444;
-}
-
-table td {
-    padding: .5em;
-    border: 1px solid #d0d0d0;
-}
-
-/* Section */
 
 .container {
 	display: flex;
@@ -143,14 +108,6 @@ table td {
     border: 1px solid grey;
 }
 
-.border-radius {
-    border-radius: 5px;
-}
-
-.input-border-radius {
-    border-radius: 3px;
-}
-
 .input-padding {
     padding: .5em;
 }
@@ -167,13 +124,17 @@ table td {
 	width: 100%;
 }
 
+/* .half-width {
+	width: 50%;
+} */
+
 .pointer {
 	cursor: pointer;
 	user-select: none;
 }
 
 .bold {
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .white-bg {

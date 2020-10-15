@@ -1,52 +1,25 @@
-html {
-	margin: 0;
-	padding: 0;
-	height: 100%;
-}
-
-body {
-	margin: 0;
-	padding: 0;
-	height: 100%;
-	font-family: 'Arial', sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	background: #fafafa;
-    line-height: 1.6em;
-    overflow-y: scroll;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-}
-
-ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-p,
-h1,
-h2 {
-	margin: 0;
-}
-
-input,
-textarea,
-button,
-select {
-	border: none;
-	outline: none;
-}
-
-input[type='radio'] {
-    margin: 0;
+#formBasicLogin:focus, #formBasicPassword:focus {
+    border: 1px solid rgba(0, 0, 0, 0.4) !important;
+    box-shadow: none !important;
 }
 
 button:focus {
-	outline: none;
+    box-shadow: none !important;
 }
 
+a {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+label {
+    font-weight: 500;
+}
+
+body {
+    height: 100vh;
+}
+
+:root {
+	--grey-bg:#f6f6f6;
+}

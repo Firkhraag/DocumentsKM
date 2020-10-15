@@ -1,9 +1,9 @@
 // Создание обозначения марки или подузла
-export const makeMarkOrSubnodeName = (
+export const makeMarkName = (
 	projectBaseSeries: string,
 	nodeCode: string,
 	subnodeCode: string,
-	markCode: string = ''
+	markCode: string
 ) => {
 	let markName = projectBaseSeries
 

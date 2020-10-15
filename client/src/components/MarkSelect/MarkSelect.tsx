@@ -1,34 +1,23 @@
+// Global
 import React, { useState, useEffect } from 'react'
-import { useSpring, animated } from 'react-spring'
 import { useHistory } from 'react-router-dom'
-import httpClient from '../../axios'
+import Select from 'react-select'
+// Bootstrap
+import Button from 'react-bootstrap/Button'
+// Util
 import Project from '../../model/Project'
 import Node from '../../model/Node'
 import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
-import Dropdown from '../Dropdown/Dropdown'
-import { makeMarkOrSubnodeName } from '../../util/make-name'
+import httpClient from '../../axios'
+import { makeMarkName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
-import './MarkSelect.css'
+import { reactSelectstyle } from '../../util/react-select-style'
+import { useSetMark } from '../../store/MarkStore'
 
 const MarkSelect = () => {
-	// Can use resize-observer-polyfill instead
-	const nodeDivHeight = 82
-	const markDivHeight = 62
-	const buttonDivHeight = 72
-
-	// Max lengths of input fields strings
-	const projectSeriesStringLength = 30
-	const nodeCodeStringLength = 10
-	const subnodeCodeStringLength = 10
-	const markCodeStringLength = 40
-	const subnodeNameStringLength = 50
-	const markNameStringLength = 90
-
-	// Default state objects
 	const defaultSelectedObject = {
-		recentMarkString: '',
-		recentSubnodeString: '',
+		recentMark: null as Mark,
 		project: null as Project,
 		node: null as Node,
 		subnode: null as Subnode,
@@ -36,7 +25,6 @@ const MarkSelect = () => {
 	}
 	const defaultOptionsObject = {
 		recentMarks: [] as Mark[],
-		recentSubnodes: [] as Subnode[],
 		projects: [] as Project[],
 		nodes: [] as Node[],
 		subnodes: [] as Subnode[],
@@ -44,24 +32,19 @@ const MarkSelect = () => {
 	}
 
 	const history = useHistory()
+	const setMark = useSetMark()
 
-	// States
-	// Select and Create modes
-	const [isCreateMode, setIsCreateMode] = useState(false)
-	// Object that holds selected values
 	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
-	// Object that holds select options
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
+
+	const [cachedNodes, _] = useState(new Map<number, Node[]>())
+	const [cachedSubnodes, __] = useState(new Map<number, Subnode[]>())
+	const [cachedMarks, ___] = useState(new Map<number, Mark[]>())
 
 	useEffect(() => {
 		const fetchData = async () => {
+			let recentMarks = [] as Mark[]
 			try {
-				const projectsFetchedResponse = await httpClient.get(
-					'/projects'
-				)
-				const projectsFetched = projectsFetchedResponse.data
-
-				const recentMarks = [] as Mark[]
 				const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
 				if (recentMarkIdsStr != null) {
 					const recentMarkIds = JSON.parse(
@@ -74,51 +57,25 @@ const MarkSelect = () => {
 						recentMarks.push(markFetchedResponse.data)
 					}
 				}
-
-				const recentSubnodes = [] as Subnode[]
-				const recentSubnodeIdsStr = localStorage.getItem(
-					'recentSubnodeIds'
+			} catch (e) {
+				console.log('Failed to get recent marks or subnodes')
+			}
+			try {
+				const projectsFetchedResponse = await httpClient.get(
+					'/projects'
 				)
-				if (recentSubnodeIdsStr != null) {
-					const recentSubnodeIds = JSON.parse(
-						recentSubnodeIdsStr
-					) as number[]
-					for (let id of recentSubnodeIds) {
-						const subnodeFetchedResponse = await httpClient.get(
-							`/subnodes/${id}/parents`
-						)
-						recentSubnodes.push(subnodeFetchedResponse.data)
-					}
-				}
-
-				// Set fetched objects as select options
+				const projectsFetched = projectsFetchedResponse.data
 				setOptionsObject({
 					...defaultOptionsObject,
 					recentMarks: recentMarks,
-					recentSubnodes: recentSubnodes,
 					projects: projectsFetched,
 				})
 			} catch (e) {
-				console.log('Failed to fetch the data')
+				console.log('Failed to fetch projects')
 			}
 		}
 		fetchData()
 	}, [])
-
-	const getSpringStyle = (isClosed: boolean, height: number) => {
-		return useSpring({
-			from: {
-				opacity: 0 as any,
-				height: 0,
-				overflowY: 'hidden' as any,
-			},
-			to: {
-				opacity: isClosed ? (0 as any) : 1,
-				height: isClosed ? 0 : height,
-				overflowY: isClosed ? ('hidden' as any) : ('visible' as any),
-			},
-		})
-	}
 
 	const onRecentMarkSelect = async (id: number) => {
 		const v = getFromOptions(
@@ -146,7 +103,6 @@ const MarkSelect = () => {
 				setOptionsObject({
 					...defaultOptionsObject,
 					recentMarks: optionsObject.recentMarks,
-					recentSubnodes: optionsObject.recentSubnodes,
 					projects: optionsObject.projects,
 					nodes: fetchedNodes,
 					subnodes: fetchedSubnodes,
@@ -157,59 +113,11 @@ const MarkSelect = () => {
 			}
 			setSelectedObject({
 				...defaultSelectedObject,
-				recentMarkString: makeMarkOrSubnodeName(
-					p.baseSeries,
-					n.code,
-					s.code,
-					v.code
-				),
+				recentMark: v,
 				project: p,
 				node: n,
 				subnode: s,
 				mark: v,
-			})
-		}
-	}
-
-	const onRecentSubnodeSelect = async (id: number) => {
-		const v = getFromOptions(
-			id,
-			optionsObject.recentSubnodes,
-			selectedObject.subnode
-		)
-		if (v != null) {
-			const n = v.node
-			const p = n.project
-			try {
-				const fetchedNodesResponse = await httpClient.get(
-					`/projects/${p.id}/nodes`
-				)
-				const fetchedNodes = fetchedNodesResponse.data
-				const fetchedSubnodesResponse = await httpClient.get(
-					`/nodes/${n.id}/subnodes`
-				)
-				const fetchedSubnodes = fetchedSubnodesResponse.data
-				setOptionsObject({
-					...defaultOptionsObject,
-					recentMarks: optionsObject.recentMarks,
-					recentSubnodes: optionsObject.recentSubnodes,
-					projects: optionsObject.projects,
-					nodes: fetchedNodes,
-					subnodes: fetchedSubnodes,
-				})
-			} catch (e) {
-				console.log('Failed to fetch the data')
-			}
-			setSelectedObject({
-				...defaultSelectedObject,
-				recentSubnodeString: makeMarkOrSubnodeName(
-					p.baseSeries,
-					n.code,
-					v.code
-				),
-				project: p,
-				node: n,
-				subnode: v,
 			})
 		}
 	}
@@ -221,24 +129,37 @@ const MarkSelect = () => {
 			selectedObject.project
 		)
 		if (v != null) {
-			try {
-				const fetchedNodesResponse = await httpClient.get(
-					`/projects/${id}/nodes`
-				)
-				const fetchedNodes = fetchedNodesResponse.data
+			if (cachedNodes.has(v.id)) {
 				setOptionsObject({
 					...defaultOptionsObject,
 					recentMarks: optionsObject.recentMarks,
-					recentSubnodes: optionsObject.recentSubnodes,
 					projects: optionsObject.projects,
-					nodes: fetchedNodes,
+					nodes: cachedNodes.get(v.id),
 				})
 				setSelectedObject({
 					...defaultSelectedObject,
 					project: v,
 				})
-			} catch (e) {
-				console.log('Failed to fetch the data')
+			} else {
+				try {
+					const fetchedNodesResponse = await httpClient.get(
+						`/projects/${id}/nodes`
+					)
+					const fetchedNodes = fetchedNodesResponse.data
+					cachedNodes.set(v.id, fetchedNodes)
+					setOptionsObject({
+						...defaultOptionsObject,
+						recentMarks: optionsObject.recentMarks,
+						projects: optionsObject.projects,
+						nodes: fetchedNodes,
+					})
+					setSelectedObject({
+						...defaultSelectedObject,
+						project: v,
+					})
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
 			}
 		}
 	}
@@ -246,26 +167,41 @@ const MarkSelect = () => {
 	const onNodeSelect = async (id: number) => {
 		const v = getFromOptions(id, optionsObject.nodes, selectedObject.node)
 		if (v != null) {
-			try {
-				const fetchedSubnodesResponse = await httpClient.get(
-					`/nodes/${id}/subnodes`
-				)
-				const fetchedSubnodes = fetchedSubnodesResponse.data
+			if (cachedSubnodes.has(v.id)) {
 				setOptionsObject({
 					...defaultOptionsObject,
 					recentMarks: optionsObject.recentMarks,
-					recentSubnodes: optionsObject.recentSubnodes,
 					projects: optionsObject.projects,
 					nodes: optionsObject.nodes,
-					subnodes: fetchedSubnodes,
+					subnodes: cachedSubnodes.get(v.id),
 				})
 				setSelectedObject({
 					...defaultSelectedObject,
 					project: selectedObject.project,
 					node: v,
 				})
-			} catch (e) {
-				console.log('Failed to fetch the data')
+			} else {
+				try {
+					const fetchedSubnodesResponse = await httpClient.get(
+						`/nodes/${id}/subnodes`
+					)
+					const fetchedSubnodes = fetchedSubnodesResponse.data
+					cachedSubnodes.set(v.id, fetchedSubnodes)
+					setOptionsObject({
+						...defaultOptionsObject,
+						recentMarks: optionsObject.recentMarks,
+						projects: optionsObject.projects,
+						nodes: optionsObject.nodes,
+						subnodes: fetchedSubnodes,
+					})
+					setSelectedObject({
+						...defaultSelectedObject,
+						project: selectedObject.project,
+						node: v,
+					})
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
 			}
 		}
 	}
@@ -277,19 +213,14 @@ const MarkSelect = () => {
 			selectedObject.subnode
 		)
 		if (v != null) {
-			try {
-				const fetchedMarksResponse = await httpClient.get(
-					`/subnodes/${id}/marks`
-				)
-				const fetchedMarks = fetchedMarksResponse.data
+			if (cachedMarks.has(v.id)) {
 				setOptionsObject({
 					...defaultOptionsObject,
 					recentMarks: optionsObject.recentMarks,
-					recentSubnodes: optionsObject.recentSubnodes,
 					projects: optionsObject.projects,
 					nodes: optionsObject.nodes,
 					subnodes: optionsObject.subnodes,
-					marks: fetchedMarks,
+					marks: cachedMarks.get(v.id),
 				})
 				setSelectedObject({
 					...defaultSelectedObject,
@@ -297,8 +228,30 @@ const MarkSelect = () => {
 					node: selectedObject.node,
 					subnode: v,
 				})
-			} catch (e) {
-				console.log('Failed to fetch the data')
+			} else {
+				try {
+					const fetchedMarksResponse = await httpClient.get(
+						`/subnodes/${id}/marks`
+					)
+					const fetchedMarks = fetchedMarksResponse.data
+					cachedMarks.set(v.id, fetchedMarks)
+					setOptionsObject({
+						...defaultOptionsObject,
+						recentMarks: optionsObject.recentMarks,
+						projects: optionsObject.projects,
+						nodes: optionsObject.nodes,
+						subnodes: optionsObject.subnodes,
+						marks: fetchedMarks,
+					})
+					setSelectedObject({
+						...defaultSelectedObject,
+						project: selectedObject.project,
+						node: selectedObject.node,
+						subnode: v,
+					})
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
 			}
 		}
 	}
@@ -333,233 +286,203 @@ const MarkSelect = () => {
 		let resStr = JSON.stringify(filteredRecentMarks.map((m) => m.id))
 		localStorage.setItem('recentMarkIds', resStr)
 
-		const filteredRecentSubnodes = optionsObject.recentSubnodes.filter(
-			(s) => s.id !== mark.subnode.id
-		)
-		if (filteredRecentSubnodes.length >= 5) {
-			filteredRecentSubnodes.shift()
-		}
-		filteredRecentSubnodes.unshift(mark.subnode)
-		resStr = JSON.stringify(filteredRecentSubnodes.map((s) => s.id))
-		localStorage.setItem('recentSubnodeIds', resStr)
+		const m = selectedObject.mark
+		m.subnode = selectedObject.subnode
+		m.subnode.node = selectedObject.node
+		m.subnode.node.project = selectedObject.project
+		setMark(m)
+		history.push('/')
+	}
 
-		history.push('/mark-data')
-    }
-    
-    const onSelectSubnodeButtonClick = () => {
+	const onCreateMarkButtonClick = () => {
 		const subnode = selectedObject.subnode
 		subnode.node = selectedObject.node
 		subnode.node.project = selectedObject.project
-
-		const filteredRecentSubnodes = optionsObject.recentSubnodes.filter(
-			(s) => s.id !== subnode.id
-		)
-		if (filteredRecentSubnodes.length >= 5) {
-			filteredRecentSubnodes.shift()
-		}
-		filteredRecentSubnodes.unshift(subnode)
-		const resStr = JSON.stringify(filteredRecentSubnodes.map((s) => s.id))
-		localStorage.setItem('recentSubnodeIds', resStr)
-
-        history.push('/mark-create')
+		history.push('/mark-create')
 	}
 
 	return (
-		<div className="mark-data-cnt">
-			<h1 className="text-centered">Выбрать / создать марку</h1>
-			<div className="tabs component-width white-bg">
-				<input
-					type="radio"
-					name="tab-btn"
-					id="tab-btn-1"
-					value=""
-					onChange={() => setIsCreateMode(false)}
-					checked={isCreateMode ? false : true}
-				/>
-				<label htmlFor="tab-btn-1">Выбрать</label>
-				<input
-					type="radio"
-					name="tab-btn"
-					id="tab-btn-2"
-					value=""
-					onChange={() => setIsCreateMode(true)}
-					checked={isCreateMode ? true : false}
-				/>
-				<label htmlFor="tab-btn-2">Создать</label>
-
-				<div className="flex-v">
-					<p className="text-centered section-label">
-						{isCreateMode ? 'Выберите подузел' : 'Выберите марку'}
-					</p>
-
-					<Dropdown
-						cntStyle="flex-v mrg-bot"
-						label={
-							isCreateMode
-								? 'Последние подузлы'
-								: 'Последние марки'
-						}
-						placeholder={'Не выбрано'}
-						maxInputLength={
-							isCreateMode
-								? subnodeNameStringLength
-								: markNameStringLength
-						}
-						onClickFunc={
-							isCreateMode
-								? onRecentSubnodeSelect
-								: onRecentMarkSelect
+		<div className="component-cnt">
+			<h1 className="text-centered">Выбор / создание марки</h1>
+			<div className="shadow p-3 mb-5 bg-white rounded">
+				<div>
+					<div className="bold">Последние марки</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите последнюю марку"
+						noOptionsMessage={() => 'Марки не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onRecentMarkSelect((selectedOption as any)?.value)
 						}
 						value={
-							isCreateMode
-								? selectedObject.recentSubnodeString
-								: selectedObject.recentMarkString
+							selectedObject.recentMark == null
+								? null
+								: {
+										value: selectedObject.recentMark.id,
+										label: makeMarkName(
+											selectedObject.recentMark.subnode
+												.node.project.baseSeries,
+											selectedObject.recentMark.subnode
+												.node.code,
+											selectedObject.recentMark.subnode
+												.code,
+											selectedObject.recentMark.code
+										),
+								  }
 						}
-						options={
-							isCreateMode
-								? optionsObject.recentSubnodes.map((s) => {
-										const n = s.node
-										const p = n.project
-										const fullName = makeMarkOrSubnodeName(
-											p.baseSeries,
-											n.code,
-											s.code
-										)
-										return {
-											id: s.id,
-											val: fullName,
-										}
-								  })
-								: optionsObject.recentMarks.map((m) => {
-										const s = m.subnode
-										const n = s.node
-										const p = n.project
-										const fullName = makeMarkOrSubnodeName(
-											p.baseSeries,
-											n.code,
-											s.code,
-											m.code
-										)
-										return {
-											id: m.id,
-											val: fullName,
-										}
-								  })
-						}
-					/>
-
-					<p className="text-centered">или</p>
-
-					<Dropdown
-						cntStyle="flex-v mrg-bot"
-						label="Базовая серия"
-						placeholder={'Выберите базовую серию'}
-						maxInputLength={projectSeriesStringLength}
-						onClickFunc={onProjectSelect}
-						value={
-							selectedObject.project == null
-								? ''
-								: selectedObject.project.baseSeries
-						}
-						options={optionsObject.projects.map((p) => {
+						options={optionsObject.recentMarks.map((m) => {
 							return {
-								id: p.id,
-								val: p.baseSeries,
+								value: m.id,
+								label: makeMarkName(
+									m.subnode.node.project.baseSeries,
+									m.subnode.node.code,
+									m.subnode.code,
+									m.code
+								),
 							}
 						})}
+						styles={reactSelectstyle}
 					/>
-					<animated.div
-						style={getSpringStyle(
-							selectedObject.project == null,
-							nodeDivHeight
-						)}
-					>
-						<Dropdown
-							cntStyle="flex-v mrg-bot"
-							label="Узел"
-							placeholder={'Выберите узел'}
-							maxInputLength={nodeCodeStringLength}
-							onClickFunc={onNodeSelect}
+				</div>
+
+				<div className="flex mrg-top-2">
+					<div>
+						<div className="bold">Базовая серия</div>
+						<Select
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите базовую серию"
+							noOptionsMessage={() => 'Базовые серии не найдены'}
+							className="input-width-2 mrg-top"
+							onChange={(selectedOption) =>
+								onProjectSelect((selectedOption as any)?.value)
+							}
+							value={
+								selectedObject.project == null
+									? null
+									: {
+											value: selectedObject.project.id,
+											label:
+												selectedObject.project
+													.baseSeries,
+									  }
+							}
+							options={optionsObject.projects.map((p) => {
+								return {
+									value: p.id,
+									label: p.baseSeries,
+								}
+							})}
+							styles={reactSelectstyle}
+						/>
+					</div>
+					<div className="mrg-left">
+						<div className="bold">Узел</div>
+						<Select
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите узел"
+							className="input-width-3 mrg-top"
+							noOptionsMessage={() => 'Узлы не найдены'}
+							onChange={(selectedOption) =>
+								onNodeSelect((selectedOption as any)?.value)
+							}
 							value={
 								selectedObject.node == null
-									? ''
-									: selectedObject.node.code
+									? null
+									: {
+											value: selectedObject.node.id,
+											label: selectedObject.node.code,
+									  }
 							}
 							options={optionsObject.nodes.map((n) => {
 								return {
-									id: n.id,
-									val: n.code,
+									value: n.id,
+									label: n.code,
 								}
 							})}
+							styles={reactSelectstyle}
 						/>
-					</animated.div>
-					<animated.div
-						style={getSpringStyle(
-							selectedObject.node == null,
-							isCreateMode ? markDivHeight : nodeDivHeight
-						)}
-					>
-						<Dropdown
-							cntStyle={
-								isCreateMode ? 'flex-v' : 'flex-v mrg-bot'
+					</div>
+					<div className="mrg-left">
+						<div className="bold">Подузел</div>
+						<Select
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите подузел"
+							noOptionsMessage={() => 'Подузлы не найдены'}
+							className="input-width-3 mrg-top"
+							onChange={(selectedOption) =>
+								onSubnodeSelect((selectedOption as any)?.value)
 							}
-							label="Подузел"
-							placeholder={'Выберите подузел'}
-							maxInputLength={subnodeCodeStringLength}
-							onClickFunc={onSubnodeSelect}
 							value={
 								selectedObject.subnode == null
-									? ''
-									: selectedObject.subnode.code
+									? null
+									: {
+											value: selectedObject.subnode.id,
+											label: selectedObject.subnode.code,
+									  }
 							}
 							options={optionsObject.subnodes.map((s) => {
 								return {
-									id: s.id,
-									val: s.code,
+									value: s.id,
+									label: s.code,
 								}
 							})}
+							styles={reactSelectstyle}
 						/>
-					</animated.div>
-					<animated.div
-						style={getSpringStyle(
-							selectedObject.subnode == null || isCreateMode,
-							markDivHeight
-						)}
-					>
-						<Dropdown
-							cntStyle="flex-v"
-							label="Марка"
-							placeholder={'Выберите марку'}
-							maxInputLength={markCodeStringLength}
-							onClickFunc={onMarkSelect}
+					</div>
+					<div className="mrg-left">
+						<div className="bold">Марка</div>
+						<Select
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите марку"
+							noOptionsMessage={() => 'Марки не найдены'}
+							className="input-width-3 mrg-top"
+							onChange={(selectedOption) =>
+								onMarkSelect((selectedOption as any)?.value)
+							}
 							value={
 								selectedObject.mark == null
-									? ''
-									: selectedObject.mark.code
+									? null
+									: {
+											value: selectedObject.mark.id,
+											label: selectedObject.mark.code,
+									  }
 							}
 							options={optionsObject.marks.map((m) => {
 								return {
-									id: m.id,
-									val: m.code,
+									value: m.id,
+									label: m.code,
 								}
 							})}
+							styles={reactSelectstyle}
 						/>
-					</animated.div>
-					<animated.div
-						style={getSpringStyle(
-							isCreateMode
-								? selectedObject.subnode == null
-								: selectedObject.mark == null,
-							buttonDivHeight
-						)}
+					</div>
+				</div>
+				<div className="flex btn-mrg-top-2">
+					<Button
+						variant="secondary"
+						className="flex-grow"
+						onClick={onSelectMarkButtonClick}
 					>
-						<button
-							onClick={isCreateMode ? onSelectSubnodeButtonClick : onSelectMarkButtonClick}
-							className="final-btn input-border-radius pointer"
-						>
-							{isCreateMode ? 'Выбрать подузел' : 'Выбрать марку'}
-						</button>
-					</animated.div>
+						Выбрать
+					</Button>
+					<Button
+						variant="secondary"
+						className="flex-grow mrg-left"
+						onClick={onCreateMarkButtonClick}
+					>
+						Создать
+					</Button>
 				</div>
 			</div>
 		</div>

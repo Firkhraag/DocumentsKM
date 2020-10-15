@@ -1,6 +1,9 @@
+// Global
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import Profile from '../Svg/Profile'
+// Bootstrap
+import { PersonFill } from 'react-bootstrap-icons'
+// Local
 import { useMark } from '../../store/MarkStore'
 import Drawer from './Drawer/Drawer'
 import './Header.css'
@@ -21,11 +24,11 @@ const Header = () => {
 	}, [])
 
 	return (
-		<div className="space-between-cent-v header white-bg">
-			<Link to="/" className="pointer bold">
+		<div className="space-between-cent-v header bg-white">
+			<Link to="/" className="pointer bold header-link-pad">
 				Главная
 			</Link>
-			<Link to="/mark-select" className="pointer bold">
+			<Link to="/mark-select" className="pointer bold header-link-pad">
 				{mark == null
 					? '-'
 					: `${mark.subnode.node.project.baseSeries}.${mark.subnode.node.code}.${mark.subnode.code}-${mark.code}`}
@@ -35,9 +38,7 @@ const Header = () => {
 				onClick={() => setDrawerShown(true)}
 			>
 				<Drawer isShown={isDrawerShown} />
-				<div className="pointer">
-					<Profile />
-				</div>
+				<PersonFill size={36} className="pointer" />
 			</div>
 		</div>
 	)

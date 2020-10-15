@@ -1,6 +1,12 @@
+// Global
 import React, { useState } from 'react'
-import { useAuthMethods } from '../../store/UserStore'
+// Bootstrap
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+// Components
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
+// Util
+import { useAuthMethods } from '../../store/UserStore'
 
 const Login = () => {
 	const authMethods = useAuthMethods()
@@ -34,50 +40,33 @@ const Login = () => {
 	return (
 		<div className="component-cnt component-width">
 			<h1 className="text-centered">Вход в систему</h1>
-			<div>
-				<div className="flex-v mrg-bot">
-					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-					<label htmlFor="login" className="label-area">
-						Логин
-					</label>
-					<div>
-						<input
-							id="login"
-							className="input-area"
-							onBlur={onLoginChange}
+			<div className="shadow p-3 mb-5 bg-white rounded">
+				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+				<Form>
+					<Form.Group controlId="formBasicLogin">
+						<Form.Label>Логин</Form.Label>
+						<Form.Control
 							type="text"
 							placeholder="Введите ваш логин"
-							spellCheck="false"
-							maxLength={255}
-							required
+							onBlur={onLoginChange}
 						/>
-					</div>
-				</div>
-
-				<div className="flex-v">
-					<label htmlFor="password" className="label-area">
-						Пароль
-					</label>
-					<div>
-						<input
-							id="password"
-							className="input-area"
+					</Form.Group>
+					<Form.Group controlId="formBasicPassword">
+						<Form.Label>Пароль</Form.Label>
+						<Form.Control
 							type="password"
-							onBlur={onPasswordChange}
 							placeholder="Введите ваш пароль"
-							spellCheck="false"
-							maxLength={255}
-							required
+							onBlur={onPasswordChange}
 						/>
-					</div>
-				</div>
-
-				<button
-					className="final-btn input-border-radius pointer"
-					onClick={onButtonClick}
-				>
-					Войти
-				</button>
+					</Form.Group>
+					<Button
+						variant="secondary"
+						className="btn-mrg-top full-width"
+						onClick={onButtonClick}
+					>
+						Войти
+					</Button>
+				</Form>
 			</div>
 		</div>
 	)
