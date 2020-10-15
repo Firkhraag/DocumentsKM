@@ -34,17 +34,15 @@
     margin-left: 0.75em;
 }
 
-
-
 .component-cnt {
-    margin: 10vh 0;
+    margin: 6vh 0;
 }
 
 .component-cnt h1 {
     margin-bottom: 1.1em;
 }
 
-.component-cnt > div {
+.component-cnt-div {
     border: 1px solid #d0d0d0;
 	padding: 1.25em;
     font-size: 16px;
@@ -53,6 +51,10 @@
 
 .component-width {
     width: 35vw;
+}
+
+.info-area {
+    height: 100%;
 }
 
 /* Section */

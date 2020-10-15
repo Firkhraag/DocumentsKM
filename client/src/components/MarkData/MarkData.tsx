@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
+import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
@@ -15,8 +16,6 @@ import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
-// Style
-import './MarkData.css'
 
 type MarkDataProps = {
 	isCreateMode: boolean
@@ -39,7 +38,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 
 	const [errMsg, setErrMsg] = useState('')
 
-	const [cachedMainEmployees, _] = useState(new Map<number, any>())
+	const cachedMainEmployees = useState(new Map<number, any>())[0]
 
 	useEffect(() => {
 		if (isCreateMode) {
@@ -119,20 +118,33 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}, [])
 
 	const onMarkCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-		setSelectedObject({
-			...selectedObject,
-			code: event.currentTarget.value,
-		})
+        setSelectedObject({
+            ...selectedObject,
+            code: event.currentTarget.value,
+        })
 	}
 
 	const onMarkNameChange = (event: React.FormEvent<HTMLInputElement>) => {
-		setSelectedObject({
-			...selectedObject,
-			name: event.currentTarget.value,
-		})
+        setSelectedObject({
+            ...selectedObject,
+            name: event.currentTarget.value,
+        })
 	}
 
 	const onDepartmentSelect = async (number: number) => {
+        if (number == null) {
+            setOptionsObject({
+                ...defaultOptionsObject,
+                departments: optionsObject.departments,
+            })
+            setSelectedObject({
+                ...selectedObject,
+                department: null,
+                chiefSpecialist: null,
+                groupLeader: null,
+                mainBuilder: null,
+            })
+        }
 		const v = getFromOptions(
 			number,
 			optionsObject.departments,
@@ -188,6 +200,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}
 
 	const onGroupLeaderSelect = async (id: number) => {
+        if (id == null) {
+            setSelectedObject({
+				...selectedObject,
+				groupLeader: null,
+			})
+        }
 		const v = getFromOptions(
 			id,
 			optionsObject.groupLeaders,
@@ -202,6 +220,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}
 
 	const onChiefSpecialistSelect = async (id: number) => {
+        if (id == null) {
+            setSelectedObject({
+				...selectedObject,
+				chiefSpecialist: null,
+			})
+        }
 		const v = getFromOptions(
 			id,
 			optionsObject.chiefSpecialists,
@@ -216,6 +240,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}
 
 	const onMainBuilderSelect = async (id: number) => {
+        if (id == null) {
+            setSelectedObject({
+				...selectedObject,
+				mainBuilder: null,
+			})
+        }
 		const v = getFromOptions(
 			id,
 			optionsObject.mainBuilders,
@@ -265,7 +295,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					groupLeaderId: selectedObject.groupLeader?.id,
 					mainBuilderId: selectedObject.mainBuilder.id,
 				})
-				localStorage.setItem('selectedObjectId', response.data.id)
+				localStorage.setItem('selectedMarkId', response.data.id)
 
 				const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
 				if (recentMarkIdsStr != null) {
@@ -288,33 +318,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		}
 	}
 
-	// Removing chiefSpecialist or mainBuilder is not supported right now
 	const onChangeButtonClick = async () => {
-		// DEBUG
-		// console.log({
-		// 	code:
-		// 		selectedObject.code === mark.code ? undefined : selectedObject.code,
-		// 	name:
-		// 		selectedObject.name === mark.name ? undefined : selectedObject.name,
-		// 	departmentNumber:
-		// 		selectedObject.department.number === mark.department.number
-		// 			? undefined
-		// 			: selectedObject.department.number,
-		// 	chiefSpecialistId: getNullableFieldValue(
-		// 		selectedObject.chiefSpecialist,
-		// 		mark.chiefSpecialist
-		// 	),
-		// 	groupLeaderId: getNullableFieldValue(
-		// 		selectedObject.groupLeader,
-		// 		mark.groupLeader
-		// 	),
-		// 	// chiefSpecialistId: selectedObject.chiefSpecialist?.id,
-		// 	// groupLeaderId: selectedObject.groupLeader?.id,
-		// 	mainBuilderId:
-		// 		selectedObject.mainBuilder.id === mark.mainBuilder.id
-		// 			? undefined
-		// 			: selectedObject.mainBuilder.id,
-		// })
 		if (checkIfValid()) {
 			try {
 				await httpClient.patch(`/marks/${selectedObject.id}`, {
@@ -339,8 +343,6 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						selectedObject.groupLeader,
 						mark.groupLeader
 					),
-					// chiefSpecialistId: selectedObject.chiefSpecialist?.id,
-					// groupLeaderId: selectedObject.groupLeader?.id,
 					mainBuilderId:
 						selectedObject.mainBuilder.id === mark.mainBuilder.id
 							? undefined
@@ -354,303 +356,242 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		}
 	}
 
-	return selectedObject == null ? null : (
-		<div className="component-cnt component-width">
+	return selectedObject == null || (mark == null && !isCreateMode) ? null : (
+		<div className="component-cnt">
 			<h1 className="text-centered">
 				{isCreateMode ? 'Создание марки' : 'Данные марки'}
 			</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded">
-				<div className="bold">Отдел</div>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выберите отдел"
-					noOptionsMessage={() => 'Отделы не найдены'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onDepartmentSelect((selectedOption as any)?.value)
-					}
-					value={
-						selectedObject.department == null
-							? null
-							: {
-									value: selectedObject.department.number,
-									label: selectedObject.department.code,
-							  }
-					}
-					options={optionsObject.departments.map((d) => {
-						return {
-							value: d.number,
-							label: d.code,
-						}
-					})}
-					styles={reactSelectstyle}
-				/>
-
-                <div className="bold mrg-top-2">Заведующий группы</div>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выберите заведующего группы"
-					noOptionsMessage={() => 'Сотрудники не найдены'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onGroupLeaderSelect((selectedOption as any)?.value)
-					}
-					value={
-						selectedObject.groupLeader == null
-							? null
-							: {
-									value: selectedObject.groupLeader.id,
-									label: selectedObject.groupLeader.fullName,
-							  }
-					}
-					options={optionsObject.groupLeaders.map((e) => {
-						return {
-							value: e.id,
-							label: e.fullName,
-						}
-					})}
-					styles={reactSelectstyle}
-				/>
-
-                <div className="bold mrg-top-2">Главный специалист</div>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выберите главного специалиста"
-					noOptionsMessage={() => 'Сотрудники не найдены'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onChiefSpecialistSelect((selectedOption as any)?.value)
-					}
-					value={
-						selectedObject.chiefSpecialist == null
-							? null
-							: {
-									value: selectedObject.chiefSpecialist.id,
-									label: selectedObject.chiefSpecialist.fullName,
-							  }
-					}
-					options={optionsObject.chiefSpecialists.map((e) => {
-						return {
-							value: e.id,
-							label: e.fullName,
-						}
-					})}
-					styles={reactSelectstyle}
-				/>
-
-                <div className="bold mrg-top-2">Главный строитель</div>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выберите главного строителя"
-					noOptionsMessage={() => 'Сотрудники не найдены'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onMainBuilderSelect((selectedOption as any)?.value)
-					}
-					value={
-						selectedObject.mainBuilder == null
-							? null
-							: {
-									value: selectedObject.mainBuilder.id,
-									label: selectedObject.mainBuilder.fullName,
-							  }
-					}
-					options={optionsObject.mainBuilders.map((e) => {
-						return {
-							value: e.id,
-							label: e.fullName,
-						}
-					})}
-					styles={reactSelectstyle}
-				/>
-
-				<Button
-					variant="secondary"
-					className="btn-mrg-top-2 full-width"
-					onClick={null}
-				>
-					Сохранить изменения
-				</Button>
-
-				{/* <p className="text-centered data-section-label label-mrgn-top-1">
-					Общая информация
-				</p>
-
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Наименование комплекса</p>
-					<div className="info-area">
-						{
-							makeComplexAndObjectName(
-								selectedObject.subnode.node.project.name,
-								selectedObject.subnode.node.name,
-								selectedObject.subnode.name,
-								selectedObject.name
-							).complexName
-						}
-					</div>
-				</div>
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Наименование объекта</p>
-					<div className="info-area">
-						{
-							makeComplexAndObjectName(
-								selectedObject.subnode.node.project.name,
-								selectedObject.subnode.node.name,
-								selectedObject.subnode.name,
-								selectedObject.name
-							).objectName
-						}
-					</div>
-				</div>
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Главный инженер проекта</p>
-					<div className="info-area">
-						{selectedObject.subnode.node.chiefEngineer.fullName}
-					</div>
-				</div>
-
-				<p className="text-centered data-section-label label-mrgn-top-2">
-					Информация марки
-				</p>
-
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Обозначение марки</p>
-					<div className="info-area">
-						{makeMarkName(
-							selectedObject.subnode.node.project.baseSeries,
-							selectedObject.subnode.node.code,
-							selectedObject.subnode.code,
-							selectedObject.code
-						)}
-					</div>
-				</div>
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Шифр марки</p>
-					<div>
-						<input
-							value={selectedObject.code}
-							onChange={onMarkCodeChange}
+			<div className="flex">
+				<div className="info-area shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
+					<Form.Group>
+						<Form.Label>Обозначение марки</Form.Label>
+						<Form.Control
 							type="text"
-							className="input-area"
+							value={isCreateMode ? makeMarkName(
+								selectedObject.subnode.node.project.baseSeries,
+								selectedObject.subnode.node.code,
+								selectedObject.subnode.code,
+								selectedObject.code
+							) : makeMarkName(
+								mark.subnode.node.project.baseSeries,
+								mark.subnode.node.code,
+								mark.subnode.code,
+								mark.code
+							)}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Наименование комплекса</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								isCreateMode ? makeComplexAndObjectName(
+									selectedObject.subnode.node.project.name,
+									selectedObject.subnode.node.name,
+									selectedObject.subnode.name,
+									selectedObject.name
+								).complexName : makeComplexAndObjectName(
+									mark.subnode.node.project.name,
+									mark.subnode.node.name,
+									mark.subnode.name,
+									mark.name
+								).complexName
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Наименование объекта</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								isCreateMode ? makeComplexAndObjectName(
+									selectedObject.subnode.node.project.name,
+									selectedObject.subnode.node.name,
+									selectedObject.subnode.name,
+									selectedObject.name
+								).objectName : makeComplexAndObjectName(
+									mark.subnode.node.project.name,
+									mark.subnode.node.name,
+									mark.subnode.name,
+									mark.name
+								).objectName
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Главный инженер проекта</Form.Label>
+						<Form.Control
+							type="text"
+							value={isCreateMode ? selectedObject.subnode.node.chiefEngineer.fullName : mark.subnode.node.chiefEngineer.fullName}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Начальник отдела</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								selectedObject.department == null || selectedObject.department.departmentHead == null
+									? ''
+									: selectedObject.department.departmentHead
+											.fullName
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+				</div>
+
+				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
+                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+					<Form.Group>
+						<Form.Label>Шифр марки</Form.Label>
+						<Form.Control
+							type="text"
 							placeholder="Введите шифр марки"
+							defaultValue={selectedObject.code}
+							onBlur={onMarkCodeChange}
 						/>
-					</div>
-				</div>
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Наименование марки</p>
-					<div>
-						<input
-							value={selectedObject.name}
-							onChange={onMarkNameChange}
+					</Form.Group>
+
+					<Form.Group>
+						<Form.Label>Наименование марки</Form.Label>
+						<Form.Control
 							type="text"
-							className="input-area"
 							placeholder="Введите наименование марки"
+							defaultValue={selectedObject.name}
+							onBlur={onMarkNameChange}
 						/>
-					</div>
-				</div>
-				<Dropdown
-					cntStyle="flex-v mrg-bot"
-					label="Отдел"
-					placeholder={'Выберите отдел'}
-					maxInputLength={specialistNameStringLength}
-					onClickFunc={onDepartmentSelect}
-					value={
-						selectedObject.department == null
-							? ''
-							: selectedObject.department.code
-					}
-					options={optionsObject.departments.map((d) => {
-						return {
-							id: d.number,
-							val: d.code,
+					</Form.Group>
+
+					<div className="bold">Отдел</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите отдел"
+						noOptionsMessage={() => 'Отделы не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onDepartmentSelect((selectedOption as any)?.value)
 						}
-					})}
-				/>
-				<animated.div style={springStyle}>
-					<div className="flex-v mrg-bot">
-						<p className="label-area">Начальник отдела</p>
-						<div className="info-area">
-							{selectedObject.department == null ||
-							selectedObject.department.departmentHead == null
-								? '-'
-								: selectedObject.department.departmentHead
-										.fullName}
-						</div>
-					</div>
-					<Dropdown
-						cntStyle="flex-v mrg-bot"
-						label="Заведующий группы"
-						placeholder={'Не выбрано'}
-						maxInputLength={specialistNameStringLength}
-						onClickFunc={onGroupLeaderSelect}
+						value={
+							selectedObject.department == null
+								? null
+								: {
+										value: selectedObject.department.number,
+										label: selectedObject.department.code,
+								  }
+						}
+						options={optionsObject.departments.map((d) => {
+							return {
+								value: d.number,
+								label: d.code,
+							}
+						})}
+						styles={reactSelectstyle}
+					/>
+					<div className="bold mrg-top-2">Заведующий группы</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите заведующего группы"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onGroupLeaderSelect((selectedOption as any)?.value)
+						}
 						value={
 							selectedObject.groupLeader == null
-								? ''
-								: selectedObject.groupLeader.fullName
+								? null
+								: {
+										value: selectedObject.groupLeader.id,
+										label:
+											selectedObject.groupLeader.fullName,
+								  }
 						}
-						options={optionsObject.groupLeaders.map((gl) => {
+						options={optionsObject.groupLeaders.map((e) => {
 							return {
-								id: gl.id,
-								val: gl.fullName,
+								value: e.id,
+								label: e.fullName,
 							}
 						})}
+						styles={reactSelectstyle}
 					/>
-					<Dropdown
-						cntStyle="flex-v mrg-bot"
-						label="Главный специалист"
-						placeholder={'Не выбрано'}
-						maxInputLength={specialistNameStringLength}
-						onClickFunc={onChiefSpecialistSelect}
+
+					<div className="bold mrg-top-2">Главный специалист</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите главного специалиста"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onChiefSpecialistSelect(
+								(selectedOption as any)?.value
+							)
+						}
 						value={
 							selectedObject.chiefSpecialist == null
-								? ''
-								: selectedObject.chiefSpecialist.fullName
+								? null
+								: {
+										value:
+											selectedObject.chiefSpecialist.id,
+										label:
+											selectedObject.chiefSpecialist
+												.fullName,
+								  }
 						}
-						options={optionsObject.chiefSpecialists.map((cs) => {
+						options={optionsObject.chiefSpecialists.map((e) => {
 							return {
-								id: cs.id,
-								val: cs.fullName,
+								value: e.id,
+								label: e.fullName,
 							}
 						})}
+						styles={reactSelectstyle}
 					/>
-					<Dropdown
-						cntStyle="flex-v"
-						label="Главный строитель"
-						placeholder={'Выберите главного строителя'}
-						maxInputLength={specialistNameStringLength}
-						onClickFunc={onMainBuilderSelect}
+
+					<div className="bold mrg-top-2">Главный строитель</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите главного строителя"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onMainBuilderSelect((selectedOption as any)?.value)
+						}
 						value={
 							selectedObject.mainBuilder == null
-								? ''
-								: selectedObject.mainBuilder.fullName
+								? null
+								: {
+										value: selectedObject.mainBuilder.id,
+										label:
+											selectedObject.mainBuilder.fullName,
+								  }
 						}
-						options={optionsObject.mainBuilders.map((mb) => {
+						options={optionsObject.mainBuilders.map((e) => {
 							return {
-								id: mb.id,
-								val: mb.fullName,
+								value: e.id,
+								label: e.fullName,
 							}
 						})}
+						styles={reactSelectstyle}
 					/>
-				</animated.div>
-				<button
-					className="final-btn input-border-radius pointer"
-					onClick={
-						isCreateMode ? onCreateButtonClick : onChangeButtonClick
-					}
-				>
-					{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
-				</button>
-				<div className="mrg-top">
-					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-				</div> */}
+
+					<Button
+						variant="secondary"
+						className="btn-mrg-top-2 full-width"
+						onClick={isCreateMode ? onCreateButtonClick : onChangeButtonClick}
+					>
+						{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
+					</Button>
+				</div>
 			</div>
 		</div>
 	)

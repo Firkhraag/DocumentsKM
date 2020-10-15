@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Button from 'react-bootstrap/Button'
+// Components
+import ErrorMsg from '../ErrorMsg/ErrorMsg'
 // Util
 import Project from '../../model/Project'
 import Node from '../../model/Node'
@@ -37,9 +39,11 @@ const MarkSelect = () => {
 	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
-	const [cachedNodes, _] = useState(new Map<number, Node[]>())
-	const [cachedSubnodes, __] = useState(new Map<number, Subnode[]>())
-	const [cachedMarks, ___] = useState(new Map<number, Mark[]>())
+	const cachedNodes = useState(new Map<number, Node[]>())[0]
+	const cachedSubnodes = useState(new Map<number, Subnode[]>())[0]
+	const cachedMarks = useState(new Map<number, Mark[]>())[0]
+
+	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -78,6 +82,15 @@ const MarkSelect = () => {
 	}, [])
 
 	const onRecentMarkSelect = async (id: number) => {
+		if (id == null) {
+			setOptionsObject({
+				...defaultOptionsObject,
+			})
+			setSelectedObject({
+				...defaultSelectedObject,
+			})
+			return
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.recentMarks,
@@ -123,6 +136,17 @@ const MarkSelect = () => {
 	}
 
 	const onProjectSelect = async (id: number) => {
+		if (id == null) {
+			setOptionsObject({
+				...defaultOptionsObject,
+				recentMarks: optionsObject.recentMarks,
+				projects: optionsObject.projects,
+			})
+			setSelectedObject({
+				...defaultSelectedObject,
+			})
+			return
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.projects,
@@ -165,6 +189,19 @@ const MarkSelect = () => {
 	}
 
 	const onNodeSelect = async (id: number) => {
+		if (id == null) {
+			setOptionsObject({
+				...defaultOptionsObject,
+				recentMarks: optionsObject.recentMarks,
+				projects: optionsObject.projects,
+				nodes: optionsObject.nodes,
+			})
+			setSelectedObject({
+				...defaultSelectedObject,
+				project: selectedObject.project,
+			})
+			return
+		}
 		const v = getFromOptions(id, optionsObject.nodes, selectedObject.node)
 		if (v != null) {
 			if (cachedSubnodes.has(v.id)) {
@@ -207,6 +244,21 @@ const MarkSelect = () => {
 	}
 
 	const onSubnodeSelect = async (id: number) => {
+		if (id == null) {
+			setOptionsObject({
+				...defaultOptionsObject,
+				recentMarks: optionsObject.recentMarks,
+				projects: optionsObject.projects,
+				nodes: optionsObject.nodes,
+				subnodes: optionsObject.subnodes,
+			})
+			setSelectedObject({
+				...defaultSelectedObject,
+				project: selectedObject.project,
+				node: selectedObject.node,
+			})
+			return
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.subnodes,
@@ -257,6 +309,15 @@ const MarkSelect = () => {
 	}
 
 	const onMarkSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...defaultSelectedObject,
+				project: selectedObject.project,
+				node: selectedObject.node,
+				subnode: selectedObject.subnode,
+			})
+			return
+		}
 		const v = getFromOptions(id, optionsObject.marks, selectedObject.mark)
 		if (v != null) {
 			setSelectedObject({
@@ -270,6 +331,15 @@ const MarkSelect = () => {
 	}
 
 	const onSelectMarkButtonClick = () => {
+		if (
+			selectedObject.mark == null ||
+			selectedObject.subnode == null ||
+			selectedObject.node == null ||
+			selectedObject.project == null
+		) {
+			setErrMsg('Пожалуйста, заполните необходимые поля')
+			return
+		}
 		const mark = selectedObject.mark
 		mark.subnode = selectedObject.subnode
 		mark.subnode.node = selectedObject.node
@@ -295,6 +365,14 @@ const MarkSelect = () => {
 	}
 
 	const onCreateMarkButtonClick = () => {
+        if (
+			selectedObject.subnode == null ||
+			selectedObject.node == null ||
+			selectedObject.project == null
+		) {
+			setErrMsg('Пожалуйста, заполните необходимые поля')
+			return
+		}
 		const subnode = selectedObject.subnode
 		subnode.node = selectedObject.node
 		subnode.node.project = selectedObject.project
@@ -304,8 +382,9 @@ const MarkSelect = () => {
 	return (
 		<div className="component-cnt">
 			<h1 className="text-centered">Выбор / создание марки</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded">
+			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
 				<div>
+					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 					<div className="bold">Последние марки</div>
 					<Select
 						maxMenuHeight={250}

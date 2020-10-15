@@ -27,8 +27,8 @@ const MarkApproval = () => {
 		employees: [[], [], [], [], [], [], []] as Employee[][],
 	})
 
-	const [cachedEmployees, _] = useState(new Map<number, Employee[]>())
-	const [employeesExcludedFromOptions, __] = useState([] as number[])
+	const cachedEmployees = useState(new Map<number, Employee[]>())[0]
+	const employeesExcludedFromOptions = useState([] as number[])[0]
 
 	const [markApprovalsFetched, setMarkApprovalsFetched] = useState([
 		null,
@@ -244,12 +244,11 @@ const MarkApproval = () => {
 	return mark == null ? null : (
 		<div className="component-cnt">
 			<h1 className="text-centered">Согласования</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded">
+			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
 				<div className="flex">
 					<div className="bold input-width">Отдел</div>
 					<div className="bold input-width mrg-left">Специалист</div>
 				</div>
-
 				{[...Array(7).keys()].map((rowNumber) => {
 					return (
 						<div className="flex mrg-top" key={rowNumber}>

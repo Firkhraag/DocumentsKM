@@ -11,19 +11,17 @@ import { useAuthMethods } from '../../store/UserStore'
 const Login = () => {
 	const authMethods = useAuthMethods()
 
-	const [inputValues, setInputValues] = useState({
+	const inputValues = useState({
 		login: '',
 		password: '',
-	})
+	})[0]
 	const [errMsg, setErrMsg] = useState('')
 
 	const onLoginChange = (event: React.FormEvent<HTMLInputElement>) => {
-		const login = event.currentTarget.value
-		setInputValues({ ...inputValues, login: login })
+        inputValues.login = event.currentTarget.value
 	}
 	const onPasswordChange = (event: React.FormEvent<HTMLInputElement>) => {
-		const password = event.currentTarget.value
-		setInputValues({ ...inputValues, password: password })
+        inputValues.password = event.currentTarget.value
 	}
 
 	const onButtonClick = async () => {
@@ -40,10 +38,10 @@ const Login = () => {
 	return (
 		<div className="component-cnt component-width">
 			<h1 className="text-centered">Вход в систему</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded">
+			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
 				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 				<Form>
-					<Form.Group controlId="formBasicLogin">
+					<Form.Group>
 						<Form.Label>Логин</Form.Label>
 						<Form.Control
 							type="text"
@@ -51,7 +49,7 @@ const Login = () => {
 							onBlur={onLoginChange}
 						/>
 					</Form.Group>
-					<Form.Group controlId="formBasicPassword">
+					<Form.Group>
 						<Form.Label>Пароль</Form.Label>
 						<Form.Control
 							type="password"

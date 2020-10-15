@@ -20,12 +20,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 	const [userName, setUserName] = useState<string>(null)
 
 	const login = async (login: string, password: string) => {
-		if (
-			login.length > 0 &&
-			login.length < 256 &&
-			password.length > 0 &&
-			password.length < 256
-		) {
+		if (login.length > 0 && password.length > 0) {
 			const response = await httpClient.post('/users/login', {
 				login: login,
 				password: password,
@@ -36,8 +31,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		}
 	}
 	const logout = async () => {
-        await httpClient.post('/users/logout')
-        setUserName('')
+		await httpClient.post('/users/logout')
+		setUserName('')
 		localStorage.removeItem('selectedMarkId')
 		localStorage.removeItem('recentSubnodeIds')
 		localStorage.removeItem('recentMarkIds')

@@ -1,6 +1,16 @@
-#formBasicLogin:focus, #formBasicPassword:focus {
+.form-group input:focus {
     border: 1px solid rgba(0, 0, 0, 0.4) !important;
     box-shadow: none !important;
+}
+.form-group input:hover {
+    border: 1px solid rgba(0, 0, 0, 0.4) !important;
+}
+
+.form-group input:read-only:focus {
+    border: 1px solid #ced4da !important;
+}
+.form-group input:read-only:hover {
+    border: 1px solid #ced4da !important;
 }
 
 button:focus {
