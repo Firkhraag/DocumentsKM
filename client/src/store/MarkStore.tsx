@@ -12,23 +12,25 @@ type MarkProviderProps = {
 }
 
 export const MarkProvider = ({ children }: MarkProviderProps) => {
-    const [mark, setMark] = useState<Mark>(null)
-    
-    useEffect(() => {
-        const selectedMarkId = localStorage.getItem('selectedMarkId')
-        if (selectedMarkId != null) {
-            const fetchData = async () => {
-                try {
-                    const response = await httpClient.get(`/marks/${selectedMarkId}`)
-                    setMark(response.data)
-                } catch (e) {
-                    localStorage.removeItem('selectedMarkId')
-                    localStorage.removeItem('recentSubnodeIds')
-                    localStorage.removeItem('recentMarkIds')
-                }
-            }
-            fetchData()
-        }
+	const [mark, setMark] = useState<Mark>(null)
+
+	useEffect(() => {
+		const selectedMarkId = localStorage.getItem('selectedMarkId')
+		if (selectedMarkId != null) {
+			const fetchData = async () => {
+				try {
+					const response = await httpClient.get(
+						`/marks/${selectedMarkId}`
+					)
+					setMark(response.data)
+				} catch (e) {
+					localStorage.removeItem('selectedMarkId')
+					localStorage.removeItem('recentSubnodeIds')
+					localStorage.removeItem('recentMarkIds')
+				}
+			}
+			fetchData()
+		}
 	}, [])
 
 	return (

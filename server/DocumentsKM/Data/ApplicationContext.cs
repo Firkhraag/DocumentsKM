@@ -12,8 +12,16 @@ namespace DocumentsKM.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Sheet>()
+                .Property(s => s.Release)
+                .HasColumnType("SMALLINT");
+
+            builder.Entity<Sheet>()
+                .Property(s => s.NumberOfPages)
+                .HasColumnType("SMALLINT");
+
             // Composite primary key
-            // builder.Entity<EntityName>().HasKey(e => new { e.MarkId, e.EmployeeId });
+            builder.Entity<MarkApproval>().HasKey(e => new { e.MarkId, e.EmployeeId });
 
             // Unique constrains
             builder.Entity<User>()
@@ -68,16 +76,20 @@ namespace DocumentsKM.Data
             }
         }
 
+        // Other services data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Node> Nodes { get; set; }
         public DbSet<Subnode> Subnodes { get; set; }
+        public DbSet<User> Users { get; set; }
+
+        // Current service data
         public DbSet<Mark> Marks { get; set; }
+        public DbSet<MarkApproval> MarkApprovals { get; set; }
         public DbSet<Specification> Specifications { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Sheet> Sheets { get; set; }
-        public DbSet<User> Users { get; set; }
     }
 }

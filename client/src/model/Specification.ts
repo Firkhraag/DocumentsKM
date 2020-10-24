@@ -1,17 +1,20 @@
 interface ISpecification {
-	position: number
-	releaseDate: string
+    id: number
+    releaseNumber: number
+	created: string
 	note: string
 }
 
 class Specification {
-	position: number
-	releaseDate: string
+    id: number
+    releaseNumber: number
+	created: string
 	note: string
 
 	constructor(obj?: ISpecification) {
-		this.position = (obj && obj.position) || 0
-		this.releaseDate = (obj && obj.releaseDate) || ''
+		this.id = (obj && obj.id) || 0
+		this.releaseNumber = (obj && obj.releaseNumber) || 0
+		this.created = (obj && obj.created) || ''
 		this.note = (obj && obj.note) || ''
 	}
 }

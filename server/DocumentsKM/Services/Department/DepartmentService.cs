@@ -17,10 +17,5 @@ namespace DocumentsKM.Services
         {
             return _repository.GetAllActive();
         }
-
-        public Department GetByNumber(int id)
-        {
-            return _repository.GetByNumber(id);
-        }
     }
 }

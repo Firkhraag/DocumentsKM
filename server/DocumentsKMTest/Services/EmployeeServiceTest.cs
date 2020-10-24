@@ -31,23 +31,23 @@ namespace DocumentsKM.Tests
             Assert.Equal(filteredEmployees, returnedEmployees);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        public void GetById_ShouldReturnEmployee(int id)
-        {
-            // Arrange
-            var mockEmployeeRepo = new Mock<IEmployeeRepo>();
-            mockEmployeeRepo.Setup(mock=>
-                mock.GetById(id)).Returns(TestData.employees[id]);
-            var service = new EmployeeService(mockEmployeeRepo.Object);
+        // [Theory]
+        // [InlineData(0)]
+        // [InlineData(1)]
+        // [InlineData(2)]
+        // public void GetById_ShouldReturnEmployee(int id)
+        // {
+        //     // Arrange
+        //     var mockEmployeeRepo = new Mock<IEmployeeRepo>();
+        //     mockEmployeeRepo.Setup(mock=>
+        //         mock.GetById(id)).Returns(TestData.employees[id]);
+        //     var service = new EmployeeService(mockEmployeeRepo.Object);
             
-            // Act
-            var employee = service.GetById(id);
+        //     // Act
+        //     var employee = service.GetById(id);
 
-            // Assert
-            Assert.Equal(TestData.employees[id], employee);
-        }
+        //     // Assert
+        //     Assert.Equal(TestData.employees[id], employee);
+        // }
     }
 }

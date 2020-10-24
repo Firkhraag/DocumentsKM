@@ -8,7 +8,7 @@ namespace DocumentsKM.Models
     {
         // Поз_выпуска
         [Key]
-        public int Position { get; set; }
+        public int Id { get; set; }
 
         // Id_марки
         [Required]

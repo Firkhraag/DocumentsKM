@@ -1,6 +1,6 @@
 import React from 'react'
-import Edit from '../Svg/Edit'
-import Delete from '../Svg/Delete'
+import { PencilSquare } from 'react-bootstrap-icons'
+import { Trash } from 'react-bootstrap-icons'
 import './AttachedDocs.css'
 
 const AttachedDocs = () => {
@@ -33,8 +33,8 @@ const AttachedDocs = () => {
 						<td>Проверил</td>
 						<td>Нормоконтролер</td>
 						<td>Примечание</td>
-                        <td className="pointer action-cell-width text-centered"><Edit /></td>
-                        <td className="pointer action-cell-width text-centered"><Delete /></td>
+                        <td className="pointer action-cell-width text-centered"><PencilSquare /></td>
+                        <td className="pointer action-cell-width text-centered"><Trash /></td>
 					</tr>
 					<tr>
 						<td>№</td>
@@ -47,36 +47,8 @@ const AttachedDocs = () => {
 						<td>Проверил</td>
 						<td>Нормоконтролер</td>
 						<td>Примечание</td>
-                        <td className="pointer action-cell-width text-centered"><Edit /></td>
-                        <td className="pointer action-cell-width text-centered"><Delete /></td>
-					</tr>
-					<tr>
-						<td>№</td>
-						<td>Шифр</td>
-						<td>Выпуск</td>
-						<td>Название</td>
-						<td>Листов</td>
-						<td>Формат</td>
-						<td>Разработал</td>
-						<td>Проверил</td>
-						<td>Нормоконтролер</td>
-						<td>Примечание</td>
-                        <td className="pointer action-cell-width text-centered"><Edit /></td>
-                        <td className="pointer action-cell-width text-centered"><Delete /></td>
-					</tr>
-					<tr>
-						<td>№</td>
-						<td>Шифр</td>
-						<td>Выпуск</td>
-						<td>Название</td>
-						<td>Листов</td>
-						<td>Формат</td>
-						<td>Разработал</td>
-						<td>Проверил</td>
-						<td>Нормоконтролер</td>
-						<td>Примечание</td>
-                        <td className="pointer action-cell-width text-centered"><Edit /></td>
-                        <td className="pointer action-cell-width text-centered"><Delete /></td>
+                        <td className="pointer action-cell-width text-centered"><PencilSquare /></td>
+                        <td className="pointer action-cell-width text-centered"><Trash /></td>
 					</tr>
 				</tbody>
 			</table>

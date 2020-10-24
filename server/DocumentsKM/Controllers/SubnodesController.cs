@@ -19,8 +19,7 @@ namespace DocumentsKM.Controllers
 
         public SubnodesController(
             ISubnodeService subnodeService,
-            IMapper mapper
-        )
+            IMapper mapper)
         {
             _service = subnodeService;
             _mapper = mapper;

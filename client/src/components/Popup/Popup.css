@@ -4,16 +4,17 @@
     top: 33%;
     left: 50%;
     margin-left: -150px;
-    padding: 1.5em;
+    /* padding: 1.5em; */
     z-index: 500;
-    box-shadow: 0 0 4px 1px rgba(0, 0, 0, .5);
+    font-size: 1.04rem;
+    /* box-shadow: 0 0 4px 1px rgba(0, 0, 0, .5); */
 }
 
-.popup button:first-of-type {
+/* .popup button:first-of-type {
     margin-right: 1em;
-}
+} */
 
-.popup button {
+/* .popup button {
     flex-grow: 1;
     font-size: 15px;
 	background: #ededed;
@@ -28,4 +29,4 @@
 
 .popup .btns-mrg {
     margin-top: 1em;
-}
+} */

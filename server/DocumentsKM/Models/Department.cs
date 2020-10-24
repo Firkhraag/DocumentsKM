@@ -25,6 +25,10 @@ namespace DocumentsKM.Models
         public string Code { get; set; }
 
         // Активность
+
+        // Все отделы активны
+        // Если отдел становится неактивным, получаем сообщение от сервиса работников
+        
         [Required]
         public bool IsActive { get; set; }
 

@@ -19,7 +19,6 @@ namespace DocumentsKM.Services
             int? groupLeaderId);
         // Обновить существующую марку
         void Update(int id, MarkUpdateRequest mark);
-        // Обновить согласования у текущей марки
-        void UpdateApprovals(int id, MarkApprovalsRequest mark);
+        void ChangeState(Mark mark);
     }
 }

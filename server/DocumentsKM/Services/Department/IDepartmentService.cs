@@ -7,7 +7,5 @@ namespace DocumentsKM.Services
     {
         // Получить все активные отделы
         IEnumerable<Department> GetAllActive();
-        // Получить отдел по номеру
-        Department GetByNumber(int number);
     }
 }

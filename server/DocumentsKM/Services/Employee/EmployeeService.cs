@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
-using DocumentsKM.Dtos;
 
 namespace DocumentsKM.Services
 {
@@ -43,11 +42,6 @@ namespace DocumentsKM.Services
                 mainBuilderPosCode);
 
             return (chiefSpecialists, groupLeaders, mainBuilders);
-        }
-
-        public Employee GetById(int id)
-        {
-            return _repository.GetById(id);
         }
     }
 }

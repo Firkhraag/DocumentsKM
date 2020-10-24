@@ -318,6 +318,34 @@ namespace DocumentsKM
                 ctx.Subnodes.AttachRange(subnodes);
             }
 
+            List<User> users = new List<User>
+            {
+                new User
+                {
+                    Login="1",
+                    Password=BCrypt.Net.BCrypt.HashPassword("1"),
+                    Employee=employees[0],
+                },
+                new User
+                {
+                    Login="2",
+                    Password=BCrypt.Net.BCrypt.HashPassword("2"),
+                    Employee=employees[1],
+                },
+                new User
+                {
+                    Login="3",
+                    Password=BCrypt.Net.BCrypt.HashPassword("3"),
+                    Employee=employees[2],
+                },
+            };
+            if (!ctx.Users.Any())
+            {
+                ctx.Users.AddRange(users);
+                ctx.SaveChanges();
+                ctx.Users.AttachRange(users);
+            }
+
             List<Mark> marks = new List<Mark>
             {
                 new Mark
@@ -380,6 +408,26 @@ namespace DocumentsKM
                 ctx.Marks.AddRange(marks);
                 ctx.SaveChanges();
                 ctx.Marks.AttachRange(marks);
+            }
+
+            List<MarkApproval> markApprovals = new List<MarkApproval>
+            {
+                new MarkApproval
+                {
+                    Mark=marks[0],
+                    Employee=employees[1],
+                },
+                new MarkApproval
+                {
+                    Mark=marks[0],
+                    Employee=employees[2],
+                },
+            };
+            if (!ctx.MarkApprovals.Any())
+            {
+                ctx.MarkApprovals.AddRange(markApprovals);
+                ctx.SaveChanges();
+                ctx.MarkApprovals.AttachRange(markApprovals);
             }
 
             List<Specification> specifications = new List<Specification>
@@ -467,7 +515,7 @@ namespace DocumentsKM
                     Mark=marks[0],
                     DocumentType=documentTypes[0],
                     Name="Name",
-                    Developer=employees[0],
+                    Creator=employees[0],
                     NumberOfPages=1,
                 },
                 new Sheet
@@ -475,7 +523,7 @@ namespace DocumentsKM
                     Mark=marks[1],
                     DocumentType=documentTypes[0],
                     Name="Name",
-                    Developer=employees[0],
+                    Creator=employees[0],
                     NumberOfPages=1,
                 },
                 new Sheet
@@ -483,7 +531,7 @@ namespace DocumentsKM
                     Mark=marks[2],
                     DocumentType=documentTypes[0],
                     Name="Name",
-                    Developer=employees[0],
+                    Creator=employees[0],
                     NumberOfPages=1,
                 },
                 new Sheet
@@ -491,7 +539,7 @@ namespace DocumentsKM
                     Mark=marks[3],
                     DocumentType=documentTypes[0],
                     Name="Name",
-                    Developer=employees[0],
+                    Creator=employees[0],
                     NumberOfPages=1,
                 },
                 new Sheet
@@ -499,7 +547,7 @@ namespace DocumentsKM
                     Mark=marks[4],
                     DocumentType=documentTypes[0],
                     Name="Name",
-                    Developer=employees[0],
+                    Creator=employees[0],
                     NumberOfPages=1,
                 },
             };
@@ -508,34 +556,6 @@ namespace DocumentsKM
                 ctx.Sheets.AddRange(sheets);
                 ctx.SaveChanges();
                 ctx.Sheets.AttachRange(sheets);
-            }
-
-            List<User> users = new List<User>
-            {
-                new User
-                {
-                    Login="1",
-                    Password=BCrypt.Net.BCrypt.HashPassword("1"),
-                    Employee=employees[0],
-                },
-                new User
-                {
-                    Login="2",
-                    Password=BCrypt.Net.BCrypt.HashPassword("2"),
-                    Employee=employees[1],
-                },
-                new User
-                {
-                    Login="3",
-                    Password=BCrypt.Net.BCrypt.HashPassword("3"),
-                    Employee=employees[2],
-                },
-            };
-            if (!ctx.Users.Any())
-            {
-                ctx.Users.AddRange(users);
-                ctx.SaveChanges();
-                ctx.Users.AttachRange(users);
             }
         }
     }

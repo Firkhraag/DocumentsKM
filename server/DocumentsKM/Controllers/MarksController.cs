@@ -22,8 +22,7 @@ namespace DocumentsKM.Controllers
 
         public MarksController(
             IMarkService markService,
-            IMapper mapper
-        )
+            IMapper mapper)
         {
             _service = markService;
             _mapper = mapper;
@@ -105,31 +104,15 @@ namespace DocumentsKM.Controllers
             return NoContent();
         }
 
-        [HttpGet, Route("marks/{id}/approvals")]
+        [HttpGet, Route("marks/{id}/current-specification")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<MarkApprovalsResponse> GetApprovals(int id)
+        public ActionResult GetCurrentSpecification(int id)
         {
             var mark = _service.GetById(id);
             if (mark != null)
-                return Ok(_mapper.Map<MarkApprovalsResponse>(mark));
+                return Ok(new {Id = mark.CurrentSpecification.Id});
             return NotFound();
-        }
-
-        [HttpPatch, Route("marks/{id}/approvals")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult UpdateApprovals(int id, [FromBody] MarkApprovalsRequest markRequest)
-        {
-            try
-            {
-                _service.UpdateApprovals(id, markRequest);
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            return NoContent();
         }
     }
 }

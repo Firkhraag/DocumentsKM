@@ -29,7 +29,7 @@ namespace DocumentsKM.Data
             return _context.Marks.FirstOrDefault(m => m.Id == id);
         }
 
-        public void Create(Mark mark)
+        public void Add(Mark mark)
         {
             _context.Marks.Add(mark);
             _context.SaveChanges();

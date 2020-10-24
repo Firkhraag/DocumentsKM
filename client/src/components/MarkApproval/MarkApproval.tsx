@@ -10,7 +10,6 @@ import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import getFromOptions from '../../util/get-from-options'
 import { useMark } from '../../store/MarkStore'
-import getNullableFieldValue from '../../util/get-field-value'
 import { removeValueFromArray } from '../../util/array'
 import { reactSelectstyle } from '../../util/react-select-style'
 
@@ -30,16 +29,6 @@ const MarkApproval = () => {
 	const cachedEmployees = useState(new Map<number, Employee[]>())[0]
 	const employeesExcludedFromOptions = useState([] as number[])[0]
 
-	const [markApprovalsFetched, setMarkApprovalsFetched] = useState([
-		null,
-		null,
-		null,
-		null,
-		null,
-		null,
-		null,
-	] as Employee[])
-
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
@@ -52,17 +41,7 @@ const MarkApproval = () => {
 					const markApprovalsFetchedResponse = await httpClient.get(
 						`/marks/${mark.id}/approvals`
 					)
-					// Order matters!
-					const markApprovals = [
-						markApprovalsFetchedResponse.data.approvalSpecialist1,
-						markApprovalsFetchedResponse.data.approvalSpecialist2,
-						markApprovalsFetchedResponse.data.approvalSpecialist3,
-						markApprovalsFetchedResponse.data.approvalSpecialist4,
-						markApprovalsFetchedResponse.data.approvalSpecialist5,
-						markApprovalsFetchedResponse.data.approvalSpecialist6,
-						markApprovalsFetchedResponse.data.approvalSpecialist7,
-					]
-					setMarkApprovalsFetched([...markApprovals])
+					const markApprovals = markApprovalsFetchedResponse.data as Employee[]
 					for (let e of markApprovals) {
 						if (e != null) {
 							employeesExcludedFromOptions.push(e.id)
@@ -104,7 +83,7 @@ const MarkApproval = () => {
 						employees: optionsObject.employees,
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					console.log('Failed to fetch the data', e)
 				}
 			}
 			fetchData()
@@ -205,39 +184,19 @@ const MarkApproval = () => {
 
 	const onChangeButtonClick = async () => {
 		try {
-			await httpClient.patch(`/marks/${mark.id}/approvals`, {
-				approvalSpecialist1Id: getNullableFieldValue(
-					selectedObject.employees[0],
-					markApprovalsFetched[0]
-				),
-				approvalSpecialist2Id: getNullableFieldValue(
-					selectedObject.employees[1],
-					markApprovalsFetched[1]
-				),
-				approvalSpecialist3Id: getNullableFieldValue(
-					selectedObject.employees[2],
-					markApprovalsFetched[2]
-				),
-				approvalSpecialist4Id: getNullableFieldValue(
-					selectedObject.employees[3],
-					markApprovalsFetched[3]
-				),
-				approvalSpecialist5Id: getNullableFieldValue(
-					selectedObject.employees[4],
-					markApprovalsFetched[4]
-				),
-				approvalSpecialist6Id: getNullableFieldValue(
-					selectedObject.employees[5],
-					markApprovalsFetched[5]
-				),
-				approvalSpecialist7Id: getNullableFieldValue(
-					selectedObject.employees[5],
-					markApprovalsFetched[6]
-				),
-			})
+			const employeeIdsToSend = [] as number[]
+			for (let e of selectedObject.employees) {
+				if (e != null) {
+					employeeIdsToSend.push(e.id)
+				}
+			}
+			await httpClient.patch(
+				`/marks/${mark.id}/approvals`,
+				employeeIdsToSend
+			)
 			history.push('/')
 		} catch (e) {
-			console.log('Fail')
+			console.log('Error')
 		}
 	}
 
@@ -249,110 +208,122 @@ const MarkApproval = () => {
 					<div className="bold input-width">Отдел</div>
 					<div className="bold input-width mrg-left">Специалист</div>
 				</div>
-				{[...Array(7).keys()].map((rowNumber) => {
-					return (
-						<div className="flex mrg-top" key={rowNumber}>
-							<Select
-								maxMenuHeight={250}
-								className="input-width"
-								isClearable={true}
-								isSearchable={true}
-								placeholder={
-									rowNumber > 0 &&
-									selectedObject.employees[rowNumber - 1] ==
+				{[...Array(optionsObject.employees.length).keys()].map(
+					(rowNumber) => {
+						return (
+							<div className="flex mrg-top" key={rowNumber}>
+								<Select
+									maxMenuHeight={250}
+									className="input-width"
+									isClearable={true}
+									isSearchable={true}
+									placeholder={
+										rowNumber > 0 &&
+										selectedObject.employees[
+											rowNumber - 1
+										] == null
+											? ''
+											: 'Выберите отдел'
+									}
+									noOptionsMessage={() => 'Отделы не найдены'}
+									onChange={(selectedOption) =>
+										onDepartmentSelect(
+											rowNumber,
+											(selectedOption as any)?.value
+										)
+									}
+									value={
+										selectedObject.departments[rowNumber] ==
 										null
-										? ''
-										: 'Выберите отдел'
-								}
-								noOptionsMessage={() => 'Отделы не найдены'}
-								onChange={(selectedOption) =>
-									onDepartmentSelect(
-										rowNumber,
-										(selectedOption as any)?.value
-									)
-								}
-								value={
-									selectedObject.departments[rowNumber] ==
-									null
-										? null
-										: {
-												value:
-													selectedObject.departments[
-														rowNumber
-													].number,
-												label:
-													selectedObject.departments[
-														rowNumber
-													].code,
-										  }
-								}
-								options={
-									rowNumber > 0 &&
-									selectedObject.employees[rowNumber - 1] ==
+											? null
+											: {
+													value:
+														selectedObject
+															.departments[
+															rowNumber
+														].number,
+													label:
+														selectedObject
+															.departments[
+															rowNumber
+														].code,
+											  }
+									}
+									options={
+										rowNumber > 0 &&
+										selectedObject.employees[
+											rowNumber - 1
+										] == null
+											? []
+											: optionsObject.departments.map(
+													(d) => {
+														return {
+															value: d.number,
+															label: d.code,
+														}
+													}
+											  )
+									}
+									styles={reactSelectstyle}
+								/>
+								<Select
+									maxMenuHeight={250}
+									className="input-width mrg-left"
+									isClearable={true}
+									isSearchable={true}
+									placeholder={
+										rowNumber > 0 &&
+										selectedObject.employees[
+											rowNumber - 1
+										] == null
+											? ''
+											: 'Выберите специалиста'
+									}
+									noOptionsMessage={() =>
+										'Специалисты не найдены'
+									}
+									onChange={(selectedOption) =>
+										onEmployeeSelect(
+											rowNumber,
+											(selectedOption as any)?.value
+										)
+									}
+									value={
+										selectedObject.employees[rowNumber] ==
 										null
-										? []
-										: optionsObject.departments.map((d) => {
-												return {
-													value: d.number,
-													label: d.code,
-												}
-										  })
-								}
-								styles={reactSelectstyle}
-							/>
-							<Select
-								maxMenuHeight={250}
-								className="input-width mrg-left"
-								isClearable={true}
-								isSearchable={true}
-								placeholder={
-									rowNumber > 0 &&
-									selectedObject.employees[rowNumber - 1] ==
-										null
-										? ''
-										: 'Выберите специалиста'
-								}
-								noOptionsMessage={() =>
-									'Специалисты не найдены'
-								}
-								onChange={(selectedOption) =>
-									onEmployeeSelect(
-										rowNumber,
-										(selectedOption as any)?.value
-									)
-								}
-								value={
-									selectedObject.employees[rowNumber] == null
-										? null
-										: {
-												value:
-													selectedObject.employees[
-														rowNumber
-													].id,
-												label:
-													selectedObject.employees[
-														rowNumber
-													].fullName,
-										  }
-								}
-								options={optionsObject.employees[rowNumber]
-									.filter(
-										(e) =>
-											!employeesExcludedFromOptions.includes(
-												e.id
-											)
-									)
-									.map((e) => {
-										return {
-											value: e.id,
-											label: e.fullName,
-										}
-									})}
-								styles={reactSelectstyle}
-							/>
-						</div>
-					)
-				})}
+											? null
+											: {
+													value:
+														selectedObject
+															.employees[
+															rowNumber
+														].id,
+													label:
+														selectedObject
+															.employees[
+															rowNumber
+														].fullName,
+											  }
+									}
+									options={optionsObject.employees[rowNumber]
+										.filter(
+											(e) =>
+												!employeesExcludedFromOptions.includes(
+													e.id
+												)
+										)
+										.map((e) => {
+											return {
+												value: e.id,
+												label: e.fullName,
+											}
+										})}
+									styles={reactSelectstyle}
+								/>
+							</div>
+						)
+					}
+				)}
 				<Button
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"

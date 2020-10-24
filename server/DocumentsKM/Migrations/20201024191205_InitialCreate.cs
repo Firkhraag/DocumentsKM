@@ -207,13 +207,6 @@ namespace DocumentsKM.Migrations
                     group_leader_id = table.Column<int>(type: "integer", nullable: true),
                     main_builder_id = table.Column<int>(type: "integer", nullable: false),
                     current_specification_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist1_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist2_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist3_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist4_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist5_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist6_id = table.Column<int>(type: "integer", nullable: true),
-                    approval_specialist7_id = table.Column<int>(type: "integer", nullable: true),
                     edited = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
@@ -225,48 +218,6 @@ namespace DocumentsKM.Migrations
                         principalTable: "departments",
                         principalColumn: "number",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist1_id",
-                        column: x => x.approval_specialist1_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist2_id",
-                        column: x => x.approval_specialist2_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist3_id",
-                        column: x => x.approval_specialist3_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist4_id",
-                        column: x => x.approval_specialist4_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist5_id",
-                        column: x => x.approval_specialist5_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist6_id",
-                        column: x => x.approval_specialist6_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_marks_employees_approval_specialist7_id",
-                        column: x => x.approval_specialist7_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_marks_employees_chief_specialist_id",
                         column: x => x.chief_specialist_id,
@@ -294,6 +245,30 @@ namespace DocumentsKM.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "mark_approvals",
+                columns: table => new
+                {
+                    mark_id = table.Column<int>(type: "integer", nullable: false),
+                    employee_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_mark_approvals", x => new { x.mark_id, x.employee_id });
+                    table.ForeignKey(
+                        name: "fk_mark_approvals_employees_employee_id",
+                        column: x => x.employee_id,
+                        principalTable: "employees",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_mark_approvals_marks_mark_id",
+                        column: x => x.mark_id,
+                        principalTable: "marks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "sheets",
                 columns: table => new
                 {
@@ -304,11 +279,11 @@ namespace DocumentsKM.Migrations
                     document_type_id = table.Column<byte>(type: "smallint", nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     format = table.Column<float>(type: "real", nullable: false),
-                    developer_id = table.Column<int>(type: "integer", nullable: false),
+                    creator_id = table.Column<int>(type: "integer", nullable: false),
                     inspector_id = table.Column<int>(type: "integer", nullable: true),
                     norm_controller_id = table.Column<int>(type: "integer", nullable: true),
-                    release = table.Column<byte>(type: "smallint", nullable: false),
-                    number_of_pages = table.Column<byte>(type: "smallint", nullable: false),
+                    release = table.Column<byte>(type: "SMALLINT", nullable: false),
+                    number_of_pages = table.Column<byte>(type: "SMALLINT", nullable: false),
                     note = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -321,8 +296,8 @@ namespace DocumentsKM.Migrations
                         principalColumn: "type",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_sheets_employees_developer_id",
-                        column: x => x.developer_id,
+                        name: "fk_sheets_employees_creator_id",
+                        column: x => x.creator_id,
                         principalTable: "employees",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -350,7 +325,7 @@ namespace DocumentsKM.Migrations
                 name: "specifications",
                 columns: table => new
                 {
-                    position = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     mark_id = table.Column<int>(type: "integer", nullable: false),
                     release_number = table.Column<byte>(type: "smallint", nullable: false),
@@ -359,7 +334,7 @@ namespace DocumentsKM.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_specifications", x => x.position);
+                    table.PrimaryKey("pk_specifications", x => x.id);
                     table.ForeignKey(
                         name: "fk_specifications_marks_mark_id",
                         column: x => x.mark_id,
@@ -384,39 +359,9 @@ namespace DocumentsKM.Migrations
                 column: "position_code");
 
             migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist1_id",
-                table: "marks",
-                column: "approval_specialist1_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist2_id",
-                table: "marks",
-                column: "approval_specialist2_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist3_id",
-                table: "marks",
-                column: "approval_specialist3_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist4_id",
-                table: "marks",
-                column: "approval_specialist4_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist5_id",
-                table: "marks",
-                column: "approval_specialist5_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist6_id",
-                table: "marks",
-                column: "approval_specialist6_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_approval_specialist7_id",
-                table: "marks",
-                column: "approval_specialist7_id");
+                name: "ix_mark_approvals_employee_id",
+                table: "mark_approvals",
+                column: "employee_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_marks_chief_specialist_id",
@@ -489,9 +434,9 @@ namespace DocumentsKM.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_sheets_developer_id",
+                name: "ix_sheets_creator_id",
                 table: "sheets",
-                column: "developer_id");
+                column: "creator_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_sheets_document_type_id",
@@ -555,7 +500,7 @@ namespace DocumentsKM.Migrations
                 table: "marks",
                 column: "current_specification_id",
                 principalTable: "specifications",
-                principalColumn: "position",
+                principalColumn: "id",
                 onDelete: ReferentialAction.Restrict);
         }
 
@@ -566,34 +511,6 @@ namespace DocumentsKM.Migrations
                 table: "departments");
 
             migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist1_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist2_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist3_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist4_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist5_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist6_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist7_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
                 name: "fk_marks_employees_chief_specialist_id",
                 table: "marks");
 
@@ -606,34 +523,6 @@ namespace DocumentsKM.Migrations
                 table: "marks");
 
             migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist1_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist2_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist3_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist4_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist5_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist6_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist7_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
                 name: "fk_marks_employees_chief_specialist_id",
                 table: "marks");
 
@@ -643,34 +532,6 @@ namespace DocumentsKM.Migrations
 
             migrationBuilder.DropForeignKey(
                 name: "fk_marks_employees_main_builder_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist1_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist2_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist3_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist4_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist5_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist6_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_approval_specialist7_id",
                 table: "marks");
 
             migrationBuilder.DropForeignKey(
@@ -690,8 +551,11 @@ namespace DocumentsKM.Migrations
                 table: "marks");
 
             migrationBuilder.DropForeignKey(
-                name: "fk_marks_specifications_current_specification_id",
-                table: "marks");
+                name: "fk_specifications_marks_mark_id",
+                table: "specifications");
+
+            migrationBuilder.DropTable(
+                name: "mark_approvals");
 
             migrationBuilder.DropTable(
                 name: "sheets");
@@ -712,10 +576,10 @@ namespace DocumentsKM.Migrations
                 name: "departments");
 
             migrationBuilder.DropTable(
-                name: "specifications");
+                name: "marks");
 
             migrationBuilder.DropTable(
-                name: "marks");
+                name: "specifications");
 
             migrationBuilder.DropTable(
                 name: "subnodes");

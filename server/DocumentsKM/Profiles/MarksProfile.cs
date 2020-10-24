@@ -12,10 +12,6 @@ namespace DocumentsKM.Profiles
             CreateMap<Mark, MarkParentResponse>();
             CreateMap<Mark, MarkResponse>();
             CreateMap<MarkCreateRequest, Mark>();
-            // Delete ?
-            // CreateMap<MarkUpdateRequest, Mark>();
-            // CreateMap<MarkApprovalsRequest, Mark>();
-            CreateMap<Mark, MarkApprovalsResponse>();
         }
     }
 }

@@ -36,8 +36,8 @@ namespace DocumentsKM.Models
 
         // Разраб
         [Required]
-        [ForeignKey("DeveloperId")]
-        public virtual Employee Developer { get; set; }
+        [ForeignKey("CreatorId")]
+        public virtual Employee Creator { get; set; }
 
         // Пров
         [ForeignKey("InspectorId")]

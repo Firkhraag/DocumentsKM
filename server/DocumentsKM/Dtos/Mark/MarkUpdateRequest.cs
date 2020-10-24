@@ -10,6 +10,7 @@ namespace DocumentsKM.Dtos
         public int? ChiefSpecialistId { get; set; }
         public int? GroupLeaderId { get; set; }
         public int? MainBuilderId { get; set; }
+        public int? CurrentSpecificationId { get; set; }
 
          public MarkUpdateRequest()
         {
@@ -21,6 +22,7 @@ namespace DocumentsKM.Dtos
             ChiefSpecialistId = null;
             GroupLeaderId = null;
             MainBuilderId = null;
+            CurrentSpecificationId = null;
         }
     }
 }

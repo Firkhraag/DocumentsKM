@@ -31,47 +31,47 @@ const AuthApp = () => {
 							<Home />
 						</Route>
 						<Route exact path="/mark-select">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<MarkSelect />
 							</div>
 						</Route>
 						<Route exact path="/mark-data">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<MarkData isCreateMode={false} />
 							</div>
 						</Route>
 						<Route exact path="/mark-create">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<MarkData isCreateMode={true} />
 							</div>
 						</Route>
 						<Route exact path="/mark-approval">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<MarkApproval />
 							</div>
 						</Route>
 						<Route exact path="/specifications">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<Specifications setPopupObj={setPopupObj} />
 							</div>
 						</Route>
 						<Route exact path="/specification-data">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<SpecificationData />
 							</div>
 						</Route>
 						<Route exact path="/sheets">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<Sheets />
 							</div>
 						</Route>
 						<Route exact path="/documents">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<AttachedDocs />
 							</div>
 						</Route>
 						<Route exact path="/exploitation">
-							<div className="full-width container">
+							<div className="full-width div-container">
 								<Exploitation />
 							</div>
 						</Route>

@@ -27,23 +27,23 @@ namespace DocumentsKM.Tests
             Assert.Equal(filteredDepartments, returnedDepartments);
         }
 
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        public void GetByNumber_ShouldReturnDepartment(int number)
-        {
-            // Arrange
-            var mockDepartmentRepo = new Mock<IDepartmentRepo>();
-            mockDepartmentRepo.Setup(mock=>
-                mock.GetByNumber(number)).Returns(TestData.departments[number]);
-            var service = new DepartmentService(mockDepartmentRepo.Object);
+        // [Theory]
+        // [InlineData(0)]
+        // [InlineData(1)]
+        // [InlineData(2)]
+        // public void GetByNumber_ShouldReturnDepartment(int number)
+        // {
+        //     // Arrange
+        //     var mockDepartmentRepo = new Mock<IDepartmentRepo>();
+        //     mockDepartmentRepo.Setup(mock=>
+        //         mock.GetByNumber(number)).Returns(TestData.departments[number]);
+        //     var service = new DepartmentService(mockDepartmentRepo.Object);
             
-            // Act
-            var department = service.GetByNumber(number);
+        //     // Act
+        //     var department = service.GetByNumber(number);
 
-            // Assert
-            Assert.Equal(TestData.departments[number], department);
-        }
+        //     // Assert
+        //     Assert.Equal(TestData.departments[number], department);
+        // }
     }
 }
