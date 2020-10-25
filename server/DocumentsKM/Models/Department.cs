@@ -23,11 +23,6 @@ namespace DocumentsKM.Models
         [Required]
         [MaxLength(5)]
         public string Code { get; set; }
-
-        // Активность
-
-        // Все отделы активны
-        // Если отдел становится неактивным, получаем сообщение от сервиса работников
         
         [Required]
         public bool IsActive { get; set; }
@@ -35,9 +30,5 @@ namespace DocumentsKM.Models
         // Производственный
         [Required]
         public bool IsIndustrial { get; set; }
-
-        // Нач_отд 
-        [ForeignKey("DepartmentHeadId")]
-        public virtual Employee DepartmentHead { get; set; }
     }
 }

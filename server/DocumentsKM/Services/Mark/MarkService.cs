@@ -12,20 +12,22 @@ namespace DocumentsKM.Services
         private readonly ISubnodeRepo _subnodeRepo;
         private readonly IDepartmentRepo _departmentRepo;
         private readonly IEmployeeRepo _employeeRepo;
-        private readonly ISpecificationRepo _specificationRepo;
+
+        private readonly ISpecificationService _specificationService;
 
         public MarkService(
             IMarkRepo markRepo,
             ISubnodeRepo subnodeRepo,
             IDepartmentRepo departmentRepo,
             IEmployeeRepo employeeRepo,
-            ISpecificationRepo specificationRepo)
+            ISpecificationService specificationService)
         {
             _repository = markRepo;
             _subnodeRepo = subnodeRepo;
             _departmentRepo = departmentRepo;
             _employeeRepo = employeeRepo;
-            _specificationRepo = specificationRepo;
+
+            _specificationService = specificationService;
         }
 
         public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
@@ -74,7 +76,9 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(groupLeader));
                 mark.GroupLeader = groupLeader;
             }
+            
             _repository.Add(mark);
+            _specificationService.Create(mark.Id);
         }
 
         public void Update(
@@ -111,13 +115,6 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(mainBuilder));
                 foundMark.MainBuilder = mainBuilder;
             }
-            if (mark.CurrentSpecificationId != null)
-            {
-                var specification = _specificationRepo.GetById(mark.CurrentSpecificationId.GetValueOrDefault());
-                if (specification == null)
-                    throw new ArgumentNullException(nameof(specification));
-                foundMark.CurrentSpecification = specification;
-            }
             // Nullable section
             if (mark.ChiefSpecialistId != null)
             {
@@ -146,11 +143,6 @@ namespace DocumentsKM.Services
                 }
             }
             _repository.Update(foundMark);
-        }
-
-        public void ChangeState(Mark mark)
-        {
-            _repository.Update(mark);
         }
     }
 }

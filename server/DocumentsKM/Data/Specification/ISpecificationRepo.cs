@@ -11,6 +11,8 @@ namespace DocumentsKM.Data
         Specification GetById(int id);
         // Добавить новый выпуск спецификации
         void Add(Specification specification);
+        // Изменить выпуск спецификации
+        void Update(Specification specification);
         // Удалить выпуск спецификации
         void Delete(Specification specification);
     }

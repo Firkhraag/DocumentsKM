@@ -68,8 +68,6 @@ namespace DocumentsKM.Tests
                 Department=departments[0],
                 Position=positions[0],
                 RecruitedDate=DateTime.Parse("2020-09-01"),
-                HasCanteen=false,
-                VacationType=1,
             },
             new Employee
             {
@@ -78,8 +76,6 @@ namespace DocumentsKM.Tests
                 Department=departments[0],
                 Position=positions[1],
                 RecruitedDate=DateTime.Parse("2020-09-01"),
-                HasCanteen=false,
-                VacationType=1,
             },
             new Employee
             {
@@ -88,8 +84,6 @@ namespace DocumentsKM.Tests
                 Department=departments[1],
                 Position=positions[2],
                 RecruitedDate=DateTime.Parse("2020-09-01"),
-                HasCanteen=false,
-                VacationType=1,
             },
         };
 

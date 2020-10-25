@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Services;
@@ -48,6 +49,25 @@ namespace DocumentsKM.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpPatch, Route("marks/{markId}/specifications/{id}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult Update(int markId, int id, [FromBody] SpecificationUpdateRequest specificationRequest)
+        {
+            // DEBUG
+            // Log.Information(JsonSerializer.Serialize(markRequest));
+            try
+            {
+                _service.Update(markId, id, specificationRequest);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
 
         [HttpDelete, Route("marks/{markId}/specifications/{id}")]

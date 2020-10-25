@@ -32,26 +32,5 @@ namespace DocumentsKM.Models
         // ДолжностьКод, ДолжностьИмя
         [ForeignKey("PositionCode")]
         public virtual Position Position { get; set; }
-
-        // Телефон
-        [MaxLength(50)]
-        [Phone]
-        public string PhoneNumber { get; set; }
-
-        // Столовая
-        [Required]
-        public bool HasCanteen { get; set; }
-
-        // Вид_отпуска
-        [Required]
-        public int VacationType { get; set; }
-
-        // Дата_нач
-        [DataType(DataType.Date)]
-        public DateTime BeginDate { get; set; }
-
-        // Дата_кон
-        [DataType(DataType.Date)]
-        public DateTime EndDate { get; set; }
     }
 }

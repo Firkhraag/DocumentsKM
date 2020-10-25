@@ -19,6 +19,5 @@ namespace DocumentsKM.Services
             int? groupLeaderId);
         // Обновить существующую марку
         void Update(int id, MarkUpdateRequest mark);
-        void ChangeState(Mark mark);
     }
 }

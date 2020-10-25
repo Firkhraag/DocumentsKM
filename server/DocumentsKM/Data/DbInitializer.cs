@@ -95,10 +95,8 @@ namespace DocumentsKM
                 {
                     FullName="Test employee1",
                     Department=departments[0],
-                    Position=positions[0],
+                    Position=positions[4],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
@@ -106,8 +104,6 @@ namespace DocumentsKM
                     Department=departments[0],
                     Position=positions[1],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
@@ -115,8 +111,6 @@ namespace DocumentsKM
                     Department=departments[0],
                     Position=positions[2],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
@@ -124,8 +118,6 @@ namespace DocumentsKM
                     Department=departments[0],
                     Position=positions[3],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
@@ -133,26 +125,20 @@ namespace DocumentsKM
                     Department=departments[0],
                     Position=positions[0],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
                     FullName="Test employee6",
                     Department=departments[0],
-                    Position=positions[4],
+                    Position=positions[2],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
                     FullName="Test employee7",
                     Department=departments[1],
-                    Position=positions[2],
+                    Position=positions[4],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
@@ -160,8 +146,6 @@ namespace DocumentsKM
                     Department=departments[1],
                     Position=positions[2],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
@@ -169,17 +153,13 @@ namespace DocumentsKM
                     Department=departments[1],
                     Position=positions[3],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
                 new Employee
                 {
                     FullName="Test employee10",
                     Department=departments[1],
-                    Position=positions[4],
+                    Position=positions[0],
                     RecruitedDate=DateTime.Parse("2020-09-01"),
-                    HasCanteen=false,
-                    VacationType=1,
                 },
             };
             if (!ctx.Employees.Any())
@@ -436,41 +416,61 @@ namespace DocumentsKM
                 {
                     Mark=marks[0],
                     ReleaseNumber=0,
+                    IsCurrent=false,
                 },
                 new Specification
                 {
                     Mark=marks[0],
                     ReleaseNumber=1,
+                    IsCurrent=true,
                 },
                 new Specification
                 {
                     Mark=marks[1],
                     ReleaseNumber=0,
+                    IsCurrent=false,
                 },
                 new Specification
                 {
                     Mark=marks[1],
                     ReleaseNumber=1,
+                    IsCurrent=true,
                 },
                 new Specification
                 {
                     Mark=marks[2],
                     ReleaseNumber=0,
+                    IsCurrent=false,
                 },
                 new Specification
                 {
                     Mark=marks[2],
                     ReleaseNumber=1,
+                    IsCurrent=true,
                 },
                 new Specification
                 {
                     Mark=marks[3],
                     ReleaseNumber=0,
+                    IsCurrent=false,
                 },
                 new Specification
                 {
                     Mark=marks[3],
                     ReleaseNumber=1,
+                    IsCurrent=true,
+                },
+                new Specification
+                {
+                    Mark=marks[4],
+                    ReleaseNumber=0,
+                    IsCurrent=true,
+                },
+                new Specification
+                {
+                    Mark=marks[5],
+                    ReleaseNumber=0,
+                    IsCurrent=true,
                 },
             };
             if (!ctx.Specifications.Any())
@@ -545,6 +545,14 @@ namespace DocumentsKM
                 new Sheet
                 {
                     Mark=marks[4],
+                    DocumentType=documentTypes[0],
+                    Name="Name",
+                    Creator=employees[0],
+                    NumberOfPages=1,
+                },
+                new Sheet
+                {
+                    Mark=marks[5],
                     DocumentType=documentTypes[0],
                     Name="Name",
                     Creator=employees[0],

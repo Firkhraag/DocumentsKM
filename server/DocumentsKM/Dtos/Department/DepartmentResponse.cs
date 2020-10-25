@@ -1,7 +1,8 @@
 namespace DocumentsKM.Dtos
 {
-    public class DepartmentResponse : DepartmentBaseResponse
+    public class DepartmentResponse
     {
-        public EmployeeBaseResponse DepartmentHead { get; set; }
+        public int Number { get; set; }
+        public string Code { get; set; }
     }
 }

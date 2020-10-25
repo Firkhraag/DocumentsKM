@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data
 {
@@ -15,7 +16,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Specification> GetAllByMarkId(int markId)
         {
-            return _context.Specifications.Where(s => s.MarkId == markId);
+            return _context.Specifications.Where(s => s.MarkId == markId).ToList();
         }
 
         public Specification GetById(int id)
@@ -26,6 +27,12 @@ namespace DocumentsKM.Data
         public void Add(Specification specification)
         {
             _context.Specifications.Add(specification);
+            _context.SaveChanges();
+        }
+
+        public void Update(Specification specification)
+        {
+            _context.Entry(specification).State = EntityState.Modified;
             _context.SaveChanges();
         }
 

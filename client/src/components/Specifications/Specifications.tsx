@@ -23,19 +23,19 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 
 	const [specifications, setSpecifications] = useState([] as Specification[])
 
-	const [refs, setRefs] = useState([] as React.MutableRefObject<undefined>[])
-    const [activeId, setActiveId] = useState(-1)
-    const [rerender, setRerender] = useState(false)
+	const refs = useState([] as React.MutableRefObject<undefined>[])[0]
+	const [currentSpecId, setCurrentSpecId] = useState(-1)
+	const [initialRender, setInitialRender] = useState(true)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			if (
-				activeId !== -1 &&
+				currentSpecId !== -1 &&
 				refs.length > 0 &&
 				specifications.length > 0
 			) {
 				for (const [i, s] of specifications.entries()) {
-					if (s.id === activeId) {
+					if (s.id === currentSpecId) {
 						const inputElement = refs[i].current as any
 						if (inputElement) {
 							inputElement.checked = true
@@ -43,53 +43,42 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 					}
 				}
 				return
-			}
-			const fetchData = async () => {
-				try {
-					const specificationsFetchedResponse = await httpClient.get(
-						`/marks/${mark.id}/specifications`
-					)
-					const currentSpecificationFetchedResponse = await httpClient.get(
-						`/marks/${mark.id}/current-specification`
-					)
-					setActiveId(
-						currentSpecificationFetchedResponse.data.id
-                    )
-                    
-                    // const refArr = [] as React.MutableRefObject<undefined>[]
-					for (let _ of specificationsFetchedResponse.data) {
-						refs.push(createRef())
-					}
-                    setSpecifications(specificationsFetchedResponse.data)
-                    setRerender(!rerender)
-					// setRefs(refArr)
-
-					// const refArr = [] as React.MutableRefObject<undefined>[]
-					// for (let _ of specificationsFetchedResponse.data) {
-					// 	refArr.push(createRef())
-					// }
-					// setSpecifications(specificationsFetchedResponse.data)
-					// setRefs(refArr)
-				} catch (e) {
-					console.log('Failed to fetch the data', e)
-				}
-			}
-			fetchData()
+            }
+            if (initialRender) {
+                const fetchData = async () => {
+                    setInitialRender(false)
+                    try {
+                        const specificationsFetchedResponse = await httpClient.get(
+                            `/marks/${mark.id}/specifications`
+                        )
+                        for (let s of specificationsFetchedResponse.data) {
+                            if (s.isCurrent) {
+                                setCurrentSpecId(s.id)
+                            }
+                            refs.push(createRef())
+                        }
+                        setSpecifications(specificationsFetchedResponse.data)
+                        // setRerender(!rerender)
+                    } catch (e) {
+                        console.log('Failed to fetch the data', e)
+                    }
+                }
+                fetchData()
+            }
 		}
-	}, [mark, rerender])
+	}, [mark, currentSpecId, specifications])
 
 	const onSelectCurrentClick = async (row: number, id: number) => {
 		try {
-			await httpClient.patch(`/marks/${mark.id}`, {
-				currentSpecificationId: id,
+			await httpClient.patch(`marks/${mark.id}/specifications/${id}`, {
+				isCurrent: true,
 			})
 			const inputElement = refs[row].current as any
 			if (inputElement) {
 				inputElement.checked = true
-            }
-            setActiveId(id)
-            setRerender(!rerender)
-            setPopupObj(defaultPopupObj)
+			}
+			setCurrentSpecId(id)
+			setPopupObj(defaultPopupObj)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -100,17 +89,11 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 			const newSpecificationFetched = await httpClient.post(
 				`/marks/${mark.id}/specifications`
 			)
-            specifications.push(newSpecificationFetched.data)
-            setSpecifications(specifications)
-            refs.push(createRef())
-            setActiveId(newSpecificationFetched.data.id)
-
-            // const refArr = refs
-            // refArr.push(createRef())
-            // setRefs(refArr)
-            setRerender(!rerender)
-
-            setPopupObj(defaultPopupObj)
+			specifications.push(newSpecificationFetched.data)
+			setSpecifications(specifications)
+			refs.push(createRef())
+			setCurrentSpecId(newSpecificationFetched.data.id)
+			setPopupObj(defaultPopupObj)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -118,12 +101,12 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
-            await httpClient.delete(`/marks/${mark.id}/specifications/${id}`)
+			await httpClient.delete(`/marks/${mark.id}/specifications/${id}`)
             refs.splice(row, 1)
-			specifications.splice(row, 1)
-            setSpecifications(specifications)
-            setRerender(!rerender)
-            setPopupObj(defaultPopupObj)
+            const newSpecArr = [...specifications]
+			newSpecArr.splice(row, 1)
+			setSpecifications(newSpecArr)
+			setPopupObj(defaultPopupObj)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -169,23 +152,26 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 								<td className="note-cell-width">{s.note}</td>
 								<td
 									onClick={() =>
-										activeId === s.id ? null : setPopupObj({
-											isShown: true,
-											msg: `Вы действительно хотите сделать выпуск спецификации №${s.releaseNumber} текущим?`,
-											onAccept: () =>
-												onSelectCurrentClick(
-													index,
-													s.id
-												),
-											onCancel: () =>
-												setPopupObj(defaultPopupObj),
-										})
+										currentSpecId === s.id
+											? null
+											: setPopupObj({
+													isShown: true,
+													msg: `Вы действительно хотите сделать выпуск спецификации №${s.releaseNumber} текущим?`,
+													onAccept: () =>
+														onSelectCurrentClick(
+															index,
+															s.id
+														),
+													onCancel: () =>
+														setPopupObj(
+															defaultPopupObj
+														),
+											  })
 									}
 									className="pointer text-centered"
 								>
 									<input
 										ref={refs[index]}
-										// checked={activeId === s.id}
 										className="current-radio-btn pointer"
 										type="radio"
 										id={`is${s.id}`}
@@ -202,14 +188,21 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 								</td>
 								<td
 									onClick={() =>
-										activeId === s.id ? null : setPopupObj({
-											isShown: true,
-											msg: `Вы действительно хотите удалить выпуск спецификации №${s.releaseNumber}?`,
-											onAccept: () =>
-												onDeleteClick(index, s.id),
-											onCancel: () =>
-												setPopupObj(defaultPopupObj),
-										})
+										currentSpecId === s.id
+											? null
+											: setPopupObj({
+													isShown: true,
+													msg: `Вы действительно хотите удалить выпуск спецификации №${s.releaseNumber}?`,
+													onAccept: () =>
+														onDeleteClick(
+															index,
+															s.id
+														),
+													onCancel: () =>
+														setPopupObj(
+															defaultPopupObj
+														),
+											  })
 									}
 									className="pointer action-cell-width text-centered"
 								>

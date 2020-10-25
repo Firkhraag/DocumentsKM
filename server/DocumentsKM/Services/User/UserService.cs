@@ -18,6 +18,7 @@ namespace DocumentsKM.Services
     {
         private IUserRepo _repository;
         private readonly AppSettings _appSettings;
+        
         private readonly ICacheService _cacheService;
 
         public UserService(

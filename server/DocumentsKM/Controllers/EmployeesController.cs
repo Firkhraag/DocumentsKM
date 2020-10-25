@@ -37,9 +37,10 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<MarkMainEmployeesResponse> GetMarkMainEmployeesByDepartmentNumber(int departmentNumber)
         {
-            (var chiefSpecialists, var groupLeaders, var mainBuilders) = _service
+            (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) = _service
                 .GetMarkMainEmployeesByDepartmentNumber(departmentNumber);
             return Ok(new MarkMainEmployeesResponse(
+                _mapper.Map<EmployeeBaseResponse>(departmentHead),
                 _mapper.Map<IEnumerable<EmployeeBaseResponse>>(chiefSpecialists),
                 _mapper.Map<IEnumerable<EmployeeBaseResponse>>(groupLeaders),
                 _mapper.Map<IEnumerable<EmployeeBaseResponse>>(mainBuilders)));

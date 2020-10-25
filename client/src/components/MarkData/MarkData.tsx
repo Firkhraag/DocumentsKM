@@ -33,6 +33,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	const mark = useMark()
 	const setMark = useSetMark()
 
+	const [departmentHead, setDepartmentHead] = useState<Employee>(null)
 	const [selectedObject, setSelectedObject] = useState<Mark>(null)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
@@ -108,6 +109,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							groupLeaders: fetchedMainEmployees.groupLeaders,
 							mainBuilders: fetchedMainEmployees.mainBuilders,
 						})
+						setDepartmentHead(fetchedMainEmployees.departmentHead)
 					} catch (e) {
 						console.log('Failed to fetch the mark')
 					}
@@ -118,33 +120,33 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}, [])
 
 	const onMarkCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-        setSelectedObject({
-            ...selectedObject,
-            code: event.currentTarget.value,
-        })
+		setSelectedObject({
+			...selectedObject,
+			code: event.currentTarget.value,
+		})
 	}
 
 	const onMarkNameChange = (event: React.FormEvent<HTMLInputElement>) => {
-        setSelectedObject({
-            ...selectedObject,
-            name: event.currentTarget.value,
-        })
+		setSelectedObject({
+			...selectedObject,
+			name: event.currentTarget.value,
+		})
 	}
 
 	const onDepartmentSelect = async (number: number) => {
-        if (number == null) {
-            setOptionsObject({
-                ...defaultOptionsObject,
-                departments: optionsObject.departments,
-            })
-            setSelectedObject({
-                ...selectedObject,
-                department: null,
-                chiefSpecialist: null,
-                groupLeader: null,
-                mainBuilder: null,
-            })
-        }
+		if (number == null) {
+			setOptionsObject({
+				...defaultOptionsObject,
+				departments: optionsObject.departments,
+			})
+			setSelectedObject({
+				...selectedObject,
+				department: null,
+				chiefSpecialist: null,
+				groupLeader: null,
+				mainBuilder: null,
+			})
+		}
 		const v = getFromOptions(
 			number,
 			optionsObject.departments,
@@ -200,12 +202,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}
 
 	const onGroupLeaderSelect = async (id: number) => {
-        if (id == null) {
-            setSelectedObject({
+		if (id == null) {
+			setSelectedObject({
 				...selectedObject,
 				groupLeader: null,
 			})
-        }
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.groupLeaders,
@@ -220,12 +222,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}
 
 	const onChiefSpecialistSelect = async (id: number) => {
-        if (id == null) {
-            setSelectedObject({
+		if (id == null) {
+			setSelectedObject({
 				...selectedObject,
 				chiefSpecialist: null,
 			})
-        }
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.chiefSpecialists,
@@ -240,12 +242,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 	}
 
 	const onMainBuilderSelect = async (id: number) => {
-        if (id == null) {
-            setSelectedObject({
+		if (id == null) {
+			setSelectedObject({
 				...selectedObject,
 				mainBuilder: null,
 			})
-        }
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.mainBuilders,
@@ -367,17 +369,23 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<Form.Label>Обозначение марки</Form.Label>
 						<Form.Control
 							type="text"
-							value={isCreateMode ? makeMarkName(
-								selectedObject.subnode.node.project.baseSeries,
-								selectedObject.subnode.node.code,
-								selectedObject.subnode.code,
-								selectedObject.code
-							) : makeMarkName(
-								mark.subnode.node.project.baseSeries,
-								mark.subnode.node.code,
-								mark.subnode.code,
-								mark.code
-							)}
+							value={
+								isCreateMode
+									? makeMarkName(
+											selectedObject.subnode.node.project
+												.baseSeries,
+											selectedObject.subnode.node.code,
+											selectedObject.subnode.code,
+											selectedObject.code
+									  )
+									: makeMarkName(
+											mark.subnode.node.project
+												.baseSeries,
+											mark.subnode.node.code,
+											mark.subnode.code,
+											mark.code
+									  )
+							}
 							readOnly={true}
 						/>
 					</Form.Group>
@@ -386,17 +394,20 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<Form.Control
 							type="text"
 							value={
-								isCreateMode ? makeComplexAndObjectName(
-									selectedObject.subnode.node.project.name,
-									selectedObject.subnode.node.name,
-									selectedObject.subnode.name,
-									selectedObject.name
-								).complexName : makeComplexAndObjectName(
-									mark.subnode.node.project.name,
-									mark.subnode.node.name,
-									mark.subnode.name,
-									mark.name
-								).complexName
+								isCreateMode
+									? makeComplexAndObjectName(
+											selectedObject.subnode.node.project
+												.name,
+											selectedObject.subnode.node.name,
+											selectedObject.subnode.name,
+											selectedObject.name
+									  ).complexName
+									: makeComplexAndObjectName(
+											mark.subnode.node.project.name,
+											mark.subnode.node.name,
+											mark.subnode.name,
+											mark.name
+									  ).complexName
 							}
 							readOnly={true}
 						/>
@@ -406,17 +417,20 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<Form.Control
 							type="text"
 							value={
-								isCreateMode ? makeComplexAndObjectName(
-									selectedObject.subnode.node.project.name,
-									selectedObject.subnode.node.name,
-									selectedObject.subnode.name,
-									selectedObject.name
-								).objectName : makeComplexAndObjectName(
-									mark.subnode.node.project.name,
-									mark.subnode.node.name,
-									mark.subnode.name,
-									mark.name
-								).objectName
+								isCreateMode
+									? makeComplexAndObjectName(
+											selectedObject.subnode.node.project
+												.name,
+											selectedObject.subnode.node.name,
+											selectedObject.subnode.name,
+											selectedObject.name
+									  ).objectName
+									: makeComplexAndObjectName(
+											mark.subnode.node.project.name,
+											mark.subnode.node.name,
+											mark.subnode.name,
+											mark.name
+									  ).objectName
 							}
 							readOnly={true}
 						/>
@@ -425,7 +439,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<Form.Label>Главный инженер проекта</Form.Label>
 						<Form.Control
 							type="text"
-							value={isCreateMode ? selectedObject.subnode.node.chiefEngineer.fullName : mark.subnode.node.chiefEngineer.fullName}
+							value={
+								isCreateMode
+									? selectedObject.subnode.node.chiefEngineer
+											.fullName
+									: mark.subnode.node.chiefEngineer.fullName
+							}
 							readOnly={true}
 						/>
 					</Form.Group>
@@ -434,10 +453,9 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<Form.Control
 							type="text"
 							value={
-								selectedObject.department == null || selectedObject.department.departmentHead == null
+								departmentHead == null
 									? ''
-									: selectedObject.department.departmentHead
-											.fullName
+									: departmentHead.fullName
 							}
 							readOnly={true}
 						/>
@@ -445,7 +463,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 				</div>
 
 				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
-                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 					<Form.Group>
 						<Form.Label>Шифр марки</Form.Label>
 						<Form.Control
@@ -587,7 +605,11 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					<Button
 						variant="secondary"
 						className="btn-mrg-top-2 full-width"
-						onClick={isCreateMode ? onCreateButtonClick : onChangeButtonClick}
+						onClick={
+							isCreateMode
+								? onCreateButtonClick
+								: onChangeButtonClick
+						}
 					>
 						{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
 					</Button>

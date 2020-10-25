@@ -33,10 +33,6 @@ namespace DocumentsKM.Migrations
                         .HasColumnType("character varying(5)")
                         .HasColumnName("code");
 
-                    b.Property<int?>("DepartmentHeadId")
-                        .HasColumnType("integer")
-                        .HasColumnName("department_head_id");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
@@ -59,9 +55,6 @@ namespace DocumentsKM.Migrations
 
                     b.HasKey("Number")
                         .HasName("pk_departments");
-
-                    b.HasIndex("DepartmentHeadId")
-                        .HasDatabaseName("ix_departments_department_head_id");
 
                     b.ToTable("departments");
                 });
@@ -98,17 +91,9 @@ namespace DocumentsKM.Migrations
                         .HasColumnName("id")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<DateTime>("BeginDate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("begin_date");
-
                     b.Property<int>("DepartmentNumber")
                         .HasColumnType("integer")
                         .HasColumnName("department_number");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("end_date");
 
                     b.Property<DateTime>("FiredDate")
                         .HasColumnType("timestamp without time zone")
@@ -120,15 +105,6 @@ namespace DocumentsKM.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("full_name");
 
-                    b.Property<bool>("HasCanteen")
-                        .HasColumnType("boolean")
-                        .HasColumnName("has_canteen");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("phone_number");
-
                     b.Property<int?>("PositionCode")
                         .HasColumnType("integer")
                         .HasColumnName("position_code");
@@ -136,10 +112,6 @@ namespace DocumentsKM.Migrations
                     b.Property<DateTime>("RecruitedDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("recruited_date");
-
-                    b.Property<int>("VacationType")
-                        .HasColumnType("integer")
-                        .HasColumnName("vacation_type");
 
                     b.HasKey("Id")
                         .HasName("pk_employees");
@@ -175,10 +147,6 @@ namespace DocumentsKM.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)")
                         .HasColumnName("code");
-
-                    b.Property<int?>("CurrentSpecificationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("current_specification_id");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("integer")
@@ -217,10 +185,6 @@ namespace DocumentsKM.Migrations
                     b.HasIndex("Code")
                         .IsUnique()
                         .HasDatabaseName("ix_marks_code");
-
-                    b.HasIndex("CurrentSpecificationId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_marks_current_specification_id");
 
                     b.HasIndex("DepartmentId")
                         .HasDatabaseName("ix_marks_department_id");
@@ -488,6 +452,10 @@ namespace DocumentsKM.Migrations
                         .HasColumnName("created")
                         .HasDefaultValueSql("now()");
 
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_current");
+
                     b.Property<int>("MarkId")
                         .HasColumnType("integer")
                         .HasColumnName("mark_id");
@@ -596,16 +564,6 @@ namespace DocumentsKM.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("DocumentsKM.Models.Department", b =>
-                {
-                    b.HasOne("DocumentsKM.Models.Employee", "DepartmentHead")
-                        .WithMany()
-                        .HasForeignKey("DepartmentHeadId")
-                        .HasConstraintName("fk_departments_employees_department_head_id");
-
-                    b.Navigation("DepartmentHead");
-                });
-
             modelBuilder.Entity("DocumentsKM.Models.Employee", b =>
                 {
                     b.HasOne("DocumentsKM.Models.Department", "Department")
@@ -631,11 +589,6 @@ namespace DocumentsKM.Migrations
                         .WithMany()
                         .HasForeignKey("ChiefSpecialistId")
                         .HasConstraintName("fk_marks_employees_chief_specialist_id");
-
-                    b.HasOne("DocumentsKM.Models.Specification", "CurrentSpecification")
-                        .WithOne()
-                        .HasForeignKey("DocumentsKM.Models.Mark", "CurrentSpecificationId")
-                        .HasConstraintName("fk_marks_specifications_current_specification_id");
 
                     b.HasOne("DocumentsKM.Models.Department", "Department")
                         .WithMany()
@@ -664,8 +617,6 @@ namespace DocumentsKM.Migrations
                         .IsRequired();
 
                     b.Navigation("ChiefSpecialist");
-
-                    b.Navigation("CurrentSpecification");
 
                     b.Navigation("Department");
 

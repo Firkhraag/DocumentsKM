@@ -20,6 +20,10 @@ namespace DocumentsKM.Models
         [Required]
         public byte ReleaseNumber { get; set; }
 
+        // тек_выпуск
+        [Required]
+        public bool IsCurrent { get; set; }
+
         // прим
         [MaxLength(255)]
         public string Note { get; set; }

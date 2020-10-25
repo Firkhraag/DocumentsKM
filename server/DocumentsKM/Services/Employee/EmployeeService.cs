@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -24,13 +25,20 @@ namespace DocumentsKM.Services
             return employees;
         }
 
-        public (IEnumerable<Employee>,IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentNumber(
+        public (Employee, IEnumerable<Employee>,IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentNumber(
             int departmentNumber)
         {
+            var departmentHeadPosCode = 1290;
             var chiefSpecialistPosCode = 1100;
             var groupLeaderPosCode = 1185;
             var mainBuilderPosCode = 1285;
 
+            var departmentHeadArr = _repository.GetAllByDepartmentNumberAndPosition(
+                departmentNumber,
+                departmentHeadPosCode);
+            if (departmentHeadArr.Count() != 1)
+                throw new ConflictException();
+            var departmentHead = departmentHeadArr.ToList()[0];
             var chiefSpecialists = _repository.GetAllByDepartmentNumberAndPosition(
                 departmentNumber,
                 chiefSpecialistPosCode);
@@ -40,8 +48,7 @@ namespace DocumentsKM.Services
             var mainBuilders = _repository.GetAllByDepartmentNumberAndPosition(
                 departmentNumber,
                 mainBuilderPosCode);
-
-            return (chiefSpecialists, groupLeaders, mainBuilders);
+            return (departmentHead, chiefSpecialists, groupLeaders, mainBuilders);
         }
     }
 }

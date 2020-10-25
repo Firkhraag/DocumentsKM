@@ -9,6 +9,23 @@ namespace DocumentsKM.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "departments",
+                columns: table => new
+                {
+                    number = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "character varying(140)", maxLength: 140, nullable: false),
+                    short_name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    code = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    is_industrial = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_departments", x => x.number);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "document_types",
                 columns: table => new
                 {
@@ -45,45 +62,22 @@ namespace DocumentsKM.Migrations
                     recruited_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     fired_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     department_number = table.Column<int>(type: "integer", nullable: false),
-                    position_code = table.Column<int>(type: "integer", nullable: true),
-                    phone_number = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    has_canteen = table.Column<bool>(type: "boolean", nullable: false),
-                    vacation_type = table.Column<int>(type: "integer", nullable: false),
-                    begin_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    end_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    position_code = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_employees", x => x.id);
                     table.ForeignKey(
+                        name: "fk_employees_departments_department_number",
+                        column: x => x.department_number,
+                        principalTable: "departments",
+                        principalColumn: "number",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "fk_employees_positions_position_code",
                         column: x => x.position_code,
                         principalTable: "positions",
                         principalColumn: "code",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "departments",
-                columns: table => new
-                {
-                    number = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(140)", maxLength: 140, nullable: false),
-                    short_name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
-                    code = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    is_industrial = table.Column<bool>(type: "boolean", nullable: false),
-                    department_head_id = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_departments", x => x.number);
-                    table.ForeignKey(
-                        name: "fk_departments_employees_department_head_id",
-                        column: x => x.department_head_id,
-                        principalTable: "employees",
-                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -206,7 +200,6 @@ namespace DocumentsKM.Migrations
                     chief_specialist_id = table.Column<int>(type: "integer", nullable: true),
                     group_leader_id = table.Column<int>(type: "integer", nullable: true),
                     main_builder_id = table.Column<int>(type: "integer", nullable: false),
-                    current_specification_id = table.Column<int>(type: "integer", nullable: true),
                     edited = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
@@ -329,6 +322,7 @@ namespace DocumentsKM.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     mark_id = table.Column<int>(type: "integer", nullable: false),
                     release_number = table.Column<byte>(type: "smallint", nullable: false),
+                    is_current = table.Column<bool>(type: "boolean", nullable: false),
                     note = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
                 },
@@ -342,11 +336,6 @@ namespace DocumentsKM.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "ix_departments_department_head_id",
-                table: "departments",
-                column: "department_head_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_employees_department_number",
@@ -372,12 +361,6 @@ namespace DocumentsKM.Migrations
                 name: "ix_marks_code",
                 table: "marks",
                 column: "code",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_marks_current_specification_id",
-                table: "marks",
-                column: "current_specification_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -486,79 +469,18 @@ namespace DocumentsKM.Migrations
                 table: "users",
                 column: "login",
                 unique: true);
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_employees_departments_department_number",
-                table: "employees",
-                column: "department_number",
-                principalTable: "departments",
-                principalColumn: "number",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_marks_specifications_current_specification_id",
-                table: "marks",
-                column: "current_specification_id",
-                principalTable: "specifications",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "fk_departments_employees_department_head_id",
-                table: "departments");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_chief_specialist_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_group_leader_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_main_builder_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_chief_specialist_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_group_leader_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_main_builder_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_chief_specialist_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_group_leader_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_employees_main_builder_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_marks_departments_department_id",
-                table: "marks");
-
-            migrationBuilder.DropForeignKey(
-                name: "fk_specifications_marks_mark_id",
-                table: "specifications");
-
             migrationBuilder.DropTable(
                 name: "mark_approvals");
 
             migrationBuilder.DropTable(
                 name: "sheets");
+
+            migrationBuilder.DropTable(
+                name: "specifications");
 
             migrationBuilder.DropTable(
                 name: "users");
@@ -567,19 +489,7 @@ namespace DocumentsKM.Migrations
                 name: "document_types");
 
             migrationBuilder.DropTable(
-                name: "employees");
-
-            migrationBuilder.DropTable(
-                name: "positions");
-
-            migrationBuilder.DropTable(
-                name: "departments");
-
-            migrationBuilder.DropTable(
                 name: "marks");
-
-            migrationBuilder.DropTable(
-                name: "specifications");
 
             migrationBuilder.DropTable(
                 name: "subnodes");
@@ -589,6 +499,15 @@ namespace DocumentsKM.Migrations
 
             migrationBuilder.DropTable(
                 name: "projects");
+
+            migrationBuilder.DropTable(
+                name: "employees");
+
+            migrationBuilder.DropTable(
+                name: "departments");
+
+            migrationBuilder.DropTable(
+                name: "positions");
         }
     }
 }

@@ -100,19 +100,7 @@ namespace DocumentsKM.Controllers
             {
                 return NotFound();
             }
-            
             return NoContent();
-        }
-
-        [HttpGet, Route("marks/{id}/current-specification")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult GetCurrentSpecification(int id)
-        {
-            var mark = _service.GetById(id);
-            if (mark != null)
-                return Ok(new {Id = mark.CurrentSpecification.Id});
-            return NotFound();
         }
     }
 }

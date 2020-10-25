@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 // Bootstrap
 import { PersonFill } from 'react-bootstrap-icons'
-// Local
+// Util
 import { useMark } from '../../store/MarkStore'
 import Drawer from './Drawer/Drawer'
 import './Header.css'
@@ -15,7 +15,7 @@ const Header = () => {
 
 	useEffect(() => {
 		const clickHandler = (e: MouseEvent) => {
-			if ((e.target as HTMLElement).id != 'user-drawer') {
+			if ((e.target as HTMLElement).closest('#user-cnt') == null) {
 				setDrawerShown(false)
 			}
 		}
@@ -34,6 +34,7 @@ const Header = () => {
 					: `${mark.subnode.node.project.baseSeries}.${mark.subnode.node.code}.${mark.subnode.code}-${mark.code}`}
 			</Link>
 			<div
+				id="user-cnt"
 				className="profile-icon-cnt relative"
 				onClick={() => setDrawerShown(true)}
 			>

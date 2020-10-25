@@ -8,9 +8,8 @@ namespace DocumentsKM.Services
     {
         // Получить всех сотрудников для согласования
         IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentNumber(int departmentNumber);
-
         // Получить всех главных сотрудников для марки
-        (IEnumerable<Employee>, IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentNumber(
+        (Employee, IEnumerable<Employee>, IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentNumber(
             int departmentNumber);
     }
 }
