@@ -58,17 +58,17 @@ const MarkApproval = () => {
 						options: Employee[][]
 					) => {
 						const fetchedEmployeesResponse = await httpClient.get(
-							`/departments/${approvalSpecialist.department.number}/mark-approval-employees`
+							`/departments/${approvalSpecialist.department.id}/mark-approval-employees`
 						)
 						let fetchedEmployees = fetchedEmployeesResponse.data as Employee[]
 						options[rowNumber] = fetchedEmployees
 					}
 					for (const [i, e] of markApprovals.entries()) {
 						if (e != null) {
-							if (cachedEmployees.has(e.department.number)) {
+							if (cachedEmployees.has(e.department.id)) {
 								optionsObject.employees[
 									i
-								] = cachedEmployees.get(e.department.number)
+								] = cachedEmployees.get(e.department.id)
 							} else {
 								await fetchEmployees(
 									i,
@@ -113,13 +113,12 @@ const MarkApproval = () => {
 		const v = getFromOptions(
 			number,
 			optionsObject.departments,
-			selectedObject.departments[rowNumber],
-			true
+			selectedObject.departments[rowNumber]
 		)
 		if (v != null) {
-			if (cachedEmployees.has(v.number)) {
+			if (cachedEmployees.has(v.id)) {
 				optionsObject.employees[rowNumber] = cachedEmployees.get(
-					v.number
+					v.id
 				)
 				selectedObject.departments[rowNumber] = v
 				setSelectedObject({
@@ -131,7 +130,7 @@ const MarkApproval = () => {
 					const fetchedEmployeesResponse = await httpClient.get(
 						`/departments/${number}/mark-approval-employees`
 					)
-					cachedEmployees.set(v.number, fetchedEmployeesResponse.data)
+					cachedEmployees.set(v.id, fetchedEmployeesResponse.data)
 					optionsObject.employees[rowNumber] =
 						fetchedEmployeesResponse.data
 					selectedObject.departments[rowNumber] = v
@@ -241,12 +240,12 @@ const MarkApproval = () => {
 														selectedObject
 															.departments[
 															rowNumber
-														].number,
+														].id,
 													label:
 														selectedObject
 															.departments[
 															rowNumber
-														].code,
+														].name,
 											  }
 									}
 									options={
@@ -258,8 +257,8 @@ const MarkApproval = () => {
 											: optionsObject.departments.map(
 													(d) => {
 														return {
-															value: d.number,
-															label: d.code,
+															value: d.id,
+															label: d.name,
 														}
 													}
 											  )
@@ -302,7 +301,7 @@ const MarkApproval = () => {
 														selectedObject
 															.employees[
 															rowNumber
-														].fullName,
+														].name,
 											  }
 									}
 									options={optionsObject.employees[rowNumber]
@@ -315,7 +314,7 @@ const MarkApproval = () => {
 										.map((e) => {
 											return {
 												value: e.id,
-												label: e.fullName,
+												label: e.name,
 											}
 										})}
 									styles={reactSelectstyle}

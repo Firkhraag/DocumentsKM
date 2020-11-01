@@ -6,6 +6,7 @@ import { PersonFill } from 'react-bootstrap-icons'
 // Util
 import { useMark } from '../../store/MarkStore'
 import Drawer from './Drawer/Drawer'
+import { makeMarkName } from '../../util/make-name'
 import './Header.css'
 
 const Header = () => {
@@ -31,7 +32,12 @@ const Header = () => {
 			<Link to="/mark-select" className="pointer bold header-link-pad">
 				{mark == null
 					? '-'
-					: `${mark.subnode.node.project.baseSeries}.${mark.subnode.node.code}.${mark.subnode.code}-${mark.code}`}
+					: makeMarkName(
+							mark.subnode.node.project.baseSeries,
+							mark.subnode.node.code,
+							mark.subnode.code,
+							mark.code
+					  )}
 			</Link>
 			<div
 				id="user-cnt"

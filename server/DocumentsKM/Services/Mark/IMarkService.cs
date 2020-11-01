@@ -13,7 +13,7 @@ namespace DocumentsKM.Services
         // Создать новую марку
         void Create(Mark mark,
             int subnodeId,
-            int departmentNumber,
+            int departmentId,
             int mainBuilderId,
             int? chiefSpecialistId,
             int? groupLeaderId);

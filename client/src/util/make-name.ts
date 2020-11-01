@@ -8,7 +8,7 @@ export const makeMarkName = (
 	let markName = projectBaseSeries
 
 	let overhaul = ''
-	if (nodeCode !== '-') {
+	if (nodeCode !== '-' && nodeCode !== '') {
 		const nodeCodeSplitted = nodeCode.split('-')
 		const nodeValue = nodeCodeSplitted[0]
 		if (nodeCodeSplitted.length === 2) {
@@ -17,7 +17,7 @@ export const makeMarkName = (
 
 		markName += `.${nodeValue}`
 	}
-	if (subnodeCode !== '-') {
+	if (subnodeCode !== '-' && subnodeCode !== '') {
 		markName += `.${subnodeCode}`
 		if (overhaul !== '') {
 			markName += `-${overhaul}`

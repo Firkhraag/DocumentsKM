@@ -58,7 +58,7 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(int markId, int id, [FromBody] SpecificationUpdateRequest specificationRequest)
         {
             // DEBUG
-            // Log.Information(JsonSerializer.Serialize(markRequest));
+            // Log.Information(JsonSerializer.Serialize(specificationRequest));
             try
             {
                 _service.Update(markId, id, specificationRequest);

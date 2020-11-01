@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,13 +24,23 @@ namespace DocumentsKM.Models
         [MaxLength(255)]
         public string Name { get; set; }
 
-        // НазвПодузлаДоп
-        [MaxLength(255)]
-        public string AdditionalName { get; set; }
+        // // Подузел
+        // [Key]
+        // public Int16 Id { get; set; }
 
-        // ДатаПодуз
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime Created { get; set; }
+        // // Узел
+        // [Required]
+        // [ForeignKey("NodeId")]
+        // public virtual Node Node { get; set; }
+
+        // // КодПодуз
+        // [Required]
+        // [MaxLength(10)]
+        // public string Code { get; set; }
+
+        // // НазвПодузла
+        // [Required]
+        // [MaxLength(255)]
+        // public string Name { get; set; }
     }
 }

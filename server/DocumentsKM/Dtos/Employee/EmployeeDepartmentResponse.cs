@@ -1,7 +1,9 @@
+using DocumentsKM.Models;
+
 namespace DocumentsKM.Dtos
 {
     public class EmployeeDepartmentResponse : EmployeeBaseResponse
     {
-        public DepartmentResponse Department { get; set; }
+        public Department Department { get; set; }
     }
 }

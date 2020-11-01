@@ -1,5 +1,5 @@
 // Global
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
@@ -11,14 +11,17 @@ import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Sheet from '../../model/Sheet'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import './Sheet.css'
 
-const Sheets = () => {
-	const mark = useMark()
-	const history = useHistory()
+type SheetsProps = {
+	setPopupObj: (popupObj: IPopupObj) => void
+}
+
+const Sheets = ({ setPopupObj }: SheetsProps) => {
+    const mark = useMark()
+    const history = useHistory()
 
 	const [sheets, setSheets] = useState([] as Sheet[])
-
-	const radioRef = useRef()
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -34,35 +37,76 @@ const Sheets = () => {
 			}
 			fetchData()
 		}
-	}, [mark])
+    }, [mark])
+    
+    const onDeleteClick = async (row: number, id: number) => {
+		try {
+            // await httpClient.delete(`/marks/${mark.id}/specifications/${id}`)
+            sheets.splice(row, 1)
+			setPopupObj(defaultPopupObj)
+		} catch (e) {
+			console.log('Error')
+		}
+	}
 
 	return (
-		<div className="component-cnt">
+		<div className="component-cnt table-width">
 			<h1 className="text-centered">Листы основного комплекта</h1>
-			<PlusCircle color="#666" size={28} className="pointer" />
-			<Table striped bordered hover className="mrg-top">
+			<PlusCircle onClick={() => history.push('/sheet-create')} color="#666" size={28} className="pointer" />
+			<Table bordered hover className="mrg-top">
 				<thead>
 					<tr>
 						<th>№</th>
-						<th>Наименование</th>
+						<th className="sheet-name-col-width">Наименование</th>
 						<th>Формат</th>
-						<th>Разработал</th>
-						<th>Проверил</th>
-						<th>Нормоконтролер</th>
-						<th>Примечание</th>
+						<th className="sheet-employee-col-width">Разработал</th>
+						<th className="sheet-employee-col-width">Проверил</th>
+						<th className="sheet-employee-col-width">Н.контр.</th>
+						<th className="sheet-note-col-width">Примечание</th>
+                        <th className="text-centered" colSpan={2}>
+							Действия
+						</th>
 					</tr>
 				</thead>
 				<tbody>
-					{sheets.map((s) => {
+					{sheets.map((s, index) => {
 						return (
 							<tr key={s.id}>
-								<td>{s.number}</td>
-								<td>{s.name}</td>
-								<td>{s.format}</td>
-								<td>{s.creator == null ? '' : s.creator.fullName}</td>
-								<td>{s.inspector == null ? '' : s.inspector.fullName}</td>
-								<td>{s.normController == null ? '' : s.normController.fullName}</td>
-								<td>{s.note}</td>
+								<td>{s.num}</td>
+								<td className="sheet-name-col-width">{s.name}</td>
+								<td>{s.form}</td>
+								<td className="sheet-employee-col-width">{s.creator == null ? '' : s.creator.name}</td>
+								<td className="sheet-employee-col-width">{s.inspector == null ? '' : s.inspector.name}</td>
+								<td className="sheet-employee-col-width">{s.normController == null ? '' : s.normController.name}</td>
+								<td className="sheet-note-col-width">{s.note}</td>
+                                <td
+									onClick={() =>
+										history.push('/sheet-data')
+									}
+									className="pointer action-cell-width text-centered"
+								>
+									<PencilSquare color="#666" size={26} />
+								</td>
+								<td
+									onClick={() =>
+										setPopupObj({
+                                            isShown: true,
+                                            msg: `Вы действительно хотите удалить лист основного комплекта №${s.num}?`,
+                                            onAccept: () =>
+                                                onDeleteClick(
+                                                    index,
+                                                    s.id
+                                                ),
+                                            onCancel: () =>
+                                                setPopupObj(
+                                                    defaultPopupObj
+                                                ),
+                                      })
+									}
+									className="pointer action-cell-width text-centered"
+								>
+									<Trash color="#666" size={26} />
+								</td>
 							</tr>
 						)
 					})}

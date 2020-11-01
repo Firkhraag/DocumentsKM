@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System.Linq;
+using Serilog;
 
 namespace DocumentsKM.Services
 {
@@ -14,40 +15,45 @@ namespace DocumentsKM.Services
             _repository = EmployeeRepo;
         }
 
-        public IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentNumber(int departmentNumber)
+        public IEnumerable<Employee> GetByDepartmentId(int departmentId)
         {
-            int minPosCode = 1170;
-            int maxPosCode = 1251;
-            var employees = _repository.GetAllByDepartmentNumberAndPositionRange(
-                departmentNumber,
-                minPosCode,
-                maxPosCode);
+            return _repository.GetAllByDepartmentId(departmentId);
+        }
+
+        public IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentId(int departmentId)
+        {
+            int[] approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+            
+            var employees = _repository.GetAllByDepartmentIdAndPositions(
+                departmentId,
+                approvalPosIds);
             return employees;
         }
 
-        public (Employee, IEnumerable<Employee>,IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentNumber(
-            int departmentNumber)
+        public (Employee, IEnumerable<Employee>,IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentId(
+            int departmentId)
         {
-            var departmentHeadPosCode = 1290;
-            var chiefSpecialistPosCode = 1100;
-            var groupLeaderPosCode = 1185;
-            var mainBuilderPosCode = 1285;
+            var departmentHeadPosId = 7;
+            var chiefSpecialistPosId = 9;
+            var groupLeaderPosId = 10;
+            var mainBuilderPosId = 4;
 
-            var departmentHeadArr = _repository.GetAllByDepartmentNumberAndPosition(
-                departmentNumber,
-                departmentHeadPosCode);
+            var departmentHeadArr = _repository.GetAllByDepartmentIdAndPosition(
+                departmentId,
+                departmentHeadPosId);
+            Log.Information(departmentHeadArr.Count().ToString());
             if (departmentHeadArr.Count() != 1)
                 throw new ConflictException();
             var departmentHead = departmentHeadArr.ToList()[0];
-            var chiefSpecialists = _repository.GetAllByDepartmentNumberAndPosition(
-                departmentNumber,
-                chiefSpecialistPosCode);
-            var groupLeaders = _repository.GetAllByDepartmentNumberAndPosition(
-                departmentNumber,
-                groupLeaderPosCode);
-            var mainBuilders = _repository.GetAllByDepartmentNumberAndPosition(
-                departmentNumber,
-                mainBuilderPosCode);
+            var chiefSpecialists = _repository.GetAllByDepartmentIdAndPosition(
+                departmentId,
+                chiefSpecialistPosId);
+            var groupLeaders = _repository.GetAllByDepartmentIdAndPosition(
+                departmentId,
+                groupLeaderPosId);
+            var mainBuilders = _repository.GetAllByDepartmentIdAndPosition(
+                departmentId,
+                mainBuilderPosId);
             return (departmentHead, chiefSpecialists, groupLeaders, mainBuilders);
         }
     }

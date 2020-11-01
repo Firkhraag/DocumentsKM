@@ -17,12 +17,16 @@ namespace DocumentsKM.Models
         public virtual Employee Employee { get; set; }
         public int EmployeeId { get; set; }
 
-        // public MarkApproval(){}
+        // // Марка
+        // [Required]
+        // [ForeignKey("MarkId")]
+        // public virtual Mark Mark { get; set; }
+        // public int MarkId { get; set; }
 
-        // public MarkApproval(Mark mark, Employee employee)
-        // {
-        //     Mark = mark;
-        //     Employee = employee;
-        // }
+        // // Исп
+        // [Required]
+        // [ForeignKey("EmployeeId")]
+        // public virtual Employee Employee { get; set; }
+        // public Int16 EmployeeId { get; set; }
     }
 }

@@ -38,13 +38,13 @@ namespace DocumentsKM.Services
                     s.IsCurrent = false;
                     _repository.Update(s);
                 }
-                if (s.ReleaseNumber > maxNum)
-                    maxNum = s.ReleaseNumber;
+                if (s.Num > maxNum)
+                    maxNum = s.Num;
             }
                 
             var newSpecification = new Specification{
                 Mark = foundMark,
-                ReleaseNumber = Convert.ToByte(maxNum + 1),
+                Num = Convert.ToByte(maxNum + 1),
                 IsCurrent = true,
             };
             _repository.Add(newSpecification);
@@ -61,22 +61,12 @@ namespace DocumentsKM.Services
             var foundSpecification = _repository.GetById(id);
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
-            var foundMark = _markRepo.GetById(id);
+            var foundMark = _markRepo.GetById(markId);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
 
-            // if (specification.IsCurrent != null)
-            // {
-            //     var specifications = _repository.GetAllByMarkId(markId);
-            //     foreach (var s in specifications)
-            //     {
-            //         if (s.Id == id)
-            //             continue;
-            //         s.IsCurrent = false;
-            //         _repository.Update(s);
-            //     }
-            //     foundSpecification.IsCurrent = specification.IsCurrent ?? false;
-            // } 
+            if (specification.IsCurrent != null)
+                foundSpecification.IsCurrent = specification.IsCurrent ?? false;
             if (specification.Note != null)
                 foundSpecification.Note = specification.Note;
             _repository.Update(foundSpecification);

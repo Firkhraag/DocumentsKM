@@ -10,6 +10,7 @@ import MarkApproval from '../components/MarkApproval/MarkApproval'
 import Specifications from '../components/Specifications/Specifications'
 import SpecificationData from '../components/SpecificationData/SpecificationData'
 import Sheets from '../components/Sheets/Sheets'
+import SheetData from '../components/SheetData/SheetData'
 import AttachedDocs from '../components/AttachedDocs/AttachedDocs'
 import LinkedDocs from '../components/LinkedDocs/LinkedDocs'
 import Exploitation from '../components/Exploitation/Exploitation'
@@ -30,6 +31,7 @@ const AuthApp = () => {
 						<Route exact path="/">
 							<Home />
 						</Route>
+
 						<Route exact path="/mark-select">
 							<div className="full-width div-container">
 								<MarkSelect />
@@ -45,6 +47,7 @@ const AuthApp = () => {
 								<MarkData isCreateMode={true} />
 							</div>
 						</Route>
+
 						<Route exact path="/mark-approval">
 							<div className="full-width div-container">
 								<MarkApproval />
@@ -60,11 +63,24 @@ const AuthApp = () => {
 								<SpecificationData />
 							</div>
 						</Route>
+
 						<Route exact path="/sheets">
 							<div className="full-width div-container">
-								<Sheets />
+								<Sheets setPopupObj={setPopupObj} />
 							</div>
 						</Route>
+                        <Route exact path="/sheet-data">
+							<div className="full-width div-container">
+								<SheetData isCreateMode={false} />
+							</div>
+						</Route>
+						<Route exact path="/sheet-create">
+							<div className="full-width div-container">
+								<SheetData isCreateMode={true} />
+							</div>
+						</Route>
+
+
 						<Route exact path="/documents">
 							<div className="full-width div-container">
 								<AttachedDocs />

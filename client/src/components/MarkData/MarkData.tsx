@@ -96,7 +96,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						const departmentsFetched =
 							departmentsFetchedResponse.data
 						const fetchedMainEmployeesResponse = await httpClient.get(
-							`departments/${markFetchedResponse.data.department.number}/mark-main-employees`
+							`departments/${markFetchedResponse.data.department.id}/mark-main-employees`
 						)
 						const fetchedMainEmployees =
 							fetchedMainEmployeesResponse.data
@@ -151,18 +151,17 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 			number,
 			optionsObject.departments,
 			selectedObject.department,
-			true
 		)
 		if (v != null) {
-			if (cachedMainEmployees.has(v.number)) {
+			if (cachedMainEmployees.has(v.id)) {
 				setOptionsObject({
 					...defaultOptionsObject,
 					departments: optionsObject.departments,
-					chiefSpecialists: cachedMainEmployees.get(v.number)
+					chiefSpecialists: cachedMainEmployees.get(v.id)
 						.chiefSpecialists,
-					groupLeaders: cachedMainEmployees.get(v.number)
+					groupLeaders: cachedMainEmployees.get(v.id)
 						.groupLeaders,
-					mainBuilders: cachedMainEmployees.get(v.number)
+					mainBuilders: cachedMainEmployees.get(v.id)
 						.mainBuilders,
 				})
 				setSelectedObject({
@@ -179,7 +178,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					)
 					const fetchedMainEmployees =
 						fetchedMainEmployeesResponse.data
-					cachedMainEmployees.set(v.number, fetchedMainEmployees)
+					cachedMainEmployees.set(v.id, fetchedMainEmployees)
 					setOptionsObject({
 						...defaultOptionsObject,
 						departments: optionsObject.departments,
@@ -292,7 +291,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					code: selectedObject.code,
 					name: selectedObject.name,
 					subnodeId: selectedObject.subnode.id,
-					departmentNumber: selectedObject.department.number,
+					departmentId: selectedObject.department.id,
 					chiefSpecialistId: selectedObject.chiefSpecialist?.id,
 					groupLeaderId: selectedObject.groupLeader?.id,
 					mainBuilderId: selectedObject.mainBuilder.id,
@@ -332,11 +331,11 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						selectedObject.name === mark.name
 							? undefined
 							: selectedObject.name,
-					departmentNumber:
-						selectedObject.department.number ===
-						mark.department.number
+					departmentId:
+						selectedObject.department.id ===
+						mark.department.id
 							? undefined
-							: selectedObject.department.number,
+							: selectedObject.department.id,
 					chiefSpecialistId: getNullableFieldValue(
 						selectedObject.chiefSpecialist,
 						mark.chiefSpecialist
@@ -442,8 +441,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							value={
 								isCreateMode
 									? selectedObject.subnode.node.chiefEngineer
-											.fullName
-									: mark.subnode.node.chiefEngineer.fullName
+											.name
+									: mark.subnode.node.chiefEngineer.name
 							}
 							readOnly={true}
 						/>
@@ -455,7 +454,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							value={
 								departmentHead == null
 									? ''
-									: departmentHead.fullName
+									: departmentHead.name
 							}
 							readOnly={true}
 						/>
@@ -499,14 +498,14 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							selectedObject.department == null
 								? null
 								: {
-										value: selectedObject.department.number,
-										label: selectedObject.department.code,
+										value: selectedObject.department.id,
+										label: selectedObject.department.name,
 								  }
 						}
 						options={optionsObject.departments.map((d) => {
 							return {
-								value: d.number,
-								label: d.code,
+								value: d.id,
+								label: d.name,
 							}
 						})}
 						styles={reactSelectstyle}
@@ -528,13 +527,13 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 								: {
 										value: selectedObject.groupLeader.id,
 										label:
-											selectedObject.groupLeader.fullName,
+											selectedObject.groupLeader.name,
 								  }
 						}
 						options={optionsObject.groupLeaders.map((e) => {
 							return {
 								value: e.id,
-								label: e.fullName,
+								label: e.name,
 							}
 						})}
 						styles={reactSelectstyle}
@@ -561,19 +560,19 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 											selectedObject.chiefSpecialist.id,
 										label:
 											selectedObject.chiefSpecialist
-												.fullName,
+												.name,
 								  }
 						}
 						options={optionsObject.chiefSpecialists.map((e) => {
 							return {
 								value: e.id,
-								label: e.fullName,
+								label: e.name,
 							}
 						})}
 						styles={reactSelectstyle}
 					/>
 
-					<div className="bold mrg-top-2">Главный строитель</div>
+					<div className="bold mrg-top-2">Главный строитель (нормоконтролер?)</div>
 					<Select
 						maxMenuHeight={250}
 						isClearable={true}
@@ -590,13 +589,13 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 								: {
 										value: selectedObject.mainBuilder.id,
 										label:
-											selectedObject.mainBuilder.fullName,
+											selectedObject.mainBuilder.name,
 								  }
 						}
 						options={optionsObject.mainBuilders.map((e) => {
 							return {
 								value: e.id,
-								label: e.fullName,
+								label: e.name,
 							}
 						})}
 						styles={reactSelectstyle}

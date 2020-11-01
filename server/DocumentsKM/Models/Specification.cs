@@ -18,7 +18,7 @@ namespace DocumentsKM.Models
 
         // выпуск
         [Required]
-        public byte ReleaseNumber { get; set; }
+        public byte Num { get; set; }
 
         // тек_выпуск
         [Required]
@@ -29,8 +29,6 @@ namespace DocumentsKM.Models
         public string Note { get; set; }
 
         // дата_созд
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime Created { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }

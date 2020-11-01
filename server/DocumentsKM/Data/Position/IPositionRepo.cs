@@ -4,7 +4,7 @@ namespace DocumentsKM.Data
 {
     public interface IPositionRepo
     {
-        // Получить должность по коду
-        Position GetByCode(int code);
+        // // Получить должность по коду
+        // Position GetByCode(int code);
     }
 }

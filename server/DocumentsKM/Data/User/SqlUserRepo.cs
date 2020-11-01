@@ -13,14 +13,9 @@ namespace DocumentsKM.Services
             _context = context;
         }
 
-        // public IEnumerable<User> GetAll()
-        // {
-        //     return _context.Users;
-        // }
-
         public User GetById(int id)
         {
-            return _context.Users.Find(id);
+            return _context.Users.SingleOrDefault(u => u.Id == id);
         }
 
         public User GetByLogin(string login)

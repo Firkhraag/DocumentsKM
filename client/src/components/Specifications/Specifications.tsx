@@ -70,9 +70,12 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 
 	const onSelectCurrentClick = async (row: number, id: number) => {
 		try {
+            await httpClient.patch(`marks/${mark.id}/specifications/${currentSpecId}`, {
+				isCurrent: false,
+			})
 			await httpClient.patch(`marks/${mark.id}/specifications/${id}`, {
 				isCurrent: true,
-			})
+            })
 			const inputElement = refs[row].current as any
 			if (inputElement) {
 				inputElement.checked = true
@@ -129,12 +132,12 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 					})
 				}
 			/>
-			<Table striped bordered hover className="mrg-top">
+			<Table bordered hover className="mrg-top">
 				<thead>
 					<tr>
 						<th>№</th>
 						<th>Создан</th>
-						<th className="note-cell-width">Примечание</th>
+						<th className="note-col-width">Примечание</th>
 						<th>Текущий</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
@@ -145,18 +148,18 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 					{specifications.map((s, index) => {
 						return (
 							<tr key={index}>
-								<td>{s.releaseNumber}</td>
+								<td>{s.num}</td>
 								<td>
-									{new Date(s.created).toLocaleDateString()}
+									{s.createdDate == null ? '' : new Date(s.createdDate).toLocaleDateString()}
 								</td>
-								<td className="note-cell-width">{s.note}</td>
+								<td className="note-col-width">{s.note}</td>
 								<td
 									onClick={() =>
 										currentSpecId === s.id
 											? null
 											: setPopupObj({
 													isShown: true,
-													msg: `Вы действительно хотите сделать выпуск спецификации №${s.releaseNumber} текущим?`,
+													msg: `Вы действительно хотите сделать выпуск спецификации №${s.num} текущим?`,
 													onAccept: () =>
 														onSelectCurrentClick(
 															index,
@@ -192,7 +195,7 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 											? null
 											: setPopupObj({
 													isShown: true,
-													msg: `Вы действительно хотите удалить выпуск спецификации №${s.releaseNumber}?`,
+													msg: `Вы действительно хотите удалить выпуск спецификации №${s.num}?`,
 													onAccept: () =>
 														onDeleteClick(
 															index,

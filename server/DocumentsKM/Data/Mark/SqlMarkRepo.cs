@@ -21,7 +21,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
         {
-            return _context.Marks.Where(m => m.Subnode.Id == subnodeId);
+            return _context.Marks.Where(m => m.Subnode.Id == subnodeId).ToList();
         }
 
         public Mark GetById(int id)

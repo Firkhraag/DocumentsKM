@@ -17,13 +17,13 @@ namespace DocumentsKM.Models
 
         // Номер
         [Required]
-        public int Number { get; set; }
+        public int Num { get; set; }
 
         // Тип_док
         [Required]
-        [ForeignKey("DocumentTypeId")]
-        public virtual DocumentType DocumentType { get; set; }
-        public byte DocumentTypeId { get; set; }
+        [ForeignKey("DocTypeId")]
+        public virtual DocType DocType { get; set; }
+        public int DocTypeId { get; set; }
 
         // Название
         [Required]
@@ -32,7 +32,7 @@ namespace DocumentsKM.Models
 
         // Формат
         [Required]
-        public float Format { get; set; }
+        public float Form { get; set; }
 
         // Разраб
         [Required]
@@ -44,26 +44,80 @@ namespace DocumentsKM.Models
         public virtual Employee Inspector { get; set; }
 
         // Н_контр
-        [ForeignKey("NormControllerId")]
-        public virtual Employee NormController { get; set; }
+        [ForeignKey("NormContrId")]
+        public virtual Employee NormContr { get; set; }
 
         // Выпуск
         [Required]
-        public byte Release { get; set; }
+        public int ReleaseNum { get; set; }
 
         // Листов
         [Required]
-        public byte NumberOfPages { get; set; }
+        public int NumOfSheets { get; set; }
 
         // Прим
         [MaxLength(50)]
         public string Note { get; set; }
 
+        // // Id_листа
+        // [Key]
+        // public int Id { get; set; }
+
+        // // Id_марки
+        // [Required]
+        // [ForeignKey("MarkId")]
+        // public virtual Mark Mark { get; set; }
+        // public int MarkId { get; set; }
+
+        // // Номер
+        // [Required]
+        // public Int16 Num { get; set; }
+
+        // // Тип_док
+        // [Required]
+        // [ForeignKey("DocTypeId")]
+        // public virtual DocType DocType { get; set; }
+        // public Int16 DocTypeId { get; set; }
+
+        // // Название
+        // [Required]
+        // [MaxLength(255)]
+        // public string Name { get; set; }
+
+        // // Формат
+        // [Required]
+        // public float Form { get; set; }
+
+        // // Разраб
+        // [Required]
+        // [ForeignKey("CreatorId")]
+        // public virtual Employee Creator { get; set; }
+
+        // // Пров
+        // [ForeignKey("InspectorId")]
+        // public virtual Employee Inspector { get; set; }
+
+        // // Н_контр
+        // [ForeignKey("NormContrId")]
+        // public virtual Employee NormContr { get; set; }
+
+        // // Выпуск
+        // [Required]
+        // public Int16 ReleaseNum { get; set; }
+
+        // // Листов
+        // [Required]
+        // public Int16 NumOfSheets { get; set; }
+
+        // // Прим
+        // [MaxLength(50)]
+        // public string Note { get; set; }
+
         public Sheet()
         {
-            Number = 1;
-            Format = 1.0f;
-            Release = 0;
+            Num = 1;
+            Form = 1.0f;
+            ReleaseNum = 0;
         }
     }
 }

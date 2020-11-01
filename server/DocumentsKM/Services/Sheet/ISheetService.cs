@@ -9,5 +9,8 @@ namespace DocumentsKM.Services
         IEnumerable<Sheet> GetAllByMarkId(int markId);
         // Создать новый лист
         void Create(int markId, string note);
+
+        // Получить все типовые наименования листов
+        IEnumerable<SheetName> GetAllSheetNames();
     }
 }

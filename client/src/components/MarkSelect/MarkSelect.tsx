@@ -447,13 +447,13 @@ const MarkSelect = () => {
 											value: selectedObject.project.id,
 											label:
 												selectedObject.project
-													.baseSeries,
+													.baseSeries === '' ? '-' : selectedObject.project.baseSeries,
 									  }
 							}
 							options={optionsObject.projects.map((p) => {
 								return {
 									value: p.id,
-									label: p.baseSeries,
+									label: p.baseSeries === '' ? '-' : p.baseSeries,
 								}
 							})}
 							styles={reactSelectstyle}
@@ -476,13 +476,13 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.node.id,
-											label: selectedObject.node.code,
+											label: selectedObject.node.code === '' ? '-' : selectedObject.node.code,
 									  }
 							}
 							options={optionsObject.nodes.map((n) => {
 								return {
 									value: n.id,
-									label: n.code,
+									label: n.code === '' ? '-' : n.code,
 								}
 							})}
 							styles={reactSelectstyle}
@@ -505,13 +505,13 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.subnode.id,
-											label: selectedObject.subnode.code,
+											label: selectedObject.subnode.code === '' ? '-' : selectedObject.subnode.code,
 									  }
 							}
 							options={optionsObject.subnodes.map((s) => {
 								return {
 									value: s.id,
-									label: s.code,
+									label: s.code === '' ? '-' : s.code,
 								}
 							})}
 							styles={reactSelectstyle}
@@ -534,13 +534,13 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.mark.id,
-											label: selectedObject.mark.code,
+											label: selectedObject.mark.code === '' ? '-' : selectedObject.mark.code,
 									  }
 							}
 							options={optionsObject.marks.map((m) => {
 								return {
 									value: m.id,
-									label: m.code,
+									label: m.code === '' ? '-' : m.code,
 								}
 							})}
 							styles={reactSelectstyle}

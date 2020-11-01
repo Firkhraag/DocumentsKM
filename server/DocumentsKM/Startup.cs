@@ -138,6 +138,7 @@ namespace DocumentsKM
             services.AddScoped<IMarkApprovalRepo, SqlMarkApprovalRepo>();
             services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
             services.AddScoped<ISheetRepo, SqlSheetRepo>();
+            services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

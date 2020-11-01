@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
@@ -32,6 +34,35 @@ namespace DocumentsKM.Controllers
         {
             var sheets = _service.GetAllByMarkId(markId);
             return Ok(_mapper.Map<IEnumerable<SheetResponse>>(sheets));
+        }
+
+        [HttpPost, Route("marks/{markId}/sheets")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<IEnumerable<SheetResponse>> Create(int markId, [FromBody] SheetCreateRequest sheetRequest)
+        {
+            var sheetModel = _mapper.Map<Sheet>(sheetRequest);
+            try
+            {
+                _service.Create(
+                    sheetModel,
+                    markId);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            
+            return Created($"sheets/{sheetModel.Id}", _mapper.Map<SheetResponse>(sheetModel));
+        }
+
+        [HttpGet, Route("sheet-names")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<SheetName>> GetAllSheetNames()
+        {
+            var sheetNames = _service.GetAllSheetNames();
+            return Ok(sheetNames);
         }
     }
 }

@@ -18,5 +18,21 @@ namespace DocumentsKM.Models
         
         [ForeignKey("EmployeeId")]
         public virtual Employee Employee { get; set; }
+        public int EmployeeId { get; set; }
+
+        // [Key]
+        // public Int16 Id { get; set; }
+
+        // [Required]
+        // [MaxLength(255)]
+        // public string Login { get; set; }
+
+        // [Required]
+        // [MaxLength(255)]
+        // public string Password { get; set; }
+        
+        // [ForeignKey("EmployeeId")]
+        // public virtual Employee Employee { get; set; }
+        // public Int16 EmployeeId { get; set; }
     }
 }

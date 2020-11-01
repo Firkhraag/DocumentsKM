@@ -6,10 +6,12 @@ namespace DocumentsKM.Services
 {
     public interface IEmployeeService
     {
+        // Получить всех сотрудников по номеру отдела
+        IEnumerable<Employee> GetByDepartmentId(int departmentId);
         // Получить всех сотрудников для согласования
-        IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentNumber(int departmentNumber);
+        IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentId(int departmentId);
         // Получить всех главных сотрудников для марки
-        (Employee, IEnumerable<Employee>, IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentNumber(
-            int departmentNumber);
+        (Employee, IEnumerable<Employee>, IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentId(
+            int departmentId);
     }
 }

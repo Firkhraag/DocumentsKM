@@ -10,25 +10,25 @@ namespace DocumentsKM.Tests
 {
     public class NodeServiceTest
     {
-        [Theory]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        public void GetAllByProjectId_ShouldReturnAllNodesWithGivenId(int projectId)
-        {
-            // Arrange
-            var filteredNodes = TestData.nodes.FindAll(n => n.Project.Id == projectId);
-            var mockNodeRepo = new Mock<INodeRepo>();
-            mockNodeRepo.Setup(mock=>
-                mock.GetAllByProjectId(projectId)).Returns(filteredNodes);
-            var service = new NodeService(mockNodeRepo.Object);
+        // [Theory]
+        // [InlineData(0)]
+        // [InlineData(1)]
+        // [InlineData(2)]
+        // public void GetAllByProjectId_ShouldReturnAllNodesWithGivenId(int projectId)
+        // {
+        //     // Arrange
+        //     var filteredNodes = TestData.nodes.FindAll(n => n.Project.Id == projectId);
+        //     var mockNodeRepo = new Mock<INodeRepo>();
+        //     mockNodeRepo.Setup(mock=>
+        //         mock.GetAllByProjectId(projectId)).Returns(filteredNodes);
+        //     var service = new NodeService(mockNodeRepo.Object);
             
-            // Act
-            var returnedNodes = service.GetAllByProjectId(projectId).ToList();
+        //     // Act
+        //     var returnedNodes = service.GetAllByProjectId(projectId).ToList();
 
-            // Assert
-            Assert.Equal(filteredNodes, returnedNodes);
-        }
+        //     // Assert
+        //     Assert.Equal(filteredNodes, returnedNodes);
+        // }
 
         // [Theory]
         // [InlineData(0)]

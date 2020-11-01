@@ -4,8 +4,8 @@ import Login from '../components/Login/Login'
 
 const UnauthApp = () => {
 	return (
-		<div className="container full-height">
-			<div className="full-width container">
+		<div className="full-height">
+			<div className="full-width div-container">
 				<Login />
 			</div>
 			<Redirect from="*" to="/" />

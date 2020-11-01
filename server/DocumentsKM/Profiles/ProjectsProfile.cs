@@ -9,7 +9,6 @@ namespace DocumentsKM.Profiles
         public ProjectsProfile()
         {
             CreateMap<Project, ProjectBaseResponse>();
-            CreateMap<Project, ProjectResponse>();
         }
     }
 }

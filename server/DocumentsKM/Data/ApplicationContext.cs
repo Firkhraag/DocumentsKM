@@ -12,13 +12,9 @@ namespace DocumentsKM.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Sheet>()
-                .Property(s => s.Release)
-                .HasColumnType("SMALLINT");
-
-            builder.Entity<Sheet>()
-                .Property(s => s.NumberOfPages)
-                .HasColumnType("SMALLINT");
+            // builder.Entity<Entity>()
+            //     .Property(e => e.Field)
+            //     .HasColumnType("SMALLINT");
 
             // Composite primary key
             builder.Entity<MarkApproval>().HasKey(e => new { e.MarkId, e.EmployeeId });
@@ -41,14 +37,12 @@ namespace DocumentsKM.Data
                 .IsUnique();
             // Composite
             builder.Entity<Mark>().HasIndex(e => new { e.SubnodeId, e.Code }).IsUnique();
-            builder.Entity<Specification>().HasIndex(e => new { e.MarkId, e.ReleaseNumber }).IsUnique();
-            builder.Entity<Sheet>().HasIndex(e => new { e.MarkId, e.Number, e.DocumentTypeId }).IsUnique();
+            builder.Entity<Specification>().HasIndex(e => new { e.MarkId, e.Num }).IsUnique();
+            builder.Entity<Sheet>().HasIndex(e => new { e.MarkId, e.Num, e.DocTypeId }).IsUnique();
 
             // Default datetime
-            builder.Entity<Node>().Property(e => e.Created).HasDefaultValueSql("now()");
-            builder.Entity<Subnode>().Property(e => e.Created).HasDefaultValueSql("now()");
-            builder.Entity<Mark>().Property(e => e.Edited).HasDefaultValueSql("now()");
-            builder.Entity<Specification>().Property(e => e.Created).HasDefaultValueSql("now()");
+            builder.Entity<Mark>().Property(e => e.EditedDate).HasDefaultValueSql("now()");
+            builder.Entity<Specification>().Property(e => e.CreatedDate).HasDefaultValueSql("now()");
 
             foreach(var entity in builder.Model.GetEntityTypes())
             {
@@ -89,7 +83,12 @@ namespace DocumentsKM.Data
         public DbSet<Mark> Marks { get; set; }
         public DbSet<MarkApproval> MarkApprovals { get; set; }
         public DbSet<Specification> Specifications { get; set; }
-        public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Sheet> Sheets { get; set; }
+
+        public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
+        public DbSet<CorrProtVariant> CorrProtVariants { get; set; }
+        public DbSet<MarkDesignation> MarkDesignations { get; set; }
+        public DbSet<DocType> DocTypes { get; set; }
+        public DbSet<SheetName> SheetNames { get; set; }
     }
 }

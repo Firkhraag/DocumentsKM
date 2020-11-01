@@ -43,7 +43,7 @@ namespace DocumentsKM.Services
         public void Create(
             Mark mark,
             int subnodeId,
-            int departmentNumber,
+            int departmentId,
             int mainBuilderId,
             int? chiefSpecialistId,
             int? groupLeaderId)
@@ -54,7 +54,7 @@ namespace DocumentsKM.Services
             if (subnode == null)
                 throw new ArgumentNullException(nameof(subnode));
             mark.Subnode = subnode;
-            var department = _departmentRepo.GetByNumber(departmentNumber);
+            var department = _departmentRepo.GetById(departmentId);
             if (department == null)
                 throw new ArgumentNullException(nameof(department));
             mark.Department = department;
@@ -101,9 +101,9 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(subnode));
                 foundMark.Subnode = subnode;
             }
-            if (mark.DepartmentNumber != null)
+            if (mark.DepartmentId != null)
             {
-                var department = _departmentRepo.GetByNumber(mark.DepartmentNumber.GetValueOrDefault());
+                var department = _departmentRepo.GetById(mark.DepartmentId.GetValueOrDefault());
                 if (department == null)
                     throw new ArgumentNullException(nameof(department));
                 foundMark.Department = department;

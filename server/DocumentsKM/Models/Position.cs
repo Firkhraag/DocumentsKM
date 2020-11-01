@@ -6,16 +6,20 @@ namespace DocumentsKM.Models
     {
         // КодДолжности
         [Key]
-        public int Code { get; set; }
+        public int Id { get; set; }
 
         // НазваниеДолжности
         [Required]
-        [MaxLength(100)]
+        [MaxLength(20)]
         public string Name { get; set; }
 
-        // ДолжностьИмя_кр
-        [Required]
-        [MaxLength(12)]
-        public string ShortName { get; set; }
+        // // КодДолжности
+        // [Key]
+        // public Int16 Id { get; set; }
+
+        // // НазваниеДолжности
+        // [Required]
+        // [MaxLength(20)]
+        // public string Name { get; set; }
     }
 }

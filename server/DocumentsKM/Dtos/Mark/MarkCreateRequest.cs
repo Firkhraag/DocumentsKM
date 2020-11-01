@@ -11,14 +11,12 @@ namespace DocumentsKM.Dtos
         [MaxLength(40)]
         public string Code { get; set; }
 
-        // Excluding AdditionalCode
-
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
 
         [Required]
-        public int DepartmentNumber { get; set; }
+        public int DepartmentId { get; set; }
 
         public int? ChiefSpecialistId { get; set; }
         public int? GroupLeaderId { get; set; }

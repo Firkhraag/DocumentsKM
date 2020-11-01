@@ -47,11 +47,15 @@
 }
 
 .component-width {
-    width: 35vw;
+    width: 38vw;
 }
 
 .info-area {
     height: 100%;
+}
+
+.table-width {
+    width: 80vw;
 }
 
 /* Section */
@@ -122,10 +126,6 @@
 .full-width {
 	width: 100%;
 }
-
-/* .half-width {
-	width: 50%;
-} */
 
 .pointer {
 	cursor: pointer;

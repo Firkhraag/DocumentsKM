@@ -10,22 +10,22 @@ namespace DocumentsKM.Tests
 {
     public class DepartmentServiceTest
     {
-        [Fact]
-        public void GetAllActive_ShouldReturnAllActiveDepartments()
-        {
-            // Arrange
-            var filteredDepartments = TestData.departments.FindAll(d => d.IsActive);
-            var mockDepartmentRepo = new Mock<IDepartmentRepo>();
-            mockDepartmentRepo.Setup(mock=>
-                mock.GetAllActive()).Returns(filteredDepartments);
-            var service = new DepartmentService(mockDepartmentRepo.Object);
+        // [Fact]
+        // public void GetAllActive_ShouldReturnAllActiveDepartments()
+        // {
+        //     // Arrange
+        //     var filteredDepartments = TestData.departments.FindAll(d => d.IsActive);
+        //     var mockDepartmentRepo = new Mock<IDepartmentRepo>();
+        //     mockDepartmentRepo.Setup(mock=>
+        //         mock.GetAllActive()).Returns(filteredDepartments);
+        //     var service = new DepartmentService(mockDepartmentRepo.Object);
             
-            // Act
-            var returnedDepartments = service.GetAllActive().ToList();
+        //     // Act
+        //     var returnedDepartments = service.GetAllActive().ToList();
 
-            // Assert
-            Assert.Equal(filteredDepartments, returnedDepartments);
-        }
+        //     // Assert
+        //     Assert.Equal(filteredDepartments, returnedDepartments);
+        // }
 
         // [Theory]
         // [InlineData(0)]

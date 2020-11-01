@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,31 +5,32 @@ namespace DocumentsKM.Models
 {
     public class Employee
     {
-        // таб_ном
         [Key]
         public int Id { get; set; }
 
-        // фио
         [Required]
         [MaxLength(50)]
-        public string FullName { get; set; }
+        public string Name { get; set; }
 
-        // ДатаПриема
         [Required]
-        [DataType(DataType.Date)]
-        public DateTime RecruitedDate { get; set; }
-
-        // ДатаУвольнения
-        [DataType(DataType.Date)]
-        public DateTime FiredDate { get; set; }
-
-        // ОтделКод, ОтделИмя
-        [Required]
-        [ForeignKey("DepartmentNumber")]
+        [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
-        // ДолжностьКод, ДолжностьИмя
-        [ForeignKey("PositionCode")]
+        [ForeignKey("PositionId")]
         public virtual Position Position { get; set; }
+
+        // [Key]
+        // public Int16 Id { get; set; }
+
+        // [Required]
+        // [MaxLength(50)]
+        // public string Name { get; set; }
+
+        // [Required]
+        // [ForeignKey("DepartmentId")]
+        // public virtual Department Department { get; set; }
+
+        // [ForeignKey("PositionId")]
+        // public virtual Position Position { get; set; }
     }
 }

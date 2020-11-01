@@ -25,20 +25,28 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet, Route("departments/{departmentNumber}/mark-approval-employees")]
+        [HttpGet, Route("departments/{departmentId}/employees")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<EmployeeBaseResponse>> GetMarkApprovalEmployeesByDepartmentNumber(int departmentNumber)
+        public ActionResult<IEnumerable<EmployeeBaseResponse>> GetByDepartmentId(int departmentId)
         {
-            var employees = _service.GetMarkApprovalEmployeesByDepartmentNumber(departmentNumber);
+            var employees = _service.GetByDepartmentId(departmentId);
             return Ok(_mapper.Map<IEnumerable<EmployeeBaseResponse>>(employees));
         }
 
-        [HttpGet, Route("departments/{departmentNumber}/mark-main-employees")]
+        [HttpGet, Route("departments/{departmentId}/mark-approval-employees")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<MarkMainEmployeesResponse> GetMarkMainEmployeesByDepartmentNumber(int departmentNumber)
+        public ActionResult<IEnumerable<EmployeeBaseResponse>> GetMarkApprovalEmployeesByDepartmentId(int departmentId)
+        {
+            var employees = _service.GetMarkApprovalEmployeesByDepartmentId(departmentId);
+            return Ok(_mapper.Map<IEnumerable<EmployeeBaseResponse>>(employees));
+        }
+
+        [HttpGet, Route("departments/{departmentId}/mark-main-employees")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<MarkMainEmployeesResponse> GetMarkMainEmployeesByDepartmentId(int departmentId)
         {
             (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) = _service
-                .GetMarkMainEmployeesByDepartmentNumber(departmentNumber);
+                .GetMarkMainEmployeesByDepartmentId(departmentId);
             return Ok(new MarkMainEmployeesResponse(
                 _mapper.Map<EmployeeBaseResponse>(departmentHead),
                 _mapper.Map<IEnumerable<EmployeeBaseResponse>>(chiefSpecialists),

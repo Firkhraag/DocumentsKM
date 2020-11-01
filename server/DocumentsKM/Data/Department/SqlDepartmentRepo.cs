@@ -13,14 +13,14 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<Department> GetAllActive()
+        public IEnumerable<Department> GetAll()
         {
-            return _context.Departments.Where(d => d.IsActive);
+            return _context.Departments.ToList();
         }
 
-        public Department GetByNumber(int number)
+        public Department GetById(int id)
         {
-            return _context.Departments.FirstOrDefault(d => d.Number == number);
+            return _context.Departments.FirstOrDefault(d => d.Id == id);
         }
     }
 }

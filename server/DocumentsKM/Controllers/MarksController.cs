@@ -70,7 +70,7 @@ namespace DocumentsKM.Controllers
                 _service.Create(
                     markModel,
                     markRequest.SubnodeId,
-                    markRequest.DepartmentNumber,
+                    markRequest.DepartmentId,
                     markRequest.MainBuilderId,
                     markRequest.ChiefSpecialistId,
                     markRequest.GroupLeaderId);
