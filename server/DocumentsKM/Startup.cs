@@ -44,7 +44,11 @@ namespace DocumentsKM
             // Игнорировать JsonIgnore свойства
             services.AddControllers()
                 .AddJsonOptions(
-                    opt => opt.JsonSerializerOptions.IgnoreNullValues = true
+                    opt =>
+                    {
+                        opt.JsonSerializerOptions.IgnoreNullValues = true;
+                        opt.JsonSerializerOptions.Converters.Add(new TrimConverter());
+                    }
                 );
 
             // Add Swagger documentation
@@ -121,7 +125,8 @@ namespace DocumentsKM
             services.AddScoped<IMarkService, MarkService>();
             services.AddScoped<IMarkApprovalService, MarkApprovalService>();
             services.AddScoped<ISpecificationService, SpecificationService>();
-            services.AddScoped<ISheetService, SheetService>();
+            services.AddScoped<IBasicSheetService, BasicSheetService>();
+            services.AddScoped<ISheetNameService, SheetNameService>();
         }
 
         private void injectScopedRepositories(IServiceCollection services)
@@ -139,6 +144,7 @@ namespace DocumentsKM
             services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
             services.AddScoped<ISheetRepo, SqlSheetRepo>();
             services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();
+            services.AddScoped<IDocTypeRepo, SqlDocTypeRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

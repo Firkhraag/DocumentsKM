@@ -8,7 +8,7 @@ namespace DocumentsKM.Dtos
         public float Form { get; set; }
         public EmployeeBaseResponse Creator { get; set; }
         public EmployeeBaseResponse Inspector { get; set; }
-        public EmployeeBaseResponse NormController { get; set; }
+        public EmployeeBaseResponse NormContr { get; set; }
         public string Note { get; set; }
     }
 }

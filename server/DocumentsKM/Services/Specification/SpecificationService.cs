@@ -30,7 +30,7 @@ namespace DocumentsKM.Services
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
             var specifications = _repository.GetAllByMarkId(markId);
-            byte maxNum = 0;
+            int maxNum = 0;
             foreach (var s in specifications)
             {
                 if (s.IsCurrent)
@@ -44,7 +44,7 @@ namespace DocumentsKM.Services
                 
             var newSpecification = new Specification{
                 Mark = foundMark,
-                Num = Convert.ToByte(maxNum + 1),
+                Num = maxNum + 1,
                 IsCurrent = true,
             };
             _repository.Add(newSpecification);

@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ArrayExtensions
+namespace DocumentsKM
 {
-    public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source)
+    public static class ArrayExtensions
     {
-        return source.Select((item, index) => (item, index));
+        public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source)
+        {
+            return source.Select((item, index) => (item, index));
+        }
     }
 }

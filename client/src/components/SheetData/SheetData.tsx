@@ -60,7 +60,7 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 							name: '',
 							creator: null,
 							inspector: null,
-							normController: null,
+							normContr: null,
 							releaseNum: 0,
 							numOfPages: 0,
 							note: '',
@@ -77,7 +77,6 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 	}, [mark])
 
 	const onNameSelect = async (id: number) => {
-        // const v = getFromOptions(id, optionsObject.sheetNames, null)
         let v = null
         for (let el of optionsObject.sheetNames) {
             if (el.id === id) {
@@ -114,21 +113,6 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 			})
 		}
     }
-    
-    const onNumChange = (event: React.FormEvent<HTMLInputElement>) => {
-		try {
-			const v = parseInt(event.currentTarget.value)
-			setSelectedObject({
-				...selectedObject,
-				num: v,
-			})
-		} catch (e) {
-			setSelectedObject({
-				...selectedObject,
-				num: null,
-			})
-		}
-	}
 
 	const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
@@ -181,29 +165,25 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
-				normController: null,
+				normContr: null,
 			})
 		}
 		const v = getFromOptions(
 			id,
 			optionsObject.employees,
-			selectedObject.normController
+			selectedObject.normContr
 		)
 		if (v != null) {
 			setSelectedObject({
 				...selectedObject,
-				normController: v,
+				normContr: v,
 			})
 		}
 	}
 
 	const checkIfValid = () => {
-        if (selectedObject.num == null) {
-			setErrMsg('Пожалуйста, введите номер листа')
-			return false
-		}
 		if (selectedObject.name === '') {
-			setErrMsg('Пожалуйста, выберите наименование листа')
+			setErrMsg('Пожалуйста, введите наименование листа')
 			return false
 		}
 		if (selectedObject.form == null) {
@@ -216,10 +196,19 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 	const onCreateButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-                await httpClient.post(`/marks/${mark.id}/sheets`, selectedObject)
+                await httpClient.post(`/marks/${mark.id}/sheets/basic`, {
+                    num: selectedObject.num,
+                    name: selectedObject.name,
+                    form: selectedObject.form,
+                    creatorId: selectedObject.creator?.id,
+                    inspectorId: selectedObject.inspector?.id,
+                    normContrId: selectedObject.normContr?.id,
+                    note: selectedObject.note,
+                })
                 history.push('/sheets')
 			} catch (e) {
-				console.log('Fail')
+                setErrMsg('Произошла ошибка')
+				console.log('Fail', e)
 			}
 		}
 	}
@@ -234,18 +223,7 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 					: 'Данные листа основного комплекта'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-                <Form.Group>
-					<Form.Label>Номер</Form.Label>
-					<Form.Control
-						type="text"
-						placeholder="Введите номер"
-						defaultValue={selectedObject.num}
-						onBlur={onNumChange}
-					/>
-				</Form.Group>
-
-				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-				<Form.Group className="mrg-top-2">
+				<Form.Group>
 					<Form.Label>Наименование</Form.Label>
 					<Form.Control
 						type="text"
@@ -352,11 +330,11 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 						onNormControllerSelect((selectedOption as any)?.value)
 					}
 					value={
-						selectedObject.normController == null
+						selectedObject.normContr == null
 							? null
 							: {
-									value: selectedObject.normController.id,
-									label: selectedObject.normController.name,
+									value: selectedObject.normContr.id,
+									label: selectedObject.normContr.name,
 							  }
 					}
 					options={optionsObject.employees.map((e) => {
@@ -380,6 +358,8 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 					/>
 				</Form.Group>
 
+                <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+
 				<Button
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
@@ -391,6 +371,7 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 						? 'Создать лист основного комплекта'
 						: 'Сохранить изменения'}
 				</Button>
+                
 			</div>
 		</div>
 	)

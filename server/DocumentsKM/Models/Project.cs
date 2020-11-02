@@ -14,16 +14,5 @@ namespace DocumentsKM.Models
         [Required]
         [MaxLength(20)]
         public string BaseSeries { get; set; }
-
-        // [Key]
-        // public Int16 Id { get; set; }
-
-        // [Required]
-        // [MaxLength(255)]
-        // public string Name { get; set; }
-
-        // [Required]
-        // [MaxLength(20)]
-        // public string BaseSeries { get; set; }
     }
 }

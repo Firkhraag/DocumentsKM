@@ -9,6 +9,7 @@ namespace DocumentsKM.Profiles
         public SheetsProfile()
         {
             CreateMap<Sheet, SheetResponse>();
+            CreateMap<SheetCreateRequest, Sheet>();
         }
     }
 }

@@ -462,7 +462,6 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 				</div>
 
 				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
-					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 					<Form.Group>
 						<Form.Label>Шифр марки</Form.Label>
 						<Form.Control
@@ -600,6 +599,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						})}
 						styles={reactSelectstyle}
 					/>
+
+                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
 					<Button
 						variant="secondary"

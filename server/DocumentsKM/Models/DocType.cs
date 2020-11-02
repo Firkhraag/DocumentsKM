@@ -12,14 +12,5 @@ namespace DocumentsKM.Models
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
-
-        // // Тип_док
-        // [Key]
-        // public Int16 Id { get; set; }
-
-        // // название_док
-        // [Required]
-        // [MaxLength(100)]
-        // public string Name { get; set; }
     }
 }

@@ -23,24 +23,5 @@ namespace DocumentsKM.Models
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
-
-        // // Подузел
-        // [Key]
-        // public Int16 Id { get; set; }
-
-        // // Узел
-        // [Required]
-        // [ForeignKey("NodeId")]
-        // public virtual Node Node { get; set; }
-
-        // // КодПодуз
-        // [Required]
-        // [MaxLength(10)]
-        // public string Code { get; set; }
-
-        // // НазвПодузла
-        // [Required]
-        // [MaxLength(255)]
-        // public string Name { get; set; }
     }
 }

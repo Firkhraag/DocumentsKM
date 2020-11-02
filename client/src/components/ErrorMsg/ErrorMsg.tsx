@@ -13,7 +13,7 @@ type ErrorMsgProps = {
 const ErrorMsg = ({ errMsg, hide }: ErrorMsgProps) => {
 	return errMsg === '' ? null : (
 		<div
-			className="err-msg space-between-cent-v border-radius"
+			className="err-msg space-between-cent-v border-radius btn-mrg-top-2"
 		>
 			{errMsg}
             <X size={36} onClick={hide} className="pointer" />

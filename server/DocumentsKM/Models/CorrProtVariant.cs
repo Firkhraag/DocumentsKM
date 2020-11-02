@@ -41,44 +41,5 @@ namespace DocumentsKM.Models
 
         [Required]
         public virtual CorrProtCleaningDegree CleaningDegree { get; set; }
-
-
-        // [Key]
-        // public Int16 Id { get; set; }
-
-        // [Required]
-        // public Int16 ExploitationZone { get; set; }
-
-        // [Required]
-        // public Int16 GasGroup { get; set; }
-
-        // [Required]
-        // public Int16 EnvAggressiveness { get; set; }
-
-        // [Required]
-        // public Int16 Material { get; set; }
-
-        // [Required]
-        // [MaxLength(2)]
-        // public string PaintworkType { get; set; }
-
-        // [Required]
-        // public Int16 PaintworkGroup { get; set; }
-
-        // [Required]
-        // [MaxLength(2)]
-        // public string PaintworkDurability { get; set; }
-
-        // [Required]
-        // public Int16 PaintworkNumOfLayers { get; set; }
-
-        // [Required]
-        // public Int16 PaintworkPrimerThickness { get; set; }
-
-        // [Required]
-        // public Int16 PrimerNumOfLayers { get; set; }
-
-        // [Required]
-        // public virtual CorrProtCleaningDegree CleaningDegree { get; set; }
     }
 }

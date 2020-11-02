@@ -23,24 +23,5 @@ namespace DocumentsKM.Models
         [Required]
         [ForeignKey("ChiefEngineerId")]
         public virtual Employee ChiefEngineer { get; set; }
-
-        // [Key]
-        // public Int16 Id { get; set; }
-
-        // [Required]
-        // [ForeignKey("ProjectId")]
-        // public virtual Project Project { get; set; }
-
-        // [Required]
-        // [MaxLength(10)]
-        // public string Code { get; set; }
-
-        // [Required]
-        // [MaxLength(255)]
-        // public string Name { get; set; }
-
-        // [Required]
-        // [ForeignKey("ChiefEngineerId")]
-        // public virtual Employee ChiefEngineer { get; set; }
     }
 }

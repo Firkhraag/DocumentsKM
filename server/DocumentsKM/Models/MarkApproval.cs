@@ -16,17 +16,5 @@ namespace DocumentsKM.Models
         [ForeignKey("EmployeeId")]
         public virtual Employee Employee { get; set; }
         public int EmployeeId { get; set; }
-
-        // // Марка
-        // [Required]
-        // [ForeignKey("MarkId")]
-        // public virtual Mark Mark { get; set; }
-        // public int MarkId { get; set; }
-
-        // // Исп
-        // [Required]
-        // [ForeignKey("EmployeeId")]
-        // public virtual Employee Employee { get; set; }
-        // public Int16 EmployeeId { get; set; }
     }
 }

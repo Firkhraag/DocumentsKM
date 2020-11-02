@@ -18,7 +18,7 @@ namespace DocumentsKM.Models
 
         // выпуск
         [Required]
-        public byte Num { get; set; }
+        public int Num { get; set; }
 
         // тек_выпуск
         [Required]

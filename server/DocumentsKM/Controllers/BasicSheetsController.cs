@@ -15,20 +15,20 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class SheetsController : ControllerBase
+    public class BasicSheetsController : ControllerBase
     {
-        private readonly ISheetService _service;
+        private readonly IBasicSheetService _service;
         private readonly IMapper _mapper;
 
-        public SheetsController(
-            ISheetService sheetService,
+        public BasicSheetsController(
+            IBasicSheetService sheetService,
             IMapper mapper)
         {
             _service = sheetService;
             _mapper = mapper;
         }
 
-        [HttpGet, Route("marks/{markId}/sheets")]
+        [HttpGet, Route("marks/{markId}/sheets/basic")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<SheetResponse>> GetAllByMarkId(int markId)
         {
@@ -36,7 +36,7 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<SheetResponse>>(sheets));
         }
 
-        [HttpPost, Route("marks/{markId}/sheets")]
+        [HttpPost, Route("marks/{markId}/sheets/basic")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -47,22 +47,36 @@ namespace DocumentsKM.Controllers
             {
                 _service.Create(
                     sheetModel,
-                    markId);
+                    markId,
+                    sheetRequest.CreatorId,
+                    sheetRequest.InspectorId,
+                    sheetRequest.NormContrId);
             }
             catch (ArgumentNullException)
             {
                 return NotFound();
             }
             
-            return Created($"sheets/{sheetModel.Id}", _mapper.Map<SheetResponse>(sheetModel));
+            return Created($"sheets/{sheetModel.Id}/basic", _mapper.Map<SheetResponse>(sheetModel));
         }
 
-        [HttpGet, Route("sheet-names")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<SheetName>> GetAllSheetNames()
+        [HttpPatch, Route("sheets/{id}/basic")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult Update(int id, [FromBody] SheetUpdateRequest sheetRequest)
         {
-            var sheetNames = _service.GetAllSheetNames();
-            return Ok(sheetNames);
+            // DEBUG
+            // Log.Information(JsonSerializer.Serialize(markRequest));
+            try
+            {
+                _service.Update(id, sheetRequest);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
     }
 }

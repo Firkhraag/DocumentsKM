@@ -28,8 +28,8 @@ const Sheets = ({ setPopupObj }: SheetsProps) => {
 			const fetchData = async () => {
 				try {
 					const sheetsFetchedResponse = await httpClient.get(
-						`/marks/${mark.id}/sheets`
-					)
+						`/marks/${mark.id}/sheets/basic`
+                    )
 					setSheets(sheetsFetchedResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
@@ -77,7 +77,7 @@ const Sheets = ({ setPopupObj }: SheetsProps) => {
 								<td>{s.form}</td>
 								<td className="sheet-employee-col-width">{s.creator == null ? '' : s.creator.name}</td>
 								<td className="sheet-employee-col-width">{s.inspector == null ? '' : s.inspector.name}</td>
-								<td className="sheet-employee-col-width">{s.normController == null ? '' : s.normController.name}</td>
+								<td className="sheet-employee-col-width">{s.normContr == null ? '' : s.normContr.name}</td>
 								<td className="sheet-note-col-width">{s.note}</td>
                                 <td
 									onClick={() =>

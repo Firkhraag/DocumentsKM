@@ -7,7 +7,7 @@ interface ISheet {
     form: number
     creator: Employee
     inspector: Employee
-    normController: Employee
+    normContr: Employee
     releaseNum: number
     numOfPages: number
     note: string
@@ -20,7 +20,7 @@ class Sheet {
     form: number
     creator: Employee
     inspector: Employee
-    normController: Employee
+    normContr: Employee
     releaseNum: number
     numOfPages: number
     note: string
@@ -32,7 +32,7 @@ class Sheet {
         this.form = (obj && obj.form) || 0
         this.creator = (obj && obj.creator) || null
         this.inspector = (obj && obj.inspector) || null
-        this.normController = (obj && obj.normController) || null
+        this.normContr = (obj && obj.normContr) || null
         this.releaseNum = (obj && obj.releaseNum) || 0
         this.numOfPages = (obj && obj.numOfPages) || 0
 		this.note = (obj && obj.note) || ''

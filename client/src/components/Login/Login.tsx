@@ -39,7 +39,6 @@ const Login = () => {
 		<div className="component-cnt component-width">
 			<h1 className="text-centered">Вход в систему</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
-				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 				<Form>
 					<Form.Group>
 						<Form.Label>Логин</Form.Label>
@@ -57,6 +56,9 @@ const Login = () => {
 							onBlur={onPasswordChange}
 						/>
 					</Form.Group>
+
+                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+
 					<Button
 						variant="secondary"
 						className="btn-mrg-top full-width"
