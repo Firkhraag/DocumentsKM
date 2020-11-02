@@ -1,0 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace DocumentsKM.Models
+{
+    public class MarkDesignation
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        [MaxLength(4)]
+        public string Designation { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string Name { get; set; }
+    }
+}

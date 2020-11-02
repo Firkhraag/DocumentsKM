@@ -13,14 +13,9 @@ namespace DocumentsKM.Services
             _repository = departmentRepo;
         }
 
-        public IEnumerable<Department> GetAllActive()
+        public IEnumerable<Department> GetAll()
         {
-            return _repository.GetAllActive();
-        }
-
-        public Department GetByNumber(int id)
-        {
-            return _repository.GetByNumber(id);
+            return _repository.GetAll();
         }
     }
 }

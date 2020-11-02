@@ -10,7 +10,6 @@ namespace DocumentsKM.Profiles
         {
             CreateMap<Node, NodeBaseResponse>();
             CreateMap<Node, NodeParentResponse>();
-            CreateMap<Node, NodeResponse>();
         }
     }
 }

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,7 +44,11 @@ namespace DocumentsKM
             // Игнорировать JsonIgnore свойства
             services.AddControllers()
                 .AddJsonOptions(
-                    opt => opt.JsonSerializerOptions.IgnoreNullValues = true
+                    opt =>
+                    {
+                        opt.JsonSerializerOptions.IgnoreNullValues = true;
+                        opt.JsonSerializerOptions.Converters.Add(new TrimConverter());
+                    }
                 );
 
             // Add Swagger documentation
@@ -106,8 +109,6 @@ namespace DocumentsKM
             services.AddSingleton<ICacheService, RedisCacheService>();
 
             // DI for application services
-            services.AddScoped<IUserService, UserService>();
-
             injectScopedServices(services);
             injectScopedRepositories(services);
         }
@@ -117,10 +118,15 @@ namespace DocumentsKM
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<INodeService, NodeService>();
             services.AddScoped<ISubnodeService, SubnodeService>();
-            services.AddScoped<IMarkService, MarkService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IMarkService, MarkService>();
+            services.AddScoped<IMarkApprovalService, MarkApprovalService>();
+            services.AddScoped<ISpecificationService, SpecificationService>();
+            services.AddScoped<IBasicSheetService, BasicSheetService>();
+            services.AddScoped<ISheetNameService, SheetNameService>();
         }
 
         private void injectScopedRepositories(IServiceCollection services)
@@ -128,28 +134,21 @@ namespace DocumentsKM
             services.AddScoped<IProjectRepo, SqlProjectRepo>();
             services.AddScoped<INodeRepo, SqlNodeRepo>();
             services.AddScoped<ISubnodeRepo, SqlSubnodeRepo>();
-            services.AddScoped<IMarkRepo, SqlMarkRepo>();
             services.AddScoped<IEmployeeRepo, SqlEmployeeRepo>();
             services.AddScoped<IDepartmentRepo, SqlDepartmentRepo>();
             services.AddScoped<IPositionRepo, SqlPositionRepo>();
             services.AddScoped<IUserRepo, SqlUserRepo>();
+
+            services.AddScoped<IMarkRepo, SqlMarkRepo>();
+            services.AddScoped<IMarkApprovalRepo, SqlMarkApprovalRepo>();
+            services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
+            services.AddScoped<ISheetRepo, SqlSheetRepo>();
+            services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();
+            services.AddScoped<IDocTypeRepo, SqlDocTypeRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // add hardcoded test user to db on startup,  
-            // plain text password is used for simplicity, hashed passwords should be used in production applications
-            // context.Users.Add(new User { FirstName = "Test", LastName = "User", Username = "test", Password = "test" });
-            // context.SaveChanges();
-
-            // if (env.IsDevelopment())
-            // {
-            //     app.UseExceptionHandler("/error-local-development");
-            // }
-            // else
-            // {
-            //     app.UseExceptionHandler("/error");
-            // }
             app.UseExceptionHandler("/error");
 
             app.UseCors("EnableCORS");

@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,14 +23,5 @@ namespace DocumentsKM.Models
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
-
-        // НазвПодузлаДоп
-        [MaxLength(255)]
-        public string AdditionalName { get; set; }
-
-        // ДатаПодуз
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime Created { get; set; }
     }
 }

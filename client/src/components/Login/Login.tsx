@@ -1,23 +1,27 @@
+// Global
 import React, { useState } from 'react'
-import { useAuthMethods } from '../../store/UserStore'
+// Bootstrap
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+// Components
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
+// Util
+import { useAuthMethods } from '../../store/UserStore'
 
 const Login = () => {
 	const authMethods = useAuthMethods()
 
-	const [inputValues, setInputValues] = useState({
+	const inputValues = useState({
 		login: '',
 		password: '',
-	})
+	})[0]
 	const [errMsg, setErrMsg] = useState('')
 
 	const onLoginChange = (event: React.FormEvent<HTMLInputElement>) => {
-		const login = event.currentTarget.value
-		setInputValues({ ...inputValues, login: login })
+        inputValues.login = event.currentTarget.value
 	}
 	const onPasswordChange = (event: React.FormEvent<HTMLInputElement>) => {
-		const password = event.currentTarget.value
-		setInputValues({ ...inputValues, password: password })
+        inputValues.password = event.currentTarget.value
 	}
 
 	const onButtonClick = async () => {
@@ -34,50 +38,35 @@ const Login = () => {
 	return (
 		<div className="component-cnt component-width">
 			<h1 className="text-centered">Вход в систему</h1>
-			<div>
-				<div className="flex-v mrg-bot">
-					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-					<label htmlFor="login" className="label-area">
-						Логин
-					</label>
-					<div>
-						<input
-							id="login"
-							className="input-area"
-							onBlur={onLoginChange}
+			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
+				<Form>
+					<Form.Group>
+						<Form.Label>Логин</Form.Label>
+						<Form.Control
 							type="text"
 							placeholder="Введите ваш логин"
-							spellCheck="false"
-							maxLength={255}
-							required
+							onBlur={onLoginChange}
 						/>
-					</div>
-				</div>
-
-				<div className="flex-v">
-					<label htmlFor="password" className="label-area">
-						Пароль
-					</label>
-					<div>
-						<input
-							id="password"
-							className="input-area"
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Пароль</Form.Label>
+						<Form.Control
 							type="password"
-							onBlur={onPasswordChange}
 							placeholder="Введите ваш пароль"
-							spellCheck="false"
-							maxLength={255}
-							required
+							onBlur={onPasswordChange}
 						/>
-					</div>
-				</div>
+					</Form.Group>
 
-				<button
-					className="final-btn input-border-radius pointer"
-					onClick={onButtonClick}
-				>
-					Войти
-				</button>
+                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+
+					<Button
+						variant="secondary"
+						className="btn-mrg-top full-width"
+						onClick={onButtonClick}
+					>
+						Войти
+					</Button>
+				</Form>
 			</div>
 		</div>
 	)

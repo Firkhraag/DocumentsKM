@@ -21,7 +21,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
         {
-            return _context.Marks.Where(m => m.Subnode.Id == subnodeId);
+            return _context.Marks.Where(m => m.Subnode.Id == subnodeId).ToList();
         }
 
         public Mark GetById(int id)
@@ -29,7 +29,7 @@ namespace DocumentsKM.Data
             return _context.Marks.FirstOrDefault(m => m.Id == id);
         }
 
-        public void Create(Mark mark)
+        public void Add(Mark mark)
         {
             _context.Marks.Add(mark);
             _context.SaveChanges();

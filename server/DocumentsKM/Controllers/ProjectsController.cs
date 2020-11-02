@@ -19,8 +19,7 @@ namespace DocumentsKM.Controllers
 
         public ProjectsController(
             IProjectService projectService,
-            IMapper mapper
-        )
+            IMapper mapper)
         {
             _service = projectService;
             _mapper = mapper;

@@ -18,5 +18,6 @@ namespace DocumentsKM.Models
         
         [ForeignKey("EmployeeId")]
         public virtual Employee Employee { get; set; }
+        public int EmployeeId { get; set; }
     }
 }

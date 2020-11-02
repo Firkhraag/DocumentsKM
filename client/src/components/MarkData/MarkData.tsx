@@ -1,31 +1,27 @@
+// Global
 import React, { useState, useEffect } from 'react'
-import { useSpring, animated } from 'react-spring'
 import { useHistory } from 'react-router-dom'
+import Select from 'react-select'
+// Bootstrap
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+// Util
 import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
-import Dropdown from '../Dropdown/Dropdown'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Mark from '../../model/Mark'
 import { useMark, useSetMark } from '../../store/MarkStore'
-import {
-	makeMarkOrSubnodeName,
-	makeComplexAndObjectName,
-} from '../../util/make-name'
+import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
-import './MarkData.css'
+import { reactSelectstyle } from '../../util/react-select-style'
 
 type MarkDataProps = {
 	isCreateMode: boolean
 }
 
 const MarkData = ({ isCreateMode }: MarkDataProps) => {
-	const bottomDivHeight = 302
-
-	const specialistNameStringLength = 50
-
-	// Default state objects
 	const defaultOptionsObject = {
 		departments: [] as Department[],
 		chiefSpecialists: [] as Employee[],
@@ -33,24 +29,24 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		mainBuilders: [] as Employee[],
 	}
 
+	const history = useHistory()
 	const mark = useMark()
 	const setMark = useSetMark()
 
-	// Object that holds selected values
-	const [selectedMark, setSelectedMark] = useState<Mark>(null)
-	// Object that holds select options
+	const [departmentHead, setDepartmentHead] = useState<Employee>(null)
+	const [selectedObject, setSelectedObject] = useState<Mark>(null)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
 	const [errMsg, setErrMsg] = useState('')
 
-	const history = useHistory()
+	const cachedMainEmployees = useState(new Map<number, any>())[0]
 
 	useEffect(() => {
 		if (isCreateMode) {
-			const recentSubnodeIdsStr = localStorage.getItem('recentSubnodeIds')
-			const recentSubnodeIds = JSON.parse(recentSubnodeIdsStr) as number[]
-			const selectedSubnodeId = recentSubnodeIds[0]
-			if (selectedSubnodeId != null) {
+			const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
+			const recentMarkIds = JSON.parse(recentMarkIdsStr) as number[]
+			const selectedMarkId = recentMarkIds[0]
+			if (selectedMarkId != null) {
 				const fetchData = async () => {
 					try {
 						const departmentsFetchedResponse = await httpClient.get(
@@ -64,14 +60,14 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							departments: departmentsFetched,
 						})
 
-						const subnodeFetchedResponse = await httpClient.get(
-							`/subnodes/${selectedSubnodeId}`
+						const markFetchedResponse = await httpClient.get(
+							`/marks/${selectedMarkId}`
 						)
-						setSelectedMark({
+						setSelectedObject({
 							id: 0,
 							code: '',
 							name: '',
-							subnode: subnodeFetchedResponse.data,
+							subnode: markFetchedResponse.data.subnode,
 							department: null,
 							chiefSpecialist: null,
 							groupLeader: null,
@@ -92,7 +88,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							`/marks/${selectedMarkId}`
 						)
 						setMark(markFetchedResponse.data)
-						setSelectedMark({ ...markFetchedResponse.data })
+						setSelectedObject({ ...markFetchedResponse.data })
 
 						const departmentsFetchedResponse = await httpClient.get(
 							'/departments'
@@ -100,7 +96,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						const departmentsFetched =
 							departmentsFetchedResponse.data
 						const fetchedMainEmployeesResponse = await httpClient.get(
-							`departments/${markFetchedResponse.data.department.number}/mark-main-employees`
+							`departments/${markFetchedResponse.data.department.id}/mark-main-employees`
 						)
 						const fetchedMainEmployees =
 							fetchedMainEmployeesResponse.data
@@ -113,6 +109,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							groupLeaders: fetchedMainEmployees.groupLeaders,
 							mainBuilders: fetchedMainEmployees.mainBuilders,
 						})
+						setDepartmentHead(fetchedMainEmployees.departmentHead)
 					} catch (e) {
 						console.log('Failed to fetch the mark')
 					}
@@ -122,135 +119,165 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		}
 	}, [])
 
-	const springStyle = useSpring({
-		from: {
-			opacity: 0 as any,
-			height: 0,
-			overflowY: 'hidden' as any,
-		},
-		to: {
-			opacity:
-				selectedMark == null || selectedMark.department == null
-					? (0 as any)
-					: 1,
-			height:
-				selectedMark == null || selectedMark.department == null
-					? 0
-					: bottomDivHeight,
-			overflowY:
-				(selectedMark == null || selectedMark.department) == null
-					? ('hidden' as any)
-					: ('visible' as any),
-		},
-	})
-
 	const onMarkCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
-		setSelectedMark({
-			...selectedMark,
+		setSelectedObject({
+			...selectedObject,
 			code: event.currentTarget.value,
 		})
 	}
 
 	const onMarkNameChange = (event: React.FormEvent<HTMLInputElement>) => {
-		setSelectedMark({
-			...selectedMark,
+		setSelectedObject({
+			...selectedObject,
 			name: event.currentTarget.value,
 		})
 	}
 
 	const onDepartmentSelect = async (number: number) => {
+		if (number == null) {
+			setOptionsObject({
+				...defaultOptionsObject,
+				departments: optionsObject.departments,
+			})
+			setSelectedObject({
+				...selectedObject,
+				department: null,
+				chiefSpecialist: null,
+				groupLeader: null,
+				mainBuilder: null,
+			})
+		}
 		const v = getFromOptions(
 			number,
 			optionsObject.departments,
-			selectedMark.department,
-			true
+			selectedObject.department,
 		)
 		if (v != null) {
-			try {
-				const fetchedMainEmployeesResponse = await httpClient.get(
-					`departments/${number}/mark-main-employees`
-				)
-				const fetchedMainEmployees = fetchedMainEmployeesResponse.data
+			if (cachedMainEmployees.has(v.id)) {
 				setOptionsObject({
 					...defaultOptionsObject,
 					departments: optionsObject.departments,
-					chiefSpecialists: fetchedMainEmployees.chiefSpecialists,
-					groupLeaders: fetchedMainEmployees.groupLeaders,
-					mainBuilders: fetchedMainEmployees.mainBuilders,
+					chiefSpecialists: cachedMainEmployees.get(v.id)
+						.chiefSpecialists,
+					groupLeaders: cachedMainEmployees.get(v.id)
+						.groupLeaders,
+					mainBuilders: cachedMainEmployees.get(v.id)
+						.mainBuilders,
 				})
-				setSelectedMark({
-					...selectedMark,
+				setSelectedObject({
+					...selectedObject,
 					department: v,
 					chiefSpecialist: null,
 					groupLeader: null,
 					mainBuilder: null,
 				})
-			} catch (e) {
-				console.log('Failed to fetch the data')
+			} else {
+				try {
+					const fetchedMainEmployeesResponse = await httpClient.get(
+						`departments/${number}/mark-main-employees`
+					)
+					const fetchedMainEmployees =
+						fetchedMainEmployeesResponse.data
+					cachedMainEmployees.set(v.id, fetchedMainEmployees)
+					setOptionsObject({
+						...defaultOptionsObject,
+						departments: optionsObject.departments,
+						chiefSpecialists: fetchedMainEmployees.chiefSpecialists,
+						groupLeaders: fetchedMainEmployees.groupLeaders,
+						mainBuilders: fetchedMainEmployees.mainBuilders,
+					})
+					setSelectedObject({
+						...selectedObject,
+						department: v,
+						chiefSpecialist: null,
+						groupLeader: null,
+						mainBuilder: null,
+					})
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
 			}
 		}
 	}
 
 	const onGroupLeaderSelect = async (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				groupLeader: null,
+			})
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.groupLeaders,
-			selectedMark.groupLeader
+			selectedObject.groupLeader
 		)
 		if (v != null) {
-			setSelectedMark({
-				...selectedMark,
+			setSelectedObject({
+				...selectedObject,
 				groupLeader: v,
 			})
 		}
 	}
 
 	const onChiefSpecialistSelect = async (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				chiefSpecialist: null,
+			})
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.chiefSpecialists,
-			selectedMark.chiefSpecialist
+			selectedObject.chiefSpecialist
 		)
 		if (v != null) {
-			setSelectedMark({
-				...selectedMark,
+			setSelectedObject({
+				...selectedObject,
 				chiefSpecialist: v,
 			})
 		}
 	}
 
 	const onMainBuilderSelect = async (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				mainBuilder: null,
+			})
+		}
 		const v = getFromOptions(
 			id,
 			optionsObject.mainBuilders,
-			selectedMark.mainBuilder
+			selectedObject.mainBuilder
 		)
 		if (v != null) {
-			setSelectedMark({
-				...selectedMark,
+			setSelectedObject({
+				...selectedObject,
 				mainBuilder: v,
 			})
 		}
 	}
 
 	const checkIfValid = () => {
-		if (selectedMark.code === '') {
+		if (selectedObject.code === '') {
 			setErrMsg('Пожалуйста, введите шифр марки')
 			return false
 		}
-		if (selectedMark.name === '') {
+		if (selectedObject.name === '') {
 			setErrMsg('Пожалуйста, введите наименование марки')
 			return false
 		}
-		if (selectedMark.subnode == null) {
+		if (selectedObject.subnode == null) {
 			setErrMsg('Ошибка')
 			return false
 		}
-		if (selectedMark.department == null) {
+		if (selectedObject.department == null) {
 			setErrMsg('Пожалуйста, выберите отдел')
 			return false
 		}
-		if (selectedMark.mainBuilder == null) {
+		if (selectedObject.mainBuilder == null) {
 			setErrMsg('Пожалуйста, выберите главного строителя')
 			return false
 		}
@@ -261,13 +288,13 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		if (checkIfValid()) {
 			try {
 				const response = await httpClient.post('/marks', {
-					code: selectedMark.code,
-					name: selectedMark.name,
-					subnodeId: selectedMark.subnode.id,
-					departmentNumber: selectedMark.department.number,
-					chiefSpecialistId: selectedMark.chiefSpecialist?.id,
-					groupLeaderId: selectedMark.groupLeader?.id,
-					mainBuilderId: selectedMark.mainBuilder.id,
+					code: selectedObject.code,
+					name: selectedObject.name,
+					subnodeId: selectedObject.subnode.id,
+					departmentId: selectedObject.department.id,
+					chiefSpecialistId: selectedObject.chiefSpecialist?.id,
+					groupLeaderId: selectedObject.groupLeader?.id,
+					mainBuilderId: selectedObject.mainBuilder.id,
 				})
 				localStorage.setItem('selectedMarkId', response.data.id)
 
@@ -292,65 +319,37 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		}
 	}
 
-	// Removing chiefSpecialist or mainBuilder is not supported right now
 	const onChangeButtonClick = async () => {
-		// DEBUG
-		// console.log({
-		// 	code:
-		// 		selectedMark.code === mark.code ? undefined : selectedMark.code,
-		// 	name:
-		// 		selectedMark.name === mark.name ? undefined : selectedMark.name,
-		// 	departmentNumber:
-		// 		selectedMark.department.number === mark.department.number
-		// 			? undefined
-		// 			: selectedMark.department.number,
-		// 	chiefSpecialistId: getNullableFieldValue(
-		// 		selectedMark.chiefSpecialist,
-		// 		mark.chiefSpecialist
-		// 	),
-		// 	groupLeaderId: getNullableFieldValue(
-		// 		selectedMark.groupLeader,
-		// 		mark.groupLeader
-		// 	),
-		// 	// chiefSpecialistId: selectedMark.chiefSpecialist?.id,
-		// 	// groupLeaderId: selectedMark.groupLeader?.id,
-		// 	mainBuilderId:
-		// 		selectedMark.mainBuilder.id === mark.mainBuilder.id
-		// 			? undefined
-		// 			: selectedMark.mainBuilder.id,
-		// })
 		if (checkIfValid()) {
 			try {
-				await httpClient.patch(`/marks/${selectedMark.id}`, {
+				await httpClient.patch(`/marks/${selectedObject.id}`, {
 					code:
-						selectedMark.code === mark.code
+						selectedObject.code === mark.code
 							? undefined
-							: selectedMark.code,
+							: selectedObject.code,
 					name:
-						selectedMark.name === mark.name
+						selectedObject.name === mark.name
 							? undefined
-							: selectedMark.name,
-					departmentNumber:
-						selectedMark.department.number ===
-						mark.department.number
+							: selectedObject.name,
+					departmentId:
+						selectedObject.department.id ===
+						mark.department.id
 							? undefined
-							: selectedMark.department.number,
+							: selectedObject.department.id,
 					chiefSpecialistId: getNullableFieldValue(
-						selectedMark.chiefSpecialist,
+						selectedObject.chiefSpecialist,
 						mark.chiefSpecialist
 					),
 					groupLeaderId: getNullableFieldValue(
-						selectedMark.groupLeader,
+						selectedObject.groupLeader,
 						mark.groupLeader
 					),
-					// chiefSpecialistId: selectedMark.chiefSpecialist?.id,
-					// groupLeaderId: selectedMark.groupLeader?.id,
 					mainBuilderId:
-						selectedMark.mainBuilder.id === mark.mainBuilder.id
+						selectedObject.mainBuilder.id === mark.mainBuilder.id
 							? undefined
-							: selectedMark.mainBuilder.id,
+							: selectedObject.mainBuilder.id,
 				})
-				setMark(selectedMark)
+				setMark(selectedObject)
 				history.push('/')
 			} catch (e) {
 				console.log('Fail')
@@ -358,182 +357,262 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		}
 	}
 
-	return selectedMark == null ? null : (
-		<div className="component-cnt component-width">
+	return selectedObject == null || (mark == null && !isCreateMode) ? null : (
+		<div className="component-cnt">
 			<h1 className="text-centered">
 				{isCreateMode ? 'Создание марки' : 'Данные марки'}
 			</h1>
-			<div>
-				<p className="text-centered data-section-label label-mrgn-top-1">
-					Общая информация
-				</p>
-
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Наименование комплекса</p>
-					<div className="info-area">
-						{
-							makeComplexAndObjectName(
-								selectedMark.subnode.node.project.name,
-								selectedMark.subnode.node.name,
-								selectedMark.subnode.name,
-								selectedMark.name
-							).complexName
-						}
-					</div>
-				</div>
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Наименование объекта</p>
-					<div className="info-area">
-						{
-							makeComplexAndObjectName(
-								selectedMark.subnode.node.project.name,
-								selectedMark.subnode.node.name,
-								selectedMark.subnode.name,
-								selectedMark.name
-							).objectName
-						}
-					</div>
-				</div>
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Главный инженер проекта</p>
-					<div className="info-area">
-						{selectedMark.subnode.node.chiefEngineer.fullName}
-					</div>
-				</div>
-
-				<p className="text-centered data-section-label label-mrgn-top-2">
-					Информация марки
-				</p>
-
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Обозначение марки</p>
-					<div className="info-area">
-						{makeMarkOrSubnodeName(
-							selectedMark.subnode.node.project.baseSeries,
-							selectedMark.subnode.node.code,
-							selectedMark.subnode.code,
-							selectedMark.code
-						)}
-					</div>
-				</div>
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Шифр марки</p>
-					<div>
-						<input
-							value={selectedMark.code}
-							onChange={onMarkCodeChange}
+			<div className="flex">
+				<div className="info-area shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
+					<Form.Group>
+						<Form.Label>Обозначение марки</Form.Label>
+						<Form.Control
 							type="text"
-							className="input-area"
+							value={
+								isCreateMode
+									? makeMarkName(
+											selectedObject.subnode.node.project
+												.baseSeries,
+											selectedObject.subnode.node.code,
+											selectedObject.subnode.code,
+											selectedObject.code
+									  )
+									: makeMarkName(
+											mark.subnode.node.project
+												.baseSeries,
+											mark.subnode.node.code,
+											mark.subnode.code,
+											mark.code
+									  )
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Наименование комплекса</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								isCreateMode
+									? makeComplexAndObjectName(
+											selectedObject.subnode.node.project
+												.name,
+											selectedObject.subnode.node.name,
+											selectedObject.subnode.name,
+											selectedObject.name
+									  ).complexName
+									: makeComplexAndObjectName(
+											mark.subnode.node.project.name,
+											mark.subnode.node.name,
+											mark.subnode.name,
+											mark.name
+									  ).complexName
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Наименование объекта</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								isCreateMode
+									? makeComplexAndObjectName(
+											selectedObject.subnode.node.project
+												.name,
+											selectedObject.subnode.node.name,
+											selectedObject.subnode.name,
+											selectedObject.name
+									  ).objectName
+									: makeComplexAndObjectName(
+											mark.subnode.node.project.name,
+											mark.subnode.node.name,
+											mark.subnode.name,
+											mark.name
+									  ).objectName
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Главный инженер проекта</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								isCreateMode
+									? selectedObject.subnode.node.chiefEngineer
+											.name
+									: mark.subnode.node.chiefEngineer.name
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Начальник отдела</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								departmentHead == null
+									? ''
+									: departmentHead.name
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+				</div>
+
+				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
+					<Form.Group>
+						<Form.Label>Шифр марки</Form.Label>
+						<Form.Control
+							type="text"
 							placeholder="Введите шифр марки"
+							defaultValue={selectedObject.code}
+							onBlur={onMarkCodeChange}
 						/>
-					</div>
-				</div>
-				<div className="flex-v mrg-bot">
-					<p className="label-area">Наименование марки</p>
-					<div>
-						<input
-							value={selectedMark.name}
-							onChange={onMarkNameChange}
+					</Form.Group>
+
+					<Form.Group>
+						<Form.Label>Наименование марки</Form.Label>
+						<Form.Control
 							type="text"
-							className="input-area"
 							placeholder="Введите наименование марки"
+							defaultValue={selectedObject.name}
+							onBlur={onMarkNameChange}
 						/>
-					</div>
-				</div>
-				<Dropdown
-					cntStyle="flex-v mrg-bot"
-					label="Отдел"
-					placeholder={'Выберите отдел'}
-					maxInputLength={specialistNameStringLength}
-					onClickFunc={onDepartmentSelect}
-					value={
-						selectedMark.department == null
-							? ''
-							: selectedMark.department.code
-					}
-					options={optionsObject.departments.map((d) => {
-						return {
-							id: d.number,
-							val: d.code,
+					</Form.Group>
+
+					<div className="bold">Отдел</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите отдел"
+						noOptionsMessage={() => 'Отделы не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onDepartmentSelect((selectedOption as any)?.value)
 						}
-					})}
-				/>
-				<animated.div style={springStyle}>
-					<div className="flex-v mrg-bot">
-						<p className="label-area">Начальник отдела</p>
-						<div className="info-area">
-							{selectedMark.department == null ||
-							selectedMark.department.departmentHead == null
-								? '-'
-								: selectedMark.department.departmentHead
-										.fullName}
-						</div>
-					</div>
-					<Dropdown
-						cntStyle="flex-v mrg-bot"
-						label="Заведующий группы"
-						placeholder={'Не выбрано'}
-						maxInputLength={specialistNameStringLength}
-						onClickFunc={onGroupLeaderSelect}
 						value={
-							selectedMark.groupLeader == null
-								? ''
-								: selectedMark.groupLeader.fullName
+							selectedObject.department == null
+								? null
+								: {
+										value: selectedObject.department.id,
+										label: selectedObject.department.name,
+								  }
 						}
-						options={optionsObject.groupLeaders.map((gl) => {
+						options={optionsObject.departments.map((d) => {
 							return {
-								id: gl.id,
-								val: gl.fullName,
+								value: d.id,
+								label: d.name,
 							}
 						})}
+						styles={reactSelectstyle}
 					/>
-					<Dropdown
-						cntStyle="flex-v mrg-bot"
-						label="Главный специалист"
-						placeholder={'Не выбрано'}
-						maxInputLength={specialistNameStringLength}
-						onClickFunc={onChiefSpecialistSelect}
-						value={
-							selectedMark.chiefSpecialist == null
-								? ''
-								: selectedMark.chiefSpecialist.fullName
+					<div className="bold mrg-top-2">Заведующий группы</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите заведующего группы"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onGroupLeaderSelect((selectedOption as any)?.value)
 						}
-						options={optionsObject.chiefSpecialists.map((cs) => {
+						value={
+							selectedObject.groupLeader == null
+								? null
+								: {
+										value: selectedObject.groupLeader.id,
+										label:
+											selectedObject.groupLeader.name,
+								  }
+						}
+						options={optionsObject.groupLeaders.map((e) => {
 							return {
-								id: cs.id,
-								val: cs.fullName,
+								value: e.id,
+								label: e.name,
 							}
 						})}
+						styles={reactSelectstyle}
 					/>
-					<Dropdown
-						cntStyle="flex-v"
-						label="Главный строитель"
-						placeholder={'Выберите главного строителя'}
-						maxInputLength={specialistNameStringLength}
-						onClickFunc={onMainBuilderSelect}
-						value={
-							selectedMark.mainBuilder == null
-								? ''
-								: selectedMark.mainBuilder.fullName
+
+					<div className="bold mrg-top-2">Главный специалист</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите главного специалиста"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onChiefSpecialistSelect(
+								(selectedOption as any)?.value
+							)
 						}
-						options={optionsObject.mainBuilders.map((mb) => {
+						value={
+							selectedObject.chiefSpecialist == null
+								? null
+								: {
+										value:
+											selectedObject.chiefSpecialist.id,
+										label:
+											selectedObject.chiefSpecialist
+												.name,
+								  }
+						}
+						options={optionsObject.chiefSpecialists.map((e) => {
 							return {
-								id: mb.id,
-								val: mb.fullName,
+								value: e.id,
+								label: e.name,
 							}
 						})}
+						styles={reactSelectstyle}
 					/>
-				</animated.div>
-				<button
-					className="final-btn input-border-radius pointer"
-					onClick={
-						isCreateMode ? onCreateButtonClick : onChangeButtonClick
-					}
-				>
-					{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
-				</button>
-				<div className="mrg-top">
-					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+
+					<div className="bold mrg-top-2">Главный строитель (нормоконтролер?)</div>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите главного строителя"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						className="mrg-top"
+						onChange={(selectedOption) =>
+							onMainBuilderSelect((selectedOption as any)?.value)
+						}
+						value={
+							selectedObject.mainBuilder == null
+								? null
+								: {
+										value: selectedObject.mainBuilder.id,
+										label:
+											selectedObject.mainBuilder.name,
+								  }
+						}
+						options={optionsObject.mainBuilders.map((e) => {
+							return {
+								value: e.id,
+								label: e.name,
+							}
+						})}
+						styles={reactSelectstyle}
+					/>
+
+                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+
+					<Button
+						variant="secondary"
+						className="btn-mrg-top-2 full-width"
+						onClick={
+							isCreateMode
+								? onCreateButtonClick
+								: onChangeButtonClick
+						}
+					>
+						{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
+					</Button>
 				</div>
 			</div>
 		</div>

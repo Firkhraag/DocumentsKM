@@ -1,180 +1,142 @@
+// Global
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import Select from 'react-select'
+// Bootstrap
+import Button from 'react-bootstrap/Button'
+// Util
 import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
-import Dropdown from '../Dropdown/Dropdown'
-import MarkApprovals from '../../model/MarkApproval'
 import getFromOptions from '../../util/get-from-options'
 import { useMark } from '../../store/MarkStore'
-import getNotRequiredFieldValue from '../../util/get-field-value'
-import './MarkApproval.css'
+import { removeValueFromArray } from '../../util/array'
+import { reactSelectstyle } from '../../util/react-select-style'
 
 const MarkApproval = () => {
-	// Max lengths of input fields strings
-	const departmentStringLength = 50
-	const employeeStringLength = 50
-
+	const mark = useMark()
 	const history = useHistory()
 
-	const mark = useMark()
-
-	// Object that holds selected values
 	const [selectedObject, setSelectedObject] = useState({
 		departments: [] as Department[],
 		employees: [] as Employee[],
 	})
-	// Object that holds select options
 	const [optionsObject, setOptionsObject] = useState({
 		departments: [] as Department[],
 		employees: [[], [], [], [], [], [], []] as Employee[][],
 	})
-	// Original mark approvals
-	const [markApprovalsObj, setMarkApprovalsObj] = useState<MarkApprovals>({
-		approvalSpecialist1: null,
-		approvalSpecialist2: null,
-		approvalSpecialist3: null,
-		approvalSpecialist4: null,
-		approvalSpecialist5: null,
-		approvalSpecialist6: null,
-		approvalSpecialist7: null,
-	})
+
+	const cachedEmployees = useState(new Map<number, Employee[]>())[0]
+	const employeesExcludedFromOptions = useState([] as number[])[0]
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					// Fetch departments
 					const departmentsFetchedResponse = await httpClient.get(
 						'/departments'
 					)
 					const departmentsFetched = departmentsFetchedResponse.data
-					// Fetch mark with approvals
+
 					const markApprovalsFetchedResponse = await httpClient.get(
 						`/marks/${mark.id}/approvals`
 					)
-					const markApprovalsFetched =
-						markApprovalsFetchedResponse.data
-                    setMarkApprovalsObj(markApprovalsFetched)
-                    setSelectedObject({
-                        departments: [
-                            markApprovalsFetched.approvalSpecialist1?.department,
-                            markApprovalsFetched.approvalSpecialist2?.department,
-                            markApprovalsFetched.approvalSpecialist3?.department,
-                            markApprovalsFetched.approvalSpecialist4?.department,
-                            markApprovalsFetched.approvalSpecialist5?.department,
-                            markApprovalsFetched.approvalSpecialist6?.department,
-                            markApprovalsFetched.approvalSpecialist7?.department,
-                        ],
-                        employees: [
-                            markApprovalsFetched.approvalSpecialist1,
-                            markApprovalsFetched.approvalSpecialist2,
-                            markApprovalsFetched.approvalSpecialist3,
-                            markApprovalsFetched.approvalSpecialist4,
-                            markApprovalsFetched.approvalSpecialist5,
-                            markApprovalsFetched.approvalSpecialist6,
-                            markApprovalsFetched.approvalSpecialist7,
-                        ],
-                    })
+					const markApprovals = markApprovalsFetchedResponse.data as Employee[]
+					for (let e of markApprovals) {
+						if (e != null) {
+							employeesExcludedFromOptions.push(e.id)
+						}
+					}
+					setSelectedObject({
+						departments: markApprovals.map((e) => e?.department),
+						employees: markApprovals,
+					})
 
 					const fetchEmployees = async (
 						rowNumber: number,
 						approvalSpecialist: Employee,
 						options: Employee[][]
 					) => {
-						if (approvalSpecialist != null) {
-							const fetchedEmployeesResponse = await httpClient.get(
-								`/departments/${approvalSpecialist.department.number}/mark-approval-employees`
-							)
-							const fetchedEmployees =
-								fetchedEmployeesResponse.data
-							options[rowNumber] = fetchedEmployees
+						const fetchedEmployeesResponse = await httpClient.get(
+							`/departments/${approvalSpecialist.department.id}/mark-approval-employees`
+						)
+						let fetchedEmployees = fetchedEmployeesResponse.data as Employee[]
+						options[rowNumber] = fetchedEmployees
+					}
+					for (const [i, e] of markApprovals.entries()) {
+						if (e != null) {
+							if (cachedEmployees.has(e.department.id)) {
+								optionsObject.employees[
+									i
+								] = cachedEmployees.get(e.department.id)
+							} else {
+								await fetchEmployees(
+									i,
+									e,
+									optionsObject.employees
+								)
+							}
 						}
 					}
-					const employeeOptions = optionsObject.employees
-					await fetchEmployees(
-						0,
-						markApprovalsFetched.approvalSpecialist1,
-						employeeOptions
-					)
-					await fetchEmployees(
-						1,
-						markApprovalsFetched.approvalSpecialist2,
-						employeeOptions
-					)
-					await fetchEmployees(
-						2,
-						markApprovalsFetched.approvalSpecialist3,
-						employeeOptions
-					)
-					await fetchEmployees(
-						3,
-						markApprovalsFetched.approvalSpecialist4,
-						employeeOptions
-					)
-					await fetchEmployees(
-						4,
-						markApprovalsFetched.approvalSpecialist5,
-						employeeOptions
-					)
-					await fetchEmployees(
-						5,
-						markApprovalsFetched.approvalSpecialist6,
-						employeeOptions
-					)
-					await fetchEmployees(
-						6,
-						markApprovalsFetched.approvalSpecialist7,
-						employeeOptions
-					)
 					setOptionsObject({
 						departments: departmentsFetched,
-						employees: employeeOptions,
-                    })
+						employees: optionsObject.employees,
+					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					console.log('Failed to fetch the data', e)
 				}
 			}
 			fetchData()
 		}
 	}, [mark])
 
-	const onDepartmentSelect = (rowNumber: number) => {
-        if (rowNumber > 0 && selectedObject.employees[rowNumber - 1] == null) {
-            return
-        }
-		return async (number: number) => {
-			const v = getFromOptions(
-				number,
-				optionsObject.departments,
-				selectedObject.departments[rowNumber],
-				true
-			)
-			if (v != null) {
+	const onDepartmentSelect = async (rowNumber: number, number: number) => {
+		if (rowNumber > 0 && selectedObject.employees[rowNumber - 1] == null) {
+			return
+		}
+		if (number == null) {
+			optionsObject.employees[rowNumber] = []
+			selectedObject.departments[rowNumber] = null
+			if (selectedObject.employees[rowNumber] != null) {
+				removeValueFromArray(
+					employeesExcludedFromOptions,
+					selectedObject.employees[rowNumber].id
+				)
+			}
+			selectedObject.employees[rowNumber] = null
+			setSelectedObject({
+				employees: selectedObject.employees,
+				departments: selectedObject.departments,
+			})
+			return
+		}
+		const v = getFromOptions(
+			number,
+			optionsObject.departments,
+			selectedObject.departments[rowNumber]
+		)
+		if (v != null) {
+			if (cachedEmployees.has(v.id)) {
+				optionsObject.employees[rowNumber] = cachedEmployees.get(
+					v.id
+				)
+				selectedObject.departments[rowNumber] = v
+				setSelectedObject({
+					...selectedObject,
+					departments: selectedObject.departments,
+				})
+			} else {
 				try {
 					const fetchedEmployeesResponse = await httpClient.get(
 						`/departments/${number}/mark-approval-employees`
 					)
-                    let fetchedEmployees = fetchedEmployeesResponse.data as Employee[]
-					for (let e of selectedObject.employees) {
-                        console.log('1')
-                        if (e != null) {
-                            fetchedEmployees = fetchedEmployees.filter(
-                                (e2) => e2.id !== e.id
-                            )
-                        }
-                    }
-					const e = optionsObject.employees
-					e[rowNumber] = fetchedEmployees
-					setOptionsObject({
-						...optionsObject,
-						employees: e,
-					})
-					const d = selectedObject.departments
-					d[rowNumber] = v
+					cachedEmployees.set(v.id, fetchedEmployeesResponse.data)
+					optionsObject.employees[rowNumber] =
+						fetchedEmployeesResponse.data
+					selectedObject.departments[rowNumber] = v
 					setSelectedObject({
 						...selectedObject,
-						departments: d,
+						departments: selectedObject.departments,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -183,175 +145,192 @@ const MarkApproval = () => {
 		}
 	}
 
-	const onEmployeeSelect = (rowNumber: number) => {
-		return async (id: number) => {
-			const v = getFromOptions(
-				id,
-				optionsObject.employees[rowNumber],
-				selectedObject.employees[rowNumber]
-			)
-			if (v != null) {
-				const e = selectedObject.employees
-				e[rowNumber] = v
-				setSelectedObject({
-					...selectedObject,
-					employees: e,
-				})
+	const onEmployeeSelect = (rowNumber: number, id: number) => {
+		if (id == null) {
+			if (selectedObject.employees[rowNumber] != null) {
+				removeValueFromArray(
+					employeesExcludedFromOptions,
+					selectedObject.employees[rowNumber].id
+				)
 			}
+			selectedObject.employees[rowNumber] = null
+			setSelectedObject({
+				...selectedObject,
+				employees: selectedObject.employees,
+			})
+			return
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.employees[rowNumber],
+			selectedObject.employees[rowNumber]
+		)
+		if (v != null) {
+			if (selectedObject.employees[rowNumber] != null) {
+				removeValueFromArray(
+					employeesExcludedFromOptions,
+					selectedObject.employees[rowNumber].id
+				)
+			}
+			selectedObject.employees[rowNumber] = v
+			setSelectedObject({
+				...selectedObject,
+				employees: selectedObject.employees,
+			})
+			employeesExcludedFromOptions.push(v.id)
 		}
 	}
 
-	// Removing approval is not supported right now
 	const onChangeButtonClick = async () => {
-		// DEBUG
-		// console.log({
-		// 	approvalSpecialist1Id: getNotRequiredFieldValue(
-		// 		selectedObject.employees[0],
-		// 		markApprovalsObj.approvalSpecialist1
-		// 	),
-		// 	approvalSpecialist2Id: getNotRequiredFieldValue(
-		// 		selectedObject.employees[1],
-		// 		markApprovalsObj.approvalSpecialist2
-		// 	),
-		// 	approvalSpecialist3Id: getNotRequiredFieldValue(
-		// 		selectedObject.employees[2],
-		// 		markApprovalsObj.approvalSpecialist3
-		// 	),
-		// 	approvalSpecialist4Id: getNotRequiredFieldValue(
-		// 		selectedObject.employees[3],
-		// 		markApprovalsObj.approvalSpecialist4
-		// 	),
-		// 	approvalSpecialist5Id: getNotRequiredFieldValue(
-		// 		selectedObject.employees[4],
-		// 		markApprovalsObj.approvalSpecialist5
-		// 	),
-		// 	approvalSpecialist6Id: getNotRequiredFieldValue(
-		// 		selectedObject.employees[5],
-		// 		markApprovalsObj.approvalSpecialist6
-		// 	),
-		// 	approvalSpecialist7Id: getNotRequiredFieldValue(
-		// 		selectedObject.employees[5],
-		// 		markApprovalsObj.approvalSpecialist7
-		// 	),
-		// })
 		try {
-			await httpClient.patch(`/marks/${mark.id}/approvals`, {
-				approvalSpecialist1Id: getNotRequiredFieldValue(
-					selectedObject.employees[0],
-					markApprovalsObj.approvalSpecialist1
-				),
-				approvalSpecialist2Id: getNotRequiredFieldValue(
-					selectedObject.employees[1],
-					markApprovalsObj.approvalSpecialist2
-				),
-				approvalSpecialist3Id: getNotRequiredFieldValue(
-					selectedObject.employees[2],
-					markApprovalsObj.approvalSpecialist3
-				),
-				approvalSpecialist4Id: getNotRequiredFieldValue(
-					selectedObject.employees[3],
-					markApprovalsObj.approvalSpecialist4
-				),
-				approvalSpecialist5Id: getNotRequiredFieldValue(
-					selectedObject.employees[4],
-					markApprovalsObj.approvalSpecialist5
-				),
-				approvalSpecialist6Id: getNotRequiredFieldValue(
-					selectedObject.employees[5],
-					markApprovalsObj.approvalSpecialist6
-				),
-				approvalSpecialist7Id: getNotRequiredFieldValue(
-					selectedObject.employees[5],
-					markApprovalsObj.approvalSpecialist7
-				),
-			})
+			const employeeIdsToSend = [] as number[]
+			for (let e of selectedObject.employees) {
+				if (e != null) {
+					employeeIdsToSend.push(e.id)
+				}
+			}
+			await httpClient.patch(
+				`/marks/${mark.id}/approvals`,
+				employeeIdsToSend
+			)
 			history.push('/')
 		} catch (e) {
-			console.log('Fail')
+			console.log('Error')
 		}
 	}
 
-	return (
+	return mark == null ? null : (
 		<div className="component-cnt">
 			<h1 className="text-centered">Согласования</h1>
-			<table className="agreements-table white-bg">
-				<tbody>
-					<tr className="head-tr">
-						<td>№</td>
-						<td>Отдел</td>
-						<td>Специалист</td>
-					</tr>
-					{[...Array(7).keys()].map((rowNumber) => {
+			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
+				<div className="flex">
+					<div className="bold input-width">Отдел</div>
+					<div className="bold input-width mrg-left">Специалист</div>
+				</div>
+				{[...Array(optionsObject.employees.length).keys()].map(
+					(rowNumber) => {
 						return (
-							<tr key={rowNumber}>
-								<td>{rowNumber + 1}</td>
-								<td>
-									<Dropdown
-										cntStyle="flex-v"
-										label=""
-										placeholder={(rowNumber > 0 && selectedObject.employees[rowNumber - 1] == null) ? "" : "Выберите отдел"}
-										maxInputLength={departmentStringLength}
-										onClickFunc={onDepartmentSelect(
-											rowNumber
-										)}
-										value={
-											selectedObject.departments[
-												rowNumber
-											] == null
-												? ''
-												: selectedObject.departments[
-														rowNumber
-												  ].code
-										}
-										options={(rowNumber > 0 && selectedObject.employees[rowNumber - 1] == null) ? [] : optionsObject.departments.map(
-											(d) => {
-												return {
-													id: d.number,
-													val: d.code,
-												}
-											}
-										)}
-									/>
-								</td>
-								<td>
-									<Dropdown
-										cntStyle="flex-v"
-										label=""
-										placeholder={(rowNumber > 0 && selectedObject.employees[rowNumber - 1] == null) ? "" : "Выберите специалиста"}
-										maxInputLength={employeeStringLength}
-										onClickFunc={onEmployeeSelect(
-											rowNumber
-										)}
-										value={
-											selectedObject.employees[
-												rowNumber
-											] == null
-												? ''
-												: selectedObject.employees[
-														rowNumber
-												  ].fullName
-										}
-										options={optionsObject.employees[
-											rowNumber
-										].map((e) => {
+							<div className="flex mrg-top" key={rowNumber}>
+								<Select
+									maxMenuHeight={250}
+									className="input-width"
+									isClearable={true}
+									isSearchable={true}
+									placeholder={
+										rowNumber > 0 &&
+										selectedObject.employees[
+											rowNumber - 1
+										] == null
+											? ''
+											: 'Выберите отдел'
+									}
+									noOptionsMessage={() => 'Отделы не найдены'}
+									onChange={(selectedOption) =>
+										onDepartmentSelect(
+											rowNumber,
+											(selectedOption as any)?.value
+										)
+									}
+									value={
+										selectedObject.departments[rowNumber] ==
+										null
+											? null
+											: {
+													value:
+														selectedObject
+															.departments[
+															rowNumber
+														].id,
+													label:
+														selectedObject
+															.departments[
+															rowNumber
+														].name,
+											  }
+									}
+									options={
+										rowNumber > 0 &&
+										selectedObject.employees[
+											rowNumber - 1
+										] == null
+											? []
+											: optionsObject.departments.map(
+													(d) => {
+														return {
+															value: d.id,
+															label: d.name,
+														}
+													}
+											  )
+									}
+									styles={reactSelectstyle}
+								/>
+								<Select
+									maxMenuHeight={250}
+									className="input-width mrg-left"
+									isClearable={true}
+									isSearchable={true}
+									placeholder={
+										rowNumber > 0 &&
+										selectedObject.employees[
+											rowNumber - 1
+										] == null
+											? ''
+											: 'Выберите специалиста'
+									}
+									noOptionsMessage={() =>
+										'Специалисты не найдены'
+									}
+									onChange={(selectedOption) =>
+										onEmployeeSelect(
+											rowNumber,
+											(selectedOption as any)?.value
+										)
+									}
+									value={
+										selectedObject.employees[rowNumber] ==
+										null
+											? null
+											: {
+													value:
+														selectedObject
+															.employees[
+															rowNumber
+														].id,
+													label:
+														selectedObject
+															.employees[
+															rowNumber
+														].name,
+											  }
+									}
+									options={optionsObject.employees[rowNumber]
+										.filter(
+											(e) =>
+												!employeesExcludedFromOptions.includes(
+													e.id
+												)
+										)
+										.map((e) => {
 											return {
-												id: e.id,
-												val: e.fullName,
+												value: e.id,
+												label: e.name,
 											}
 										})}
-									/>
-								</td>
-							</tr>
+									styles={reactSelectstyle}
+								/>
+							</div>
 						)
-					})}
-				</tbody>
-			</table>
-			<button
-				onClick={onChangeButtonClick}
-				className="final-btn input-border-radius pointer"
-			>
-				Сохранить изменения
-			</button>
+					}
+				)}
+				<Button
+					variant="secondary"
+					className="btn-mrg-top-2 full-width"
+					onClick={onChangeButtonClick}
+				>
+					Сохранить изменения
+				</Button>
+			</div>
 		</div>
 	)
 }

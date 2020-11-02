@@ -1,8 +1,12 @@
+// Global
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import Profile from '../Svg/Profile'
+// Bootstrap
+import { PersonFill } from 'react-bootstrap-icons'
+// Util
 import { useMark } from '../../store/MarkStore'
 import Drawer from './Drawer/Drawer'
+import { makeMarkName } from '../../util/make-name'
 import './Header.css'
 
 const Header = () => {
@@ -12,7 +16,7 @@ const Header = () => {
 
 	useEffect(() => {
 		const clickHandler = (e: MouseEvent) => {
-			if ((e.target as HTMLElement).id != 'user-drawer') {
+			if ((e.target as HTMLElement).closest('#user-cnt') == null) {
 				setDrawerShown(false)
 			}
 		}
@@ -21,23 +25,27 @@ const Header = () => {
 	}, [])
 
 	return (
-		<div className="space-between-cent-v header white-bg">
-			<Link to="/" className="pointer bold">
+		<div className="space-between-cent-v header bg-white">
+			<Link to="/" className="pointer bold header-link-pad">
 				Главная
 			</Link>
-			<Link to="/mark-select" className="pointer bold">
+			<Link to="/mark-select" className="pointer bold header-link-pad">
 				{mark == null
 					? '-'
-					: `${mark.subnode.node.project.baseSeries}.${mark.subnode.node.code}.${mark.subnode.code}-${mark.code}`}
+					: makeMarkName(
+							mark.subnode.node.project.baseSeries,
+							mark.subnode.node.code,
+							mark.subnode.code,
+							mark.code
+					  )}
 			</Link>
 			<div
+				id="user-cnt"
 				className="profile-icon-cnt relative"
 				onClick={() => setDrawerShown(true)}
 			>
 				<Drawer isShown={isDrawerShown} />
-				<div className="pointer">
-					<Profile />
-				</div>
+				<PersonFill size={36} className="pointer" />
 			</div>
 		</div>
 	)

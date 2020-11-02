@@ -11,7 +11,7 @@ const App = () => {
 	return (
 		<Router>
 			{user == null ? (
-				<div className="container full-height">
+				<div className="div-container full-height">
 					<Spinner />
 				</div>
 			) : user ? (

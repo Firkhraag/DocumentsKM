@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,10 +21,6 @@ namespace DocumentsKM.Models
         [MaxLength(40)]
         public string Code { get; set; }
 
-        // ДопКод
-        [MaxLength(50)]
-        public string AdditionalCode { get; set; }
-
         // НазвМарки
         [Required]
         [MaxLength(255)]
@@ -43,36 +40,34 @@ namespace DocumentsKM.Models
         public virtual Employee GroupLeader { get; set; }
 
         // Гл_стр 
-        [Required]
         [ForeignKey("MainBuilderId")]
         public virtual Employee MainBuilder { get; set; }
 
-        // Исп1
-        [ForeignKey("ApprovalSpecialist1Id")]
-        public virtual Employee ApprovalSpecialist1 { get; set; }
+        // Дата_ред
+        public DateTime? EditedDate { get; set; }
 
-        // Исп2
-        [ForeignKey("ApprovalSpecialist2Id")]
-        public virtual Employee ApprovalSpecialist2 { get; set; }
+        public int? Signed1Id { get; set; }
+        public int? Signed2Id { get; set; }
 
-        // Исп3
-        [ForeignKey("ApprovalSpecialist3Id")]
-        public virtual Employee ApprovalSpecialist3 { get; set; }
+        public DateTime? IssuedDate { get; set; }
 
-        // Исп4
-        [ForeignKey("ApprovalSpecialist4Id")]
-        public virtual Employee ApprovalSpecialist4 { get; set; }
-
-        // Исп5
-        [ForeignKey("ApprovalSpecialist5Id")]
-        public virtual Employee ApprovalSpecialist5 { get; set; }
-
-        // Исп6
-        [ForeignKey("ApprovalSpecialist6Id")]
-        public virtual Employee ApprovalSpecialist6 { get; set; }
-
-        // Исп7
-        [ForeignKey("ApprovalSpecialist7Id")]
-        public virtual Employee ApprovalSpecialist7 { get; set; }
+        public int? NumOfVolumes { get; set; }
+        public float? SafetyCoeff { get; set; }
+        public float? OperatingTemp { get; set; }
+        public int? OperatingZone { get; set; }
+        public int? GasGroup { get; set; }
+        public int? Aggressiveness { get; set; }
+        public int? Material { get; set; }
+        public string PaintworkType { get; set; }
+        public string Note { get; set; }
+        public int? FireHazardCategoryId { get; set; }
+        public int? HighTensileBolts { get; set; }
+        public Boolean? P_transport { get; set; }
+        public Boolean? P_site { get; set; }
+        public Boolean? Xcnd { get; set; }
+        public string Text_3d_estimate { get; set; }
+        public string AddVolumes { get; set; }
+        public float? VmpWeight { get; set; }
+        public int? Impl_3d_estimate { get; set; }
     }
 }

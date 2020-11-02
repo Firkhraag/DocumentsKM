@@ -9,14 +9,10 @@ namespace DocumentsKM.Data
         IEnumerable<Mark> GetAll();
         // Получить все марки по id подузла
         IEnumerable<Mark> GetAllBySubnodeId(int subnodeId);
-        
-        // IEnumerable<Mark> GetUserRecentMarks();
-
         // Получить марку по id
         Mark GetById(int id);
-
         // Добавить новую марку
-        void Create(Mark mark);
+        void Add(Mark mark);
         // Изменить имеющуюся марку
         void Update(Mark mark);
     }

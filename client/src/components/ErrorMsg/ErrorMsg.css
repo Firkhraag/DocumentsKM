@@ -1,8 +1,6 @@
 .err-msg {
-	padding: 1em;
-	margin-bottom: 0.5em;
+	padding: 0.25em 0.5em 0.25em 0.75em;
 	background: #ffdce0;
 	color: #90393c;
-	font-weight: 600;
-	font-size: 0.9em;
+	font-weight: 500;
 }

@@ -1,4 +1,4 @@
-import { makeMarkOrSubnodeName } from '../src/util/make-name'
+import { makeMarkName } from '../src/util/make-name'
 
 describe('make the right mark name', () => {
 	test.each`
@@ -10,7 +10,7 @@ describe('make the right mark name', () => {
 		'should return $expected if input id is $id',
 		({ projectBaseSeries, nodeCode, subnodeCode, markCode, expected }) => {
 			expect(
-				makeMarkOrSubnodeName(projectBaseSeries, nodeCode, subnodeCode, markCode)
+				makeMarkName(projectBaseSeries, nodeCode, subnodeCode, markCode)
 			).toBe(expected)
 		}
 	)

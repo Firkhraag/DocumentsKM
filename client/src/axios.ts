@@ -1,8 +1,6 @@
 import axios from 'axios'
 
 const httpClient = axios.create({
-	// baseURL: process.env.APP_API_BASE_URL,
-	// or use window.location.host
 	baseURL: 'https://localhost:5001/api',
 	withCredentials: true,
 	timeout: 3000,
@@ -33,7 +31,6 @@ httpClient.interceptors.response.use(
 		return response
 	},
 	async (error) => {
-		// Timeout error
 		if (error.response == null || error.response.status === 500) {
 			return Promise.reject(new Error('Ошибка сети'))
 		}

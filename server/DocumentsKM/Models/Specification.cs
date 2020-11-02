@@ -8,7 +8,7 @@ namespace DocumentsKM.Models
     {
         // Поз_выпуска
         [Key]
-        public int Position { get; set; }
+        public int Id { get; set; }
 
         // Id_марки
         [Required]
@@ -18,15 +18,17 @@ namespace DocumentsKM.Models
 
         // выпуск
         [Required]
-        public byte ReleaseNumber { get; set; }
+        public int Num { get; set; }
+
+        // тек_выпуск
+        [Required]
+        public bool IsCurrent { get; set; }
 
         // прим
         [MaxLength(255)]
         public string Note { get; set; }
 
         // дата_созд
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime Created { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }

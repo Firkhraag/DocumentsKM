@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using AutoMapper;
 using DocumentsKM.Dtos;
+using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,8 +20,7 @@ namespace DocumentsKM.Controllers
 
         public SubnodesController(
             ISubnodeService subnodeService,
-            IMapper mapper
-        )
+            IMapper mapper)
         {
             _service = subnodeService;
             _mapper = mapper;
@@ -37,11 +37,11 @@ namespace DocumentsKM.Controllers
         [HttpGet, Route("subnodes/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<SubnodeResponse> GetSubnodeResponseById(int id)
+        public ActionResult<Subnode> GetById(int id)
         {
             var subnode = _service.GetById(id);
             if (subnode != null)
-                return Ok(_mapper.Map<SubnodeResponse>(subnode));
+                return Ok(subnode);
             return NotFound();
         }
 

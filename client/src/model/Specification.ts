@@ -1,17 +1,23 @@
 interface ISpecification {
-	position: number
-	releaseDate: string
+    id: number
+    num: number
+    createdDate: string
+    isCurrent: boolean
 	note: string
 }
 
 class Specification {
-	position: number
-	releaseDate: string
+    id: number
+    num: number
+    createdDate: string
+    isCurrent: boolean
 	note: string
 
 	constructor(obj?: ISpecification) {
-		this.position = (obj && obj.position) || 0
-		this.releaseDate = (obj && obj.releaseDate) || ''
+		this.id = (obj && obj.id) || 0
+		this.num = (obj && obj.num) || 0
+        this.createdDate = (obj && obj.createdDate) || ''
+        this.isCurrent = (obj && obj.isCurrent) || false
 		this.note = (obj && obj.note) || ''
 	}
 }

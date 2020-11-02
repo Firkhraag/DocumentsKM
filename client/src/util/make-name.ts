@@ -1,14 +1,14 @@
 // Создание обозначения марки или подузла
-export const makeMarkOrSubnodeName = (
+export const makeMarkName = (
 	projectBaseSeries: string,
 	nodeCode: string,
 	subnodeCode: string,
-	markCode: string = ''
+	markCode: string
 ) => {
 	let markName = projectBaseSeries
 
 	let overhaul = ''
-	if (nodeCode !== '-') {
+	if (nodeCode !== '-' && nodeCode !== '') {
 		const nodeCodeSplitted = nodeCode.split('-')
 		const nodeValue = nodeCodeSplitted[0]
 		if (nodeCodeSplitted.length === 2) {
@@ -17,7 +17,7 @@ export const makeMarkOrSubnodeName = (
 
 		markName += `.${nodeValue}`
 	}
-	if (subnodeCode !== '-') {
+	if (subnodeCode !== '-' && subnodeCode !== '') {
 		markName += `.${subnodeCode}`
 		if (overhaul !== '') {
 			markName += `-${overhaul}`
