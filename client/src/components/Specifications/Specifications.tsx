@@ -70,10 +70,10 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 
 	const onSelectCurrentClick = async (row: number, id: number) => {
 		try {
-            await httpClient.patch(`marks/${mark.id}/specifications/${currentSpecId}`, {
+            await httpClient.patch(`/specifications/${currentSpecId}`, {
 				isCurrent: false,
 			})
-			await httpClient.patch(`marks/${mark.id}/specifications/${id}`, {
+			await httpClient.patch(`/specifications/${id}`, {
 				isCurrent: true,
             })
 			const inputElement = refs[row].current as any
@@ -104,7 +104,7 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
-			await httpClient.delete(`/marks/${mark.id}/specifications/${id}`)
+			await httpClient.delete(`/specifications/${id}`)
             refs.splice(row, 1)
             const newSpecArr = [...specifications]
 			newSpecArr.splice(row, 1)

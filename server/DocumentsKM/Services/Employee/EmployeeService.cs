@@ -41,7 +41,6 @@ namespace DocumentsKM.Services
             var departmentHeadArr = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
                 departmentHeadPosId);
-            Log.Information(departmentHeadArr.Count().ToString());
             if (departmentHeadArr.Count() != 1)
                 throw new ConflictException();
             var departmentHead = departmentHeadArr.ToList()[0];

@@ -23,6 +23,9 @@ type SheetDataProps = {
 }
 
 const SheetData = ({ isCreateMode }: SheetDataProps) => {
+    // Id листа основного комплекта из справочника
+    const basicSheetDocTypeId = 1
+
 	const defaultOptionsObject = {
 		sheetNames: [] as SheetName[],
 		employees: [] as Employee[],
@@ -196,10 +199,11 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 	const onCreateButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-                await httpClient.post(`/marks/${mark.id}/sheets/basic`, {
+                await httpClient.post(`/marks/${mark.id}/sheets`, {
                     num: selectedObject.num,
                     name: selectedObject.name,
                     form: selectedObject.form,
+                    docTypeId: basicSheetDocTypeId,
                     creatorId: selectedObject.creator?.id,
                     inspectorId: selectedObject.inspector?.id,
                     normContrId: selectedObject.normContr?.id,

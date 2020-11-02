@@ -45,5 +45,11 @@ namespace DocumentsKM.Data
             _context.Entry(sheet).State = EntityState.Modified;
             _context.SaveChanges();
         }
+
+        public void Delete(Sheet sheet)
+        {
+            _context.Sheets.Remove(sheet);
+            _context.SaveChanges();
+        }
     }
 }

@@ -41,7 +41,7 @@ const Sheets = ({ setPopupObj }: SheetsProps) => {
     
     const onDeleteClick = async (row: number, id: number) => {
 		try {
-            // await httpClient.delete(`/marks/${mark.id}/specifications/${id}`)
+            await httpClient.delete(`/sheets/${id}`)
             sheets.splice(row, 1)
 			setPopupObj(defaultPopupObj)
 		} catch (e) {

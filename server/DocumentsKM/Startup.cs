@@ -125,7 +125,7 @@ namespace DocumentsKM
             services.AddScoped<IMarkService, MarkService>();
             services.AddScoped<IMarkApprovalService, MarkApprovalService>();
             services.AddScoped<ISpecificationService, SpecificationService>();
-            services.AddScoped<IBasicSheetService, BasicSheetService>();
+            services.AddScoped<ISheetService, SheetService>();
             services.AddScoped<ISheetNameService, SheetNameService>();
         }
 

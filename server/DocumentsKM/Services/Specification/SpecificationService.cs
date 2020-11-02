@@ -52,7 +52,6 @@ namespace DocumentsKM.Services
         }
 
         public void Update(
-            int markId,
             int id,
             SpecificationUpdateRequest specification)
         {
@@ -61,9 +60,6 @@ namespace DocumentsKM.Services
             var foundSpecification = _repository.GetById(id);
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
 
             if (specification.IsCurrent != null)
                 foundSpecification.IsCurrent = specification.IsCurrent ?? false;
@@ -72,11 +68,8 @@ namespace DocumentsKM.Services
             _repository.Update(foundSpecification);
         }
 
-        public void Delete(int markId, int id)
+        public void Delete(int id)
         {
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
             var foundSpecification = _repository.GetById(id);
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));

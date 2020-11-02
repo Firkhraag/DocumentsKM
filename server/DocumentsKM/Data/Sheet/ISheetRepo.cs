@@ -17,5 +17,7 @@ namespace DocumentsKM.Data
         void Add(Sheet sheet);
         // Изменить имеющийся лист
         void Update(Sheet sheet);
+        // Удалить имеющийся лист
+        void Delete(Sheet sheet);
     }
 }

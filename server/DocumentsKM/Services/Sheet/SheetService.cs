@@ -8,14 +8,14 @@ using System.Linq;
 
 namespace DocumentsKM.Services
 {
-    public class BasicSheetService : IBasicSheetService
+    public class SheetService : ISheetService
     {
         private ISheetRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IDocTypeRepo _docTypeRepo;
 
-        public BasicSheetService(
+        public SheetService(
             ISheetRepo sheetRepo,
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
@@ -29,12 +29,18 @@ namespace DocumentsKM.Services
 
         public IEnumerable<Sheet> GetAllByMarkId(int markId)
         {
-            return _repository.GetAllByMarkIdAndDocType(markId, 1);
+            return _repository.GetAllByMarkId(markId);
+        }
+
+        public IEnumerable<Sheet> GetAllByMarkIdAndDocTypeId(int markId, int docType)
+        {
+            return _repository.GetAllByMarkIdAndDocType(markId, docType);
         }
 
         public void Create(
             Sheet sheet,
             int markId,
+            int docTypeId,
             int? creatorId,
             int? inspectorId,
             int? normContrId)
@@ -46,11 +52,10 @@ namespace DocumentsKM.Services
                 throw new ArgumentNullException(nameof(foundMark));
             sheet.Mark = foundMark;
 
-            // Doc type is 1 - лист основного комплекта
-            var docType = _docTypeRepo.GetById(1);
+            var docType = _docTypeRepo.GetById(docTypeId);
             sheet.DocType = docType;
 
-            var sheets = _repository.GetAllByMarkIdAndDocType(markId, 1);
+            var sheets = _repository.GetAllByMarkIdAndDocType(markId, docTypeId);
             int maxNum = 1;
             foreach (var s in sheets)
             {
@@ -88,6 +93,7 @@ namespace DocumentsKM.Services
             int id,
             SheetUpdateRequest sheet)
         {
+            // ToDo: Конфликты по юник ки
             if (sheet == null)
                 throw new ArgumentNullException(nameof(sheet));
             var foundSheet = _repository.GetById(id);
@@ -144,6 +150,14 @@ namespace DocumentsKM.Services
                 
             }
             _repository.Update(foundSheet);
+        }
+
+        public void Delete(int id)
+        {
+            var foundSheet = _repository.GetById(id);
+            if (foundSheet == null)
+                throw new ArgumentNullException(nameof(foundSheet));
+            _repository.Delete(foundSheet);
         }
     }
 }

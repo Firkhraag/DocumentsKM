@@ -51,17 +51,17 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        [HttpPatch, Route("marks/{markId}/specifications/{id}")]
+        [HttpPatch, Route("specifications/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Update(int markId, int id, [FromBody] SpecificationUpdateRequest specificationRequest)
+        public ActionResult Update(int id, [FromBody] SpecificationUpdateRequest specificationRequest)
         {
             // DEBUG
             // Log.Information(JsonSerializer.Serialize(specificationRequest));
             try
             {
-                _service.Update(markId, id, specificationRequest);
+                _service.Update(id, specificationRequest);
             }
             catch (ArgumentNullException)
             {
@@ -70,15 +70,15 @@ namespace DocumentsKM.Controllers
             return NoContent();
         }
 
-        [HttpDelete, Route("marks/{markId}/specifications/{id}")]
+        [HttpDelete, Route("specifications/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<IEnumerable<SpecificationResponse>> Delete(int markId, int id)
+        public ActionResult Delete(int id)
         {
             try
             {
-                _service.Delete(markId, id);
+                _service.Delete(id);
                 return NoContent();
             }
             catch (ArgumentNullException)

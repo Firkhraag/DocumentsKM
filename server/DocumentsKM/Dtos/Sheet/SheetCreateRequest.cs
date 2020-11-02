@@ -11,6 +11,8 @@ namespace DocumentsKM.Dtos
         [Required]
         public float Form { get; set; }
 
+        public int DocTypeId { get; set; }
+
         public int? CreatorId { get; set; }
         public int? InspectorId { get; set; }
         public int? NormContrId { get; set; }

@@ -15,13 +15,13 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class BasicSheetsController : ControllerBase
+    public class SheetsController : ControllerBase
     {
-        private readonly IBasicSheetService _service;
+        private readonly ISheetService _service;
         private readonly IMapper _mapper;
 
-        public BasicSheetsController(
-            IBasicSheetService sheetService,
+        public SheetsController(
+            ISheetService sheetService,
             IMapper mapper)
         {
             _service = sheetService;
@@ -30,13 +30,15 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("marks/{markId}/sheets/basic")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<SheetResponse>> GetAllByMarkId(int markId)
+        public ActionResult<IEnumerable<SheetResponse>> GetAllBasicSheetsByMarkId(int markId)
         {
-            var sheets = _service.GetAllByMarkId(markId);
+            // Id листа основного комплекта из справочника
+            var basicSheetDocTypeId = 1;
+            var sheets = _service.GetAllByMarkIdAndDocTypeId(markId, basicSheetDocTypeId);
             return Ok(_mapper.Map<IEnumerable<SheetResponse>>(sheets));
         }
 
-        [HttpPost, Route("marks/{markId}/sheets/basic")]
+        [HttpPost, Route("marks/{markId}/sheets")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -48,6 +50,7 @@ namespace DocumentsKM.Controllers
                 _service.Create(
                     sheetModel,
                     markId,
+                    sheetRequest.DocTypeId,
                     sheetRequest.CreatorId,
                     sheetRequest.InspectorId,
                     sheetRequest.NormContrId);
@@ -57,10 +60,10 @@ namespace DocumentsKM.Controllers
                 return NotFound();
             }
             
-            return Created($"sheets/{sheetModel.Id}/basic", _mapper.Map<SheetResponse>(sheetModel));
+            return Created($"sheets/{sheetModel.Id}", _mapper.Map<SheetResponse>(sheetModel));
         }
 
-        [HttpPatch, Route("sheets/{id}/basic")]
+        [HttpPatch, Route("sheets/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -77,6 +80,22 @@ namespace DocumentsKM.Controllers
                 return NotFound();
             }
             return NoContent();
+        }
+
+        [HttpDelete, Route("sheets/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                _service.Delete(id);
+                return NoContent();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
         }
     }
 }
