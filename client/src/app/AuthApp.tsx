@@ -13,11 +13,33 @@ import Sheets from '../components/Sheets/Sheets'
 import SheetData from '../components/SheetData/SheetData'
 import AttachedDocs from '../components/AttachedDocs/AttachedDocs'
 import LinkedDocs from '../components/LinkedDocs/LinkedDocs'
+import LinkedDocData from '../components/LinkedDocData/LinkedDocData'
 import Exploitation from '../components/Exploitation/Exploitation'
 import { defaultPopupObj } from '../components/Popup/Popup'
+import Sheet from '../model/Sheet'
+import LinkedDoc from '../model/LinkedDoc'
 
 const AuthApp = () => {
     const [popupObj, setPopupObj] = useState(defaultPopupObj)
+    const [sheet, setSheet] = useState<Sheet>({
+        id: -1,
+        num: 1,
+        form: 1.0,
+        name: '',
+        creator: null,
+        inspector: null,
+        normContr: null,
+        releaseNum: 0,
+        numOfPages: 0,
+        note: '',
+    })
+    const [linkedDoc, setLinkedDoc] = useState<LinkedDoc>({
+        id: -1,
+        code: '',
+        name: '',
+        designation: '',
+        type: null,
+    })
 
 	return (
 		<MarkProvider>
@@ -32,12 +54,12 @@ const AuthApp = () => {
 							<Home />
 						</Route>
 
-						<Route exact path="/mark-select">
+						<Route exact path="/marks">
 							<div className="full-width div-container">
 								<MarkSelect />
 							</div>
 						</Route>
-						<Route exact path="/mark-data">
+						<Route exact path="/marks/:markId">
 							<div className="full-width div-container">
 								<MarkData isCreateMode={false} />
 							</div>
@@ -48,7 +70,7 @@ const AuthApp = () => {
 							</div>
 						</Route>
 
-						<Route exact path="/mark-approval">
+						<Route exact path="/approvals">
 							<div className="full-width div-container">
 								<MarkApproval />
 							</div>
@@ -58,7 +80,7 @@ const AuthApp = () => {
 								<Specifications setPopupObj={setPopupObj} />
 							</div>
 						</Route>
-						<Route exact path="/specification-data">
+						<Route exact path="/specifications/:specificationId">
 							<div className="full-width div-container">
 								<SpecificationData />
 							</div>
@@ -66,33 +88,48 @@ const AuthApp = () => {
 
 						<Route exact path="/sheets">
 							<div className="full-width div-container">
-								<Sheets setPopupObj={setPopupObj} />
+								<Sheets setPopupObj={setPopupObj} setSheet={(s: Sheet) => setSheet(s)} />
 							</div>
 						</Route>
-                        <Route exact path="/sheet-data">
+                        <Route exact path="/sheets/:sheetId">
 							<div className="full-width div-container">
-								<SheetData isCreateMode={false} />
+								<SheetData sheet={sheet} isCreateMode={false} />
 							</div>
 						</Route>
 						<Route exact path="/sheet-create">
 							<div className="full-width div-container">
-								<SheetData isCreateMode={true} />
+								<SheetData sheet={sheet} isCreateMode={true} />
 							</div>
 						</Route>
 
 
-						<Route exact path="/documents">
+						<Route exact path="/attached-docs">
 							<div className="full-width div-container">
 								<AttachedDocs />
 							</div>
 						</Route>
+
+                        <Route exact path="/linked-docs">
+							<div className="full-width div-container">
+								<LinkedDocs setPopupObj={setPopupObj} setLinkedDoc={setLinkedDoc} />
+							</div>
+						</Route>
+                        <Route exact path="/linked-docs/:linkedDocId">
+							<div className="full-width div-container">
+								<LinkedDocData linkedDoc={linkedDoc} isCreateMode={false} />
+							</div>
+						</Route>
+                        <Route exact path="/linked-doc-create">
+							<div className="full-width div-container">
+                                <LinkedDocData linkedDoc={linkedDoc} isCreateMode={true} />
+							</div>
+						</Route>
+
 						<Route exact path="/exploitation">
 							<div className="full-width div-container">
 								<Exploitation />
 							</div>
 						</Route>
-						{/* <SpecificationData /> */}
-						{/* <LinkedDocs /> */}
 					</div>
 				</React.Fragment>
 			</Switch>

@@ -14,10 +14,11 @@ import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
 import './Sheet.css'
 
 type SheetsProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
+    setPopupObj: (popupObj: IPopupObj) => void
+    setSheet: (s: Sheet) => void
 }
 
-const Sheets = ({ setPopupObj }: SheetsProps) => {
+const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
     const mark = useMark()
     const history = useHistory()
 
@@ -80,9 +81,10 @@ const Sheets = ({ setPopupObj }: SheetsProps) => {
 								<td className="sheet-employee-col-width">{s.normContr == null ? '' : s.normContr.name}</td>
 								<td className="sheet-note-col-width">{s.note}</td>
                                 <td
-									onClick={() =>
-										history.push('/sheet-data')
-									}
+                                    onClick={() => {
+                                        setSheet(s)
+										history.push(`/sheets/${s.id}`)
+                                    }}
 									className="pointer action-cell-width text-centered"
 								>
 									<PencilSquare color="#666" size={26} />

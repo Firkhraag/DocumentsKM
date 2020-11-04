@@ -126,7 +126,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		})
 	}
 
-	const onMarkNameChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onMarkNameChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			name: event.currentTarget.value,
@@ -391,7 +391,9 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					<Form.Group>
 						<Form.Label>Наименование комплекса</Form.Label>
 						<Form.Control
-							type="text"
+							as="textarea"
+                            rows={4}
+                            style={{resize: 'none'}}
 							value={
 								isCreateMode
 									? makeComplexAndObjectName(
@@ -414,7 +416,9 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					<Form.Group>
 						<Form.Label>Наименование объекта</Form.Label>
 						<Form.Control
-							type="text"
+							as="textarea"
+                            rows={4}
+                            style={{resize: 'none'}}
 							value={
 								isCreateMode
 									? makeComplexAndObjectName(
@@ -475,7 +479,9 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					<Form.Group>
 						<Form.Label>Наименование марки</Form.Label>
 						<Form.Control
-							type="text"
+							as="textarea"
+                            rows={4}
+                            style={{resize: 'none'}}
 							placeholder="Введите наименование марки"
 							defaultValue={selectedObject.name}
 							onBlur={onMarkNameChange}

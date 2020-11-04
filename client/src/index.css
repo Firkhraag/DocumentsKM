@@ -8,10 +8,12 @@
     border: 1px solid rgba(0, 0, 0, 0.4) !important;
 }
 
-.form-group input:read-only:focus {
+.form-group input:read-only:focus,
+.form-group textarea:read-only:focus {
     border: 1px solid #ced4da !important;
 }
-.form-group input:read-only:hover {
+.form-group input:read-only:hover,
+.form-group textarea:read-only:hover {
     border: 1px solid #ced4da !important;
 }
 

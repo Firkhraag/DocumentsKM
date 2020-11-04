@@ -8,8 +8,8 @@ module.exports = {
     output: {
         path: path.join(__dirname, "../public"),
         filename: "assets/[contenthash].js",
-        sourceMapFilename: "[name].js.map"
-        // publicPath: '/'
+        sourceMapFilename: "[name].js.map",
+        publicPath: '/'
     },
     devtool: "source-map",
     resolve: {

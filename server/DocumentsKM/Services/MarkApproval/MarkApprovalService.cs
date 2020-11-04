@@ -21,7 +21,7 @@ namespace DocumentsKM.Services
             _employeeRepo = employeeRepo;
         }
 
-        public IEnumerable<Employee> GetAllByMarkId(int markId)
+        public IEnumerable<Employee> GetAllEmployeesByMarkId(int markId)
         {
             var markApprovals = _repository.GetAllByMarkId(markId);
             var employees = new List<Employee>{};
@@ -43,19 +43,19 @@ namespace DocumentsKM.Services
 
             foreach (var id in employeeIds)
             {
-                var e = _employeeRepo.GetById(id);
-                if (e == null)
-                    throw new ArgumentNullException(nameof(e));
-                employees.Add(e);
+                var employee = _employeeRepo.GetById(id);
+                if (employee == null)
+                    throw new ArgumentNullException(nameof(employee));
+                employees.Add(employee);
             }
 
             var markApprovals = _repository.GetAllByMarkId(markId);
             var currentEmployeeIds = new List<int>{};
             foreach (var ma in markApprovals)
             {
-                if (!employeeIds.Contains(ma.EmployeeId))
+                if (!employeeIds.Contains(ma.Employee.Id))
                     _repository.Delete(ma);
-                currentEmployeeIds.Add(ma.EmployeeId);
+                currentEmployeeIds.Add(ma.Employee.Id);
             }
 
             foreach (var (id, i) in employeeIds.WithIndex())

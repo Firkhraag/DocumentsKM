@@ -18,31 +18,32 @@ namespace DocumentsKM.Data
 
             // Composite primary key
             builder.Entity<MarkApproval>().HasKey(e => new { e.MarkId, e.EmployeeId });
+            builder.Entity<MarkLinkedDoc>().HasKey(e => new { e.MarkId, e.LinkedDocId });
 
             // Unique constrains
             builder.Entity<User>()
                 .HasIndex(e => e.Login)
                 .IsUnique();
-            builder.Entity<Project>()
-                .HasIndex(e => e.BaseSeries)
-                .IsUnique();
-            builder.Entity<Node>()
-                .HasIndex(e => e.Code)
-                .IsUnique();
-            builder.Entity<Subnode>()
-                .HasIndex(e => e.Code)
-                .IsUnique();
-            builder.Entity<Mark>()
-                .HasIndex(e => e.Code)
-                .IsUnique();
-            // Composite
-            builder.Entity<Mark>().HasIndex(e => new { e.SubnodeId, e.Code }).IsUnique();
-            builder.Entity<Specification>().HasIndex(e => new { e.MarkId, e.Num }).IsUnique();
-            builder.Entity<Sheet>().HasIndex(e => new { e.MarkId, e.Num, e.DocTypeId }).IsUnique();
+            // builder.Entity<Project>()
+            //     .HasIndex(e => e.BaseSeries)
+            //     .IsUnique();
+            // builder.Entity<Node>()
+            //     .HasIndex(e => e.Code)
+            //     .IsUnique();
+            // builder.Entity<Subnode>()
+            //     .HasIndex(e => e.Code)
+            //     .IsUnique();
+            // builder.Entity<Mark>()
+            //     .HasIndex(e => e.Code)
+            //     .IsUnique();
+            // // Composite
+            // builder.Entity<Mark>().HasIndex(e => new { e.SubnodeId, e.Code }).IsUnique();
+            // builder.Entity<Specification>().HasIndex(e => new { e.MarkId, e.Num }).IsUnique();
+            // builder.Entity<Sheet>().HasIndex(e => new { e.MarkId, e.Num, e.DocTypeId }).IsUnique();
 
             // Default datetime
-            builder.Entity<Mark>().Property(e => e.EditedDate).HasDefaultValueSql("now()");
-            builder.Entity<Specification>().Property(e => e.CreatedDate).HasDefaultValueSql("now()");
+            // builder.Entity<Mark>().Property(e => e.EditedDate).HasDefaultValueSql("now()");
+            // builder.Entity<Specification>().Property(e => e.CreatedDate).HasDefaultValueSql("now()");
 
             foreach(var entity in builder.Model.GetEntityTypes())
             {
@@ -90,5 +91,9 @@ namespace DocumentsKM.Data
         public DbSet<MarkDesignation> MarkDesignations { get; set; }
         public DbSet<DocType> DocTypes { get; set; }
         public DbSet<SheetName> SheetNames { get; set; }
+
+        public DbSet<MarkLinkedDoc> MarkLinkedDocs { get; set; }
+        public DbSet<LinkedDoc> LinkedDocs { get; set; }
+        public DbSet<LinkedDocType> LinkedDocTypes { get; set; }
     }
 }

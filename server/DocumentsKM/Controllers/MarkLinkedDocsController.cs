@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using AutoMapper;
 using DocumentsKM.Dtos;
+using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,26 +14,27 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class MarkApprovalsController : ControllerBase
+    public class MarkLinkedDocsController : ControllerBase
     {
-        private readonly IMarkApprovalService _service;
+        private readonly IMarkLinkedDocService _service;
         private readonly IMapper _mapper;
 
-        public MarkApprovalsController(
-            IMarkApprovalService markService,
+        public MarkLinkedDocsController(
+            IMarkLinkedDocService markLinkedDocService,
             IMapper mapper
         )
         {
-            _service = markService;
+            _service = markLinkedDocService;
             _mapper = mapper;
         }
 
-        [HttpGet, Route("marks/{markId}/approvals")]
+        [HttpGet, Route("marks/{markId}/linked-docs")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<EmployeeDepartmentResponse>> GetAllByMarkId(int markId)
+        public ActionResult<IEnumerable<LinkedDoc>> GetAllByMarkId(int markId)
         {
-            var employees = _service.GetAllEmployeesByMarkId(markId);
-            return Ok(_mapper.Map<IEnumerable<EmployeeDepartmentResponse>>(employees));
+            var linkedDocs = _service.GetAllLinkedDocsByMarkId(markId);
+            // return Ok(_mapper.Map<IEnumerable<EmployeeDepartmentResponse>>(employees));
+            return Ok(linkedDocs);
         }
 
         [HttpPatch, Route("marks/{markId}/approvals")]

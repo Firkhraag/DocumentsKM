@@ -7,24 +7,23 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
-import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Sheet from '../../model/Sheet'
 import SheetName from '../../model/SheetName'
-import { useMark, useSetMark } from '../../store/MarkStore'
-import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
+import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
 
 type SheetDataProps = {
+	sheet: Sheet
 	isCreateMode: boolean
 }
 
-const SheetData = ({ isCreateMode }: SheetDataProps) => {
-    // Id листа основного комплекта из справочника
-    const basicSheetDocTypeId = 1
+const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
+	// Id листа основного комплекта из справочника
+	const basicSheetDocTypeId = 1
 
 	const defaultOptionsObject = {
 		sheetNames: [] as SheetName[],
@@ -34,59 +33,47 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
 
-	const [selectedObject, setSelectedObject] = useState<Sheet>(null)
+	const [selectedObject, setSelectedObject] = useState<Sheet>(sheet)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (isCreateMode) {
-				const fetchData = async () => {
-					try {
-						const sheetNamesFetchedResponse = await httpClient.get(
-							`/sheet-names`
-						)
-						const sheetNamesFetched = sheetNamesFetchedResponse.data
-						const employeesFetchedResponse = await httpClient.get(
-							`/departments/${mark.department.id}/employees`
-						)
-						const employeesFetched = employeesFetchedResponse.data
-						setOptionsObject({
-							sheetNames: sheetNamesFetched,
-							employees: employeesFetched,
-						})
-						setSelectedObject({
-							id: 0,
-							num: 1,
-							form: 1.0,
-							name: '',
-							creator: null,
-							inspector: null,
-							normContr: null,
-							releaseNum: 0,
-							numOfPages: 0,
-							note: '',
-						})
-					} catch (e) {
-						console.log('Failed to fetch the data')
-					}
-				}
-				fetchData()
-			} else {
-                // TO DO
+			if (!isCreateMode && sheet.id === -1) {
+				history.push('/sheets')
+				return
 			}
+			const fetchData = async () => {
+				try {
+					const sheetNamesFetchedResponse = await httpClient.get(
+						`/sheet-names`
+					)
+					const sheetNamesFetched = sheetNamesFetchedResponse.data
+					const employeesFetchedResponse = await httpClient.get(
+						`/departments/${mark.department.id}/employees`
+					)
+					const employeesFetched = employeesFetchedResponse.data
+					setOptionsObject({
+						sheetNames: sheetNamesFetched,
+						employees: employeesFetched,
+					})
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
+			}
+			fetchData()
 		}
 	}, [mark])
 
 	const onNameSelect = async (id: number) => {
-        let v = null
-        for (let el of optionsObject.sheetNames) {
-            if (el.id === id) {
-                v = el
-                break
-            }
-        }
+		let v = null
+		for (let el of optionsObject.sheetNames) {
+			if (el.id === id) {
+				v = el
+				break
+			}
+		}
 		if (v != null) {
 			setSelectedObject({
 				...selectedObject,
@@ -95,7 +82,7 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 		}
 	}
 
-	const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const onNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			name: event.currentTarget.value,
@@ -115,7 +102,7 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 				form: null,
 			})
 		}
-    }
+	}
 
 	const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
@@ -199,25 +186,58 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 	const onCreateButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-                await httpClient.post(`/marks/${mark.id}/sheets`, {
-                    num: selectedObject.num,
-                    name: selectedObject.name,
-                    form: selectedObject.form,
-                    docTypeId: basicSheetDocTypeId,
-                    creatorId: selectedObject.creator?.id,
-                    inspectorId: selectedObject.inspector?.id,
-                    normContrId: selectedObject.normContr?.id,
-                    note: selectedObject.note,
-                })
-                history.push('/sheets')
+				await httpClient.post(`/marks/${mark.id}/sheets`, {
+					name: selectedObject.name,
+					form: selectedObject.form,
+					docTypeId: basicSheetDocTypeId,
+					creatorId: selectedObject.creator?.id,
+					inspectorId: selectedObject.inspector?.id,
+					normContrId: selectedObject.normContr?.id,
+					note: selectedObject.note,
+				})
+				history.push('/sheets')
 			} catch (e) {
-                setErrMsg('Произошла ошибка')
+				setErrMsg('Произошла ошибка')
 				console.log('Fail', e)
 			}
 		}
 	}
 
-	const onChangeButtonClick = async () => {}
+	const onChangeButtonClick = async () => {
+		if (checkIfValid()) {
+			try {
+				await httpClient.patch(`/sheets/${selectedObject.id}`, {
+					name:
+						selectedObject.name === sheet.name
+							? undefined
+							: selectedObject.name,
+					form:
+						selectedObject.form === sheet.form
+							? undefined
+							: selectedObject.form,
+					creatorId: getNullableFieldValue(
+						selectedObject.creator,
+						sheet.creator
+					),
+					inspectorId: getNullableFieldValue(
+						selectedObject.inspector,
+						sheet.inspector
+					),
+					normContrId: getNullableFieldValue(
+						selectedObject.normContr,
+						sheet.normContr
+					),
+					note:
+						selectedObject.note === sheet.note
+							? undefined
+							: selectedObject.note,
+				})
+				history.push('/sheets')
+			} catch (e) {
+				console.log('Fail', e)
+			}
+		}
+	}
 
 	return selectedObject == null || (mark == null && !isCreateMode) ? null : (
 		<div className="component-cnt flex-v-cent-h">
@@ -230,7 +250,9 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 				<Form.Group>
 					<Form.Label>Наименование</Form.Label>
 					<Form.Control
-						type="text"
+						as="textarea"
+						rows={4}
+						style={{ resize: 'none' }}
 						placeholder="Введите наименование"
 						value={selectedObject.name}
 						onChange={onNameChange}
@@ -354,15 +376,15 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 					<Form.Label>Примечание</Form.Label>
 					<Form.Control
 						as="textarea"
-                        rows={4}
-                        style={{resize: 'none'}}
+						rows={4}
+						style={{ resize: 'none' }}
 						placeholder="Не введено"
 						defaultValue={selectedObject.note}
 						onBlur={onNoteChange}
 					/>
 				</Form.Group>
 
-                <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
 				<Button
 					variant="secondary"
@@ -375,7 +397,6 @@ const SheetData = ({ isCreateMode }: SheetDataProps) => {
 						? 'Создать лист основного комплекта'
 						: 'Сохранить изменения'}
 				</Button>
-                
 			</div>
 		</div>
 	)

@@ -21,7 +21,7 @@ namespace DocumentsKM.Data
 
         public Sheet GetByUniqueKeyValues(int markId, int num, int doctTypeId)
         {
-            return _context.Sheets.FirstOrDefault(s => (s.MarkId == markId) && (s.Num == num) && (s.DocTypeId == doctTypeId));
+            return _context.Sheets.FirstOrDefault(s => (s.Mark.Id == markId) && (s.Num == num) && (s.DocType.Id == doctTypeId));
         }
 
         public IEnumerable<Sheet> GetAllByMarkId(int markId)
@@ -31,7 +31,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Sheet> GetAllByMarkIdAndDocType(int markId, int docTypeId)
         {
-            return _context.Sheets.Where(s => (s.MarkId == markId) && (s.DocTypeId == docTypeId)).ToList();
+            return _context.Sheets.Where(s => (s.Mark.Id == markId) && (s.DocType.Id == docTypeId)).ToList();
         }
 
         public void Add(Sheet sheet)

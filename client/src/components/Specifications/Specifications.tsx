@@ -183,7 +183,7 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 								</td>
 								<td
 									onClick={() =>
-										history.push('/specification-data')
+										history.push(`/specifications/${s.id}`)
 									}
 									className="pointer action-cell-width text-centered"
 								>

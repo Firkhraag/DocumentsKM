@@ -4,18 +4,18 @@ using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
-    public class SqlSheetNameRepo : ISheetNameRepo
+    public class SqlLinkedDocTypeRepo : ILinkedDocTypeRepo
     {
         private readonly ApplicationContext _context;
 
-        public SqlSheetNameRepo(ApplicationContext context)
+        public SqlLinkedDocTypeRepo(ApplicationContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<SheetName> GetAll()
+        public IEnumerable<LinkedDocType> GetAll()
         {
-            return _context.SheetNames.ToList();
+            return _context.LinkedDocTypes.ToList();
         }
     }
 }

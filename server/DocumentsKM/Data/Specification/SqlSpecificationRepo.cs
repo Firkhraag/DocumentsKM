@@ -16,7 +16,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Specification> GetAllByMarkId(int markId)
         {
-            return _context.Specifications.Where(s => s.MarkId == markId).ToList();
+            return _context.Specifications.Where(s => s.Mark.Id == markId).ToList();
         }
 
         public Specification GetById(int id)
