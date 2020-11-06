@@ -365,7 +365,7 @@ const MarkSelect = () => {
 	}
 
 	const onCreateMarkButtonClick = () => {
-        if (
+		if (
 			selectedObject.subnode == null ||
 			selectedObject.node == null ||
 			selectedObject.project == null
@@ -447,13 +447,19 @@ const MarkSelect = () => {
 											value: selectedObject.project.id,
 											label:
 												selectedObject.project
-													.baseSeries === '' ? '-' : selectedObject.project.baseSeries,
+													.baseSeries === ''
+													? '-'
+													: selectedObject.project
+															.baseSeries,
 									  }
 							}
 							options={optionsObject.projects.map((p) => {
 								return {
 									value: p.id,
-									label: p.baseSeries === '' ? '-' : p.baseSeries,
+									label:
+										p.baseSeries === ''
+											? '-'
+											: p.baseSeries,
 								}
 							})}
 							styles={reactSelectstyle}
@@ -476,7 +482,10 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.node.id,
-											label: selectedObject.node.code === '' ? '-' : selectedObject.node.code,
+											label:
+												selectedObject.node.code === ''
+													? '-'
+													: selectedObject.node.code,
 									  }
 							}
 							options={optionsObject.nodes.map((n) => {
@@ -505,7 +514,12 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.subnode.id,
-											label: selectedObject.subnode.code === '' ? '-' : selectedObject.subnode.code,
+											label:
+												selectedObject.subnode.code ===
+												''
+													? '-'
+													: selectedObject.subnode
+															.code,
 									  }
 							}
 							options={optionsObject.subnodes.map((s) => {
@@ -534,7 +548,10 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.mark.id,
-											label: selectedObject.mark.code === '' ? '-' : selectedObject.mark.code,
+											label:
+												selectedObject.mark.code === ''
+													? '-'
+													: selectedObject.mark.code,
 									  }
 							}
 							options={optionsObject.marks.map((m) => {

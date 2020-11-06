@@ -53,6 +53,11 @@ namespace DocumentsKM.Services
             var subnode = _subnodeRepo.GetById(subnodeId);
             if (subnode == null)
                 throw new ArgumentNullException(nameof(subnode));
+
+            var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, mark.Code);
+            if (uniqueConstraintViolationCheck != null)
+                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+
             mark.Subnode = subnode;
             var department = _departmentRepo.GetById(departmentId);
             if (department == null)
@@ -90,17 +95,42 @@ namespace DocumentsKM.Services
             var foundMark = _repository.GetById(id);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
-            if (mark.Code != null)
-                foundMark.Code = mark.Code;
             if (mark.Name != null)
                 foundMark.Name = mark.Name;
-            if (mark.SubnodeId != null)
+            
+            if ((mark.Code != null) && (mark.SubnodeId != null))
+            {
+                foundMark.Code = mark.Code;
+
+                var subnode = _subnodeRepo.GetById(mark.SubnodeId.GetValueOrDefault());
+                if (subnode == null)
+                    throw new ArgumentNullException(nameof(subnode));
+                foundMark.Subnode = subnode;
+
+                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, mark.Code);
+                if (uniqueConstraintViolationCheck != null)
+                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+            }
+            else if (mark.Code != null)
+            {
+                foundMark.Code = mark.Code;
+
+                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(foundMark.Subnode.Id, mark.Code);
+                if (uniqueConstraintViolationCheck != null)
+                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+            }
+            else if (mark.SubnodeId != null)
             {
                 var subnode = _subnodeRepo.GetById(mark.SubnodeId.GetValueOrDefault());
                 if (subnode == null)
                     throw new ArgumentNullException(nameof(subnode));
                 foundMark.Subnode = subnode;
+
+                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, foundMark.Code);
+                if (uniqueConstraintViolationCheck != null)
+                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             }
+
             if (mark.DepartmentId != null)
             {
                 var department = _departmentRepo.GetById(mark.DepartmentId.GetValueOrDefault());

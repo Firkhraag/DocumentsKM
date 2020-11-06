@@ -29,7 +29,7 @@ const Header = () => {
 			<Link to="/" className="pointer bold header-link-pad">
 				Главная
 			</Link>
-			<Link to="/mark-select" className="pointer bold header-link-pad">
+			<Link to="/marks" className="pointer bold header-link-pad">
 				{mark == null
 					? '-'
 					: makeMarkName(

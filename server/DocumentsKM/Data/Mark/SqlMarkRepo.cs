@@ -29,6 +29,11 @@ namespace DocumentsKM.Data
             return _context.Marks.FirstOrDefault(m => m.Id == id);
         }
 
+        public Mark GetBySubnodeIdAndCode(int subnodeId, string code)
+        {
+            return _context.Marks.FirstOrDefault(m => m.Subnode.Id == subnodeId && m.Code == code);
+        }
+
         public void Add(Mark mark)
         {
             _context.Marks.Add(mark);

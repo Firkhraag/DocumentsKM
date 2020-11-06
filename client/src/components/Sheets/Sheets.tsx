@@ -14,13 +14,13 @@ import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
 import './Sheet.css'
 
 type SheetsProps = {
-    setPopupObj: (popupObj: IPopupObj) => void
-    setSheet: (s: Sheet) => void
+	setPopupObj: (popupObj: IPopupObj) => void
+	setSheet: (s: Sheet) => void
 }
 
 const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
-    const mark = useMark()
-    const history = useHistory()
+	const mark = useMark()
+	const history = useHistory()
 
 	const [sheets, setSheets] = useState([] as Sheet[])
 
@@ -30,7 +30,7 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 				try {
 					const sheetsFetchedResponse = await httpClient.get(
 						`/marks/${mark.id}/sheets/basic`
-                    )
+					)
 					setSheets(sheetsFetchedResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
@@ -38,12 +38,12 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 			}
 			fetchData()
 		}
-    }, [mark])
-    
-    const onDeleteClick = async (row: number, id: number) => {
+	}, [mark])
+
+	const onDeleteClick = async (row: number, id: number) => {
 		try {
-            await httpClient.delete(`/sheets/${id}`)
-            sheets.splice(row, 1)
+			await httpClient.delete(`/sheets/${id}`)
+			sheets.splice(row, 1)
 			setPopupObj(defaultPopupObj)
 		} catch (e) {
 			console.log('Error')
@@ -53,8 +53,13 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 	return (
 		<div className="component-cnt table-width">
 			<h1 className="text-centered">Листы основного комплекта</h1>
-			<PlusCircle onClick={() => history.push('/sheet-create')} color="#666" size={28} className="pointer" />
-			<Table bordered hover className="mrg-top">
+			<PlusCircle
+				onClick={() => history.push('/sheet-create')}
+				color="#666"
+				size={28}
+				className="pointer"
+			/>
+			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
 					<tr>
 						<th>№</th>
@@ -64,7 +69,7 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 						<th className="sheet-employee-col-width">Проверил</th>
 						<th className="sheet-employee-col-width">Н.контр.</th>
 						<th className="sheet-note-col-width">Примечание</th>
-                        <th className="text-centered" colSpan={2}>
+						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
 					</tr>
@@ -74,17 +79,31 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 						return (
 							<tr key={s.id}>
 								<td>{s.num}</td>
-								<td className="sheet-name-col-width">{s.name}</td>
+								<td className="sheet-name-col-width">
+									{s.name}
+								</td>
 								<td>{s.form}</td>
-								<td className="sheet-employee-col-width">{s.creator == null ? '' : s.creator.name}</td>
-								<td className="sheet-employee-col-width">{s.inspector == null ? '' : s.inspector.name}</td>
-								<td className="sheet-employee-col-width">{s.normContr == null ? '' : s.normContr.name}</td>
-								<td className="sheet-note-col-width">{s.note}</td>
-                                <td
-                                    onClick={() => {
-                                        setSheet(s)
+								<td className="sheet-employee-col-width">
+									{s.creator == null ? '' : s.creator.name}
+								</td>
+								<td className="sheet-employee-col-width">
+									{s.inspector == null
+										? ''
+										: s.inspector.name}
+								</td>
+								<td className="sheet-employee-col-width">
+									{s.normContr == null
+										? ''
+										: s.normContr.name}
+								</td>
+								<td className="sheet-note-col-width">
+									{s.note}
+								</td>
+								<td
+									onClick={() => {
+										setSheet(s)
 										history.push(`/sheets/${s.id}`)
-                                    }}
+									}}
 									className="pointer action-cell-width text-centered"
 								>
 									<PencilSquare color="#666" size={26} />
@@ -92,18 +111,13 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 								<td
 									onClick={() =>
 										setPopupObj({
-                                            isShown: true,
-                                            msg: `Вы действительно хотите удалить лист основного комплекта №${s.num}?`,
-                                            onAccept: () =>
-                                                onDeleteClick(
-                                                    index,
-                                                    s.id
-                                                ),
-                                            onCancel: () =>
-                                                setPopupObj(
-                                                    defaultPopupObj
-                                                ),
-                                      })
+											isShown: true,
+											msg: `Вы действительно хотите удалить лист основного комплекта №${s.num}?`,
+											onAccept: () =>
+												onDeleteClick(index, s.id),
+											onCancel: () =>
+												setPopupObj(defaultPopupObj),
+										})
 									}
 									className="pointer action-cell-width text-centered"
 								>

@@ -43,39 +43,39 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 					}
 				}
 				return
-            }
-            if (initialRender) {
-                const fetchData = async () => {
-                    setInitialRender(false)
-                    try {
-                        const specificationsFetchedResponse = await httpClient.get(
-                            `/marks/${mark.id}/specifications`
-                        )
-                        for (let s of specificationsFetchedResponse.data) {
-                            if (s.isCurrent) {
-                                setCurrentSpecId(s.id)
-                            }
-                            refs.push(createRef())
-                        }
-                        setSpecifications(specificationsFetchedResponse.data)
-                        // setRerender(!rerender)
-                    } catch (e) {
-                        console.log('Failed to fetch the data', e)
-                    }
-                }
-                fetchData()
-            }
+			}
+			if (initialRender) {
+				const fetchData = async () => {
+					setInitialRender(false)
+					try {
+						const specificationsFetchedResponse = await httpClient.get(
+							`/marks/${mark.id}/specifications`
+						)
+						for (let s of specificationsFetchedResponse.data) {
+							if (s.isCurrent) {
+								setCurrentSpecId(s.id)
+							}
+							refs.push(createRef())
+						}
+						setSpecifications(specificationsFetchedResponse.data)
+						// setRerender(!rerender)
+					} catch (e) {
+						console.log('Failed to fetch the data', e)
+					}
+				}
+				fetchData()
+			}
 		}
 	}, [mark, currentSpecId, specifications])
 
 	const onSelectCurrentClick = async (row: number, id: number) => {
 		try {
-            await httpClient.patch(`/specifications/${currentSpecId}`, {
+			await httpClient.patch(`/specifications/${currentSpecId}`, {
 				isCurrent: false,
 			})
 			await httpClient.patch(`/specifications/${id}`, {
 				isCurrent: true,
-            })
+			})
 			const inputElement = refs[row].current as any
 			if (inputElement) {
 				inputElement.checked = true
@@ -105,8 +105,8 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/specifications/${id}`)
-            refs.splice(row, 1)
-            const newSpecArr = [...specifications]
+			refs.splice(row, 1)
+			const newSpecArr = [...specifications]
 			newSpecArr.splice(row, 1)
 			setSpecifications(newSpecArr)
 			setPopupObj(defaultPopupObj)
@@ -132,7 +132,7 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 					})
 				}
 			/>
-			<Table bordered hover className="mrg-top">
+			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
 					<tr>
 						<th>№</th>
@@ -150,7 +150,11 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 							<tr key={index}>
 								<td>{s.num}</td>
 								<td>
-									{s.createdDate == null ? '' : new Date(s.createdDate).toLocaleDateString()}
+									{s.createdDate == null
+										? ''
+										: new Date(
+												s.createdDate
+										  ).toLocaleDateString()}
 								</td>
 								<td className="note-col-width">{s.note}</td>
 								<td

@@ -5,11 +5,17 @@ namespace DocumentsKM.Data
 {
     public interface IMarkLinkedDocRepo
     {
-        // Получить все согласования по id марки
+        // Получить все ссылочные документы по id марки
         IEnumerable<MarkLinkedDoc> GetAllByMarkId(int markId);
-        // Добавить ссылочный документ
+        // Получить ссылочный документ марки по id
+        MarkLinkedDoc GetById(int id);
+        // Получить ссылочный документ марки по id марки и id ссылочного документа
+        MarkLinkedDoc GetByMarkIdAndLinkedDocId(int markId, int linkedDocId);
+        // Добавить ссылочный документ к марке
         void Add(MarkLinkedDoc markLinkedDoc);
-        // Удалить ссылочный документ
+        // Ссылочный документ у марки
+        void Update(MarkLinkedDoc markLinkedDoc);
+        // Удалить ссылочный документ у марки
         void Delete(MarkLinkedDoc markLinkedDoc);
     }
 }

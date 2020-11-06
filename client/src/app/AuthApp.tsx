@@ -17,38 +17,19 @@ import LinkedDocData from '../components/LinkedDocData/LinkedDocData'
 import Exploitation from '../components/Exploitation/Exploitation'
 import { defaultPopupObj } from '../components/Popup/Popup'
 import Sheet from '../model/Sheet'
-import LinkedDoc from '../model/LinkedDoc'
+import MarkLinkedDoc from '../model/MarkLinkedDoc'
 
 const AuthApp = () => {
-    const [popupObj, setPopupObj] = useState(defaultPopupObj)
-    const [sheet, setSheet] = useState<Sheet>({
-        id: -1,
-        num: 1,
-        form: 1.0,
-        name: '',
-        creator: null,
-        inspector: null,
-        normContr: null,
-        releaseNum: 0,
-        numOfPages: 0,
-        note: '',
-    })
-    const [linkedDoc, setLinkedDoc] = useState<LinkedDoc>({
-        id: -1,
-        code: '',
-        name: '',
-        designation: '',
-        type: null,
-    })
+	const [popupObj, setPopupObj] = useState(defaultPopupObj)
+	const [sheet, setSheet] = useState<Sheet>(null)
+	const [markLinkedDoc, setMarkLinkedDoc] = useState<MarkLinkedDoc>(null)
 
 	return (
 		<MarkProvider>
 			<Switch>
 				<React.Fragment>
 					<Header />
-					<Popup
-                        popupObj={popupObj}
-					/>
+					<Popup popupObj={popupObj} />
 					<div>
 						<Route exact path="/">
 							<Home />
@@ -88,10 +69,13 @@ const AuthApp = () => {
 
 						<Route exact path="/sheets">
 							<div className="full-width div-container">
-								<Sheets setPopupObj={setPopupObj} setSheet={(s: Sheet) => setSheet(s)} />
+								<Sheets
+									setPopupObj={setPopupObj}
+									setSheet={(s: Sheet) => setSheet(s)}
+								/>
 							</div>
 						</Route>
-                        <Route exact path="/sheets/:sheetId">
+						<Route exact path="/sheets/:sheetId">
 							<div className="full-width div-container">
 								<SheetData sheet={sheet} isCreateMode={false} />
 							</div>
@@ -102,26 +86,34 @@ const AuthApp = () => {
 							</div>
 						</Route>
 
-
 						<Route exact path="/attached-docs">
 							<div className="full-width div-container">
 								<AttachedDocs />
 							</div>
 						</Route>
 
-                        <Route exact path="/linked-docs">
+						<Route exact path="/linked-docs">
 							<div className="full-width div-container">
-								<LinkedDocs setPopupObj={setPopupObj} setLinkedDoc={setLinkedDoc} />
+								<LinkedDocs
+									setPopupObj={setPopupObj}
+									setMarkLinkedDoc={setMarkLinkedDoc}
+								/>
 							</div>
 						</Route>
-                        <Route exact path="/linked-docs/:linkedDocId">
+						<Route exact path="/linked-docs/:linkedDocId">
 							<div className="full-width div-container">
-								<LinkedDocData linkedDoc={linkedDoc} isCreateMode={false} />
+								<LinkedDocData
+									markLinkedDoc={markLinkedDoc}
+									isCreateMode={false}
+								/>
 							</div>
 						</Route>
-                        <Route exact path="/linked-doc-create">
+						<Route exact path="/linked-doc-add">
 							<div className="full-width div-container">
-                                <LinkedDocData linkedDoc={linkedDoc} isCreateMode={true} />
+								<LinkedDocData
+									markLinkedDoc={markLinkedDoc}
+									isCreateMode={true}
+								/>
 							</div>
 						</Route>
 

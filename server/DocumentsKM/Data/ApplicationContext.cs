@@ -18,7 +18,6 @@ namespace DocumentsKM.Data
 
             // Composite primary key
             builder.Entity<MarkApproval>().HasKey(e => new { e.MarkId, e.EmployeeId });
-            builder.Entity<MarkLinkedDoc>().HasKey(e => new { e.MarkId, e.LinkedDocId });
 
             // Unique constrains
             builder.Entity<User>()

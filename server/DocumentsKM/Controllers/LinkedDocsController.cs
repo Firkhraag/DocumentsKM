@@ -25,7 +25,7 @@ namespace DocumentsKM.Controllers
             _service = linkedDocService;
         }
 
-        [HttpGet, Route("linked-docs-types/{docTypeId/linked-docs")]
+        [HttpGet, Route("linked-docs-types/{docTypeId}/docs")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<LinkedDoc>> GetAllByDocTypeId(int docTypeId)
         {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
+using DocumentsKM.Dtos;
 
 namespace DocumentsKM.Services
 {
@@ -21,51 +22,89 @@ namespace DocumentsKM.Services
             _linkedDocRepo = linkedDocRepo;
         }
 
-        public IEnumerable<LinkedDoc> GetAllLinkedDocsByMarkId(int markId)
+        public IEnumerable<MarkLinkedDoc> GetAllByMarkId(int markId)
         {
-            var markLinkedDocs = _repository.GetAllByMarkId(markId);
-            var linkedDocs = new List<LinkedDoc>{};
-            foreach (var mld in markLinkedDocs)
-            {
-                linkedDocs.Add(mld.LinkedDoc);
-            }
-            return linkedDocs;
+            return _repository.GetAllByMarkId(markId);
         }
 
-        public void Update(
+        // public MarkLinkedDoc Add(
+        //     int markId,
+        //     int linkedDocId)
+        // {
+        //     var foundLinkedDoc = _linkedDocRepo.GetById(linkedDocId);
+        //     if (foundLinkedDoc == null)
+        //         throw new ArgumentNullException(nameof(foundLinkedDoc));
+        //     var foundMark = _markRepo.GetById(markId);
+        //     if (foundMark == null)
+        //         throw new ArgumentNullException(nameof(foundMark));
+            
+        //     var markLinkedDoc = new MarkLinkedDoc{
+        //         LinkedDoc = foundLinkedDoc,
+        //         Mark = foundMark,
+        //     };
+
+        //     _repository.Add(markLinkedDoc);
+        //     return markLinkedDoc;
+        // }
+
+        public void Add(
+            MarkLinkedDoc markLinkedDoc,
             int markId,
-            List<int> linkedDocIds)
+            int linkedDocId)
         {
+            var foundLinkedDoc = _linkedDocRepo.GetById(linkedDocId);
+            if (foundLinkedDoc == null)
+                throw new ArgumentNullException(nameof(foundLinkedDoc));
             var foundMark = _markRepo.GetById(markId);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
-            var linkedDocs = new List<LinkedDoc>{};
 
-            foreach (var id in linkedDocIds)
-            {
-                var linkedDoc = _linkedDocRepo.GetById(id);
-                if (linkedDoc == null)
-                    throw new ArgumentNullException(nameof(linkedDoc));
-                linkedDocs.Add(linkedDoc);
-            }
+            var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(markId, linkedDocId);
+            if (uniqueConstraintViolationCheck != null)
+                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+            
+            markLinkedDoc.Mark = foundMark;
+            markLinkedDoc.LinkedDoc = foundLinkedDoc;
 
-            var markLinkedDocs = _repository.GetAllByMarkId(markId);
-            var currentLinkedDocsIds = new List<int>{};
-            foreach (var mld in markLinkedDocs)
-            {
-                if (!linkedDocIds.Contains(mld.LinkedDoc.Id))
-                    _repository.Delete(mld);
-                currentLinkedDocsIds.Add(mld.LinkedDoc.Id);
-            }
+            _repository.Add(markLinkedDoc);
+        }
 
-            foreach (var (id, i) in linkedDocIds.WithIndex())
-                if (!currentLinkedDocsIds.Contains(id))
-                    _repository.Add(
-                        new MarkLinkedDoc
-                        {
-                            Mark=foundMark,
-                            LinkedDoc=linkedDocs[i],
-                        });
+        public void Update(int id, MarkLinkedDocRequest markLinkedDocRequest)
+        {
+            var foundMarkLinkedDoc = _repository.GetById(id);
+            if (foundMarkLinkedDoc == null)
+                throw new ArgumentNullException(nameof(foundMarkLinkedDoc));
+
+            var foundLinkedDoc = _linkedDocRepo.GetById(markLinkedDocRequest.LinkedDocId);
+            if (foundLinkedDoc == null)
+                throw new ArgumentNullException(nameof(foundLinkedDoc));
+                
+            var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(
+                foundMarkLinkedDoc.Mark.Id, markLinkedDocRequest.LinkedDocId);
+            if (uniqueConstraintViolationCheck != null)
+                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+
+            foundMarkLinkedDoc.LinkedDoc = foundLinkedDoc;
+
+            _repository.Update(foundMarkLinkedDoc);
+        }
+
+        // public void Delete(
+        //     int markId,
+        //     int linkedDocId)
+        // {
+        //     var foundMarkLinkedDoc = _repository.GetByMarkIdAndLinkedDocId(markId, linkedDocId);
+        //     if (foundMarkLinkedDoc == null)
+        //         throw new ArgumentNullException(nameof(foundMarkLinkedDoc));
+        //     _repository.Delete(foundMarkLinkedDoc);
+        // }
+
+        public void Delete(int id)
+        {
+            var foundMarkLinkedDoc = _repository.GetById(id);
+            if (foundMarkLinkedDoc == null)
+                throw new ArgumentNullException(nameof(foundMarkLinkedDoc));
+            _repository.Delete(foundMarkLinkedDoc);
         }
     }
 }

@@ -30,6 +30,11 @@ label {
     font-weight: 500;
 }
 
+html {
+    /* margin-left: calc(100vw - 100%); */
+    overflow-y: scroll;
+}
+
 body {
     height: 100vh;
 }

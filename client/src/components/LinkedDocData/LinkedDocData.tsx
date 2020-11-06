@@ -9,64 +9,212 @@ import Button from 'react-bootstrap/Button'
 import httpClient from '../../axios'
 import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
+import MarkLinkedDoc from '../../model/MarkLinkedDoc'
 import LinkedDoc from '../../model/LinkedDoc'
 import SheetName from '../../model/SheetName'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
+import LinkedDocType from '../../model/LinkedDocType'
 
 type LinkedDocDataProps = {
-	linkedDoc: LinkedDoc
+	markLinkedDoc: MarkLinkedDoc
 	isCreateMode: boolean
 }
 
-const LinkedDocData = ({ linkedDoc, isCreateMode }: LinkedDocDataProps) => {
+const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 	const defaultOptionsObject = {
-		sheetNames: [] as SheetName[],
-		employees: [] as Employee[],
+		types: [] as LinkedDocType[],
+		docs: [] as LinkedDoc[],
 	}
+	const defaultSelectedDoc = {
+		id: -1,
+		code: '',
+		name: '',
+		designation: '',
+		type: null,
+	} as LinkedDoc
 
 	const history = useHistory()
 	const mark = useMark()
 
-	// const [selectedObject, setSelectedObject] = useState<Sheet>(sheet)
+	const [selectedObject, setSelectedObject] = useState<MarkLinkedDoc>(
+		isCreateMode
+			? {
+					id: -1,
+					linkedDoc: {
+						id: -1,
+						code: '',
+						name: '',
+						designation: '',
+						type: null,
+					},
+			  }
+			: markLinkedDoc
+	)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
+
+	const cachedDocs = useState(new Map<number, LinkedDoc[]>())[0]
 
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (!isCreateMode && linkedDoc.id === -1) {
+			if (!isCreateMode && markLinkedDoc.id === -1) {
 				history.push('/linked-docs')
 				return
 			}
 			const fetchData = async () => {
 				try {
-					const sheetNamesFetchedResponse = await httpClient.get(
-						`/sheet-names`
+					const linkedDocTypesFetchedResponse = await httpClient.get(
+						`/linked-doc-types`
 					)
-					const sheetNamesFetched = sheetNamesFetchedResponse.data
-					const employeesFetchedResponse = await httpClient.get(
-						`/departments/${mark.department.id}/employees`
+					const linkedDocTypesFetched =
+						linkedDocTypesFetchedResponse.data
+
+					if (!isCreateMode) {
+						const linkedDocsFetchedResponse = await httpClient.get(
+							`/linked-docs-types/${markLinkedDoc.linkedDoc.type.id}/docs`
+						)
+						const linkedDocsFetched = linkedDocsFetchedResponse.data
+						cachedDocs.set(
+							markLinkedDoc.linkedDoc.id,
+							linkedDocsFetched
+						)
+						console.log()
+						setOptionsObject({
+							types: linkedDocTypesFetched,
+							docs: linkedDocsFetched,
+						})
+					} else {
+						setOptionsObject({
+							...defaultOptionsObject,
+							types: linkedDocTypesFetched,
+						})
+					}
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
+			}
+			fetchData()
+		}
+	}, [mark])
+
+	const onTypeSelect = async (id: number) => {
+		if (id == null) {
+			selectedObject.linkedDoc = defaultSelectedDoc
+			setOptionsObject({
+				...defaultOptionsObject,
+				types: optionsObject.types,
+			})
+			return
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.types,
+			selectedObject.linkedDoc.type
+		)
+		if (v != null) {
+			if (cachedDocs.has(v.id)) {
+				selectedObject.linkedDoc.type = v
+				setOptionsObject({
+					...optionsObject,
+					docs: cachedDocs.get(v.id),
+				})
+			} else {
+				try {
+					const linkedDocsFetchedResponse = await httpClient.get(
+						`/linked-docs-types/${id}/docs`
 					)
-					const employeesFetched = employeesFetchedResponse.data
+					const linkedDocsFetched = linkedDocsFetchedResponse.data
+					cachedDocs.set(v.id, linkedDocsFetched)
+					selectedObject.linkedDoc.type = v
 					setOptionsObject({
-						sheetNames: sheetNamesFetched,
-						employees: employeesFetched,
+						...optionsObject,
+						docs: linkedDocsFetched,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
 			}
-			// fetchData()
 		}
-	}, [mark])
+	}
 
-	return (mark == null && !isCreateMode) ? null : (
+	const onDocSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				linkedDoc: {
+					...defaultSelectedDoc,
+					type: selectedObject.linkedDoc.type,
+				},
+			})
+		}
+		const v = getFromOptions(id, optionsObject.docs, selectedObject)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				linkedDoc: v,
+			})
+		}
+	}
+
+	const checkIfValid = () => {
+		if (selectedObject.linkedDoc.type == null) {
+			setErrMsg('Пожалуйста, выберите тип ссылочного документа')
+			return false
+		}
+		if (selectedObject.linkedDoc.id === -1) {
+			setErrMsg('Пожалуйста, выберите ссылочный документ')
+			return false
+		}
+		return true
+	}
+
+	const onCreateButtonClick = async () => {
+		if (checkIfValid()) {
+			try {
+				await httpClient.post(`/marks/${mark.id}/mark-linked-docs`, {
+					linkedDocId: selectedObject.linkedDoc.id,
+				})
+				history.push('/linked-docs')
+			} catch (e) {
+				if (e.response.status === 409) {
+					setErrMsg('Данный ссылочный документ уже добавлен к марке')
+					return
+				}
+				console.log('Fail')
+			}
+		}
+	}
+
+	const onChangeButtonClick = async () => {
+		if (checkIfValid()) {
+			try {
+				await httpClient.patch(
+					`/mark-linked-docs/${selectedObject.id}`,
+					{
+						linkedDocId: selectedObject.linkedDoc.id,
+					}
+				)
+				history.push('/linked-docs')
+			} catch (e) {
+				if (e.response.status === 409) {
+					setErrMsg('Данный ссылочный документ уже добавлен к марке')
+					return
+				}
+				console.log('Fail')
+			}
+		}
+	}
+
+	return mark == null && !isCreateMode ? null : (
 		<div className="component-cnt">
 			<h1 className="text-centered">
-				{isCreateMode ? 'Добавление ссылочного документа' : 'Данные ссылочного документа'}
+				{isCreateMode
+					? 'Добавление ссылочного документа'
+					: 'Данные ссылочного документа'}
 			</h1>
 			<div className="flex">
 				<div className="info-area shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
@@ -74,24 +222,24 @@ const LinkedDocData = ({ linkedDoc, isCreateMode }: LinkedDocDataProps) => {
 						<Form.Label>Обозначение</Form.Label>
 						<Form.Control
 							type="text"
-							value={'1'}
+							value={selectedObject.linkedDoc.designation}
 							readOnly={true}
 						/>
 					</Form.Group>
-					<Form.Group>
+					<Form.Group className="no-bot-mrg">
 						<Form.Label>Наименование</Form.Label>
 						<Form.Control
 							as="textarea"
-                            rows={4}
-                            style={{resize: 'none'}}
-							value={'2'}
+							rows={4}
+							style={{ resize: 'none' }}
+							value={selectedObject.linkedDoc.name}
 							readOnly={true}
 						/>
 					</Form.Group>
 				</div>
 
 				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
-                    <div className="bold">Вид</div>
+					<div className="bold">Вид</div>
 					<Select
 						maxMenuHeight={250}
 						isClearable={true}
@@ -99,9 +247,24 @@ const LinkedDocData = ({ linkedDoc, isCreateMode }: LinkedDocDataProps) => {
 						placeholder="Выберите вид ссылочного документа"
 						noOptionsMessage={() => 'Виды не найдены'}
 						className="mrg-top"
-						onChange={null}
-						value={null}
-						options={[]}
+						onChange={(selectedOption) =>
+							onTypeSelect((selectedOption as any)?.value)
+						}
+						value={
+							selectedObject.linkedDoc.type == null
+								? null
+								: {
+										value: selectedObject.linkedDoc.type.id,
+										label:
+											selectedObject.linkedDoc.type.name,
+								  }
+						}
+						options={optionsObject.types.map((t) => {
+							return {
+								value: t.id,
+								label: t.name,
+							}
+						})}
 						styles={reactSelectstyle}
 					/>
 
@@ -111,24 +274,44 @@ const LinkedDocData = ({ linkedDoc, isCreateMode }: LinkedDocDataProps) => {
 						isClearable={true}
 						isSearchable={true}
 						placeholder="Выберите шифр ссылочного документа"
-						noOptionsMessage={() => 'Ссылочные документы не найдены'}
+						noOptionsMessage={() =>
+							'Ссылочные документы не найдены'
+						}
 						className="mrg-top"
-						onChange={null}
-						value={null}
-						options={[]}
+						onChange={(selectedOption) =>
+							onDocSelect((selectedOption as any)?.value)
+						}
+						value={
+							selectedObject.id === -1
+								? null
+								: {
+										value: selectedObject.id,
+										label: selectedObject.linkedDoc.code,
+								  }
+						}
+						options={optionsObject.docs.map((d) => {
+							return {
+								value: d.id,
+								label: d.code,
+							}
+						})}
 						styles={reactSelectstyle}
 					/>
+
+					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
 					<Button
 						variant="secondary"
 						className="btn-mrg-top-2 full-width"
 						onClick={
 							isCreateMode
-								? null
-								: null
+								? onCreateButtonClick
+								: onChangeButtonClick
 						}
 					>
-						{isCreateMode ? 'Добавить ссылочный документ' : 'Сохранить изменения'}
+						{isCreateMode
+							? 'Добавить ссылочный документ'
+							: 'Сохранить изменения'}
 					</Button>
 				</div>
 			</div>

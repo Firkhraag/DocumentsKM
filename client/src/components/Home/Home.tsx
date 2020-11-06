@@ -49,7 +49,7 @@ const Home = () => {
 			</Link>
 			<Link to="/exploitation">
 				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
-					Условия эксплуатации
+					Технические условия
 				</Button>
 			</Link>
 		</div>

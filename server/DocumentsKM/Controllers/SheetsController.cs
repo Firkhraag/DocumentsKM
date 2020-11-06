@@ -42,7 +42,8 @@ namespace DocumentsKM.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<SheetResponse>> Create(int markId, [FromBody] SheetCreateRequest sheetRequest)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<SheetResponse> Create(int markId, [FromBody] SheetCreateRequest sheetRequest)
         {
             var sheetModel = _mapper.Map<Sheet>(sheetRequest);
             try

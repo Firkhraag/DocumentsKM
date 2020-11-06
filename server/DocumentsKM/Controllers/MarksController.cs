@@ -62,6 +62,7 @@ namespace DocumentsKM.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<MarkResponse> Create([FromBody] MarkCreateRequest markRequest)
         {
             var markModel = _mapper.Map<Mark>(markRequest);
@@ -79,6 +80,10 @@ namespace DocumentsKM.Controllers
             {
                 return NotFound();
             }
+            catch (ConflictException)
+            {
+                return Conflict();
+            }
             
             var markResponse = _mapper.Map<MarkResponse>(markModel);
             return CreatedAtAction(nameof(GetById), new {Id = markResponse.Id}, markResponse);
@@ -88,6 +93,7 @@ namespace DocumentsKM.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult Update(int id, [FromBody] MarkUpdateRequest markRequest)
         {
             // DEBUG
@@ -99,6 +105,10 @@ namespace DocumentsKM.Controllers
             catch (ArgumentNullException)
             {
                 return NotFound();
+            }
+            catch (ConflictException)
+            {
+                return Conflict();
             }
             return NoContent();
         }

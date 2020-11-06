@@ -5,15 +5,16 @@ namespace DocumentsKM.Models
 {
     public class MarkLinkedDoc
     {
+        [Key]
+        public int Id { get; set; }
+
         [Required]
         [ForeignKey("MarkId")]
         public virtual Mark Mark { get; set; }
-        public int MarkId { get; set; }
 
         [Required]
         [ForeignKey("LinkedDocId")]
         public virtual LinkedDoc LinkedDoc { get; set; }
-        public int LinkedDocId { get; set; }
 
         // // прим
         // [MaxLength(50)]

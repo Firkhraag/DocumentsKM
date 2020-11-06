@@ -9,27 +9,27 @@ import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
-import LinkedDoc from '../../model/LinkedDoc'
+import MarkLinkedDoc from '../../model/MarkLinkedDoc'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
 import './LinkedDocs.css'
 
 type LinkedDocsProps = {
-    setPopupObj: (popupObj: IPopupObj) => void
-    setLinkedDoc: (ld: LinkedDoc) => void
+	setPopupObj: (popupObj: IPopupObj) => void
+	setMarkLinkedDoc: (mld: MarkLinkedDoc) => void
 }
 
-const LinkedDocs = ({ setPopupObj, setLinkedDoc }: LinkedDocsProps) => {
-    const mark = useMark()
-    const history = useHistory()
-    const [linkedDocs, setLinkedDocs] = useState([] as LinkedDoc[])
+const LinkedDocs = ({ setPopupObj, setMarkLinkedDoc }: LinkedDocsProps) => {
+	const mark = useMark()
+	const history = useHistory()
+	const [linkedDocs, setLinkedDocs] = useState([] as MarkLinkedDoc[])
 
-    useEffect(() => {
+	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
 					const linkedDocsFetchedResponse = await httpClient.get(
-						`/marks/${mark.id}/linked-docs`
-                    )
+						`/marks/${mark.id}/mark-linked-docs`
+					)
 					setLinkedDocs(linkedDocsFetchedResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
@@ -37,49 +37,57 @@ const LinkedDocs = ({ setPopupObj, setLinkedDoc }: LinkedDocsProps) => {
 			}
 			fetchData()
 		}
-    }, [mark])
-    
-    const onDeleteClick = async (row: number, id: number) => {
+	}, [mark])
+
+	const onDeleteClick = async (row: number, id: number) => {
 		try {
-            await httpClient.delete(`/linked-docs/${id}`)
-            linkedDocs.splice(row, 1)
+			await httpClient.delete(`/mark-linked-docs/${id}`)
+			linkedDocs.splice(row, 1)
 			setPopupObj(defaultPopupObj)
 		} catch (e) {
 			console.log('Error')
 		}
 	}
 
-    return (
-        <div className="component-cnt">
+	return (
+		<div className="component-cnt">
 			<h1 className="text-centered">Ссылочные документы</h1>
-            <PlusCircle
+			<PlusCircle
 				color="#666"
 				size={28}
 				className="pointer"
-				onClick={() => history.push('/linked-doc-create')}
+				onClick={() => history.push('/linked-doc-add')}
 			/>
-            <Table bordered hover className="mrg-top">
+			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
 					<tr>
-                        <td>№</td>
+						<td>№</td>
 						<td>Шифр</td>
 						<td>Обозначение</td>
-						<td className="linked-doc-name-col-width">Наименование</td>
-						<td className="text-centered" colSpan={2}>Действия</td>
+						<td className="linked-doc-name-col-width">
+							Наименование
+						</td>
+						<td className="text-centered" colSpan={2}>
+							Действия
+						</td>
 					</tr>
 				</thead>
 				<tbody>
-					{linkedDocs.map((ld, index) => {
+					{linkedDocs.map((mld, index) => {
+						const ld = mld.linkedDoc
 						return (
 							<tr key={index}>
-                                <td>{index + 1}</td>
+								<td>{index + 1}</td>
 								<td>{ld.code}</td>
 								<td>{ld.designation}</td>
-                                <td className="linked-doc-name-col-width">{ld.name}</td>
+								<td className="linked-doc-name-col-width">
+									{ld.name}
+								</td>
 								<td
-									onClick={() =>
-										history.push(`/linked-docs/${ld.id}`)
-									}
+									onClick={() => {
+										setMarkLinkedDoc(mld)
+										history.push(`/linked-docs/${mld.id}`)
+									}}
 									className="pointer action-cell-width text-centered"
 								>
 									<PencilSquare color="#666" size={26} />
@@ -87,18 +95,13 @@ const LinkedDocs = ({ setPopupObj, setLinkedDoc }: LinkedDocsProps) => {
 								<td
 									onClick={() =>
 										setPopupObj({
-                                            isShown: true,
-                                            msg: `Вы действительно хотите удалить ссылочный документ ${ld.code}?`,
-                                            onAccept: () =>
-                                                onDeleteClick(
-                                                    index,
-                                                    ld.id
-                                                ),
-                                            onCancel: () =>
-                                                setPopupObj(
-                                                    defaultPopupObj
-                                                ),
-                                      })
+											isShown: true,
+											msg: `Вы действительно хотите удалить ссылочный документ ${ld.code}?`,
+											onAccept: () =>
+												onDeleteClick(index, mld.id),
+											onCancel: () =>
+												setPopupObj(defaultPopupObj),
+										})
 									}
 									className="pointer action-cell-width text-centered"
 								>
@@ -110,7 +113,7 @@ const LinkedDocs = ({ setPopupObj, setLinkedDoc }: LinkedDocsProps) => {
 				</tbody>
 			</Table>
 		</div>
-    )
+	)
 }
 
 export default LinkedDocs

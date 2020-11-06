@@ -33,7 +33,18 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
 
-	const [selectedObject, setSelectedObject] = useState<Sheet>(sheet)
+	const [selectedObject, setSelectedObject] = useState<Sheet>(isCreateMode ? {
+		id: -1,
+		num: 1,
+		form: 1.0,
+		name: '',
+		creator: null,
+		inspector: null,
+		normContr: null,
+		releaseNum: 0,
+		numOfPages: 0,
+		note: '',
+	} : sheet)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
 	const [errMsg, setErrMsg] = useState('')
@@ -234,7 +245,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				})
 				history.push('/sheets')
 			} catch (e) {
-				console.log('Fail', e)
+				console.log('Fail')
 			}
 		}
 	}
@@ -248,8 +259,9 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
 				<Form.Group>
-					<Form.Label>Наименование</Form.Label>
+					<Form.Label htmlFor="name">Наименование</Form.Label>
 					<Form.Control
+						id="name"
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}
@@ -278,9 +290,16 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 					styles={reactSelectstyle}
 				/>
 
-				<Form.Group className="mrg-top-2">
-					<Form.Label>Формат</Form.Label>
+				<Form.Group className="mrg-top-2 flex-cent-v">
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="format"
+						style={{ marginRight: '5.6em' }}
+					>
+						Формат
+					</Form.Label>
 					<Form.Control
+						id="format"
 						type="text"
 						placeholder="Введите формат"
 						defaultValue={selectedObject.form.toFixed(1)}
@@ -288,89 +307,113 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 					/>
 				</Form.Group>
 
-				<div className="bold mrg-top-2">Разработал</div>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выбор разработчика"
-					noOptionsMessage={() => 'Сотрудники не найдены'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onCreatorSelect((selectedOption as any)?.value)
-					}
-					value={
-						selectedObject.creator == null
-							? null
-							: {
-									value: selectedObject.creator.id,
-									label: selectedObject.creator.name,
-							  }
-					}
-					options={optionsObject.employees.map((e) => {
-						return {
-							value: e.id,
-							label: e.name,
+				<div className="flex-cent-v mrg-top-2">
+					<label
+						className="bold no-bot-mrg"
+						style={{ marginRight: '3.9em' }}
+					>
+						Разработал
+					</label>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выбор разработчика"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						className="auto-width flex-grow"
+						onChange={(selectedOption) =>
+							onCreatorSelect((selectedOption as any)?.value)
 						}
-					})}
-					styles={reactSelectstyle}
-				/>
+						value={
+							selectedObject.creator == null
+								? null
+								: {
+										value: selectedObject.creator.id,
+										label: selectedObject.creator.name,
+								  }
+						}
+						options={optionsObject.employees.map((e) => {
+							return {
+								value: e.id,
+								label: e.name,
+							}
+						})}
+						styles={reactSelectstyle}
+					/>
+				</div>
 
-				<div className="bold mrg-top-2">Проверил</div>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выбор проверщика"
-					noOptionsMessage={() => 'Сотрудники не найдены'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onInspectorSelect((selectedOption as any)?.value)
-					}
-					value={
-						selectedObject.inspector == null
-							? null
-							: {
-									value: selectedObject.inspector.id,
-									label: selectedObject.inspector.name,
-							  }
-					}
-					options={optionsObject.employees.map((e) => {
-						return {
-							value: e.id,
-							label: e.name,
+				<div className="flex-cent-v mrg-top-2">
+					<label
+						className="bold no-bot-mrg"
+						style={{ marginRight: '4.5em' }}
+					>
+						Проверил
+					</label>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выбор проверщика"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						className="auto-width flex-grow"
+						onChange={(selectedOption) =>
+							onInspectorSelect((selectedOption as any)?.value)
 						}
-					})}
-					styles={reactSelectstyle}
-				/>
+						value={
+							selectedObject.inspector == null
+								? null
+								: {
+										value: selectedObject.inspector.id,
+										label: selectedObject.inspector.name,
+								  }
+						}
+						options={optionsObject.employees.map((e) => {
+							return {
+								value: e.id,
+								label: e.name,
+							}
+						})}
+						styles={reactSelectstyle}
+					/>
+				</div>
 
-				<div className="bold mrg-top-2">Нормоконтролер</div>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выбор нормоконтролера"
-					noOptionsMessage={() => 'Сотрудники не найдены'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onNormControllerSelect((selectedOption as any)?.value)
-					}
-					value={
-						selectedObject.normContr == null
-							? null
-							: {
-									value: selectedObject.normContr.id,
-									label: selectedObject.normContr.name,
-							  }
-					}
-					options={optionsObject.employees.map((e) => {
-						return {
-							value: e.id,
-							label: e.name,
+				<div className="flex-cent-v mrg-top-2">
+					<label
+						className="bold no-bot-mrg"
+						style={{ marginRight: '1em' }}
+					>
+						Нормоконтролер
+					</label>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выбор нормоконтролера"
+						noOptionsMessage={() => 'Сотрудники не найдены'}
+						// className="mrg-top"
+						className="auto-width flex-grow"
+						onChange={(selectedOption) =>
+							onNormControllerSelect(
+								(selectedOption as any)?.value
+							)
 						}
-					})}
-					styles={reactSelectstyle}
-				/>
+						value={
+							selectedObject.normContr == null
+								? null
+								: {
+										value: selectedObject.normContr.id,
+										label: selectedObject.normContr.name,
+								  }
+						}
+						options={optionsObject.employees.map((e) => {
+							return {
+								value: e.id,
+								label: e.name,
+							}
+						})}
+						styles={reactSelectstyle}
+					/>
+				</div>
 
 				<Form.Group className="mrg-top-2" style={{ marginBottom: 0 }}>
 					<Form.Label>Примечание</Form.Label>

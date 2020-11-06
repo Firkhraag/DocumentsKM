@@ -35,11 +35,11 @@
 }
 
 .component-cnt {
-    margin: 6vh 0;
+    margin: 4.85vh 0;
 }
 
 .component-cnt h1 {
-    margin-bottom: 1.1em;
+    margin-bottom: .85em;
 }
 
 .component-cnt-div {
@@ -59,6 +59,22 @@
 }
 
 /* Section */
+
+.no-bot-mrg {
+    margin-bottom: 0;
+}
+
+.form-group.no-bot-mrg {
+    margin-bottom: 0;
+}
+
+.table.no-bot-mrg {
+    margin-bottom: 0;
+}
+
+.form-control.auto-width {
+    width: auto;
+}
 
 .flex-grow {
     flex-grow: 1;
