@@ -11,21 +11,21 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class SheetNamesController : ControllerBase
+    public class GasGroupController : ControllerBase
     {
-        private readonly ISheetNameService _service;
+        private readonly IGasGroupService _service;
 
-        public SheetNamesController(ISheetNameService sheetNameService)
+        public GasGroupController(IGasGroupService gasGroupService)
         {
-            _service = sheetNameService;
+            _service = gasGroupService;
         }
 
-        [HttpGet, Route("sheet-names")]
+        [HttpGet, Route("gas-groups")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<SheetName>> GetAll()
+        public ActionResult<IEnumerable<GasGroup>> GetAll()
         {
-            var sheetNames = _service.GetAll();
-            return Ok(sheetNames);
+            var gasGroup = _service.GetAll();
+            return Ok(gasGroup);
         }
     }
 }

@@ -33,18 +33,22 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
 
-	const [selectedObject, setSelectedObject] = useState<Sheet>(isCreateMode ? {
-		id: -1,
-		num: 1,
-		form: 1.0,
-		name: '',
-		creator: null,
-		inspector: null,
-		normContr: null,
-		releaseNum: 0,
-		numOfPages: 0,
-		note: '',
-	} : sheet)
+	const [selectedObject, setSelectedObject] = useState<Sheet>(
+		isCreateMode
+			? {
+					id: -1,
+					num: 1,
+					form: 1.0,
+					name: '',
+					creator: null,
+					inspector: null,
+					normContr: null,
+					releaseNum: 0,
+					numOfPages: 0,
+					note: '',
+			  }
+			: sheet
+	)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
 	const [errMsg, setErrMsg] = useState('')
@@ -57,17 +61,15 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 			}
 			const fetchData = async () => {
 				try {
-					const sheetNamesFetchedResponse = await httpClient.get(
+					const sheetNamesResponse = await httpClient.get(
 						`/sheet-names`
 					)
-					const sheetNamesFetched = sheetNamesFetchedResponse.data
-					const employeesFetchedResponse = await httpClient.get(
+					const employeesResponse = await httpClient.get(
 						`/departments/${mark.department.id}/employees`
 					)
-					const employeesFetched = employeesFetchedResponse.data
 					setOptionsObject({
-						sheetNames: sheetNamesFetched,
-						employees: employeesFetched,
+						sheetNames: sheetNamesResponse.data,
+						employees: employeesResponse.data,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')

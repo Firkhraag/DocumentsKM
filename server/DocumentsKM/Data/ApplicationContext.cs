@@ -94,5 +94,12 @@ namespace DocumentsKM.Data
         public DbSet<MarkLinkedDoc> MarkLinkedDocs { get; set; }
         public DbSet<LinkedDoc> LinkedDocs { get; set; }
         public DbSet<LinkedDocType> LinkedDocTypes { get; set; }
+
+        public DbSet<EnvAggressiveness> EnvAggressiveness { get; set; }
+        public DbSet<OperatingArea> OperatingAreas { get; set; }
+        public DbSet<GasGroup> GasGroups { get; set; }
+        public DbSet<ConstructionMaterial> ConstructionMaterials { get; set; }
+        public DbSet<PaintworkType> PaintworkTypes { get; set; }
+        public DbSet<HighTensileBoltsType> HighTensileBoltsTypes { get; set; }
     }
 }

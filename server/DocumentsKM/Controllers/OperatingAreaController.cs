@@ -11,21 +11,21 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class SheetNamesController : ControllerBase
+    public class OperatingAreaController : ControllerBase
     {
-        private readonly ISheetNameService _service;
+        private readonly IOperatingAreaService _service;
 
-        public SheetNamesController(ISheetNameService sheetNameService)
+        public OperatingAreaController(IOperatingAreaService operatingAreaService)
         {
-            _service = sheetNameService;
+            _service = operatingAreaService;
         }
 
-        [HttpGet, Route("sheet-names")]
+        [HttpGet, Route("env-aggressiveness")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<SheetName>> GetAll()
+        public ActionResult<IEnumerable<OperatingArea>> GetAll()
         {
-            var sheetNames = _service.GetAll();
-            return Ok(sheetNames);
+            var operatingArea = _service.GetAll();
+            return Ok(operatingArea);
         }
     }
 }

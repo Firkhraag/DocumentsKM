@@ -11,21 +11,21 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class SheetNamesController : ControllerBase
+    public class PaintworkTypeController : ControllerBase
     {
-        private readonly ISheetNameService _service;
+        private readonly IPaintworkTypeService _service;
 
-        public SheetNamesController(ISheetNameService sheetNameService)
+        public PaintworkTypeController(IPaintworkTypeService paintworkTypeService)
         {
-            _service = sheetNameService;
+            _service = paintworkTypeService;
         }
 
-        [HttpGet, Route("sheet-names")]
+        [HttpGet, Route("paintwork-types")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<SheetName>> GetAll()
+        public ActionResult<IEnumerable<PaintworkType>> GetAll()
         {
-            var sheetNames = _service.GetAll();
-            return Ok(sheetNames);
+            var paintworkType = _service.GetAll();
+            return Ok(paintworkType);
         }
     }
 }

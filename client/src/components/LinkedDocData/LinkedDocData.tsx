@@ -7,14 +7,11 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
-import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import MarkLinkedDoc from '../../model/MarkLinkedDoc'
 import LinkedDoc from '../../model/LinkedDoc'
-import SheetName from '../../model/SheetName'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
 import LinkedDocType from '../../model/LinkedDocType'
 
@@ -67,30 +64,25 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 			}
 			const fetchData = async () => {
 				try {
-					const linkedDocTypesFetchedResponse = await httpClient.get(
+					const linkedDocTypesResponse = await httpClient.get(
 						`/linked-doc-types`
 					)
-					const linkedDocTypesFetched =
-						linkedDocTypesFetchedResponse.data
-
 					if (!isCreateMode) {
-						const linkedDocsFetchedResponse = await httpClient.get(
+						const linkedDocsResponse = await httpClient.get(
 							`/linked-docs-types/${markLinkedDoc.linkedDoc.type.id}/docs`
 						)
-						const linkedDocsFetched = linkedDocsFetchedResponse.data
 						cachedDocs.set(
 							markLinkedDoc.linkedDoc.id,
-							linkedDocsFetched
+							linkedDocsResponse.data
 						)
-						console.log()
 						setOptionsObject({
-							types: linkedDocTypesFetched,
-							docs: linkedDocsFetched,
+							types: linkedDocTypesResponse.data,
+							docs: linkedDocsResponse.data,
 						})
 					} else {
 						setOptionsObject({
 							...defaultOptionsObject,
-							types: linkedDocTypesFetched,
+							types: linkedDocTypesResponse.data,
 						})
 					}
 				} catch (e) {
@@ -124,15 +116,14 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				})
 			} else {
 				try {
-					const linkedDocsFetchedResponse = await httpClient.get(
+					const linkedDocsResponse = await httpClient.get(
 						`/linked-docs-types/${id}/docs`
 					)
-					const linkedDocsFetched = linkedDocsFetchedResponse.data
-					cachedDocs.set(v.id, linkedDocsFetched)
+					cachedDocs.set(v.id, linkedDocsResponse.data)
 					selectedObject.linkedDoc.type = v
 					setOptionsObject({
 						...optionsObject,
-						docs: linkedDocsFetched,
+						docs: linkedDocsResponse.data,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')

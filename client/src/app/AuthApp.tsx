@@ -14,7 +14,7 @@ import SheetData from '../components/SheetData/SheetData'
 import AttachedDocs from '../components/AttachedDocs/AttachedDocs'
 import LinkedDocs from '../components/LinkedDocs/LinkedDocs'
 import LinkedDocData from '../components/LinkedDocData/LinkedDocData'
-import Exploitation from '../components/Exploitation/Exploitation'
+import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
 import { defaultPopupObj } from '../components/Popup/Popup'
 import Sheet from '../model/Sheet'
 import MarkLinkedDoc from '../model/MarkLinkedDoc'
@@ -117,9 +117,9 @@ const AuthApp = () => {
 							</div>
 						</Route>
 
-						<Route exact path="/exploitation">
+						<Route exact path="/operating-conditions">
 							<div className="full-width div-container">
-								<Exploitation />
+								<OperatingConditions />
 							</div>
 						</Route>
 					</div>

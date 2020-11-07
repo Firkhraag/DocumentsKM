@@ -47,7 +47,7 @@ const Home = () => {
 					Ссылочные документы
 				</Button>
 			</Link>
-			<Link to="/exploitation">
+			<Link to="/operating-conditions">
 				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
 					Технические условия
 				</Button>

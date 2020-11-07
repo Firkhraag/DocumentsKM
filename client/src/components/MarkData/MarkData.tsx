@@ -49,25 +49,21 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 			if (selectedMarkId != null) {
 				const fetchData = async () => {
 					try {
-						const departmentsFetchedResponse = await httpClient.get(
+						const departmentsResponse = await httpClient.get(
 							'/departments'
 						)
-						const departmentsFetched =
-							departmentsFetchedResponse.data
-
-						setOptionsObject({
-							...defaultOptionsObject,
-							departments: departmentsFetched,
-						})
-
-						const markFetchedResponse = await httpClient.get(
+						const markResponse = await httpClient.get(
 							`/marks/${selectedMarkId}`
 						)
+						setOptionsObject({
+							...defaultOptionsObject,
+							departments: departmentsResponse.data,
+						})
 						setSelectedObject({
 							id: 0,
 							code: '',
 							name: '',
-							subnode: markFetchedResponse.data.subnode,
+							subnode: markResponse.data.subnode,
 							department: null,
 							chiefSpecialist: null,
 							groupLeader: null,
@@ -84,32 +80,31 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 			if (selectedMarkId != null) {
 				const fetchData = async () => {
 					try {
-						const markFetchedResponse = await httpClient.get(
+						const markResponse = await httpClient.get(
 							`/marks/${selectedMarkId}`
 						)
-						setMark(markFetchedResponse.data)
-						setSelectedObject({ ...markFetchedResponse.data })
-
-						const departmentsFetchedResponse = await httpClient.get(
+						const departmentsResponse = await httpClient.get(
 							'/departments'
 						)
-						const departmentsFetched =
-							departmentsFetchedResponse.data
 						const fetchedMainEmployeesResponse = await httpClient.get(
-							`departments/${markFetchedResponse.data.department.id}/mark-main-employees`
+							`departments/${markResponse.data.department.id}/mark-main-employees`
 						)
-						const fetchedMainEmployees =
-							fetchedMainEmployeesResponse.data
-
+						setMark(markResponse.data)
+						setSelectedObject({ ...markResponse.data })
 						setOptionsObject({
 							...defaultOptionsObject,
-							departments: departmentsFetched,
+							departments: departmentsResponse.data,
 							chiefSpecialists:
-								fetchedMainEmployees.chiefSpecialists,
-							groupLeaders: fetchedMainEmployees.groupLeaders,
-							mainBuilders: fetchedMainEmployees.mainBuilders,
+								fetchedMainEmployeesResponse.data
+									.chiefSpecialists,
+							groupLeaders:
+								fetchedMainEmployeesResponse.data.groupLeaders,
+							mainBuilders:
+								fetchedMainEmployeesResponse.data.mainBuilders,
 						})
-						setDepartmentHead(fetchedMainEmployees.departmentHead)
+						setDepartmentHead(
+							fetchedMainEmployeesResponse.data.departmentHead
+						)
 					} catch (e) {
 						console.log('Failed to fetch the mark')
 					}
@@ -312,10 +307,10 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					history.push('/')
 				}
 			} catch (e) {
-                if (e.response.status === 409) {
-                    setErrMsg('Марка с таким кодом уже существует')
-                    return
-                }
+				if (e.response.status === 409) {
+					setErrMsg('Марка с таким кодом уже существует')
+					return
+				}
 				console.log('Fail')
 			}
 		}
@@ -353,11 +348,11 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 				setMark(selectedObject)
 				history.push('/')
 			} catch (e) {
-                if (e.response.status === 409) {
-                    setErrMsg('Марка с таким кодом уже существует')
-                    return
-                }
-                console.log('Fail')
+				if (e.response.status === 409) {
+					setErrMsg('Марка с таким кодом уже существует')
+					return
+				}
+				console.log('Fail')
 			}
 		}
 	}
