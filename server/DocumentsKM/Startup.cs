@@ -132,6 +132,14 @@ namespace DocumentsKM
             services.AddScoped<IMarkLinkedDocService, MarkLinkedDocService>();
             services.AddScoped<ILinkedDocService, LinkedDocService>();
             services.AddScoped<ILinkedDocTypeService, LinkedDocTypeService>();
+
+            services.AddScoped<IEnvAggressivenessService, EnvAggressivenessService>();
+            services.AddScoped<IOperatingAreaService, OperatingAreaService>();
+            services.AddScoped<IGasGroupService, GasGroupService>();
+            services.AddScoped<IConstructionMaterialService, ConstructionMaterialService>();
+            services.AddScoped<IPaintworkTypeService, PaintworkTypeService>();
+            services.AddScoped<IHighTensileBoltsTypeService, HighTensileBoltsTypeService>();
+            services.AddScoped<IMarkOperatingConditionsService, MarkOperatingConditionsService>();
         }
 
         private void injectScopedRepositories(IServiceCollection services)
@@ -155,6 +163,14 @@ namespace DocumentsKM
             services.AddScoped<IMarkLinkedDocRepo, SqlMarkLinkedDocRepo>();
             services.AddScoped<ILinkedDocRepo, SqlLinkedDocRepo>();
             services.AddScoped<ILinkedDocTypeRepo, SqlLinkedDocTypeRepo>();
+
+            services.AddScoped<IEnvAggressivenessRepo, SqlEnvAggressivenessRepo>();
+            services.AddScoped<IOperatingAreaRepo, SqlOperatingAreaRepo>();
+            services.AddScoped<IGasGroupRepo, SqlGasGroupRepo>();
+            services.AddScoped<IConstructionMaterialRepo, SqlConstructionMaterialRepo>();
+            services.AddScoped<IPaintworkTypeRepo, SqlPaintworkTypeRepo>();
+            services.AddScoped<IHighTensileBoltsTypeRepo, SqlHighTensileBoltsTypeRepo>();
+            services.AddScoped<IMarkOperatingConditionsRepo, SqlMarkOperatingConditionsRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

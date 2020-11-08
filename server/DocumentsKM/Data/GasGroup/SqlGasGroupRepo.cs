@@ -17,5 +17,10 @@ namespace DocumentsKM.Data
         {
             return _context.GasGroups.ToList();
         }
+
+        public GasGroup GetById(int id)
+        {
+            return _context.GasGroups.FirstOrDefault(g => g.Id == id);
+        }
     }
 }

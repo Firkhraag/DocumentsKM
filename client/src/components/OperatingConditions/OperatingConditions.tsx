@@ -28,7 +28,17 @@ const OperatingConditions = () => {
 
 	const [selectedObject, setSelectedObject] = useState<
 		MarkOperatingConditions
-	>(null)
+	>({
+		id: -1,
+		safetyCoeff: 1.0,
+		envAggressiveness: null,
+		temperature: -34,
+		operatingArea: null,
+		gasGroup: null,
+		constructionMaterial: null,
+		paintworkType: null,
+		highTensileBoltsType: null,
+	})
 	const [optionsObject, setOptionsObject] = useState({
 		envAggressiveness: [] as EnvAggressiveness[],
 		operatingAreas: [] as OperatingArea[],
@@ -80,37 +90,176 @@ const OperatingConditions = () => {
 		}
 	}, [mark])
 
-	const onCoeffChange = () => {}
+    const onCoeffChange = (event: React.FormEvent<HTMLInputElement>) => {
+		try {
+			const v = parseFloat(event.currentTarget.value)
+			setSelectedObject({
+				...selectedObject,
+				safetyCoeff: v,
+			})
+		} catch (e) {
+			setSelectedObject({
+				...selectedObject,
+				safetyCoeff: null,
+			})
+		}
+	}
 
-	const onEnvAggresivnessSelect = async (id: number) => {}
+	const onEnvAggresivnessSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				envAggressiveness: null,
+			})
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.envAggressiveness,
+			selectedObject
+		)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				envAggressiveness: v,
+			})
+		}
+	}
 
-	const onTempChange = () => {}
+    const onTempChange = (event: React.FormEvent<HTMLInputElement>) => {
+		try {
+			const v = parseInt(event.currentTarget.value)
+			setSelectedObject({
+				...selectedObject,
+				temperature: v,
+			})
+		} catch (e) {
+			setSelectedObject({
+				...selectedObject,
+				temperature: null,
+			})
+		}
+	}
+
+	const onOperatingAreaSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				operatingArea: null,
+			})
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.operatingAreas,
+			selectedObject
+		)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				operatingArea: v,
+			})
+		}
+	}
+
+	const onGasGroupSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				gasGroup: null,
+			})
+		}
+		const v = getFromOptions(id, optionsObject.gasGroups, selectedObject)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				gasGroup: v,
+			})
+		}
+	}
+
+	const onConstructionMaterialSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				constructionMaterial: null,
+			})
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.constructionMaterials,
+			selectedObject
+		)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				constructionMaterial: v,
+			})
+		}
+	}
+
+	const onPaintworkTypeSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				paintworkType: null,
+			})
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.paintworkTypes,
+			selectedObject
+		)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				paintworkType: v,
+			})
+		}
+	}
+
+	const onHighTensileBoltsTypeSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				highTensileBoltsType: null,
+			})
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.highTensileBoltsTypes,
+			selectedObject
+		)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				highTensileBoltsType: v,
+			})
+		}
+	}
 
 	const onChangeButtonClick = () => {}
 
-	return selectedObject == null || mark == null ? null : (
+	return mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Общие условия эксплуатации</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-				<Form.Group>
-					<Form.Label htmlFor="coeff">
-						Коэффициент надежности по ответственности
+			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
+				<Form.Group className="flex-cent-v">
+					<Form.Label htmlFor="coeff" style={{ marginRight: '2.5em' }}>
+						Коэф. надежности по ответственности
 					</Form.Label>
 					<Form.Control
 						id="coeff"
-						as="textarea"
-						rows={4}
-						style={{ resize: 'none' }}
+						type="text"
 						placeholder="Введите коэффициент надежности"
-						value={selectedObject.safetyCoeff}
-						onChange={onCoeffChange}
+						value={selectedObject.safetyCoeff.toFixed(1)}
+						className="auto-width flex-grow"
+						onBlur={onCoeffChange}
 					/>
 				</Form.Group>
 
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '3.9em' }}
+						style={{ marginRight: '10.5em' }}
 					>
 						Агрессивность среды
 					</label>
@@ -128,31 +277,45 @@ const OperatingConditions = () => {
 								(selectedOption as any)?.value
 							)
 						}
-						value={null}
-						options={[]}
+						value={
+							selectedObject.envAggressiveness == null
+								? null
+								: {
+										value:
+											selectedObject.envAggressiveness.id,
+										label:
+											selectedObject.envAggressiveness
+												.name,
+								  }
+						}
+						options={optionsObject.envAggressiveness.map((a) => {
+							return {
+								value: a.id,
+								label: a.name,
+							}
+						})}
 						styles={reactSelectstyle}
 					/>
 				</div>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-					<Form.Label htmlFor="temp">
+					<Form.Label htmlFor="temp" style={{ marginRight: '1em' }}>
 						Расчетная температура эксплуатации (°C)
 					</Form.Label>
 					<Form.Control
 						id="temp"
-						as="textarea"
-						rows={4}
-						style={{ resize: 'none' }}
+						type="text"
 						placeholder="Введите наименование"
+						className="auto-width flex-grow"
 						value={selectedObject.temperature}
-						onChange={onTempChange}
+						onBlur={onTempChange}
 					/>
 				</Form.Group>
 
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '3.9em' }}
+						style={{ marginRight: '11.65em' }}
 					>
 						Зона эксплуатации
 					</label>
@@ -164,12 +327,25 @@ const OperatingConditions = () => {
 						noOptionsMessage={() => 'Зоны эксплуатации не найдены'}
 						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
-							onEnvAggresivnessSelect(
+							onOperatingAreaSelect(
 								(selectedOption as any)?.value
 							)
 						}
-						value={null}
-						options={[]}
+						value={
+							selectedObject.operatingArea == null
+								? null
+								: {
+										value: selectedObject.operatingArea.id,
+										label:
+											selectedObject.operatingArea.name,
+								  }
+						}
+						options={optionsObject.operatingAreas.map((a) => {
+							return {
+								value: a.id,
+								label: a.name,
+							}
+						})}
 						styles={reactSelectstyle}
 					/>
 				</div>
@@ -177,7 +353,7 @@ const OperatingConditions = () => {
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '4.5em' }}
+						style={{ marginRight: '14.65em' }}
 					>
 						Группа газов
 					</label>
@@ -189,12 +365,22 @@ const OperatingConditions = () => {
 						noOptionsMessage={() => 'Группы газов не найдены'}
 						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
-							onEnvAggresivnessSelect(
-								(selectedOption as any)?.value
-							)
+							onGasGroupSelect((selectedOption as any)?.value)
 						}
-						value={null}
-						options={[]}
+						value={
+							selectedObject.gasGroup == null
+								? null
+								: {
+										value: selectedObject.gasGroup.id,
+										label: selectedObject.gasGroup.name,
+								  }
+						}
+						options={optionsObject.gasGroups.map((g) => {
+							return {
+								value: g.id,
+								label: g.name,
+							}
+						})}
 						styles={reactSelectstyle}
 					/>
 				</div>
@@ -202,7 +388,7 @@ const OperatingConditions = () => {
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '1em' }}
+						style={{ marginRight: '9.65em' }}
 					>
 						Материал конструкций
 					</label>
@@ -216,12 +402,30 @@ const OperatingConditions = () => {
 						}
 						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
-							onEnvAggresivnessSelect(
+							onConstructionMaterialSelect(
 								(selectedOption as any)?.value
 							)
 						}
-						value={null}
-						options={[]}
+						value={
+							selectedObject.constructionMaterial == null
+								? null
+								: {
+										value:
+											selectedObject.constructionMaterial
+												.id,
+										label:
+											selectedObject.constructionMaterial
+												.name,
+								  }
+						}
+						options={optionsObject.constructionMaterials.map(
+							(m) => {
+								return {
+									value: m.id,
+									label: m.name,
+								}
+							}
+						)}
 						styles={reactSelectstyle}
 					/>
 				</div>
@@ -229,7 +433,7 @@ const OperatingConditions = () => {
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '1em' }}
+						style={{ marginRight: '5.75em' }}
 					>
 						Тип лакокрасочного материала
 					</label>
@@ -237,16 +441,29 @@ const OperatingConditions = () => {
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
-						placeholder="Выберите тип лакокрасочного материала"
+						placeholder="Выберите тип"
 						noOptionsMessage={() => 'Типы не найдены'}
 						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
-							onEnvAggresivnessSelect(
+							onPaintworkTypeSelect(
 								(selectedOption as any)?.value
 							)
 						}
-						value={null}
-						options={[]}
+						value={
+							selectedObject.paintworkType == null
+								? null
+								: {
+										value: selectedObject.paintworkType.id,
+										label:
+											selectedObject.paintworkType.name,
+								  }
+						}
+						options={optionsObject.paintworkTypes.map((t) => {
+							return {
+								value: t.id,
+								label: t.name,
+							}
+						})}
 						styles={reactSelectstyle}
 					/>
 				</div>
@@ -254,7 +471,7 @@ const OperatingConditions = () => {
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '1em' }}
+						style={{ marginRight: '9.65em' }}
 					>
 						Высокопрочные болты
 					</label>
@@ -268,12 +485,30 @@ const OperatingConditions = () => {
 						}
 						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
-							onEnvAggresivnessSelect(
+							onHighTensileBoltsTypeSelect(
 								(selectedOption as any)?.value
 							)
 						}
-						value={null}
-						options={[]}
+						value={
+							selectedObject.highTensileBoltsType == null
+								? null
+								: {
+										value:
+											selectedObject.highTensileBoltsType
+												.id,
+										label:
+											selectedObject.highTensileBoltsType
+												.name,
+								  }
+						}
+						options={optionsObject.highTensileBoltsTypes.map(
+							(t) => {
+								return {
+									value: t.id,
+									label: t.name,
+								}
+							}
+						)}
 						styles={reactSelectstyle}
 					/>
 				</div>

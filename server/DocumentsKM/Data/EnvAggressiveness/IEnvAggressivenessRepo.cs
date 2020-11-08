@@ -7,5 +7,7 @@ namespace DocumentsKM.Data
     {
         // Получить все агрессивности среды
         IEnumerable<EnvAggressiveness> GetAll();
+        // Получить агрессивность среды по id
+        EnvAggressiveness GetById(int id);
     }
 }

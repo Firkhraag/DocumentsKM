@@ -17,5 +17,10 @@ namespace DocumentsKM.Data
         {
             return _context.EnvAggressiveness.ToList();
         }
+
+        public EnvAggressiveness GetById(int id)
+        {
+            return _context.EnvAggressiveness.FirstOrDefault(a => a.Id == id);
+        }
     }
 }

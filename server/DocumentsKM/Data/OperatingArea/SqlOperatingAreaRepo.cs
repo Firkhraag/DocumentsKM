@@ -17,5 +17,10 @@ namespace DocumentsKM.Data
         {
             return _context.OperatingAreas.ToList();
         }
+
+        public OperatingArea GetById(int id)
+        {
+            return _context.OperatingAreas.FirstOrDefault(a => a.Id == id);
+        }
     }
 }

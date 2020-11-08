@@ -7,5 +7,7 @@ namespace DocumentsKM.Data
     {
         // Получить все материалы конструкций
         IEnumerable<ConstructionMaterial> GetAll();
+        // Получить материал конструкций по id
+        ConstructionMaterial GetById(int id);
     }
 }

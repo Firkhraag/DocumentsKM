@@ -50,6 +50,10 @@
     width: 38vw;
 }
 
+.component-width-2 {
+    width: 44vw;
+}
+
 .info-area {
     height: 100%;
 }

@@ -7,5 +7,7 @@ namespace DocumentsKM.Data
     {
         // Получить все зоны эксплуатации
         IEnumerable<OperatingArea> GetAll();
+        // Получить зону эксплуатации по id
+        OperatingArea GetById(int id);
     }
 }

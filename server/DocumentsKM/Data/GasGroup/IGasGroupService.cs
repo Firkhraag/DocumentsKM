@@ -7,5 +7,7 @@ namespace DocumentsKM.Data
     {
         // Получить все группы газов
         IEnumerable<GasGroup> GetAll();
+        // Получить группу газов по id
+        GasGroup GetById(int id);
     }
 }

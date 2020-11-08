@@ -7,5 +7,7 @@ namespace DocumentsKM.Data
     {
         // Получить все высокопрочные болты
         IEnumerable<HighTensileBoltsType> GetAll();
+        // Получить высокопрочные болты по id
+        HighTensileBoltsType GetById(int id);
     }
 }

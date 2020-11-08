@@ -101,5 +101,6 @@ namespace DocumentsKM.Data
         public DbSet<ConstructionMaterial> ConstructionMaterials { get; set; }
         public DbSet<PaintworkType> PaintworkTypes { get; set; }
         public DbSet<HighTensileBoltsType> HighTensileBoltsTypes { get; set; }
+        public DbSet<MarkOperatingConditions> MarkOperatingConditions { get; set; }
     }
 }

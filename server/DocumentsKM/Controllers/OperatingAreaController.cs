@@ -20,7 +20,7 @@ namespace DocumentsKM.Controllers
             _service = operatingAreaService;
         }
 
-        [HttpGet, Route("env-aggressiveness")]
+        [HttpGet, Route("operating-areas")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<OperatingArea>> GetAll()
         {
