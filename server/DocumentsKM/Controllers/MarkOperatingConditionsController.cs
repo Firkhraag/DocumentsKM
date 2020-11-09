@@ -69,7 +69,7 @@ namespace DocumentsKM.Controllers
             }
             
             var markOperatingConditionsResponse = _mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditionsModel);
-            return CreatedAtAction(nameof(GetByMarkId), new {Id = markId}, markOperatingConditionsResponse);
+            return Created($"marks/{markId}/mark-operating-conditions", _mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditionsModel));
         }
 
         [HttpPatch, Route("marks/{markId}/mark-operating-conditions")]

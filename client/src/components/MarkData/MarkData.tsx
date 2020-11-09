@@ -311,7 +311,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					setErrMsg('Марка с таким кодом уже существует')
 					return
 				}
-				console.log('Fail')
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
 			}
 		}
 	}
@@ -352,7 +353,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					setErrMsg('Марка с таким кодом уже существует')
 					return
 				}
-				console.log('Fail')
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
 			}
 		}
 	}

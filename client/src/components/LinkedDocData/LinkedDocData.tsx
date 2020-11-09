@@ -175,7 +175,8 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 					setErrMsg('Данный ссылочный документ уже добавлен к марке')
 					return
 				}
-				console.log('Fail')
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
 			}
 		}
 	}
@@ -195,7 +196,8 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 					setErrMsg('Данный ссылочный документ уже добавлен к марке')
 					return
 				}
-				console.log('Fail')
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
 			}
 		}
 	}

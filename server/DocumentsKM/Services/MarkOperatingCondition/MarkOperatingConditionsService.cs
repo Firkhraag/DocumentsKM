@@ -56,6 +56,7 @@ namespace DocumentsKM.Services
             var foundMark = _markRepository.GetById(markId);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
+            markOperatingConditions.Mark = foundMark;
 
             var envAggressiveness = _envAggressivenessRepo.GetById(envAggressivenessId);
             if (envAggressiveness == null)

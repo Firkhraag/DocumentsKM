@@ -6,7 +6,6 @@ import PaintworkType from './PaintworkType'
 import HighTensileBoltsType from './HighTensileBoltsType'
 
 interface IMarkOperatingConditions {
-    id: number
     safetyCoeff: number
     envAggressiveness: EnvAggressiveness
     temperature: number
@@ -18,7 +17,6 @@ interface IMarkOperatingConditions {
 }
 
 class MarkOperatingConditions {
-    id: number
     safetyCoeff: number
     envAggressiveness: EnvAggressiveness
     temperature: number
@@ -29,7 +27,6 @@ class MarkOperatingConditions {
     highTensileBoltsType: HighTensileBoltsType
 
 	constructor(obj?: IMarkOperatingConditions) {
-		this.id = (obj && obj.id) || 0
         this.safetyCoeff = (obj && obj.safetyCoeff) || 0
         this.envAggressiveness = (obj && obj.envAggressiveness) || null
         this.temperature = (obj && obj.temperature) || 0

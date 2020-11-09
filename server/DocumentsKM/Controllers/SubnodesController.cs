@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsKM.Controllers
 {
+    // AMQP
     [Route("api")]
     [Authorize]
     [ApiController]

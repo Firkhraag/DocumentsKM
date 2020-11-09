@@ -15,9 +15,7 @@ import ConstructionMaterial from '../../model/ConstructionMaterial'
 import PaintworkType from '../../model/PaintworkType'
 import HighTensileBoltsType from '../../model/HighTensileBoltsType'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
-import Mark from '../../model/Mark'
-import { useMark, useSetMark } from '../../store/MarkStore'
-import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
+import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
@@ -28,17 +26,10 @@ const OperatingConditions = () => {
 
 	const [selectedObject, setSelectedObject] = useState<
 		MarkOperatingConditions
-	>({
-		id: -1,
-		safetyCoeff: 1.0,
-		envAggressiveness: null,
-		temperature: -34,
-		operatingArea: null,
-		gasGroup: null,
-		constructionMaterial: null,
-		paintworkType: null,
-		highTensileBoltsType: null,
-	})
+    >(null)
+    const [defaultSelectedObject, setDefaultSelectedObject] = useState<
+		MarkOperatingConditions
+	>(null)
 	const [optionsObject, setOptionsObject] = useState({
 		envAggressiveness: [] as EnvAggressiveness[],
 		operatingAreas: [] as OperatingArea[],
@@ -49,6 +40,7 @@ const OperatingConditions = () => {
 	})
 
 	const [errMsg, setErrMsg] = useState('')
+	const [isCreateMode, setCreateMode] = useState(false)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -83,6 +75,30 @@ const OperatingConditions = () => {
 							highTensileBoltsTypesResponse.data,
 					})
 				} catch (e) {
+					console.log('Failed to fetch the data')
+                }
+                
+                try {
+					const markOperatingConditionsResponse = await httpClient.get(
+						`/marks/${mark.id}/mark-operating-conditions`
+					)
+                    setSelectedObject(markOperatingConditionsResponse.data)
+                    setDefaultSelectedObject(markOperatingConditionsResponse.data)
+				} catch (e) {
+                    if (e.response.status === 404) {
+                        setCreateMode(true)
+                        setSelectedObject({
+                            safetyCoeff: 1.0,
+                            envAggressiveness: null,
+                            temperature: -34,
+                            operatingArea: null,
+                            gasGroup: null,
+                            constructionMaterial: null,
+                            paintworkType: null,
+                            highTensileBoltsType: null,
+                        })
+                        return
+                    }
 					console.log('Failed to fetch the data')
 				}
 			}
@@ -131,7 +147,7 @@ const OperatingConditions = () => {
 			setSelectedObject({
 				...selectedObject,
 				temperature: v,
-			})
+            })
 		} catch (e) {
 			setSelectedObject({
 				...selectedObject,
@@ -234,11 +250,103 @@ const OperatingConditions = () => {
 				highTensileBoltsType: v,
 			})
 		}
-	}
+    }
+    
+    const checkIfValid = () => {
+		if (selectedObject.safetyCoeff == null) {
+			setErrMsg('Пожалуйста, введите коэффициент надежности')
+			return false
+        }
+        if (selectedObject.envAggressiveness == null) {
+			setErrMsg('Пожалуйста, введите агрессивность среды')
+			return false
+		}
+		if (selectedObject.temperature == null) {
+			setErrMsg('Пожалуйста, введите температуру эксплуатации')
+			return false
+		}
+		if (selectedObject.operatingArea == null) {
+			setErrMsg('Пожалуйста, выберите зону эксплуатации')
+			return false
+		}
+		if (selectedObject.gasGroup == null) {
+			setErrMsg('Пожалуйста, выберите группу газов')
+			return false
+        }
+        if (selectedObject.constructionMaterial == null) {
+			setErrMsg('Пожалуйста, выберите материал конструкций')
+			return false
+        }
+        if (selectedObject.paintworkType == null) {
+			setErrMsg('Пожалуйста, выберите тип лакокрасочного материала')
+			return false
+        }
+        if (selectedObject.highTensileBoltsType == null) {
+			setErrMsg('Пожалуйста, выберите высокопрочные болты')
+			return false
+		}
+		return true
+    }
+    
+    const onCreateButtonClick = async () => {
+        if (checkIfValid()) {
+			try {
+				await httpClient.post(`/marks/${mark.id}/mark-operating-conditions`, {
+					safetyCoeff: selectedObject.safetyCoeff,
+					temperature: selectedObject.temperature,
+					envAggressivenessId: selectedObject.envAggressiveness.id,
+					operatingAreaId: selectedObject.operatingArea.id,
+					gasGroupId: selectedObject.gasGroup.id,
+					constructionMaterialId: selectedObject.constructionMaterial.id,
+					paintworkTypeId: selectedObject.paintworkType.id,
+					highTensileBoltsTypeId: selectedObject.highTensileBoltsType.id,
+				})
+				history.push('/')
+			} catch (e) {
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
+			}
+		}
+    }
 
-	const onChangeButtonClick = () => {}
+	const onChangeButtonClick = async () => {
+        if (checkIfValid()) {
+			try {
+				await httpClient.patch(`/marks/${mark.id}/mark-operating-conditions`, {
+					safetyCoeff: selectedObject.safetyCoeff === defaultSelectedObject.safetyCoeff
+                        ? undefined
+                        : selectedObject.safetyCoeff,
+					temperature: selectedObject.temperature === defaultSelectedObject.temperature
+                        ? undefined
+                        : selectedObject.temperature,
+					envAggressivenessId: selectedObject.envAggressiveness.id === defaultSelectedObject.envAggressiveness.id
+                        ? undefined
+                        : selectedObject.envAggressiveness.id,
+					operatingAreaId: selectedObject.operatingArea.id === defaultSelectedObject.operatingArea.id
+                        ? undefined
+                        : selectedObject.operatingArea.id,
+					gasGroupId: selectedObject.gasGroup.id === defaultSelectedObject.gasGroup.id
+                        ? undefined
+                        : selectedObject.gasGroup.id,
+					constructionMaterialId: selectedObject.constructionMaterial.id === defaultSelectedObject.constructionMaterial.id
+                        ? undefined
+                        : selectedObject.constructionMaterial.id,
+					paintworkTypeId: selectedObject.paintworkType.id === defaultSelectedObject.paintworkType.id
+                        ? undefined
+                        : selectedObject.paintworkType.id,
+					highTensileBoltsTypeId: selectedObject.highTensileBoltsType.id === defaultSelectedObject.highTensileBoltsType.id
+                        ? undefined
+                        : selectedObject.highTensileBoltsType.id,
+				})
+				history.push('/')
+			} catch (e) {
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
+			}
+		}
+    }
 
-	return mark == null ? null : (
+	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Общие условия эксплуатации</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
@@ -250,7 +358,7 @@ const OperatingConditions = () => {
 						id="coeff"
 						type="text"
 						placeholder="Введите коэффициент надежности"
-						value={selectedObject.safetyCoeff.toFixed(1)}
+						defaultValue={selectedObject.safetyCoeff.toFixed(1)}
 						className="auto-width flex-grow"
 						onBlur={onCoeffChange}
 					/>
@@ -307,7 +415,7 @@ const OperatingConditions = () => {
 						type="text"
 						placeholder="Введите наименование"
 						className="auto-width flex-grow"
-						value={selectedObject.temperature}
+						defaultValue={selectedObject.temperature}
 						onBlur={onTempChange}
 					/>
 				</Form.Group>
@@ -518,7 +626,7 @@ const OperatingConditions = () => {
 				<Button
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
-					onClick={onChangeButtonClick}
+					onClick={isCreateMode ? onCreateButtonClick : onChangeButtonClick}
 				>
 					{'Сохранить изменения'}
 				</Button>
