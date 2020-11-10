@@ -17,7 +17,6 @@ import HighTensileBoltsType from '../../model/HighTensileBoltsType'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
 
 const OperatingConditions = () => {

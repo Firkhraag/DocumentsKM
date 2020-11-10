@@ -83,7 +83,7 @@ namespace DocumentsKM.Data
         public DbSet<Mark> Marks { get; set; }
         public DbSet<MarkApproval> MarkApprovals { get; set; }
         public DbSet<Specification> Specifications { get; set; }
-        public DbSet<Sheet> Sheets { get; set; }
+        public DbSet<Doc> Docs { get; set; }
 
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
         public DbSet<CorrProtVariant> CorrProtVariants { get; set; }
@@ -102,5 +102,7 @@ namespace DocumentsKM.Data
         public DbSet<PaintworkType> PaintworkTypes { get; set; }
         public DbSet<HighTensileBoltsType> HighTensileBoltsTypes { get; set; }
         public DbSet<MarkOperatingConditions> MarkOperatingConditions { get; set; }
+
+        public DbSet<AttachedDoc> AttachedDocs { get; set; }
     }
 }

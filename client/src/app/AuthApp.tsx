@@ -11,17 +11,21 @@ import Specifications from '../components/Specifications/Specifications'
 import SpecificationData from '../components/SpecificationData/SpecificationData'
 import Sheets from '../components/Sheets/Sheets'
 import SheetData from '../components/SheetData/SheetData'
-import AttachedDocs from '../components/AttachedDocs/AttachedDocs'
+import DevelopingAttachedDocs from '../components/DevelopingAttachedDocs/DevelopingAttachedDocs'
+import OtherAttachedDocs from '../components/OtherAttachedDocs/OtherAttachedDocs'
 import LinkedDocs from '../components/LinkedDocs/LinkedDocs'
 import LinkedDocData from '../components/LinkedDocData/LinkedDocData'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
 import { defaultPopupObj } from '../components/Popup/Popup'
-import Sheet from '../model/Sheet'
+import Doc from '../model/Doc'
+import AttachedDoc from '../model/AttachedDoc'
 import MarkLinkedDoc from '../model/MarkLinkedDoc'
 
 const AuthApp = () => {
 	const [popupObj, setPopupObj] = useState(defaultPopupObj)
-	const [sheet, setSheet] = useState<Sheet>(null)
+    const [sheet, setSheet] = useState<Doc>(null)
+    const [developingAttachedDoc, setDevelopingAttachedDoc] = useState<Doc>(null)
+    const [otherAttachedDoc, setOtherAttachedDoc] = useState<AttachedDoc>(null)
 	const [markLinkedDoc, setMarkLinkedDoc] = useState<MarkLinkedDoc>(null)
 
 	return (
@@ -71,7 +75,8 @@ const AuthApp = () => {
 							<div className="full-width div-container">
 								<Sheets
 									setPopupObj={setPopupObj}
-									setSheet={(s: Sheet) => setSheet(s)}
+									// setSheet={(s: Sheet) => setSheet(s)}
+									setSheet={setSheet}
 								/>
 							</div>
 						</Route>
@@ -86,9 +91,16 @@ const AuthApp = () => {
 							</div>
 						</Route>
 
-						<Route exact path="/attached-docs">
+						<Route exact path="/developing-attached-docs">
 							<div className="full-width div-container">
-								<AttachedDocs />
+								<DevelopingAttachedDocs setPopupObj={setPopupObj}
+									setDevelopingAttachedDoc={setDevelopingAttachedDoc} />
+							</div>
+						</Route>
+                        <Route exact path="/other-attached-docs">
+							<div className="full-width div-container">
+								<OtherAttachedDocs setPopupObj={setPopupObj}
+									setOtherAttachedDoc={setOtherAttachedDoc} />
 							</div>
 						</Route>
 

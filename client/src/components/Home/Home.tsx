@@ -37,9 +37,14 @@ const Home = () => {
 			<Link to="/sheets">
 				<Button variant="outline-secondary" disabled={mark == null ? true : false}>Листы основного комплекта</Button>
 			</Link>
-			<Link to="/attached-docs">
+            <Link to="/developing-attached-docs">
 				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
-					Прилагаемые документы
+                    Разрабатываемые прилагаемые документы
+				</Button>
+			</Link>
+            <Link to="/other-attached-docs">
+				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
+                    Прочие прилагаемые документы
 				</Button>
 			</Link>
             <Link to="/linked-docs">

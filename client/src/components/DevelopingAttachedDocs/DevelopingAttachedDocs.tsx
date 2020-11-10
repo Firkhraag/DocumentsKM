@@ -11,27 +11,29 @@ import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Doc from '../../model/Doc'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
-import './Sheet.css'
 
-type SheetsProps = {
+type DevelopingAttachedDocsProps = {
 	setPopupObj: (popupObj: IPopupObj) => void
-	setSheet: (s: Doc) => void
+	setDevelopingAttachedDoc: (d: Doc) => void
 }
 
-const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
+const DevelopingAttachedDocs = ({
+	setPopupObj,
+	setDevelopingAttachedDoc,
+}: DevelopingAttachedDocsProps) => {
 	const mark = useMark()
 	const history = useHistory()
 
-	const [sheets, setSheets] = useState([] as Doc[])
+	const [docs, setDocs] = useState([] as Doc[])
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const sheetsFetchedResponse = await httpClient.get(
-						`/marks/${mark.id}/docs/sheets`
+					const docsFetchedResponse = await httpClient.get(
+						`/marks/${mark.id}/docs/attached`
 					)
-					setSheets(sheetsFetchedResponse.data)
+					setDocs(docsFetchedResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
@@ -43,7 +45,7 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/docs/${id}`)
-			sheets.splice(row, 1)
+			docs.splice(row, 1)
 			setPopupObj(defaultPopupObj)
 		} catch (e) {
 			console.log('Error')
@@ -52,7 +54,7 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 
 	return (
 		<div className="component-cnt table-width">
-			<h1 className="text-centered">Листы основного комплекта</h1>
+			<h1 className="text-centered">Разрабатываемые прилагаемые документы</h1>
 			<PlusCircle
 				onClick={() => history.push('/sheet-create')}
 				color="#666"
@@ -63,46 +65,46 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 				<thead>
 					<tr>
 						<th>№</th>
-						<th className="sheet-name-col-width">Наименование</th>
+						<th>Наименование</th>
 						<th>Формат</th>
-						<th className="sheet-employee-col-width">Разработал</th>
-						<th className="sheet-employee-col-width">Проверил</th>
-						<th className="sheet-employee-col-width">Н.контр.</th>
-						<th className="sheet-note-col-width">Примечание</th>
+						<th>Разработал</th>
+						<th>Проверил</th>
+						<th>Н.контр.</th>
+						<th>Примечание</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					{sheets.map((s, index) => {
+					{docs.map((d, index) => {
 						return (
-							<tr key={s.id}>
-								<td>{s.num}</td>
-								<td className="sheet-name-col-width">
-									{s.name}
+							<tr key={d.id}>
+								<td>{d.num}</td>
+								<td>
+									{d.name}
 								</td>
-								<td>{s.form}</td>
-								<td className="sheet-employee-col-width">
-									{s.creator == null ? '' : s.creator.name}
+								<td>{d.form}</td>
+								<td>
+									{d.creator == null ? '' : d.creator.name}
 								</td>
-								<td className="sheet-employee-col-width">
-									{s.inspector == null
+								<td>
+									{d.inspector == null
 										? ''
-										: s.inspector.name}
+										: d.inspector.name}
 								</td>
-								<td className="sheet-employee-col-width">
-									{s.normContr == null
+								<td>
+									{d.normContr == null
 										? ''
-										: s.normContr.name}
+										: d.normContr.name}
 								</td>
-								<td className="sheet-note-col-width">
-									{s.note}
+								<td>
+									{d.note}
 								</td>
 								<td
 									onClick={() => {
-										setSheet(s)
-										history.push(`/sheets/${s.id}`)
+										setDevelopingAttachedDoc(d)
+										history.push(`/sheets/${d.id}`)
 									}}
 									className="pointer action-cell-width text-centered"
 								>
@@ -112,9 +114,9 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 									onClick={() =>
 										setPopupObj({
 											isShown: true,
-											msg: `Вы действительно хотите удалить лист основного комплекта №${s.num}?`,
+											msg: `Вы действительно хотите удалить прилагаемый документ №${d.num}?`,
 											onAccept: () =>
-												onDeleteClick(index, s.id),
+												onDeleteClick(index, d.id),
 											onCancel: () =>
 												setPopupObj(defaultPopupObj),
 										})
@@ -132,4 +134,4 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 	)
 }
 
-export default Sheets
+export default DevelopingAttachedDocs

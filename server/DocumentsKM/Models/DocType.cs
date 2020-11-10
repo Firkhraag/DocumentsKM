@@ -8,6 +8,10 @@ namespace DocumentsKM.Models
         [Key]
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(4)]
+        public string Code { get; set; }
+
         // название_док
         [Required]
         [MaxLength(100)]

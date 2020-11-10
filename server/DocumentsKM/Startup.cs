@@ -126,7 +126,7 @@ namespace DocumentsKM
             services.AddScoped<IMarkApprovalService, MarkApprovalService>();
             services.AddScoped<ISpecificationService, SpecificationService>();
 
-            services.AddScoped<ISheetService, SheetService>();
+            services.AddScoped<IDocService, DocService>();
             services.AddScoped<ISheetNameService, SheetNameService>();
 
             services.AddScoped<IMarkLinkedDocService, MarkLinkedDocService>();
@@ -140,6 +140,8 @@ namespace DocumentsKM
             services.AddScoped<IPaintworkTypeService, PaintworkTypeService>();
             services.AddScoped<IHighTensileBoltsTypeService, HighTensileBoltsTypeService>();
             services.AddScoped<IMarkOperatingConditionsService, MarkOperatingConditionsService>();
+
+            services.AddScoped<IAttachedDocService, AttachedDocService>();
         }
 
         private void injectScopedRepositories(IServiceCollection services)
@@ -156,7 +158,7 @@ namespace DocumentsKM
             services.AddScoped<IMarkApprovalRepo, SqlMarkApprovalRepo>();
             services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
 
-            services.AddScoped<ISheetRepo, SqlSheetRepo>();
+            services.AddScoped<IDocRepo, SqlDocRepo>();
             services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();
             services.AddScoped<IDocTypeRepo, SqlDocTypeRepo>();
 
@@ -171,6 +173,8 @@ namespace DocumentsKM
             services.AddScoped<IPaintworkTypeRepo, SqlPaintworkTypeRepo>();
             services.AddScoped<IHighTensileBoltsTypeRepo, SqlHighTensileBoltsTypeRepo>();
             services.AddScoped<IMarkOperatingConditionsRepo, SqlMarkOperatingConditionsRepo>();
+
+            services.AddScoped<IAttachedDocRepo, SqlAttachedDocRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

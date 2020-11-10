@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button'
 import httpClient from '../../axios'
 import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
-import Sheet from '../../model/Sheet'
+import Doc from '../../model/Doc'
 import SheetName from '../../model/SheetName'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
@@ -17,7 +17,7 @@ import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
 
 type SheetDataProps = {
-	sheet: Sheet
+	sheet: Doc
 	isCreateMode: boolean
 }
 
@@ -33,13 +33,14 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
 
-	const [selectedObject, setSelectedObject] = useState<Sheet>(
+	const [selectedObject, setSelectedObject] = useState<Doc>(
 		isCreateMode
 			? {
 					id: -1,
 					num: 1,
 					form: 1.0,
-					name: '',
+                    name: '',
+                    type: null,
 					creator: null,
 					inspector: null,
 					normContr: null,
@@ -199,7 +200,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	const onCreateButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-				await httpClient.post(`/marks/${mark.id}/sheets`, {
+				await httpClient.post(`/marks/${mark.id}/docs`, {
 					name: selectedObject.name,
 					form: selectedObject.form,
 					docTypeId: basicSheetDocTypeId,
@@ -219,7 +220,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-				await httpClient.patch(`/sheets/${selectedObject.id}`, {
+				await httpClient.patch(`/docs/${selectedObject.id}`, {
 					name:
 						selectedObject.name === sheet.name
 							? undefined

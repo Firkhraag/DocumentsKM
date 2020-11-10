@@ -1,15 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DocumentsKM.Models
+namespace DocumentsKM.Dtos
 {
-    public class AttachedDoc
+    public class AttachedDocCreateRequest
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public virtual Mark Mark { get; set; }
-
         [Required]
         [MaxLength(40)]
         public string Designation { get; set; }
