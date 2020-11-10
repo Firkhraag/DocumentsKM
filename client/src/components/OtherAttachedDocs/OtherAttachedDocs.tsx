@@ -58,7 +58,7 @@ const OtherAttachedDocs = ({
 		<div className="component-cnt">
 			<h1 className="text-centered">Прочие прилагаемые документы</h1>
 			<PlusCircle
-				onClick={() => history.push('/other-attached-doc-create')}
+				onClick={() => history.push('/other-attached-doc-add')}
 				color="#666"
 				size={28}
 				className="pointer"
@@ -68,8 +68,8 @@ const OtherAttachedDocs = ({
 					<tr>
 						<th>№</th>
 						<th>Обозначение</th>
-						<th>Наименование</th>
-						<th>Примечание</th>
+						<th className="doc-note-col-width">Наименование</th>
+						<th className="doc-note-col-width">Примечание</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
@@ -81,8 +81,8 @@ const OtherAttachedDocs = ({
 							<tr key={d.id}>
 								<td>{index + 1}</td>
 								<td>{d.designation}</td>
-								<td>{d.name}</td>
-								<td>{d.note}</td>
+								<td className="doc-note-col-width">{d.name}</td>
+								<td className="doc-note-col-width">{d.note}</td>
 
 								<td
 									onClick={() => {

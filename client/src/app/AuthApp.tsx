@@ -15,6 +15,7 @@ import DevelopingAttachedDocs from '../components/DevelopingAttachedDocs/Develop
 import OtherAttachedDocs from '../components/OtherAttachedDocs/OtherAttachedDocs'
 import LinkedDocs from '../components/LinkedDocs/LinkedDocs'
 import LinkedDocData from '../components/LinkedDocData/LinkedDocData'
+import OtherAttachedDocData from '../components/OtherAttachedDocData/OtherAttachedDocData'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
 import { defaultPopupObj } from '../components/Popup/Popup'
 import Doc from '../model/Doc'
@@ -97,10 +98,21 @@ const AuthApp = () => {
 									setDevelopingAttachedDoc={setDevelopingAttachedDoc} />
 							</div>
 						</Route>
+
                         <Route exact path="/other-attached-docs">
 							<div className="full-width div-container">
 								<OtherAttachedDocs setPopupObj={setPopupObj}
 									setOtherAttachedDoc={setOtherAttachedDoc} />
+							</div>
+						</Route>
+                        <Route exact path="/other-attached-doc-add">
+							<div className="full-width div-container">
+								<OtherAttachedDocData otherAttachedDoc={otherAttachedDoc} isCreateMode={true} />
+							</div>
+						</Route>
+                        <Route exact path="/other-attached-docs/:attachedDocId">
+							<div className="full-width div-container">
+                                <OtherAttachedDocData otherAttachedDoc={otherAttachedDoc} isCreateMode={false} />
 							</div>
 						</Route>
 

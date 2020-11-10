@@ -64,7 +64,7 @@ namespace DocumentsKM.Services
 
             var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
                 foundAttachedDoc.Mark.Id, foundAttachedDoc.Designation);
-            if (uniqueConstraintViolationCheck != null)
+            if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                 throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
             _repository.Update(foundAttachedDoc);

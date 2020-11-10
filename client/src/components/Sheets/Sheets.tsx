@@ -11,7 +11,6 @@ import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Doc from '../../model/Doc'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
-import './Sheet.css'
 
 type SheetsProps = {
 	setPopupObj: (popupObj: IPopupObj) => void
@@ -63,12 +62,12 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 				<thead>
 					<tr>
 						<th>№</th>
-						<th className="sheet-name-col-width">Наименование</th>
+						<th className="doc-name-col-width">Наименование</th>
 						<th>Формат</th>
-						<th className="sheet-employee-col-width">Разработал</th>
-						<th className="sheet-employee-col-width">Проверил</th>
-						<th className="sheet-employee-col-width">Н.контр.</th>
-						<th className="sheet-note-col-width">Примечание</th>
+						<th className="doc-employee-col-width">Разработал</th>
+						<th className="doc-employee-col-width">Проверил</th>
+						<th className="doc-employee-col-width">Н.контр.</th>
+						<th className="doc-note-col-width">Примечание</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
@@ -79,24 +78,24 @@ const Sheets = ({ setPopupObj, setSheet }: SheetsProps) => {
 						return (
 							<tr key={s.id}>
 								<td>{s.num}</td>
-								<td className="sheet-name-col-width">
+								<td className="doc-name-col-width">
 									{s.name}
 								</td>
 								<td>{s.form}</td>
-								<td className="sheet-employee-col-width">
+								<td className="doc-employee-col-width">
 									{s.creator == null ? '' : s.creator.name}
 								</td>
-								<td className="sheet-employee-col-width">
+								<td className="doc-employee-col-width">
 									{s.inspector == null
 										? ''
 										: s.inspector.name}
 								</td>
-								<td className="sheet-employee-col-width">
+								<td className="doc-employee-col-width">
 									{s.normContr == null
 										? ''
 										: s.normContr.name}
 								</td>
-								<td className="sheet-note-col-width">
+								<td className="doc-note-col-width">
 									{s.note}
 								</td>
 								<td

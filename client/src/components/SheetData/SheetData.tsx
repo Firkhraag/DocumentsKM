@@ -248,7 +248,8 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				})
 				history.push('/sheets')
 			} catch (e) {
-				console.log('Fail')
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
 			}
 		}
 	}
