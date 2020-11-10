@@ -26,21 +26,21 @@ const Popup = ({ popupObj }: PopupProps) => {
 	return popupObj.isShown ? (
 		<div className="div-container component-cnt-div white-bg popup shadow p-3 mb-5 rounded">
 			<p className="text-centered bold">{popupObj.msg}</p>
-            <div className="flex btns-mrg full-width">
-					<Button
-						variant="secondary"
-						className="flex-grow"
-						onClick={popupObj.onAccept}
-					>
-						Да
-					</Button>
-					<Button
-						variant="secondary"
-						className="flex-grow mrg-left"
-						onClick={popupObj.onCancel}
-					>
-						Нет
-					</Button>
+			<div className="flex btns-mrg full-width">
+				<Button
+					variant="secondary"
+					className="flex-grow"
+					onClick={popupObj.onAccept}
+				>
+					Да
+				</Button>
+				<Button
+					variant="secondary"
+					className="flex-grow mrg-left"
+					onClick={popupObj.onCancel}
+				>
+					Нет
+				</Button>
 			</div>
 		</div>
 	) : null

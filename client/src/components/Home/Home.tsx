@@ -13,12 +13,12 @@ const Home = () => {
 
 	return (
 		<div className="home-cnt">
-			<Link to="/mark-select">
+			<Link to="/marks">
 				<Button variant="outline-secondary">
 					Выбор / создание марки
 				</Button>
 			</Link>
-			<Link to="/mark-data">
+			<Link to={mark != null ? `/marks/${mark.id}` : '/'}>
 				<Button
 					variant="outline-secondary"
 					disabled={mark == null ? true : false}
@@ -26,7 +26,7 @@ const Home = () => {
 					Данные марки
 				</Button>
 			</Link>
-			<Link to="/mark-approval">
+			<Link to="/approvals">
 				<Button variant="outline-secondary" disabled={mark == null ? true : false}>Согласования</Button>
 			</Link>
 			<Link to="/specifications">
@@ -35,16 +35,26 @@ const Home = () => {
 				</Button>
 			</Link>
 			<Link to="/sheets">
-				<Button variant="outline-secondary" disabled={mark == null ? true : false}>Листы</Button>
+				<Button variant="outline-secondary" disabled={mark == null ? true : false}>Листы основного комплекта</Button>
 			</Link>
-			<Link to="/documents">
+            <Link to="/developing-attached-docs">
 				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
-					Прилагаемые документы
+                    Разрабатываемые прилагаемые документы
 				</Button>
 			</Link>
-			<Link to="/exploitation">
+            <Link to="/other-attached-docs">
 				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
-					Условия эксплуатации
+                    Прочие прилагаемые документы
+				</Button>
+			</Link>
+            <Link to="/linked-docs">
+				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
+					Ссылочные документы
+				</Button>
+			</Link>
+			<Link to="/operating-conditions">
+				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
+					Технические условия
 				</Button>
 			</Link>
 		</div>

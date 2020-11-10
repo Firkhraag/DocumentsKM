@@ -11,33 +11,40 @@ import Specifications from '../components/Specifications/Specifications'
 import SpecificationData from '../components/SpecificationData/SpecificationData'
 import Sheets from '../components/Sheets/Sheets'
 import SheetData from '../components/SheetData/SheetData'
-import AttachedDocs from '../components/AttachedDocs/AttachedDocs'
+import DevelopingAttachedDocs from '../components/DevelopingAttachedDocs/DevelopingAttachedDocs'
+import OtherAttachedDocs from '../components/OtherAttachedDocs/OtherAttachedDocs'
 import LinkedDocs from '../components/LinkedDocs/LinkedDocs'
-import Exploitation from '../components/Exploitation/Exploitation'
+import LinkedDocData from '../components/LinkedDocData/LinkedDocData'
+import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
 import { defaultPopupObj } from '../components/Popup/Popup'
+import Doc from '../model/Doc'
+import AttachedDoc from '../model/AttachedDoc'
+import MarkLinkedDoc from '../model/MarkLinkedDoc'
 
 const AuthApp = () => {
-    const [popupObj, setPopupObj] = useState(defaultPopupObj)
+	const [popupObj, setPopupObj] = useState(defaultPopupObj)
+    const [sheet, setSheet] = useState<Doc>(null)
+    const [developingAttachedDoc, setDevelopingAttachedDoc] = useState<Doc>(null)
+    const [otherAttachedDoc, setOtherAttachedDoc] = useState<AttachedDoc>(null)
+	const [markLinkedDoc, setMarkLinkedDoc] = useState<MarkLinkedDoc>(null)
 
 	return (
 		<MarkProvider>
 			<Switch>
 				<React.Fragment>
 					<Header />
-					<Popup
-                        popupObj={popupObj}
-					/>
+					<Popup popupObj={popupObj} />
 					<div>
 						<Route exact path="/">
 							<Home />
 						</Route>
 
-						<Route exact path="/mark-select">
+						<Route exact path="/marks">
 							<div className="full-width div-container">
 								<MarkSelect />
 							</div>
 						</Route>
-						<Route exact path="/mark-data">
+						<Route exact path="/marks/:markId">
 							<div className="full-width div-container">
 								<MarkData isCreateMode={false} />
 							</div>
@@ -48,7 +55,7 @@ const AuthApp = () => {
 							</div>
 						</Route>
 
-						<Route exact path="/mark-approval">
+						<Route exact path="/approvals">
 							<div className="full-width div-container">
 								<MarkApproval />
 							</div>
@@ -58,7 +65,7 @@ const AuthApp = () => {
 								<Specifications setPopupObj={setPopupObj} />
 							</div>
 						</Route>
-						<Route exact path="/specification-data">
+						<Route exact path="/specifications/:specificationId">
 							<div className="full-width div-container">
 								<SpecificationData />
 							</div>
@@ -66,33 +73,67 @@ const AuthApp = () => {
 
 						<Route exact path="/sheets">
 							<div className="full-width div-container">
-								<Sheets setPopupObj={setPopupObj} />
+								<Sheets
+									setPopupObj={setPopupObj}
+									// setSheet={(s: Sheet) => setSheet(s)}
+									setSheet={setSheet}
+								/>
 							</div>
 						</Route>
-                        <Route exact path="/sheet-data">
+						<Route exact path="/sheets/:sheetId">
 							<div className="full-width div-container">
-								<SheetData isCreateMode={false} />
+								<SheetData sheet={sheet} isCreateMode={false} />
 							</div>
 						</Route>
 						<Route exact path="/sheet-create">
 							<div className="full-width div-container">
-								<SheetData isCreateMode={true} />
+								<SheetData sheet={sheet} isCreateMode={true} />
 							</div>
 						</Route>
 
+						<Route exact path="/developing-attached-docs">
+							<div className="full-width div-container">
+								<DevelopingAttachedDocs setPopupObj={setPopupObj}
+									setDevelopingAttachedDoc={setDevelopingAttachedDoc} />
+							</div>
+						</Route>
+                        <Route exact path="/other-attached-docs">
+							<div className="full-width div-container">
+								<OtherAttachedDocs setPopupObj={setPopupObj}
+									setOtherAttachedDoc={setOtherAttachedDoc} />
+							</div>
+						</Route>
 
-						<Route exact path="/documents">
+						<Route exact path="/linked-docs">
 							<div className="full-width div-container">
-								<AttachedDocs />
+								<LinkedDocs
+									setPopupObj={setPopupObj}
+									setMarkLinkedDoc={setMarkLinkedDoc}
+								/>
 							</div>
 						</Route>
-						<Route exact path="/exploitation">
+						<Route exact path="/linked-docs/:linkedDocId">
 							<div className="full-width div-container">
-								<Exploitation />
+								<LinkedDocData
+									markLinkedDoc={markLinkedDoc}
+									isCreateMode={false}
+								/>
 							</div>
 						</Route>
-						{/* <SpecificationData /> */}
-						{/* <LinkedDocs /> */}
+						<Route exact path="/linked-doc-add">
+							<div className="full-width div-container">
+								<LinkedDocData
+									markLinkedDoc={markLinkedDoc}
+									isCreateMode={true}
+								/>
+							</div>
+						</Route>
+
+						<Route exact path="/operating-conditions">
+							<div className="full-width div-container">
+								<OperatingConditions />
+							</div>
+						</Route>
 					</div>
 				</React.Fragment>
 			</Switch>

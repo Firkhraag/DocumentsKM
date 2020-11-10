@@ -54,22 +54,6 @@ namespace DocumentsKM
                 // Записываем оставшиеся логи
                 Log.CloseAndFlush();
             }
-
-            // try
-            // {
-            //     Log.Information("Application starting up");
-            //     CreateHostBuilder(args).Build().Run();
-            // }
-            // catch (Exception ex)
-            // {
-            //     Log.Fatal(ex, "Application failed to start");
-            // }
-            // finally
-            // {
-            //     Log.Information("Application is shutting down");
-            //     // Записываем оставшиеся логи
-            //     Log.CloseAndFlush();
-            // }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

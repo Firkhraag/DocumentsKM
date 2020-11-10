@@ -11,8 +11,8 @@ namespace DocumentsKM.Services
         // Создать новый выпуск спецификации
         Specification Create(int markId);
         // Обновить выпуск спецификации
-        void Update(int markId, int id, SpecificationUpdateRequest specification);
+        void Update(int id, SpecificationUpdateRequest specification);
         // Удалить выпуск спецификации
-        void Delete(int markId, int id);
+        void Delete(int id);
     }
 }

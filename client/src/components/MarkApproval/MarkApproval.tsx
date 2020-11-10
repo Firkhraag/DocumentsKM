@@ -33,15 +33,13 @@ const MarkApproval = () => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const departmentsFetchedResponse = await httpClient.get(
+					const departmentsResponse = await httpClient.get(
 						'/departments'
 					)
-					const departmentsFetched = departmentsFetchedResponse.data
-
-					const markApprovalsFetchedResponse = await httpClient.get(
+					const markApprovalsResponse = await httpClient.get(
 						`/marks/${mark.id}/approvals`
 					)
-					const markApprovals = markApprovalsFetchedResponse.data as Employee[]
+					const markApprovals = markApprovalsResponse.data as Employee[]
 					for (let e of markApprovals) {
 						if (e != null) {
 							employeesExcludedFromOptions.push(e.id)
@@ -60,8 +58,9 @@ const MarkApproval = () => {
 						const fetchedEmployeesResponse = await httpClient.get(
 							`/departments/${approvalSpecialist.department.id}/mark-approval-employees`
 						)
-						let fetchedEmployees = fetchedEmployeesResponse.data as Employee[]
-						options[rowNumber] = fetchedEmployees
+						options[
+							rowNumber
+						] = fetchedEmployeesResponse.data as Employee[]
 					}
 					for (const [i, e] of markApprovals.entries()) {
 						if (e != null) {
@@ -79,7 +78,7 @@ const MarkApproval = () => {
 						}
 					}
 					setOptionsObject({
-						departments: departmentsFetched,
+						departments: departmentsResponse.data,
 						employees: optionsObject.employees,
 					})
 				} catch (e) {
@@ -117,9 +116,7 @@ const MarkApproval = () => {
 		)
 		if (v != null) {
 			if (cachedEmployees.has(v.id)) {
-				optionsObject.employees[rowNumber] = cachedEmployees.get(
-					v.id
-				)
+				optionsObject.employees[rowNumber] = cachedEmployees.get(v.id)
 				selectedObject.departments[rowNumber] = v
 				setSelectedObject({
 					...selectedObject,

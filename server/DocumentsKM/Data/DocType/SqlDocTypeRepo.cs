@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Models;
 
@@ -15,7 +14,7 @@ namespace DocumentsKM.Data
 
         public DocType GetById(int id)
         {
-            return _context.DocTypes.FirstOrDefault(d => d.Id == id);
+            return _context.DocTypes.FirstOrDefault(dt => dt.Id == id);
         }
     }
 }

@@ -8,10 +8,12 @@
     border: 1px solid rgba(0, 0, 0, 0.4) !important;
 }
 
-.form-group input:read-only:focus {
+.form-group input:read-only:focus,
+.form-group textarea:read-only:focus {
     border: 1px solid #ced4da !important;
 }
-.form-group input:read-only:hover {
+.form-group input:read-only:hover,
+.form-group textarea:read-only:hover {
     border: 1px solid #ced4da !important;
 }
 
@@ -26,6 +28,11 @@ a {
 
 label {
     font-weight: 500;
+}
+
+html {
+    /* margin-left: calc(100vw - 100%); */
+    overflow-y: scroll;
 }
 
 body {

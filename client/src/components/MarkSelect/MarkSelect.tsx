@@ -55,24 +55,21 @@ const MarkSelect = () => {
 						recentMarkIdsStr
 					) as number[]
 					for (let id of recentMarkIds) {
-						const markFetchedResponse = await httpClient.get(
+						const markResponse = await httpClient.get(
 							`/marks/${id}/parents`
 						)
-						recentMarks.push(markFetchedResponse.data)
+						recentMarks.push(markResponse.data)
 					}
 				}
 			} catch (e) {
 				console.log('Failed to get recent marks or subnodes')
 			}
 			try {
-				const projectsFetchedResponse = await httpClient.get(
-					'/projects'
-				)
-				const projectsFetched = projectsFetchedResponse.data
+				const projectsResponse = await httpClient.get('/projects')
 				setOptionsObject({
 					...defaultOptionsObject,
 					recentMarks: recentMarks,
-					projects: projectsFetched,
+					projects: projectsResponse.data,
 				})
 			} catch (e) {
 				console.log('Failed to fetch projects')
@@ -101,25 +98,22 @@ const MarkSelect = () => {
 			const n = s.node
 			const p = n.project
 			try {
-				const fetchedNodesResponse = await httpClient.get(
+				const nodesResponse = await httpClient.get(
 					`/projects/${p.id}/nodes`
 				)
-				const fetchedNodes = fetchedNodesResponse.data
-				const fetchedSubnodesResponse = await httpClient.get(
+				const subnodesResponse = await httpClient.get(
 					`/nodes/${n.id}/subnodes`
 				)
-				const fetchedSubnodes = fetchedSubnodesResponse.data
-				const fetchedMarksResponse = await httpClient.get(
+				const marksResponse = await httpClient.get(
 					`/subnodes/${s.id}/marks`
 				)
-				const fetchedMarks = fetchedMarksResponse.data
 				setOptionsObject({
 					...defaultOptionsObject,
 					recentMarks: optionsObject.recentMarks,
 					projects: optionsObject.projects,
-					nodes: fetchedNodes,
-					subnodes: fetchedSubnodes,
-					marks: fetchedMarks,
+					nodes: nodesResponse.data,
+					subnodes: subnodesResponse.data,
+					marks: marksResponse.data,
 				})
 			} catch (e) {
 				console.log('Failed to fetch the data')
@@ -166,16 +160,15 @@ const MarkSelect = () => {
 				})
 			} else {
 				try {
-					const fetchedNodesResponse = await httpClient.get(
+					const nodesResponse = await httpClient.get(
 						`/projects/${id}/nodes`
 					)
-					const fetchedNodes = fetchedNodesResponse.data
-					cachedNodes.set(v.id, fetchedNodes)
+					cachedNodes.set(v.id, nodesResponse.data)
 					setOptionsObject({
 						...defaultOptionsObject,
 						recentMarks: optionsObject.recentMarks,
 						projects: optionsObject.projects,
-						nodes: fetchedNodes,
+						nodes: nodesResponse.data,
 					})
 					setSelectedObject({
 						...defaultSelectedObject,
@@ -219,17 +212,16 @@ const MarkSelect = () => {
 				})
 			} else {
 				try {
-					const fetchedSubnodesResponse = await httpClient.get(
+					const subnodesResponse = await httpClient.get(
 						`/nodes/${id}/subnodes`
 					)
-					const fetchedSubnodes = fetchedSubnodesResponse.data
-					cachedSubnodes.set(v.id, fetchedSubnodes)
+					cachedSubnodes.set(v.id, subnodesResponse.data)
 					setOptionsObject({
 						...defaultOptionsObject,
 						recentMarks: optionsObject.recentMarks,
 						projects: optionsObject.projects,
 						nodes: optionsObject.nodes,
-						subnodes: fetchedSubnodes,
+						subnodes: subnodesResponse.data,
 					})
 					setSelectedObject({
 						...defaultSelectedObject,
@@ -282,18 +274,17 @@ const MarkSelect = () => {
 				})
 			} else {
 				try {
-					const fetchedMarksResponse = await httpClient.get(
+					const marksResponse = await httpClient.get(
 						`/subnodes/${id}/marks`
 					)
-					const fetchedMarks = fetchedMarksResponse.data
-					cachedMarks.set(v.id, fetchedMarks)
+					cachedMarks.set(v.id, marksResponse.data)
 					setOptionsObject({
 						...defaultOptionsObject,
 						recentMarks: optionsObject.recentMarks,
 						projects: optionsObject.projects,
 						nodes: optionsObject.nodes,
 						subnodes: optionsObject.subnodes,
-						marks: fetchedMarks,
+						marks: marksResponse.data,
 					})
 					setSelectedObject({
 						...defaultSelectedObject,
@@ -365,7 +356,7 @@ const MarkSelect = () => {
 	}
 
 	const onCreateMarkButtonClick = () => {
-        if (
+		if (
 			selectedObject.subnode == null ||
 			selectedObject.node == null ||
 			selectedObject.project == null
@@ -447,13 +438,19 @@ const MarkSelect = () => {
 											value: selectedObject.project.id,
 											label:
 												selectedObject.project
-													.baseSeries === '' ? '-' : selectedObject.project.baseSeries,
+													.baseSeries === ''
+													? '-'
+													: selectedObject.project
+															.baseSeries,
 									  }
 							}
 							options={optionsObject.projects.map((p) => {
 								return {
 									value: p.id,
-									label: p.baseSeries === '' ? '-' : p.baseSeries,
+									label:
+										p.baseSeries === ''
+											? '-'
+											: p.baseSeries,
 								}
 							})}
 							styles={reactSelectstyle}
@@ -476,7 +473,10 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.node.id,
-											label: selectedObject.node.code === '' ? '-' : selectedObject.node.code,
+											label:
+												selectedObject.node.code === ''
+													? '-'
+													: selectedObject.node.code,
 									  }
 							}
 							options={optionsObject.nodes.map((n) => {
@@ -505,7 +505,12 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.subnode.id,
-											label: selectedObject.subnode.code === '' ? '-' : selectedObject.subnode.code,
+											label:
+												selectedObject.subnode.code ===
+												''
+													? '-'
+													: selectedObject.subnode
+															.code,
 									  }
 							}
 							options={optionsObject.subnodes.map((s) => {
@@ -534,7 +539,10 @@ const MarkSelect = () => {
 									? null
 									: {
 											value: selectedObject.mark.id,
-											label: selectedObject.mark.code === '' ? '-' : selectedObject.mark.code,
+											label:
+												selectedObject.mark.code === ''
+													? '-'
+													: selectedObject.mark.code,
 									  }
 							}
 							options={optionsObject.marks.map((m) => {

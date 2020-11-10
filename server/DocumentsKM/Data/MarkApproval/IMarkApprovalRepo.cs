@@ -7,9 +7,9 @@ namespace DocumentsKM.Data
     {
         // Получить все согласования по id марки
         IEnumerable<MarkApproval> GetAllByMarkId(int markId);
-        // Добавить исп
+        // Добавить согласование
         void Add(MarkApproval markApproval);
-        // Удалить исп
+        // Удалить согласование
         void Delete(MarkApproval markApproval);
     }
 }

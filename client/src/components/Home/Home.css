@@ -1,14 +1,15 @@
 .home-cnt {
 	margin: 2em;
 	display: grid;
-	gap: 25px;
-	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-row-gap: 30px;
+    grid-column-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
 	justify-items: center;
 }
 
 .home-cnt button {
-	width: 150px;
-    height: 85px;
+	width: 175px;
+    height: 100px;
     color: #000;
     font-weight: 500;
 }

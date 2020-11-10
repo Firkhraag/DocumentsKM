@@ -49,25 +49,21 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 			if (selectedMarkId != null) {
 				const fetchData = async () => {
 					try {
-						const departmentsFetchedResponse = await httpClient.get(
+						const departmentsResponse = await httpClient.get(
 							'/departments'
 						)
-						const departmentsFetched =
-							departmentsFetchedResponse.data
-
-						setOptionsObject({
-							...defaultOptionsObject,
-							departments: departmentsFetched,
-						})
-
-						const markFetchedResponse = await httpClient.get(
+						const markResponse = await httpClient.get(
 							`/marks/${selectedMarkId}`
 						)
+						setOptionsObject({
+							...defaultOptionsObject,
+							departments: departmentsResponse.data,
+						})
 						setSelectedObject({
 							id: 0,
 							code: '',
 							name: '',
-							subnode: markFetchedResponse.data.subnode,
+							subnode: markResponse.data.subnode,
 							department: null,
 							chiefSpecialist: null,
 							groupLeader: null,
@@ -84,32 +80,31 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 			if (selectedMarkId != null) {
 				const fetchData = async () => {
 					try {
-						const markFetchedResponse = await httpClient.get(
+						const markResponse = await httpClient.get(
 							`/marks/${selectedMarkId}`
 						)
-						setMark(markFetchedResponse.data)
-						setSelectedObject({ ...markFetchedResponse.data })
-
-						const departmentsFetchedResponse = await httpClient.get(
+						const departmentsResponse = await httpClient.get(
 							'/departments'
 						)
-						const departmentsFetched =
-							departmentsFetchedResponse.data
 						const fetchedMainEmployeesResponse = await httpClient.get(
-							`departments/${markFetchedResponse.data.department.id}/mark-main-employees`
+							`departments/${markResponse.data.department.id}/mark-main-employees`
 						)
-						const fetchedMainEmployees =
-							fetchedMainEmployeesResponse.data
-
+						setMark(markResponse.data)
+						setSelectedObject({ ...markResponse.data })
 						setOptionsObject({
 							...defaultOptionsObject,
-							departments: departmentsFetched,
+							departments: departmentsResponse.data,
 							chiefSpecialists:
-								fetchedMainEmployees.chiefSpecialists,
-							groupLeaders: fetchedMainEmployees.groupLeaders,
-							mainBuilders: fetchedMainEmployees.mainBuilders,
+								fetchedMainEmployeesResponse.data
+									.chiefSpecialists,
+							groupLeaders:
+								fetchedMainEmployeesResponse.data.groupLeaders,
+							mainBuilders:
+								fetchedMainEmployeesResponse.data.mainBuilders,
 						})
-						setDepartmentHead(fetchedMainEmployees.departmentHead)
+						setDepartmentHead(
+							fetchedMainEmployeesResponse.data.departmentHead
+						)
 					} catch (e) {
 						console.log('Failed to fetch the mark')
 					}
@@ -126,7 +121,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		})
 	}
 
-	const onMarkNameChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onMarkNameChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			name: event.currentTarget.value,
@@ -150,7 +145,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 		const v = getFromOptions(
 			number,
 			optionsObject.departments,
-			selectedObject.department,
+			selectedObject.department
 		)
 		if (v != null) {
 			if (cachedMainEmployees.has(v.id)) {
@@ -159,10 +154,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					departments: optionsObject.departments,
 					chiefSpecialists: cachedMainEmployees.get(v.id)
 						.chiefSpecialists,
-					groupLeaders: cachedMainEmployees.get(v.id)
-						.groupLeaders,
-					mainBuilders: cachedMainEmployees.get(v.id)
-						.mainBuilders,
+					groupLeaders: cachedMainEmployees.get(v.id).groupLeaders,
+					mainBuilders: cachedMainEmployees.get(v.id).mainBuilders,
 				})
 				setSelectedObject({
 					...selectedObject,
@@ -314,7 +307,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					history.push('/')
 				}
 			} catch (e) {
-				console.log('Fail')
+				if (e.response.status === 409) {
+					setErrMsg('Марка с таким кодом уже существует')
+					return
+				}
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
 			}
 		}
 	}
@@ -332,8 +330,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							? undefined
 							: selectedObject.name,
 					departmentId:
-						selectedObject.department.id ===
-						mark.department.id
+						selectedObject.department.id === mark.department.id
 							? undefined
 							: selectedObject.department.id,
 					chiefSpecialistId: getNullableFieldValue(
@@ -352,7 +349,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 				setMark(selectedObject)
 				history.push('/')
 			} catch (e) {
-				console.log('Fail')
+				if (e.response.status === 409) {
+					setErrMsg('Марка с таким кодом уже существует')
+					return
+				}
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
 			}
 		}
 	}
@@ -363,7 +365,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 				{isCreateMode ? 'Создание марки' : 'Данные марки'}
 			</h1>
 			<div className="flex">
-				<div className="info-area shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
+				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
 					<Form.Group>
 						<Form.Label>Обозначение марки</Form.Label>
 						<Form.Control
@@ -391,7 +393,9 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					<Form.Group>
 						<Form.Label>Наименование комплекса</Form.Label>
 						<Form.Control
-							type="text"
+							as="textarea"
+							rows={4}
+							style={{ resize: 'none' }}
 							value={
 								isCreateMode
 									? makeComplexAndObjectName(
@@ -414,7 +418,9 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					<Form.Group>
 						<Form.Label>Наименование объекта</Form.Label>
 						<Form.Control
-							type="text"
+							as="textarea"
+							rows={4}
+							style={{ resize: 'none' }}
 							value={
 								isCreateMode
 									? makeComplexAndObjectName(
@@ -434,10 +440,17 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							readOnly={true}
 						/>
 					</Form.Group>
-					<Form.Group>
-						<Form.Label>Главный инженер проекта</Form.Label>
+					<Form.Group className="flex-cent-v">
+						{/* <Form.Label>Главный инженер проекта</Form.Label> */}
+						<Form.Label
+							className="no-bot-mrg"
+							style={{ marginRight: '7.62em' }}
+						>
+							ГИП
+						</Form.Label>
 						<Form.Control
 							type="text"
+							className="auto-width flex-grow"
 							value={
 								isCreateMode
 									? selectedObject.subnode.node.chiefEngineer
@@ -447,10 +460,16 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							readOnly={true}
 						/>
 					</Form.Group>
-					<Form.Group>
-						<Form.Label>Начальник отдела</Form.Label>
+					<Form.Group className="flex-cent-v no-bot-mrg">
+						<Form.Label
+							className="no-bot-mrg"
+							style={{ marginRight: '1em' }}
+						>
+							Начальник отдела
+						</Form.Label>
 						<Form.Control
 							type="text"
+							className="auto-width flex-grow"
 							value={
 								departmentHead == null
 									? ''
@@ -461,11 +480,19 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					</Form.Group>
 				</div>
 
-				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
-					<Form.Group>
-						<Form.Label>Шифр марки</Form.Label>
+				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
+					<Form.Group className="flex-cent-v">
+						<Form.Label
+							className="no-bot-mrg"
+							style={{ marginRight: '1em' }}
+							htmlFor="code"
+						>
+							Шифр
+						</Form.Label>
 						<Form.Control
+							id="code"
 							type="text"
+							className="auto-width flex-grow"
 							placeholder="Введите шифр марки"
 							defaultValue={selectedObject.code}
 							onBlur={onMarkCodeChange}
@@ -473,134 +500,184 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					</Form.Group>
 
 					<Form.Group>
-						<Form.Label>Наименование марки</Form.Label>
+						<Form.Label htmlFor="name">Наименование</Form.Label>
 						<Form.Control
-							type="text"
+							id="name"
+							as="textarea"
+							rows={4}
+							style={{ resize: 'none' }}
 							placeholder="Введите наименование марки"
 							defaultValue={selectedObject.name}
 							onBlur={onMarkNameChange}
 						/>
 					</Form.Group>
 
-					<div className="bold">Отдел</div>
-					<Select
-						maxMenuHeight={250}
-						isClearable={true}
-						isSearchable={true}
-						placeholder="Выберите отдел"
-						noOptionsMessage={() => 'Отделы не найдены'}
-						className="mrg-top"
-						onChange={(selectedOption) =>
-							onDepartmentSelect((selectedOption as any)?.value)
-						}
-						value={
-							selectedObject.department == null
-								? null
-								: {
-										value: selectedObject.department.id,
-										label: selectedObject.department.name,
-								  }
-						}
-						options={optionsObject.departments.map((d) => {
-							return {
-								value: d.id,
-								label: d.name,
+					<div className="flex-cent-v">
+						<label
+							className="bold no-bot-mrg"
+							style={{ marginRight: '1em' }}
+							htmlFor="react-select-2-input"
+						>
+							Отдел
+						</label>
+						<Select
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите отдел"
+							noOptionsMessage={() => 'Отделы не найдены'}
+							// className="mrg-top"
+							className="auto-width flex-grow"
+							onChange={(selectedOption) =>
+								onDepartmentSelect(
+									(selectedOption as any)?.value
+								)
 							}
-						})}
-						styles={reactSelectstyle}
-					/>
-					<div className="bold mrg-top-2">Заведующий группы</div>
-					<Select
-						maxMenuHeight={250}
-						isClearable={true}
-						isSearchable={true}
-						placeholder="Выберите заведующего группы"
-						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="mrg-top"
-						onChange={(selectedOption) =>
-							onGroupLeaderSelect((selectedOption as any)?.value)
-						}
-						value={
-							selectedObject.groupLeader == null
-								? null
-								: {
-										value: selectedObject.groupLeader.id,
-										label:
-											selectedObject.groupLeader.name,
-								  }
-						}
-						options={optionsObject.groupLeaders.map((e) => {
-							return {
-								value: e.id,
-								label: e.name,
+							value={
+								selectedObject.department == null
+									? null
+									: {
+											value: selectedObject.department.id,
+											label:
+												selectedObject.department.name,
+									  }
 							}
-						})}
-						styles={reactSelectstyle}
-					/>
+							options={optionsObject.departments.map((d) => {
+								return {
+									value: d.id,
+									label: d.name,
+								}
+							})}
+							styles={reactSelectstyle}
+						/>
+					</div>
 
-					<div className="bold mrg-top-2">Главный специалист</div>
-					<Select
-						maxMenuHeight={250}
-						isClearable={true}
-						isSearchable={true}
-						placeholder="Выберите главного специалиста"
-						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="mrg-top"
-						onChange={(selectedOption) =>
-							onChiefSpecialistSelect(
-								(selectedOption as any)?.value
-							)
-						}
-						value={
-							selectedObject.chiefSpecialist == null
-								? null
-								: {
-										value:
-											selectedObject.chiefSpecialist.id,
-										label:
-											selectedObject.chiefSpecialist
-												.name,
-								  }
-						}
-						options={optionsObject.chiefSpecialists.map((e) => {
-							return {
-								value: e.id,
-								label: e.name,
+					<div className="flex-cent-v mrg-top-2">
+						<label
+							className="bold no-bot-mrg"
+							style={{ marginRight: '1em' }}
+							htmlFor="react-select-3-input"
+						>
+							Заведующий группы
+						</label>
+						<Select
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите заведующего группы"
+							noOptionsMessage={() => 'Сотрудники не найдены'}
+							// className="mrg-top"
+							className="auto-width flex-grow"
+							onChange={(selectedOption) =>
+								onGroupLeaderSelect(
+									(selectedOption as any)?.value
+								)
 							}
-						})}
-						styles={reactSelectstyle}
-					/>
-
-					<div className="bold mrg-top-2">Главный строитель (нормоконтролер?)</div>
-					<Select
-						maxMenuHeight={250}
-						isClearable={true}
-						isSearchable={true}
-						placeholder="Выберите главного строителя"
-						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="mrg-top"
-						onChange={(selectedOption) =>
-							onMainBuilderSelect((selectedOption as any)?.value)
-						}
-						value={
-							selectedObject.mainBuilder == null
-								? null
-								: {
-										value: selectedObject.mainBuilder.id,
-										label:
-											selectedObject.mainBuilder.name,
-								  }
-						}
-						options={optionsObject.mainBuilders.map((e) => {
-							return {
-								value: e.id,
-								label: e.name,
+							value={
+								selectedObject.groupLeader == null
+									? null
+									: {
+											value:
+												selectedObject.groupLeader.id,
+											label:
+												selectedObject.groupLeader.name,
+									  }
 							}
-						})}
-						styles={reactSelectstyle}
-					/>
+							options={optionsObject.groupLeaders.map((e) => {
+								return {
+									value: e.id,
+									label: e.name,
+								}
+							})}
+							styles={reactSelectstyle}
+						/>
+					</div>
 
-                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+					<div className="flex-cent-v mrg-top-2">
+						<label
+							className="bold no-bot-mrg"
+							style={{ marginRight: '1.15em' }}
+							htmlFor="react-select-4-input"
+						>
+							Главный специалист
+						</label>
+						<Select
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите главного специалиста"
+							noOptionsMessage={() => 'Сотрудники не найдены'}
+							// className="mrg-top"
+							className="auto-width flex-grow"
+							onChange={(selectedOption) =>
+								onChiefSpecialistSelect(
+									(selectedOption as any)?.value
+								)
+							}
+							value={
+								selectedObject.chiefSpecialist == null
+									? null
+									: {
+											value:
+												selectedObject.chiefSpecialist
+													.id,
+											label:
+												selectedObject.chiefSpecialist
+													.name,
+									  }
+							}
+							options={optionsObject.chiefSpecialists.map((e) => {
+								return {
+									value: e.id,
+									label: e.name,
+								}
+							})}
+							styles={reactSelectstyle}
+						/>
+					</div>
+
+					<div className="flex-cent-v mrg-top-2">
+						<label
+							className="bold no-bot-mrg"
+							style={{ marginRight: '1.3em' }}
+							htmlFor="react-select-5-input"
+						>
+							Главный строитель?
+						</label>
+						<Select
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите главного строителя"
+							noOptionsMessage={() => 'Сотрудники не найдены'}
+							// className="mrg-top"
+							className="auto-width flex-grow"
+							onChange={(selectedOption) =>
+								onMainBuilderSelect(
+									(selectedOption as any)?.value
+								)
+							}
+							value={
+								selectedObject.mainBuilder == null
+									? null
+									: {
+											value:
+												selectedObject.mainBuilder.id,
+											label:
+												selectedObject.mainBuilder.name,
+									  }
+							}
+							options={optionsObject.mainBuilders.map((e) => {
+								return {
+									value: e.id,
+									label: e.name,
+								}
+							})}
+							styles={reactSelectstyle}
+						/>
+					</div>
+
+					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
 					<Button
 						variant="secondary"
