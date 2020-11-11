@@ -39,8 +39,8 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 					id: -1,
 					num: 1,
 					form: 1.0,
-                    name: '',
-                    type: null,
+					name: '',
+					type: null,
 					creator: null,
 					inspector: null,
 					normContr: null,
@@ -56,7 +56,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (!isCreateMode && sheet.id === -1) {
+			if (!isCreateMode && selectedObject == null) {
 				history.push('/sheets')
 				return
 			}
@@ -306,7 +306,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						id="format"
 						type="text"
 						placeholder="Введите формат"
-						defaultValue={selectedObject.form.toFixed(1)}
+						defaultValue={selectedObject.form}
 						onBlur={onFormatChange}
 					/>
 				</Form.Group>

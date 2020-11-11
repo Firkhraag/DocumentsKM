@@ -21,7 +21,6 @@ type PopupProps = {
 	popupObj: IPopupObj
 }
 
-// const Popup = ({ isShown, msg, onAccept, onCancel }: PopupProps) => {
 const Popup = ({ popupObj }: PopupProps) => {
 	return popupObj.isShown ? (
 		<div className="div-container component-cnt-div white-bg popup shadow p-3 mb-5 rounded">

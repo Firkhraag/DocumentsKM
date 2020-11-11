@@ -1,44 +1,44 @@
 .form-group input:focus,
 .form-group textarea:focus {
-    border: 1px solid rgba(0, 0, 0, 0.4) !important;
-    box-shadow: none !important;
+	border: 1px solid rgba(0, 0, 0, 0.4) !important;
+	box-shadow: none !important;
 }
 .form-group input:hover,
 .form-group textarea:hover {
-    border: 1px solid rgba(0, 0, 0, 0.4) !important;
+	border: 1px solid rgba(0, 0, 0, 0.4) !important;
 }
 
 .form-group input:read-only:focus,
 .form-group textarea:read-only:focus {
-    border: 1px solid #ced4da !important;
+	border: 1px solid #ced4da !important;
 }
 .form-group input:read-only:hover,
 .form-group textarea:read-only:hover {
-    border: 1px solid #ced4da !important;
+	border: 1px solid #ced4da !important;
 }
 
 button:focus {
-    box-shadow: none !important;
+	box-shadow: none !important;
 }
 
 a {
-    text-decoration: none !important;
-    color: inherit !important;
+	text-decoration: none !important;
+	color: inherit !important;
 }
 
 label {
-    font-weight: 500;
+	font-weight: 500;
 }
 
 html {
-    /* margin-left: calc(100vw - 100%); */
-    overflow-y: scroll;
+	/* margin-left: calc(100vw - 100%); */
+	overflow-y: scroll;
 }
 
 body {
-    height: 100vh;
+	height: 100vh;
 }
 
 :root {
-	--grey-bg:#f6f6f6;
+	--grey-bg: #f6f6f6;
 }

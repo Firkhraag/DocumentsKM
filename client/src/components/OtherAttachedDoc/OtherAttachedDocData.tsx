@@ -1,7 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -12,7 +11,7 @@ import AttachedDoc from '../../model/AttachedDoc'
 import { useMark } from '../../store/MarkStore'
 import { makeMarkName } from '../../util/make-name'
 
-type OtherAttachedDocProps = {
+type OtherAttachedDocDataProps = {
 	otherAttachedDoc: AttachedDoc
 	isCreateMode: boolean
 }
@@ -20,7 +19,7 @@ type OtherAttachedDocProps = {
 const OtherAttachedDocData = ({
 	otherAttachedDoc,
 	isCreateMode,
-}: OtherAttachedDocProps) => {
+}: OtherAttachedDocDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
 
@@ -31,7 +30,7 @@ const OtherAttachedDocData = ({
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (!isCreateMode && otherAttachedDoc.id === -1) {
+			if (!isCreateMode && selectedObject == null) {
 				history.push('/other-attached-docs')
 				return
 			}
@@ -96,7 +95,9 @@ const OtherAttachedDocData = ({
 				history.push('/other-attached-docs')
 			} catch (e) {
 				if (e.response.status === 409) {
-					setErrMsg('Прилагаемый документ с таким обозначением уже существует')
+					setErrMsg(
+						'Прилагаемый документ с таким обозначением уже существует'
+					)
 					return
 				}
 				setErrMsg('Произошла ошибка')
@@ -125,8 +126,10 @@ const OtherAttachedDocData = ({
 				})
 				history.push('/other-attached-docs')
 			} catch (e) {
-                if (e.response.status === 409) {
-					setErrMsg('Прилагаемый документ с таким обозначением уже существует')
+				if (e.response.status === 409) {
+					setErrMsg(
+						'Прилагаемый документ с таким обозначением уже существует'
+					)
 					return
 				}
 				setErrMsg('Произошла ошибка')

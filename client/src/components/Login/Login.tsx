@@ -18,10 +18,10 @@ const Login = () => {
 	const [errMsg, setErrMsg] = useState('')
 
 	const onLoginChange = (event: React.FormEvent<HTMLInputElement>) => {
-        inputValues.login = event.currentTarget.value
+		inputValues.login = event.currentTarget.value
 	}
 	const onPasswordChange = (event: React.FormEvent<HTMLInputElement>) => {
-        inputValues.password = event.currentTarget.value
+		inputValues.password = event.currentTarget.value
 	}
 
 	const onButtonClick = async () => {
@@ -57,7 +57,7 @@ const Login = () => {
 						/>
 					</Form.Group>
 
-                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
 					<Button
 						variant="secondary"

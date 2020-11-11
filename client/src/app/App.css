@@ -74,6 +74,11 @@
     width: 18em;
 }
 
+/* Linked doc */
+.linked-doc-name-col-width {
+	width: 22em;
+}
+
 /* Section */
 
 .no-bot-mrg {

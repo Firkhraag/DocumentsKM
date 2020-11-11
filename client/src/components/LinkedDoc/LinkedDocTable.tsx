@@ -11,14 +11,16 @@ import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import MarkLinkedDoc from '../../model/MarkLinkedDoc'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
-import './LinkedDocs.css'
 
-type LinkedDocsProps = {
+type LinkedDocTableProps = {
 	setPopupObj: (popupObj: IPopupObj) => void
 	setMarkLinkedDoc: (mld: MarkLinkedDoc) => void
 }
 
-const LinkedDocs = ({ setPopupObj, setMarkLinkedDoc }: LinkedDocsProps) => {
+const LinkedDocTable = ({
+	setPopupObj,
+	setMarkLinkedDoc,
+}: LinkedDocTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
 	const [linkedDocs, setLinkedDocs] = useState([] as MarkLinkedDoc[])
@@ -116,4 +118,4 @@ const LinkedDocs = ({ setPopupObj, setMarkLinkedDoc }: LinkedDocsProps) => {
 	)
 }
 
-export default LinkedDocs
+export default LinkedDocTable

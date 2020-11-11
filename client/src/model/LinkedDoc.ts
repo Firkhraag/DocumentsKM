@@ -1,19 +1,19 @@
 import LinkedDocType from './LinkedDocType'
 
 interface ILinkedDoc {
-    id: number
-    code: string
-    name: string
-    type: LinkedDocType
-    designation: string
+	id: number
+	code: string
+	name: string
+	type: LinkedDocType
+	designation: string
 }
 
 class LinkedDoc {
 	id: number
-    code: string
-    name: string
-    type: LinkedDocType
-    designation: string
+	code: string
+	name: string
+	type: LinkedDocType
+	designation: string
 
 	constructor(obj?: ILinkedDoc) {
 		this.id = (obj && obj.id) || 0

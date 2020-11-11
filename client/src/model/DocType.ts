@@ -1,6 +1,6 @@
 interface IDocType {
-    id: number
-    name: string
+	id: number
+	name: string
 }
 
 class DocType {

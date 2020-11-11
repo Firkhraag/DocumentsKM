@@ -1,6 +1,6 @@
 interface ILinkedDocType {
-    id: number
-    name: string
+	id: number
+	name: string
 }
 
 class LinkedDocType {

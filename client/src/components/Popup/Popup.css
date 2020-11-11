@@ -1,32 +1,9 @@
 .popup {
-    width: 300px;
-    position: fixed;
-    top: 33%;
-    left: 50%;
-    margin-left: -150px;
-    /* padding: 1.5em; */
-    z-index: 500;
-    font-size: 1.04rem;
-    /* box-shadow: 0 0 4px 1px rgba(0, 0, 0, .5); */
+	width: 300px;
+	position: fixed;
+	top: 33%;
+	left: 50%;
+	margin-left: -150px;
+	z-index: 500;
+	font-size: 1.04rem;
 }
-
-/* .popup button:first-of-type {
-    margin-right: 1em;
-} */
-
-/* .popup button {
-    flex-grow: 1;
-    font-size: 15px;
-	background: #ededed;
-	border: 1px solid #cdcdcd;
-    padding: 0.5em;
-    transition: all .1s ease-in-out;
-}
-
-.popup button:hover {
-	background: #dcdcdc;
-}
-
-.popup .btns-mrg {
-    margin-top: 1em;
-} */
