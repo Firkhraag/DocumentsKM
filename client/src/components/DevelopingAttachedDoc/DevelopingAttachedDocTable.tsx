@@ -67,7 +67,9 @@ const DevelopingAttachedDocTable = ({
 				<thead>
 					<tr>
 						<th>№</th>
+                        <th>Шифр</th>
 						<th>Наименование</th>
+						<th>Листов</th>
 						<th>Формат</th>
 						<th>Разработал</th>
 						<th>Проверил</th>
@@ -83,7 +85,9 @@ const DevelopingAttachedDocTable = ({
 						return (
 							<tr key={d.id}>
 								<td>{d.num}</td>
+                                <td>{d.type.code}</td>
 								<td>{d.name}</td>
+                                <td>{d.numOfPages}</td>
 								<td>{d.form}</td>
 								<td>
 									{d.creator == null ? '' : d.creator.name}

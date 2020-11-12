@@ -11,7 +11,7 @@ import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Specification from '../../model/Specification'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
-import './Specifications.css'
+import './SpecificationTable.css'
 
 type SpecificationTableProps = {
 	setPopupObj: (popupObj: IPopupObj) => void

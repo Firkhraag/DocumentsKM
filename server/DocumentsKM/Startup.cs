@@ -128,6 +128,7 @@ namespace DocumentsKM
 
             services.AddScoped<IDocService, DocService>();
             services.AddScoped<ISheetNameService, SheetNameService>();
+            services.AddScoped<IDocTypeService, DocTypeService>();
 
             services.AddScoped<IMarkLinkedDocService, MarkLinkedDocService>();
             services.AddScoped<ILinkedDocService, LinkedDocService>();

@@ -82,6 +82,14 @@ const Home = () => {
 					Технические условия
 				</Button>
 			</Link>
+            <Link to="/additional-work">
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
+					Учет дополнительных работ
+				</Button>
+			</Link>
 		</div>
 	)
 }

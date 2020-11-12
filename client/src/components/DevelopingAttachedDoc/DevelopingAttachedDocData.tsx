@@ -10,6 +10,7 @@ import httpClient from '../../axios'
 import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Doc from '../../model/Doc'
+import DocType from '../../model/DocType'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
@@ -25,6 +26,7 @@ const DevelopingAttachedDocData = ({
 	isCreateMode,
 }: DevelopingAttachedDocDataProps) => {
 	const defaultOptionsObject = {
+		types: [] as DocType[],
 		employees: [] as Employee[],
 	}
 
@@ -35,7 +37,8 @@ const DevelopingAttachedDocData = ({
 		isCreateMode
 			? {
 					id: -1,
-					num: 1,
+                    num: 1,
+                    numOfPages: 1,
 					form: 1.0,
 					name: '',
 					type: null,
@@ -43,7 +46,6 @@ const DevelopingAttachedDocData = ({
 					inspector: null,
 					normContr: null,
 					releaseNum: 0,
-					numOfPages: 0,
 					note: '',
 			  }
 			: developingAttachedDoc
@@ -60,11 +62,15 @@ const DevelopingAttachedDocData = ({
 			}
 			const fetchData = async () => {
 				try {
+                    const docTypesResponse = await httpClient.get(
+						`/doc-types/attached`
+					)
 					const employeesResponse = await httpClient.get(
 						`/departments/${mark.department.id}/employees`
 					)
 					setOptionsObject({
-						employees: employeesResponse.data,
+                        employees: employeesResponse.data,
+                        types: docTypesResponse.data,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -72,13 +78,48 @@ const DevelopingAttachedDocData = ({
 			}
 			fetchData()
 		}
-	}, [mark])
+    }, [mark])
+    
+    const onCodeSelect = async (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				type: null,
+			})
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.types,
+			selectedObject.type
+		)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				type: v,
+			})
+		}
+	}
 
 	const onNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			name: event.currentTarget.value,
 		})
+    }
+    
+    const onNumOfPagesChange = (event: React.FormEvent<HTMLInputElement>) => {
+		try {
+			const v = parseFloat(event.currentTarget.value)
+			setSelectedObject({
+				...selectedObject,
+				numOfPages: v,
+			})
+		} catch (e) {
+			setSelectedObject({
+				...selectedObject,
+				numOfPages: null,
+			})
+		}
 	}
 
 	const onFormatChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -164,6 +205,10 @@ const DevelopingAttachedDocData = ({
 	}
 
 	const checkIfValid = () => {
+        if (selectedObject.type == null) {
+			setErrMsg('Пожалуйста, выберите шифр прилагаемого документа')
+			return false
+		}
 		if (selectedObject.name === '') {
 			setErrMsg('Пожалуйста, введите наименование прилагаемого документа')
 			return false
@@ -179,7 +224,9 @@ const DevelopingAttachedDocData = ({
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/docs`, {
-					name: selectedObject.name,
+                    typeId: selectedObject.type.id,
+                    name: selectedObject.name,
+                    numOfPages: selectedObject.numOfPages,
 					form: selectedObject.form,
 					creatorId: selectedObject.creator?.id,
 					inspectorId: selectedObject.inspector?.id,
@@ -198,10 +245,17 @@ const DevelopingAttachedDocData = ({
 		if (checkIfValid()) {
 			try {
 				await httpClient.patch(`/docs/${selectedObject.id}`, {
+                    typeId:
+						selectedObject.type.id === developingAttachedDoc.type.id
+							? undefined
+                            : selectedObject.type.id,
 					name:
 						selectedObject.name === developingAttachedDoc.name
 							? undefined
-							: selectedObject.name,
+                            : selectedObject.name,
+                    numOfPages: selectedObject.numOfPages === developingAttachedDoc.numOfPages
+                        ? undefined
+                        : selectedObject.numOfPages,
 					form:
 						selectedObject.form === developingAttachedDoc.form
 							? undefined
@@ -235,11 +289,46 @@ const DevelopingAttachedDocData = ({
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">
 				{isCreateMode
-					? 'Создание разрабатываемого прилагаемого документа'
-					: 'Данные разрабатываемого прилагаемого документа'}
+					? 'Создание прилагаемого документа'
+					: 'Данные прилагаемого документа'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-				<Form.Group>
+                <div className="flex-cent-v">
+					<label
+						className="bold no-bot-mrg"
+						style={{ marginRight: '1em' }}
+					>
+						Шифр документа
+					</label>
+					<Select
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выбор шифр документа"
+						noOptionsMessage={() => 'Шифры не найдены'}
+						className="auto-width flex-grow"
+						onChange={(selectedOption) =>
+							onCodeSelect((selectedOption as any)?.value)
+						}
+						value={
+							selectedObject.type == null
+								? null
+								: {
+										value: selectedObject.type.id,
+										label: selectedObject.type.code,
+								  }
+						}
+						options={optionsObject.types.map((t) => {
+							return {
+								value: t.id,
+								label: t.code,
+							}
+						})}
+						styles={reactSelectstyle}
+					/>
+				</div>
+
+				<Form.Group className="mrg-top-2">
 					<Form.Label htmlFor="name">Наименование</Form.Label>
 					<Form.Control
 						id="name"
@@ -249,6 +338,24 @@ const DevelopingAttachedDocData = ({
 						placeholder="Введите наименование"
 						value={selectedObject.name}
 						onChange={onNameChange}
+					/>
+				</Form.Group>
+
+                <Form.Group className="mrg-top-2 flex-cent-v">
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="numOfPages"
+						style={{ marginRight: '2.85em' }}
+					>
+						Число листов
+					</Form.Label>
+					<Form.Control
+						id="numOfPages"
+						type="text"
+						placeholder="Введите число листов"
+                        defaultValue={selectedObject.numOfPages}
+                        className="auto-width flex-grow"
+						onBlur={onNumOfPagesChange}
 					/>
 				</Form.Group>
 

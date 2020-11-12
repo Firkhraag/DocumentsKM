@@ -5,9 +5,9 @@ const SpecificationData = () => {
 	const mark = useMark()
 
 	return mark == null ? null : (
-		<div className="component-cnt component-width">
-			<h1 className="text-centered">Данные спецификации</h1>
-			<div>
+		<div className="component-cnt flex-v-cent-h">
+			<h1 className="text-centered">Данные выпуска спецификации</h1>
+			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
 				<div>
 					<p>Выпуск №1</p>
 					<textarea />

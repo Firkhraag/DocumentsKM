@@ -59,7 +59,7 @@ namespace DocumentsKM.Controllers
                 _service.Create(
                     docModel,
                     markId,
-                    docRequest.DocTypeId,
+                    docRequest.TypeId,
                     docRequest.CreatorId,
                     docRequest.InspectorId,
                     docRequest.NormContrId);
