@@ -12,6 +12,8 @@ namespace DocumentsKM.Dtos
         public int? InspectorId { get; set; }
         public int? NormContrId { get; set; }
 
+        public int? TypeId { get; set; }
+
         public int? ReleaseNum { get; set; }
         public int? NumOfPages { get; set; }
         [MaxLength(255)]
@@ -25,6 +27,8 @@ namespace DocumentsKM.Dtos
             CreatorId = null;
             InspectorId = null;
             NormContrId = null;
+
+            TypeId = null;
 
             ReleaseNum = null;
             NumOfPages = null;

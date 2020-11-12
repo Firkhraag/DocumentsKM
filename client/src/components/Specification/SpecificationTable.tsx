@@ -11,13 +11,13 @@ import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Specification from '../../model/Specification'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
-import './Specifications.css'
+import './SpecificationTable.css'
 
-type SpecificationsProps = {
+type SpecificationTableProps = {
 	setPopupObj: (popupObj: IPopupObj) => void
 }
 
-const Specifications = ({ setPopupObj }: SpecificationsProps) => {
+const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
 
@@ -224,4 +224,4 @@ const Specifications = ({ setPopupObj }: SpecificationsProps) => {
 	)
 }
 
-export default Specifications
+export default SpecificationTable

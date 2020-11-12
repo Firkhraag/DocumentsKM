@@ -27,34 +27,67 @@ const Home = () => {
 				</Button>
 			</Link>
 			<Link to="/approvals">
-				<Button variant="outline-secondary" disabled={mark == null ? true : false}>Согласования</Button>
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
+					Согласования
+				</Button>
 			</Link>
 			<Link to="/specifications">
-				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
 					Выпуски спецификаций
 				</Button>
 			</Link>
 			<Link to="/sheets">
-				<Button variant="outline-secondary" disabled={mark == null ? true : false}>Листы основного комплекта</Button>
-			</Link>
-            <Link to="/developing-attached-docs">
-				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
-                    Разрабатываемые прилагаемые документы
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
+					Листы основного комплекта
 				</Button>
 			</Link>
-            <Link to="/other-attached-docs">
-				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
-                    Прочие прилагаемые документы
+			<Link to="/developing-attached-docs">
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
+					Разрабатываемые прилагаемые документы
 				</Button>
 			</Link>
-            <Link to="/linked-docs">
-				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
+			<Link to="/other-attached-docs">
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
+					Прочие прилагаемые документы
+				</Button>
+			</Link>
+			<Link to="/linked-docs">
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
 					Ссылочные документы
 				</Button>
 			</Link>
 			<Link to="/operating-conditions">
-				<Button variant="outline-secondary" disabled={mark == null ? true : false}>
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
 					Технические условия
+				</Button>
+			</Link>
+            <Link to="/additional-work">
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
+					Учет дополнительных работ
 				</Button>
 			</Link>
 		</div>

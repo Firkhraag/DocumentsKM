@@ -2,7 +2,7 @@ import Department from './Department'
 
 interface IEmployee {
 	id: number
-    name: string
+	name: string
 	department: Department
 }
 

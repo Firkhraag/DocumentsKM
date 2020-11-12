@@ -58,7 +58,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (!isCreateMode && markLinkedDoc.id === -1) {
+			if (!isCreateMode && selectedObject == null) {
 				history.push('/linked-docs')
 				return
 			}

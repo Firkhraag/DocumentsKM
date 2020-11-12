@@ -1,5 +1,6 @@
 using DocumentsKM.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DocumentsKM.Data
 {
@@ -23,26 +24,13 @@ namespace DocumentsKM.Data
             builder.Entity<User>()
                 .HasIndex(e => e.Login)
                 .IsUnique();
-            // builder.Entity<Project>()
+            // builder.Entity<Entity>()
             //     .HasIndex(e => e.BaseSeries)
             //     .IsUnique();
-            // builder.Entity<Node>()
-            //     .HasIndex(e => e.Code)
-            //     .IsUnique();
-            // builder.Entity<Subnode>()
-            //     .HasIndex(e => e.Code)
-            //     .IsUnique();
-            // builder.Entity<Mark>()
-            //     .HasIndex(e => e.Code)
-            //     .IsUnique();
-            // // Composite
-            // builder.Entity<Mark>().HasIndex(e => new { e.SubnodeId, e.Code }).IsUnique();
-            // builder.Entity<Specification>().HasIndex(e => new { e.MarkId, e.Num }).IsUnique();
-            // builder.Entity<Sheet>().HasIndex(e => new { e.MarkId, e.Num, e.DocTypeId }).IsUnique();
+            // builder.Entity<Entity>().HasIndex(e => new { e.SubnodeId, e.Code }).IsUnique();
 
             // Default datetime
             // builder.Entity<Mark>().Property(e => e.EditedDate).HasDefaultValueSql("now()");
-            // builder.Entity<Specification>().Property(e => e.CreatedDate).HasDefaultValueSql("now()");
 
             foreach(var entity in builder.Model.GetEntityTypes())
             {
@@ -50,7 +38,9 @@ namespace DocumentsKM.Data
 
                 foreach(var property in entity.GetProperties())
                 {
-                    property.SetColumnName(property.GetColumnName().ToSnakeCase());
+                    property.SetColumnName(property.GetColumnName(
+                        StoreObjectIdentifier.Table(entity.GetTableName(), property.DeclaringEntityType.GetSchema())
+                    ).ToSnakeCase());
                 }
 
                 foreach(var key in entity.GetKeys())

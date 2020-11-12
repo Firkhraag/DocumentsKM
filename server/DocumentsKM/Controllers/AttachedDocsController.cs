@@ -57,7 +57,7 @@ namespace DocumentsKM.Controllers
             }
             catch (ConflictException)
             {
-                return NotFound();
+                return Conflict();
             }
             return Created($"docs/{attachedDocModel.Id}", _mapper.Map<AttachedDocResponse>(attachedDocModel));
         }
@@ -81,7 +81,7 @@ namespace DocumentsKM.Controllers
             }
             catch (ConflictException)
             {
-                return NotFound();
+                return Conflict();
             }
             return NoContent();
         }

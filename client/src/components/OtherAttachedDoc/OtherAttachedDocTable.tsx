@@ -9,31 +9,33 @@ import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
-import Doc from '../../model/Doc'
+import AttachedDoc from '../../model/AttachedDoc'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
 
-type DevelopingAttachedDocsProps = {
+type OtherAttachedDocTableProps = {
 	setPopupObj: (popupObj: IPopupObj) => void
-	setDevelopingAttachedDoc: (d: Doc) => void
+	setOtherAttachedDoc: (s: AttachedDoc) => void
 }
 
-const DevelopingAttachedDocs = ({
+const OtherAttachedDocTable = ({
 	setPopupObj,
-	setDevelopingAttachedDoc,
-}: DevelopingAttachedDocsProps) => {
+	setOtherAttachedDoc,
+}: OtherAttachedDocTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
 
-	const [docs, setDocs] = useState([] as Doc[])
+	const [otherAttachedDocs, setOtherAttachedDocs] = useState(
+		[] as AttachedDoc[]
+	)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const docsFetchedResponse = await httpClient.get(
-						`/marks/${mark.id}/docs/attached`
+					const otherAttachedDocsFetchedResponse = await httpClient.get(
+						`/marks/${mark.id}/attached-docs`
 					)
-					setDocs(docsFetchedResponse.data)
+					setOtherAttachedDocs(otherAttachedDocsFetchedResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
@@ -44,8 +46,8 @@ const DevelopingAttachedDocs = ({
 
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
-			await httpClient.delete(`/docs/${id}`)
-			docs.splice(row, 1)
+			await httpClient.delete(`/attached-docs/${id}`)
+			otherAttachedDocs.splice(row, 1)
 			setPopupObj(defaultPopupObj)
 		} catch (e) {
 			console.log('Error')
@@ -53,10 +55,10 @@ const DevelopingAttachedDocs = ({
 	}
 
 	return (
-		<div className="component-cnt table-width">
-			<h1 className="text-centered">Разрабатываемые прилагаемые документы</h1>
+		<div className="component-cnt">
+			<h1 className="text-centered">Прочие прилагаемые документы</h1>
 			<PlusCircle
-				onClick={() => history.push('/sheet-create')}
+				onClick={() => history.push('/other-attached-doc-add')}
 				color="#666"
 				size={28}
 				className="pointer"
@@ -65,46 +67,29 @@ const DevelopingAttachedDocs = ({
 				<thead>
 					<tr>
 						<th>№</th>
-						<th>Наименование</th>
-						<th>Формат</th>
-						<th>Разработал</th>
-						<th>Проверил</th>
-						<th>Н.контр.</th>
-						<th>Примечание</th>
+						<th>Обозначение</th>
+						<th className="doc-note-col-width">Наименование</th>
+						<th className="doc-note-col-width">Примечание</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					{docs.map((d, index) => {
+					{otherAttachedDocs.map((d, index) => {
 						return (
 							<tr key={d.id}>
-								<td>{d.num}</td>
-								<td>
-									{d.name}
-								</td>
-								<td>{d.form}</td>
-								<td>
-									{d.creator == null ? '' : d.creator.name}
-								</td>
-								<td>
-									{d.inspector == null
-										? ''
-										: d.inspector.name}
-								</td>
-								<td>
-									{d.normContr == null
-										? ''
-										: d.normContr.name}
-								</td>
-								<td>
-									{d.note}
-								</td>
+								<td>{index + 1}</td>
+								<td>{d.designation}</td>
+								<td className="doc-note-col-width">{d.name}</td>
+								<td className="doc-note-col-width">{d.note}</td>
+
 								<td
 									onClick={() => {
-										setDevelopingAttachedDoc(d)
-										history.push(`/sheets/${d.id}`)
+										setOtherAttachedDoc(d)
+										history.push(
+											`/other-attached-docs/${d.id}`
+										)
 									}}
 									className="pointer action-cell-width text-centered"
 								>
@@ -114,7 +99,7 @@ const DevelopingAttachedDocs = ({
 									onClick={() =>
 										setPopupObj({
 											isShown: true,
-											msg: `Вы действительно хотите удалить прилагаемый документ №${d.num}?`,
+											msg: `Вы действительно хотите удалить прилагаемый документ ${d.designation}?`,
 											onAccept: () =>
 												onDeleteClick(index, d.id),
 											onCancel: () =>
@@ -134,4 +119,4 @@ const DevelopingAttachedDocs = ({
 	)
 }
 
-export default DevelopingAttachedDocs
+export default OtherAttachedDocTable

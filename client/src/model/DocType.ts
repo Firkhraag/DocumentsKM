@@ -1,15 +1,15 @@
 interface IDocType {
-    id: number
-    name: string
+	id: number
+	code: string
 }
 
 class DocType {
 	id: number
-	name: string
+	code: string
 
 	constructor(obj?: IDocType) {
 		this.id = (obj && obj.id) || 0
-		this.name = (obj && obj.name) || ''
+		this.code = (obj && obj.code) || ''
 	}
 }
 

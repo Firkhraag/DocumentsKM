@@ -108,7 +108,7 @@ namespace DocumentsKM.Services
                 foundMark.Subnode = subnode;
 
                 var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, mark.Code);
-                if (uniqueConstraintViolationCheck != null)
+                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             }
             else if (mark.Code != null)
@@ -116,7 +116,7 @@ namespace DocumentsKM.Services
                 foundMark.Code = mark.Code;
 
                 var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(foundMark.Subnode.Id, mark.Code);
-                if (uniqueConstraintViolationCheck != null)
+                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             }
             else if (mark.SubnodeId != null)
@@ -127,7 +127,7 @@ namespace DocumentsKM.Services
                 foundMark.Subnode = subnode;
 
                 var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, foundMark.Code);
-                if (uniqueConstraintViolationCheck != null)
+                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             }
 

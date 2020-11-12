@@ -3,8 +3,6 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
-using Serilog;
-using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -55,8 +53,10 @@ namespace DocumentsKM.Services
                 throw new ArgumentNullException(nameof(foundMark));
             doc.Mark = foundMark;
 
-            var docType = _docTypeRepo.GetById(docTypeId);
-            doc.Type = docType;
+            var foundDocType = _docTypeRepo.GetById(docTypeId);
+            if (foundDocType == null)
+                throw new ArgumentNullException(nameof(foundDocType));
+            doc.Type = foundDocType;
 
             var docs = _repository.GetAllByMarkIdAndDocType(markId, docTypeId);
             int maxNum = 1;
@@ -97,6 +97,9 @@ namespace DocumentsKM.Services
             DocUpdateRequest doc)
         {
             // ToDo: Конфликты по юник ки
+            // TBD: выпуск для спецификации металлопроката
+            // TBD: unique key violation при смене типа документа
+            // Conflict exception
             if (doc == null)
                 throw new ArgumentNullException(nameof(doc));
             var foundDoc = _repository.GetById(id);
@@ -114,7 +117,12 @@ namespace DocumentsKM.Services
                 foundDoc.NumOfPages = doc.NumOfPages.GetValueOrDefault();
             if (doc.Note != null)
                 foundDoc.Note = doc.Note;
-            // Maybe type?
+            if (doc.TypeId != null) {
+                var docType = _docTypeRepo.GetById(doc.TypeId.GetValueOrDefault());
+                if (docType == null)
+                    throw new ArgumentNullException(nameof(docType));
+                foundDoc.Type = docType;
+            }
             if (doc.CreatorId != null)
             {
                 var creatorId = doc.CreatorId.GetValueOrDefault();
@@ -127,7 +135,6 @@ namespace DocumentsKM.Services
                         throw new ArgumentNullException(nameof(creator));
                     foundDoc.Creator = creator;
                 }
-                
             }
             if (doc.InspectorId != null)
             {
