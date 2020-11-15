@@ -27,26 +27,6 @@ namespace DocumentsKM.Services
             return _repository.GetAllByMarkId(markId);
         }
 
-        // public MarkLinkedDoc Add(
-        //     int markId,
-        //     int linkedDocId)
-        // {
-        //     var foundLinkedDoc = _linkedDocRepo.GetById(linkedDocId);
-        //     if (foundLinkedDoc == null)
-        //         throw new ArgumentNullException(nameof(foundLinkedDoc));
-        //     var foundMark = _markRepo.GetById(markId);
-        //     if (foundMark == null)
-        //         throw new ArgumentNullException(nameof(foundMark));
-            
-        //     var markLinkedDoc = new MarkLinkedDoc{
-        //         LinkedDoc = foundLinkedDoc,
-        //         Mark = foundMark,
-        //     };
-
-        //     _repository.Add(markLinkedDoc);
-        //     return markLinkedDoc;
-        // }
-
         public void Add(
             MarkLinkedDoc markLinkedDoc,
             int markId,

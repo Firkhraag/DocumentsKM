@@ -1,31 +1,37 @@
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit;
+using System.Collections.Generic;
+using AutoMapper;
+using DocumentsKM.Dtos;
+using DocumentsKM.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace DocumentsKM.Tests
+namespace DocumentsKM.Controllers
 {
-    public class NodesControllerTest : IClassFixture<WebApplicationFactory<DocumentsKM.Startup>>
+    // AMQP
+    [Route("api")]
+    [Authorize]
+    [ApiController]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public class NodesController : ControllerBase
     {
-        private readonly HttpClient httpClient;
+        private readonly INodeService _service;
+        private readonly IMapper _mapper;
 
-        public NodesControllerTest(WebApplicationFactory<DocumentsKM.Startup> factory)
+        public NodesController(
+            INodeService nodeService,
+            IMapper mapper)
         {
-            httpClient = factory.CreateClient();
+            _service = nodeService;
+            _mapper = mapper;
         }
 
-        [Fact]
-        public async Task GetAllByProjectId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        [HttpGet, Route("projects/{projectId}/nodes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<NodeBaseResponse>> GetAllByProjectId(int projectId)
         {
-            // Arrange
-            var endpoint = "/api/projects/0/nodes";
-
-            // Act
-            var response = await httpClient.GetAsync(endpoint);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            var nodes = _service.GetAllByProjectId(projectId);
+            return Ok(_mapper.Map<IEnumerable<NodeBaseResponse>>(nodes));
         }
     }
 }

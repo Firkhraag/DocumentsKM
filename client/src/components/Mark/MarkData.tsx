@@ -516,17 +516,17 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<label
 							className="bold no-bot-mrg"
 							style={{ marginRight: '1em' }}
-							htmlFor="react-select-2-input"
+							htmlFor="department"
 						>
 							Отдел
 						</label>
 						<Select
+                            inputId="department"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите отдел"
 							noOptionsMessage={() => 'Отделы не найдены'}
-							// className="mrg-top"
 							className="auto-width flex-grow"
 							onChange={(selectedOption) =>
 								onDepartmentSelect(
@@ -556,17 +556,17 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<label
 							className="bold no-bot-mrg"
 							style={{ marginRight: '1em' }}
-							htmlFor="react-select-3-input"
+							htmlFor="groupLeader"
 						>
 							Заведующий группы
 						</label>
 						<Select
+                            inputId="groupLeader"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите заведующего группы"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							// className="mrg-top"
 							className="auto-width flex-grow"
 							onChange={(selectedOption) =>
 								onGroupLeaderSelect(
@@ -597,17 +597,17 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<label
 							className="bold no-bot-mrg"
 							style={{ marginRight: '1.15em' }}
-							htmlFor="react-select-4-input"
+							htmlFor="chiefSpecialist"
 						>
 							Главный специалист
 						</label>
 						<Select
+                            inputId="chiefSpecialist"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите главного специалиста"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							// className="mrg-top"
 							className="auto-width flex-grow"
 							onChange={(selectedOption) =>
 								onChiefSpecialistSelect(
@@ -640,11 +640,12 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						<label
 							className="bold no-bot-mrg"
 							style={{ marginRight: '1.3em' }}
-							htmlFor="react-select-5-input"
+							htmlFor="mainBuilder"
 						>
 							Главный строитель?
 						</label>
 						<Select
+                            inputId="mainBuilder"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}

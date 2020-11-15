@@ -34,8 +34,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		await httpClient.post('/users/logout')
 		setUserName('')
 		localStorage.removeItem('selectedMarkId')
-		localStorage.removeItem('recentSubnodeIds')
-		localStorage.removeItem('recentMarkIds')
+		// localStorage.removeItem('recentMarkIds')
 	}
 
 	useEffect(() => {
@@ -46,8 +45,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 			} catch (e) {
 				setUserName('')
 				localStorage.removeItem('selectedMarkId')
-				localStorage.removeItem('recentSubnodeIds')
-				localStorage.removeItem('recentMarkIds')
+				// localStorage.removeItem('recentMarkIds')
 			}
 		}
 		fetchData()

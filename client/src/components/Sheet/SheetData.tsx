@@ -254,7 +254,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 		}
 	}
 
-	return selectedObject == null || (mark == null && !isCreateMode) ? null : (
+	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">
 				{isCreateMode
@@ -314,11 +314,13 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '3.9em' }}
+                        style={{ marginRight: '3.9em' }}
+                        htmlFor="creator"
 					>
 						Разработал
 					</label>
 					<Select
+                        inputId="creator"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -349,11 +351,13 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '4.5em' }}
+                        style={{ marginRight: '4.5em' }}
+                        htmlFor="inspector"
 					>
 						Проверил
 					</label>
 					<Select
+                        inputId="inspector"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -384,11 +388,13 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				<div className="flex-cent-v mrg-top-2">
 					<label
 						className="bold no-bot-mrg"
-						style={{ marginRight: '1em' }}
+                        style={{ marginRight: '1em' }}
+                        htmlFor="normContr"
 					>
 						Нормоконтролер
 					</label>
 					<Select
+                        inputId="normContr"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -420,8 +426,9 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				</div>
 
 				<Form.Group className="mrg-top-2" style={{ marginBottom: 0 }}>
-					<Form.Label>Примечание</Form.Label>
+					<Form.Label htmlFor="note">Примечание</Form.Label>
 					<Form.Control
+                        id="note"
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}

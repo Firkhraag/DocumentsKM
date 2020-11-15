@@ -25,7 +25,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		types: [] as LinkedDocType[],
 		docs: [] as LinkedDoc[],
 	}
-	const defaultSelectedDoc = {
+	const defaultLinkedDoc = {
 		id: -1,
 		code: '',
 		name: '',
@@ -40,13 +40,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		isCreateMode
 			? {
 					id: -1,
-					linkedDoc: {
-						id: -1,
-						code: '',
-						name: '',
-						designation: '',
-						type: null,
-					},
+					linkedDoc: defaultLinkedDoc,
 			  }
 			: markLinkedDoc
 	)
@@ -58,7 +52,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (!isCreateMode && selectedObject == null) {
+			if (selectedObject == null) {
 				history.push('/linked-docs')
 				return
 			}
@@ -95,7 +89,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 
 	const onTypeSelect = async (id: number) => {
 		if (id == null) {
-			selectedObject.linkedDoc = defaultSelectedDoc
+			selectedObject.linkedDoc = defaultLinkedDoc
 			setOptionsObject({
 				...defaultOptionsObject,
 				types: optionsObject.types,
@@ -109,7 +103,14 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		)
 		if (v != null) {
 			if (cachedDocs.has(v.id)) {
-				selectedObject.linkedDoc.type = v
+                // selectedObject.linkedDoc.type = v
+                setSelectedObject({
+                    ...selectedObject,
+                    linkedDoc: {
+                        ...defaultLinkedDoc,
+                        type: v,
+                    },
+                })
 				setOptionsObject({
 					...optionsObject,
 					docs: cachedDocs.get(v.id),
@@ -120,7 +121,14 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 						`/linked-docs-types/${id}/docs`
 					)
 					cachedDocs.set(v.id, linkedDocsResponse.data)
-					selectedObject.linkedDoc.type = v
+                    // selectedObject.linkedDoc.type = v
+                    setSelectedObject({
+                        ...selectedObject,
+                        linkedDoc: {
+                            ...defaultLinkedDoc,
+                            type: v,
+                        },
+                    })
 					setOptionsObject({
 						...optionsObject,
 						docs: linkedDocsResponse.data,
@@ -137,7 +145,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 			setSelectedObject({
 				...selectedObject,
 				linkedDoc: {
-					...defaultSelectedDoc,
+					...defaultLinkedDoc,
 					type: selectedObject.linkedDoc.type,
 				},
 			})
@@ -202,7 +210,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		}
 	}
 
-	return mark == null && !isCreateMode ? null : (
+	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt">
 			<h1 className="text-centered">
 				{isCreateMode
@@ -232,8 +240,11 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				</div>
 
 				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
-					<div className="bold">Вид</div>
+					<label className="bold no-bot-mrg" htmlFor="type">
+						Вид
+					</label>
 					<Select
+						inputId="type"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -261,8 +272,11 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 						styles={reactSelectstyle}
 					/>
 
-					<div className="bold mrg-top-2">Шифр</div>
+					<label className="bold no-bot-mrg mrg-top-2" htmlFor="code">
+						Шифр
+					</label>
 					<Select
+						inputId="code"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -275,7 +289,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 							onDocSelect((selectedOption as any)?.value)
 						}
 						value={
-							selectedObject.id === -1
+							selectedObject.linkedDoc.id === -1
 								? null
 								: {
 										value: selectedObject.id,

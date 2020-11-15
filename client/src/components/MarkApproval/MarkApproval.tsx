@@ -201,14 +201,15 @@ const MarkApproval = () => {
 			<h1 className="text-centered">Согласования</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
 				<div className="flex">
-					<div className="bold input-width">Отдел</div>
-					<div className="bold input-width mrg-left">Специалист</div>
+					<label className="bold input-width no-bot-mrg" htmlFor="react-select-20-input">Отдел</label>
+					<label className="bold input-width mrg-left no-bot-mrg" htmlFor="react-select-21-input">Специалист</label>
 				</div>
 				{[...Array(optionsObject.employees.length).keys()].map(
 					(rowNumber) => {
 						return (
 							<div className="flex mrg-top" key={rowNumber}>
 								<Select
+                                    inputId={`approvalDepartment${rowNumber}`}
 									maxMenuHeight={250}
 									className="input-width"
 									isClearable={true}
@@ -263,6 +264,7 @@ const MarkApproval = () => {
 									styles={reactSelectstyle}
 								/>
 								<Select
+                                    inputId={`approvalEmployee${rowNumber}`}
 									maxMenuHeight={250}
 									className="input-width mrg-left"
 									isClearable={true}

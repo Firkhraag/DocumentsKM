@@ -1,31 +1,60 @@
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit;
+using System.Collections.Generic;
+using AutoMapper;
+using DocumentsKM.Dtos;
+using DocumentsKM.Models;
+using DocumentsKM.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace DocumentsKM.Tests
+namespace DocumentsKM.Controllers
 {
-    public class SubnodesControllerTest : IClassFixture<WebApplicationFactory<DocumentsKM.Startup>>
+    // AMQP
+    [Route("api")]
+    [Authorize]
+    [ApiController]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public class SubnodesController : ControllerBase
     {
-        private readonly HttpClient httpClient;
+        private readonly ISubnodeService _service;
+        private readonly IMapper _mapper;
 
-        public SubnodesControllerTest(WebApplicationFactory<DocumentsKM.Startup> factory)
+        public SubnodesController(
+            ISubnodeService subnodeService,
+            IMapper mapper)
         {
-            httpClient = factory.CreateClient();
+            _service = subnodeService;
+            _mapper = mapper;
         }
 
-        [Fact]
-        public async Task GetAllByNodeId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        [HttpGet, Route("nodes/{nodeId}/subnodes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<SubnodeBaseResponse>> GetAllByNodeId(int nodeId)
         {
-            // Arrange
-            var endpoint = "/api/nodes/0/subnodes";
+            var subnodes = _service.GetAllByNodeId(nodeId);
+            return Ok(_mapper.Map<IEnumerable<SubnodeBaseResponse>>(subnodes));
+        }
 
-            // Act
-            var response = await httpClient.GetAsync(endpoint);
+        [HttpGet, Route("subnodes/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<Subnode> GetById(int id)
+        {
+            var subnode = _service.GetById(id);
+            if (subnode != null)
+                return Ok(subnode);
+            return NotFound();
+        }
 
-            // Assert
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        [HttpGet, Route("subnodes/{id}/parents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<SubnodeParentResponse> GetSubnodeParentResponseById(int id)
+        {
+            var subnode = _service.GetById(id);
+            if (subnode != null)
+                return Ok(_mapper.Map<SubnodeParentResponse>(subnode));
+            return NotFound();
         }
     }
 }

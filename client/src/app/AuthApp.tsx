@@ -21,12 +21,14 @@ import OtherAttachedDocData from '../components/OtherAttachedDoc/OtherAttachedDo
 import LinkedDocTable from '../components/LinkedDoc/LinkedDocTable'
 import LinkedDocData from '../components/LinkedDoc/LinkedDocData'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
+import Specification from '../model/Specification'
 import Doc from '../model/Doc'
 import AttachedDoc from '../model/AttachedDoc'
 import MarkLinkedDoc from '../model/MarkLinkedDoc'
 
 const AuthApp = () => {
 	const [popupObj, setPopupObj] = useState(defaultPopupObj)
+	const [specification, setSpecification] = useState<Specification>(null)
 	const [sheet, setSheet] = useState<Doc>(null)
 	const [developingAttachedDoc, setDevelopingAttachedDoc] = useState<Doc>(
 		null
@@ -68,12 +70,12 @@ const AuthApp = () => {
 						</Route>
 						<Route exact path="/specifications">
 							<div className="full-width div-container">
-								<SpecificationTable setPopupObj={setPopupObj} />
+								<SpecificationTable setPopupObj={setPopupObj} setSpecification={setSpecification} />
 							</div>
 						</Route>
 						<Route exact path="/specifications/:specificationId">
 							<div className="full-width div-container">
-								<SpecificationData />
+								<SpecificationData specification={specification} />
 							</div>
 						</Route>
 

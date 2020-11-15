@@ -3,8 +3,6 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
-using Serilog;
-using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -56,16 +54,17 @@ namespace DocumentsKM.Services
                 throw new ArgumentNullException(nameof(foundAttachedDoc));
 
             if (attachedDoc.Designation != null)
+            {
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
+                    foundAttachedDoc.Mark.Id, attachedDoc.Designation);
+                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
+                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
                 foundAttachedDoc.Designation = attachedDoc.Designation;
+            }
             if (attachedDoc.Name != null)
                 foundAttachedDoc.Name = attachedDoc.Name;
             if (attachedDoc.Note != null)
                 foundAttachedDoc.Note = attachedDoc.Note;
-
-            var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
-                foundAttachedDoc.Mark.Id, foundAttachedDoc.Designation);
-            if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
             _repository.Update(foundAttachedDoc);
         }

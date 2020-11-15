@@ -376,8 +376,9 @@ const MarkSelect = () => {
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
 				<div>
 					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-					<div className="bold">Последние марки</div>
+					<label className="bold no-bot-mrg" htmlFor="recentMarks">Последние марки</label>
 					<Select
+                        inputId="recentMarks"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -420,8 +421,9 @@ const MarkSelect = () => {
 
 				<div className="flex mrg-top-2">
 					<div>
-						<div className="bold">Базовая серия</div>
+						<label className="bold no-bot-mrg" htmlFor="project">Базовая серия</label>
 						<Select
+                            inputId="project"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -457,8 +459,9 @@ const MarkSelect = () => {
 						/>
 					</div>
 					<div className="mrg-left">
-						<div className="bold">Узел</div>
+                        <label className="bold no-bot-mrg" htmlFor="node">Узел</label>
 						<Select
+                            inputId="node"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -489,8 +492,9 @@ const MarkSelect = () => {
 						/>
 					</div>
 					<div className="mrg-left">
-						<div className="bold">Подузел</div>
+                        <label className="bold no-bot-mrg" htmlFor="subnode">Подузел</label>
 						<Select
+                            inputId="subnode"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -523,8 +527,9 @@ const MarkSelect = () => {
 						/>
 					</div>
 					<div className="mrg-left">
-						<div className="bold">Марка</div>
+                        <label className="bold no-bot-mrg" htmlFor="mark">Марка</label>
 						<Select
+                            inputId="mark"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}

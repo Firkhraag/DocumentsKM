@@ -72,7 +72,10 @@ namespace DocumentsKM.Data
         // Current service data
         public DbSet<Mark> Marks { get; set; }
         public DbSet<MarkApproval> MarkApprovals { get; set; }
+
         public DbSet<Specification> Specifications { get; set; }
+        public DbSet<WeldingControl> WeldingControl { get; set; }
+
         public DbSet<Doc> Docs { get; set; }
 
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }

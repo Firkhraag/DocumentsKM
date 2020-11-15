@@ -15,9 +15,13 @@ import './SpecificationTable.css'
 
 type SpecificationTableProps = {
 	setPopupObj: (popupObj: IPopupObj) => void
+	setSpecification: (spec: Specification) => void
 }
 
-const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
+const SpecificationTable = ({
+	setPopupObj,
+	setSpecification,
+}: SpecificationTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
 
@@ -186,9 +190,10 @@ const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
 									/>
 								</td>
 								<td
-									onClick={() =>
+									onClick={() => {
+										setSpecification(s)
 										history.push(`/specifications/${s.id}`)
-									}
+									}}
 									className="pointer action-cell-width text-centered"
 								>
 									<PencilSquare color="#666" size={26} />

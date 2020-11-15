@@ -1,48 +1,26 @@
 using System.Collections.Generic;
-using System.Linq;
-using DocumentsKM.Data;
 using DocumentsKM.Models;
-using DocumentsKM.Services;
-using Moq;
-using Xunit;
+using DocumentsKM.Data;
 
-namespace DocumentsKM.Tests
+namespace DocumentsKM.Services
 {
-    public class ProjectServiceTest
+    public class ProjectService : IProjectService
     {
-        // [Fact]
-        // public void GetAll_ShouldReturnAllProjects()
-        // {
-        //     // Arrange
-        //     var mockProjectRepo = new Mock<IProjectRepo>();
-        //     mockProjectRepo.Setup(mock=>
-        //         mock.GetAll()).Returns(TestData.projects);
-        //     var service = new ProjectService(mockProjectRepo.Object);
-            
-        //     // Act
-        //     var returnedProjects = service.GetAll().ToList();
+        private IProjectRepo _repository;
 
-        //     // Assert
-        //     Assert.Equal(TestData.projects, returnedProjects);
-        // }
+        public ProjectService(IProjectRepo ProjectRepo)
+        {
+            _repository = ProjectRepo;
+        }
 
-        // [Theory]
-        // [InlineData(0)]
-        // [InlineData(1)]
-        // [InlineData(2)]
-        // public void GetById_ShouldReturnProject(int id)
-        // {
-        //     // Arrange
-        //     var mockProjectRepo = new Mock<IProjectRepo>();
-        //     mockProjectRepo.Setup(mock=>
-        //         mock.GetById(id)).Returns(TestData.projects[id]);
-        //     var service = new ProjectService(mockProjectRepo.Object);
-            
-        //     // Act
-        //     var project = service.GetById(id);
+        public IEnumerable<Project> GetAll()
+        {
+            return _repository.GetAll();
+        }
 
-        //     // Assert
-        //     Assert.Equal(TestData.projects[id], project);
-        // }
+        public Project GetById(int id)
+        {
+            return _repository.GetById(id);
+        }
     }
 }

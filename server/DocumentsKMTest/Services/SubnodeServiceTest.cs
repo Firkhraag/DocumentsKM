@@ -1,52 +1,26 @@
 using System.Collections.Generic;
-using System.Linq;
-using DocumentsKM.Data;
 using DocumentsKM.Models;
-using DocumentsKM.Services;
-using Moq;
-using Xunit;
+using DocumentsKM.Data;
 
-namespace DocumentsKM.Tests
+namespace DocumentsKM.Services
 {
-    public class SubnodeServiceTest
+    public class SubnodeService : ISubnodeService
     {
-        // [Theory]
-        // [InlineData(0)]
-        // [InlineData(1)]
-        // [InlineData(2)]
-        // public void GetAllByNodeId_ShouldReturnAllSubnodesWithGivenId(int nodeId)
-        // {
-        //     // Arrange
-        //     var filteredSubnodes = TestData.subnodes.FindAll(s => s.Node.Id == nodeId);
-        //     var mockSubnodeRepo = new Mock<ISubnodeRepo>();
-        //     mockSubnodeRepo.Setup(mock=>
-        //         mock.GetAllByNodeId(nodeId)).Returns(filteredSubnodes);
-        //     var service = new SubnodeService(mockSubnodeRepo.Object);
-            
-        //     // Act
-        //     var returnedSubnodes = service.GetAllByNodeId(nodeId).ToList();
+        private ISubnodeRepo _repository;
 
-        //     // Assert
-        //     Assert.Equal(filteredSubnodes, returnedSubnodes);
-        // }
+        public SubnodeService(ISubnodeRepo SubnodeRepo)
+        {
+            _repository = SubnodeRepo;
+        }
 
-        // [Theory]
-        // [InlineData(0)]
-        // [InlineData(1)]
-        // [InlineData(2)]
-        // public void GetById_ShouldReturnSubnode(int id)
-        // {
-        //     // Arrange
-        //     var mockSubnodeRepo = new Mock<ISubnodeRepo>();
-        //     mockSubnodeRepo.Setup(mock=>
-        //         mock.GetById(id)).Returns(_repoSubnodes[id]);
-        //     var service = new SubnodeService(mockSubnodeRepo.Object);
-            
-        //     // Act
-        //     var subnode = service.GetById(id);
+        public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
+        {
+            return _repository.GetAllByNodeId(nodeId);
+        }
 
-        //     // Assert
-        //     Assert.Equal(_repoSubnodes[id], subnode);
-        // }
+        public Subnode GetById(int id)
+        {
+            return _repository.GetById(id);
+        }
     }
 }

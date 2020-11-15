@@ -11,11 +11,11 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class ConstructionMaterialController : ControllerBase
+    public class ConstructionMaterialsController : ControllerBase
     {
         private readonly IConstructionMaterialService _service;
 
-        public ConstructionMaterialController(IConstructionMaterialService constructionMaterialService)
+        public ConstructionMaterialsController(IConstructionMaterialService constructionMaterialService)
         {
             _service = constructionMaterialService;
         }

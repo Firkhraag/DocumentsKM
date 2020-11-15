@@ -1,52 +1,21 @@
 using System.Collections.Generic;
-using System.Linq;
-using DocumentsKM.Data;
 using DocumentsKM.Models;
-using DocumentsKM.Services;
-using Moq;
-using Xunit;
+using DocumentsKM.Data;
 
-namespace DocumentsKM.Tests
+namespace DocumentsKM.Services
 {
-    public class NodeServiceTest
+    public class NodeService : INodeService
     {
-        // [Theory]
-        // [InlineData(0)]
-        // [InlineData(1)]
-        // [InlineData(2)]
-        // public void GetAllByProjectId_ShouldReturnAllNodesWithGivenId(int projectId)
-        // {
-        //     // Arrange
-        //     var filteredNodes = TestData.nodes.FindAll(n => n.Project.Id == projectId);
-        //     var mockNodeRepo = new Mock<INodeRepo>();
-        //     mockNodeRepo.Setup(mock=>
-        //         mock.GetAllByProjectId(projectId)).Returns(filteredNodes);
-        //     var service = new NodeService(mockNodeRepo.Object);
-            
-        //     // Act
-        //     var returnedNodes = service.GetAllByProjectId(projectId).ToList();
+        private INodeRepo _repository;
 
-        //     // Assert
-        //     Assert.Equal(filteredNodes, returnedNodes);
-        // }
+        public NodeService(INodeRepo NodeRepo)
+        {
+            _repository = NodeRepo;
+        }
 
-        // [Theory]
-        // [InlineData(0)]
-        // [InlineData(1)]
-        // [InlineData(2)]
-        // public void GetById_ShouldReturnNode(int id)
-        // {
-        //     // Arrange
-        //     var mockNodeRepo = new Mock<INodeRepo>();
-        //     mockNodeRepo.Setup(mock=>
-        //         mock.GetById(id)).Returns(_repoNodes[id]);
-        //     var service = new NodeService(mockNodeRepo.Object);
-            
-        //     // Act
-        //     var node = service.GetById(id);
-
-        //     // Assert
-        //     Assert.Equal(_repoNodes[id], node);
-        // }
+        public IEnumerable<Node> GetAllByProjectId(int projectId)
+        {
+            return _repository.GetAllByProjectId(projectId);
+        }
     }
 }

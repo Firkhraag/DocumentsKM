@@ -24,18 +24,8 @@ const OtherAttachedDocData = ({
 	const mark = useMark()
 
 	const [selectedObject, setSelectedObject] = useState<AttachedDoc>(
-		otherAttachedDoc
-	)
-	const [errMsg, setErrMsg] = useState('')
-
-	useEffect(() => {
-		if (mark != null && mark.id != null) {
-			if (!isCreateMode && selectedObject == null) {
-				history.push('/other-attached-docs')
-				return
-			}
-			if (isCreateMode) {
-				setSelectedObject({
+		isCreateMode
+			? {
 					id: -1,
 					designation:
 						makeMarkName(
@@ -46,7 +36,16 @@ const OtherAttachedDocData = ({
 						) + '.ЛС',
 					name: 'Локальная смета',
 					note: '',
-				})
+			  }
+			: otherAttachedDoc
+	)
+	const [errMsg, setErrMsg] = useState('')
+
+	useEffect(() => {
+		if (mark != null && mark.id != null) {
+			if (selectedObject == null) {
+				history.push('/other-attached-docs')
+				return
 			}
 		}
 	}, [mark])
@@ -138,7 +137,7 @@ const OtherAttachedDocData = ({
 		}
 	}
 
-	return selectedObject == null || (mark == null && !isCreateMode) ? null : (
+	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">
 				{isCreateMode

@@ -46,10 +46,11 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<MarkLinkedDoc> Add(int markId, MarkLinkedDocRequest markLinkedDocRequest)
         {
-            Log.Information(JsonSerializer.Serialize(markLinkedDocRequest));
+            // Log.Information(JsonSerializer.Serialize(markLinkedDocRequest));
             try
             {
-                var markLinkedDocModel = new MarkLinkedDoc{};
+                var markLinkedDocModel = _mapper.Map<MarkLinkedDoc>(markLinkedDocRequest);
+                // var markLinkedDocModel = new MarkLinkedDoc{};
                 _service.Add(markLinkedDocModel, markId, markLinkedDocRequest.LinkedDocId);
                 return Created($"mark-linked-docs/", markLinkedDocModel);
             }

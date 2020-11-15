@@ -1,17 +1,17 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
-WORKDIR /app
+# https://hub.docker.com/_/microsoft-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /source
 
-# Copy csproj and restore as distinct layers
+# copy csproj and restore as distinct layers
 COPY *.csproj .
 RUN dotnet restore
 
-# Copy everything else and build
+# copy and publish app and libraries
 COPY . .
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c release -o /app --no-restore
 
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+# final stage/image
+FROM mcr.microsoft.com/dotnet/runtime:5.0
 WORKDIR /app
-EXPOSE 5000 5001
-COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "DocumentsKM.dll"]
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "dotnetapp.dll"]
