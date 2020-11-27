@@ -1,21 +1,35 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class LinkedDocTypeService : ILinkedDocTypeService
+    public class LinkedDocTypeServiceTest
     {
-        private ILinkedDocTypeRepo _repository;
+        private readonly LinkedDocTypeService _service;
 
-        public LinkedDocTypeService(ILinkedDocTypeRepo linkedDocTypeRepoo)
+        public LinkedDocTypeServiceTest()
         {
-            _repository = linkedDocTypeRepoo;
+            // Arrange
+            var mockLinkedDocTypeRepo = new Mock<ILinkedDocTypeRepo>();
+
+            mockLinkedDocTypeRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.linkedDocTypes);
+            
+            _service = new LinkedDocTypeService(mockLinkedDocTypeRepo.Object);
         }
 
-        public IEnumerable<LinkedDocType> GetAll()
+        [Fact]
+        public void GetAll_ShouldReturnAllLinkedDocTypes()
         {
-            return _repository.GetAll();
+            // Act
+            var returnedLinkedDocTypes = _service.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.linkedDocTypes,
+                returnedLinkedDocTypes);
         }
     }
 }
+

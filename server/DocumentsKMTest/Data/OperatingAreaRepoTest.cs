@@ -1,26 +1,75 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using DocumentsKM.Models;
+using DocumentsKM.Data;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlOperatingAreaRepo : IOperatingAreaRepo
+    public class OperatingAreaRepoTest : IDisposable
     {
-        private readonly ApplicationContext _context;
+        private readonly IOperatingAreaRepo _repo;
 
-        public SqlOperatingAreaRepo(ApplicationContext context)
+        public OperatingAreaRepoTest()
         {
-            _context = context;
+            // Arrange
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "OperatingAreaTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.OperatingAreas.AddRange(TestData.operatingAreas);
+            context.SaveChanges();
+            _repo = new SqlOperatingAreaRepo(context);
         }
 
-        public IEnumerable<OperatingArea> GetAll()
+        public void Dispose()
         {
-            return _context.OperatingAreas.ToList();
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "OperatingAreaTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
         }
 
-        public OperatingArea GetById(int id)
+        [Fact]
+        public void GetAll_ShouldReturnAllOperatingAreas()
         {
-            return _context.OperatingAreas.FirstOrDefault(a => a.Id == id);
+            // Act
+            var operatingAreas = _repo.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.operatingAreas, operatingAreas);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnOperatingArea()
+        {
+            // Arrange
+            var rnd = new Random();
+            int id = rnd.Next(1, TestData.operatingAreas.Count());
+
+            // Act
+            var operatingArea = _repo.GetById(id);
+
+            // Assert
+            Assert.Equal(TestData.operatingAreas.SingleOrDefault(v => v.Id == id),
+                operatingArea);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Arrange
+            int wrongId = 999;
+
+            // Act
+            var operatingArea = _repo.GetById(wrongId);
+
+            // Assert
+            Assert.Null(operatingArea);
         }
     }
 }

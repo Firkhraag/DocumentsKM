@@ -1,26 +1,75 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using DocumentsKM.Models;
+using DocumentsKM.Data;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlEnvAggressivenessRepo : IEnvAggressivenessRepo
+    public class EnvAggressivenessRepoTest : IDisposable
     {
-        private readonly ApplicationContext _context;
+        private readonly IEnvAggressivenessRepo _repo;
 
-        public SqlEnvAggressivenessRepo(ApplicationContext context)
+        public EnvAggressivenessRepoTest()
         {
-            _context = context;
+            // Arrange
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "EnvAggressivenessTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.EnvAggressiveness.AddRange(TestData.envAggressiveness);
+            context.SaveChanges();
+            _repo = new SqlEnvAggressivenessRepo(context);
         }
 
-        public IEnumerable<EnvAggressiveness> GetAll()
+        public void Dispose()
         {
-            return _context.EnvAggressiveness.ToList();
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "EnvAggressivenessTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
         }
 
-        public EnvAggressiveness GetById(int id)
+        [Fact]
+        public void GetAll_ShouldReturnAllEnvAggressiveness()
         {
-            return _context.EnvAggressiveness.FirstOrDefault(a => a.Id == id);
+            // Act
+            var envAggressiveness = _repo.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.envAggressiveness, envAggressiveness);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnEnvAggressiveness()
+        {
+            // Arrange
+            var rnd = new Random();
+            int id = rnd.Next(1, TestData.envAggressiveness.Count());
+
+            // Act
+            var envAggressiveness = _repo.GetById(id);
+
+            // Assert
+            Assert.Equal(TestData.envAggressiveness.SingleOrDefault(v => v.Id == id),
+                envAggressiveness);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Arrange
+            int wrongId = 999;
+
+            // Act
+            var envAggressiveness = _repo.GetById(wrongId);
+
+            // Assert
+            Assert.Null(envAggressiveness);
         }
     }
 }

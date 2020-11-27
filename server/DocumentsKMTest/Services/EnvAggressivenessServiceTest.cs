@@ -1,21 +1,35 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class EnvAggressivenessService : IEnvAggressivenessService
+    public class EnvAggressivenessServiceTest
     {
-        private IEnvAggressivenessRepo _repository;
+        private readonly EnvAggressivenessService _service;
 
-        public EnvAggressivenessService(IEnvAggressivenessRepo envAggressivenessRepoo)
+        public EnvAggressivenessServiceTest()
         {
-            _repository = envAggressivenessRepoo;
+            // Arrange
+            var mockEnvAggressivenessRepo = new Mock<IEnvAggressivenessRepo>();
+
+            mockEnvAggressivenessRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.envAggressiveness);
+            
+            _service = new EnvAggressivenessService(mockEnvAggressivenessRepo.Object);
         }
 
-        public IEnumerable<EnvAggressiveness> GetAll()
+        [Fact]
+        public void GetAll_ShouldReturnAllEnvAggressiveness()
         {
-            return _repository.GetAll();
+            // Act
+            var returnedEnvAggressivenesss = _service.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.envAggressiveness,
+                returnedEnvAggressivenesss);
         }
     }
 }
+

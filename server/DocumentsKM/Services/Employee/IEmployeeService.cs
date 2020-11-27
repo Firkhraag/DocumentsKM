@@ -7,7 +7,7 @@ namespace DocumentsKM.Services
     public interface IEmployeeService
     {
         // Получить всех сотрудников по номеру отдела
-        IEnumerable<Employee> GetByDepartmentId(int departmentId);
+        IEnumerable<Employee> GetAllByDepartmentId(int departmentId);
         // Получить всех сотрудников для согласования
         IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentId(int departmentId);
         // Получить всех главных сотрудников для марки

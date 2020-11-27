@@ -1,21 +1,35 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class PaintworkTypeService : IPaintworkTypeService
+    public class PaintworkTypeServiceTest
     {
-        private IPaintworkTypeRepo _repository;
+        private readonly PaintworkTypeService _service;
 
-        public PaintworkTypeService(IPaintworkTypeRepo paintworkTypeRepoo)
+        public PaintworkTypeServiceTest()
         {
-            _repository = paintworkTypeRepoo;
+            // Arrange
+            var mockPaintworkTypeRepo = new Mock<IPaintworkTypeRepo>();
+
+            mockPaintworkTypeRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.paintworkTypes);
+            
+            _service = new PaintworkTypeService(mockPaintworkTypeRepo.Object);
         }
 
-        public IEnumerable<PaintworkType> GetAll()
+        [Fact]
+        public void GetAll_ShouldReturnAllPaintworkTypes()
         {
-            return _repository.GetAll();
+            // Act
+            var returnedPaintworkTypes = _service.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.paintworkTypes,
+                returnedPaintworkTypes);
         }
     }
 }
+

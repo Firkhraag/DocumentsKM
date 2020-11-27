@@ -1,178 +1,277 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
-using DocumentsKM.Data;
 using System;
+using System.Linq;
+using DocumentsKM.Data;
 using DocumentsKM.Dtos;
+using DocumentsKM.Models;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class DocService : IDocService
+    public class DocServiceTest
     {
-        // Id листа основного комплекта из справочника типов документов
-        private readonly int _sheetDocTypeId = 1;
+        private readonly Mock<IDocRepo> _mockDocRepo = new Mock<IDocRepo>();
+        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
+        private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
+        private readonly Mock<IDocTypeRepo> _mockDocTypeRepo = new Mock<IDocTypeRepo>();
+        private readonly DocService _service;
+        private readonly Random _rnd = new Random();
 
-        private IDocRepo _repository;
-        private readonly IMarkRepo _markRepo;
-        private readonly IEmployeeRepo _employeeRepo;
-        private readonly IDocTypeRepo _docTypeRepo;
-
-        public DocService(
-            IDocRepo docRepo,
-            IMarkRepo markRepo,
-            IEmployeeRepo employeeRepo,
-            IDocTypeRepo docTypeRepo)
+        public DocServiceTest()
         {
-            _repository = docRepo;
-            _markRepo = markRepo;
-            _employeeRepo = employeeRepo;
-            _docTypeRepo = docTypeRepo;
-        }
-
-        public IEnumerable<Doc> GetAllSheetsByMarkId(int markId)
-        {
-            return _repository.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
-        }
-
-        public IEnumerable<Doc> GetAllAttachedByMarkId(int markId)
-        {
-            return _repository.GetAllByMarkIdAndNotDocType(markId, _sheetDocTypeId);
-        }
-
-        public void Create(
-            Doc doc,
-            int markId,
-            int docTypeId,
-            int? creatorId,
-            int? inspectorId,
-            int? normContrId)
-        {
-            if (doc == null)
-                throw new ArgumentNullException(nameof(doc));
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
-            doc.Mark = foundMark;
-
-            var foundDocType = _docTypeRepo.GetById(docTypeId);
-            if (foundDocType == null)
-                throw new ArgumentNullException(nameof(foundDocType));
-            doc.Type = foundDocType;
-
-            var docs = _repository.GetAllByMarkIdAndDocType(markId, docTypeId);
-            int maxNum = 1;
-            foreach (var s in docs)
+            // Arrange
+            foreach (var doc in TestData.docs)
             {
-                if (s.Num > maxNum)
-                    maxNum = s.Num;
+                _mockDocRepo.Setup(mock=>
+                    mock.GetById(doc.Id)).Returns(
+                        TestData.docs.SingleOrDefault(v => v.Id == doc.Id));
             }
-            doc.Num = maxNum + 1;
+            foreach (var mark in TestData.marks)
+            {
+                _mockMarkRepo.Setup(mock=>
+                    mock.GetById(mark.Id)).Returns(
+                        TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
-            if (creatorId != null)
-            {
-                var creator = _employeeRepo.GetById(creatorId.GetValueOrDefault());
-                if (creator == null)
-                    throw new ArgumentNullException(nameof(creator));
-                doc.Creator = creator;
-            }
-            if (inspectorId != null)
-            {
-                var inspector = _employeeRepo.GetById(inspectorId.GetValueOrDefault());
-                if (inspector == null)
-                    throw new ArgumentNullException(nameof(inspector));
-                doc.Inspector = inspector;
-            }
-            if (normContrId != null)
-            {
-                var normContr = _employeeRepo.GetById(normContrId.GetValueOrDefault());
-                if (normContr == null)
-                    throw new ArgumentNullException(nameof(normContr));
-                doc.NormContr = normContr;
-            }
-            // Log.Information(doc.Creator.ToString());
-            _repository.Add(doc);
-        }
-
-        public void Update(
-            int id,
-            DocUpdateRequest doc)
-        {
-            // ToDo: Конфликты по юник ки
-            // TBD: выпуск для спецификации металлопроката
-            // TBD: unique key violation при смене типа документа
-            // Conflict exception
-            if (doc == null)
-                throw new ArgumentNullException(nameof(doc));
-            var foundDoc = _repository.GetById(id);
-            if (foundDoc == null)
-                throw new ArgumentNullException(nameof(foundDoc));
-            if (doc.Num != null)
-                foundDoc.Num = doc.Num.GetValueOrDefault();
-            if (doc.Name != null)
-                foundDoc.Name = doc.Name;
-            if (doc.Form != null)
-                foundDoc.Form = doc.Form.GetValueOrDefault();
-            if (doc.ReleaseNum != null)
-                foundDoc.ReleaseNum = doc.ReleaseNum.GetValueOrDefault();
-            if (doc.NumOfPages != null)
-                foundDoc.NumOfPages = doc.NumOfPages.GetValueOrDefault();
-            if (doc.Note != null)
-                foundDoc.Note = doc.Note;
-            if (doc.TypeId != null) {
-                var docType = _docTypeRepo.GetById(doc.TypeId.GetValueOrDefault());
-                if (docType == null)
-                    throw new ArgumentNullException(nameof(docType));
-                foundDoc.Type = docType;
-            }
-            if (doc.CreatorId != null)
-            {
-                var creatorId = doc.CreatorId.GetValueOrDefault();
-                if (creatorId == -1)
-                    foundDoc.Creator = null;
-                else
+                foreach (var docType in TestData.docTypes)
                 {
-                    var creator = _employeeRepo.GetById(creatorId);
-                    if (creator == null)
-                        throw new ArgumentNullException(nameof(creator));
-                    foundDoc.Creator = creator;
+                    _mockDocRepo.Setup(mock=>
+                        mock.GetAllByMarkIdAndDocType(mark.Id, docType.Id)).Returns(
+                            TestData.docs.Where(v => v.Mark.Id == mark.Id && v.Type.Id == docType.Id));
+
+                    _mockDocRepo.Setup(mock=>
+                        mock.GetAllByMarkIdAndNotDocType(mark.Id, docType.Id)).Returns(
+                            TestData.docs.Where(v => v.Mark.Id == mark.Id && v.Type.Id != docType.Id));
                 }
             }
-            if (doc.InspectorId != null)
+            foreach (var employee in TestData.employees)
             {
-                var inspectorId = doc.InspectorId.GetValueOrDefault();
-                if (inspectorId == -1)
-                    foundDoc.Inspector = null;
-                else
-                {
-                    var inspector = _employeeRepo.GetById(inspectorId);
-                    if (inspector == null)
-                        throw new ArgumentNullException(nameof(inspector));
-                    foundDoc.Inspector = inspector;
-                }
-                
+                _mockEmployeeRepo.Setup(mock=>
+                    mock.GetById(employee.Id)).Returns(
+                        TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
             }
-            if (doc.NormContrId != null)
+            foreach (var docType in TestData.docTypes)
             {
-                var normContrId = doc.NormContrId.GetValueOrDefault();
-                if (normContrId == -1)
-                    foundDoc.NormContr = null;
-                else
-                {
-                    var normContr = _employeeRepo.GetById(normContrId);
-                    if (normContr == null)
-                        throw new ArgumentNullException(nameof(normContr));
-                    foundDoc.NormContr = normContr;
-                }
-                
+                _mockDocTypeRepo.Setup(mock=>
+                    mock.GetById(docType.Id)).Returns(
+                        TestData.docTypes.SingleOrDefault(v => v.Id == docType.Id));
             }
-            _repository.Update(foundDoc);
+
+            _mockDocRepo.Setup(mock=>
+                mock.Add(It.IsAny<Doc>())).Verifiable();
+            _mockDocRepo.Setup(mock=>
+                mock.Update(It.IsAny<Doc>())).Verifiable();
+            _mockDocRepo.Setup(mock=>
+                mock.Delete(It.IsAny<Doc>())).Verifiable();
+
+            _service = new DocService(
+                _mockDocRepo.Object,
+                _mockMarkRepo.Object,
+                _mockEmployeeRepo.Object,
+                _mockDocTypeRepo.Object);
         }
 
-        public void Delete(int id)
+        [Fact]
+        public void GetAllSheetsByMarkId_ShouldReturnAllSheets()
         {
-            var foundDoc = _repository.GetById(id);
-            if (foundDoc == null)
-                throw new ArgumentNullException(nameof(foundDoc));
-            _repository.Delete(foundDoc);
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            int sheetDocTypeId = 1;
+
+            // Act
+            var sheets = _service.GetAllSheetsByMarkId(markId);
+
+            // Assert
+            Assert.Equal(TestData.docs.Where(
+                v => v.Mark.Id == markId && v.Type.Id == sheetDocTypeId), sheets);
+        }
+
+        [Fact]
+        public void GetAllAttachedByMarkId_ShouldReturnAllAttached()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            int sheetDocTypeId = 1;
+
+            // Act
+            var attachedDocs = _service.GetAllAttachedByMarkId(markId);
+
+            // Assert
+            Assert.Equal(TestData.docs.Where(
+                v => v.Mark.Id == markId && v.Type.Id != sheetDocTypeId), attachedDocs);
+        }
+
+        [Fact]
+        public void Create_ShouldCreateDoc()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            int docTypeId = _rnd.Next(1, TestData.docTypes.Count());
+            int creatorId = _rnd.Next(1, TestData.employees.Count());
+            int inspectorId = _rnd.Next(1, TestData.employees.Count());
+            int normContrId = _rnd.Next(1, TestData.employees.Count());
+
+            var newDoc = new Doc
+            {
+                Name="NewCreate",
+                NumOfPages=1,
+                Form=1.0f,
+            };
+            
+            // Act
+            _service.Create(newDoc, markId, docTypeId, creatorId, inspectorId, normContrId);
+
+            // Assert
+            _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Once);
+            Assert.NotNull(newDoc.Mark);
+            Assert.NotNull(newDoc.Type);
+            Assert.NotNull(newDoc.Creator);
+            Assert.NotNull(newDoc.Inspector);
+            Assert.NotNull(newDoc.NormContr);
+        }
+
+        [Fact]
+        public void Create_ShouldFailWithNull()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            int wrongMarkId = 999;
+            int docTypeId = _rnd.Next(1, TestData.docTypes.Count());
+            int wrongDocTypeId = 999;
+            int creatorId = _rnd.Next(1, TestData.employees.Count());
+            int wrongCreatorId = 999;
+            int inspectorId = _rnd.Next(1, TestData.employees.Count());
+            int wrongInspectorId = 999;
+            int normContrId = _rnd.Next(1, TestData.employees.Count());
+            int wrongNormContrId = 999;
+
+            var newDoc = new Doc
+            {
+                Name="NewCreate",
+                NumOfPages=1,
+                Form=1.0f,
+            };
+            
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => _service.Create(
+                null, markId, docTypeId, creatorId, inspectorId, normContrId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(
+                newDoc, wrongMarkId, docTypeId, creatorId, inspectorId, normContrId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(
+                newDoc, markId, wrongDocTypeId, creatorId, inspectorId, normContrId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(
+                newDoc, markId, docTypeId, wrongCreatorId, inspectorId, normContrId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(
+                newDoc, markId, docTypeId, creatorId, wrongInspectorId, normContrId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(
+                newDoc, markId, docTypeId, creatorId, inspectorId, wrongNormContrId));
+
+            _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Never);
+        }
+
+        // TBD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        // [Fact]
+        // public void Create_ShouldFailWithConflict()
+        // {
+        //     // Arrange
+        //     // Possible conflict values
+        //     var conflictMarkId = TestData.Docs[0].Mark.Id;
+        //     var conflictDesignation = TestData.Docs[0].Designation;
+
+        //     var newDoc = new Doc{
+        //         Designation=conflictDesignation,
+        //         Name="NewCreate",
+        //     };
+            
+        //     // Act & Assert
+        //     Assert.Throws<ConflictException>(() => _service.Create(newDoc, conflictMarkId));
+
+        //     _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Never);
+        // }
+        
+        [Fact]
+        public void Update_ShouldUpdateDoc()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.docs.Count());
+            var newName = "NewUpdate";
+
+            var newDocRequest = new DocUpdateRequest
+            {
+                Name=newName,
+            };
+            
+            // Act
+            _service.Update(id, newDocRequest);
+
+            // Assert
+            _mockDocRepo.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Once);
+            Assert.Equal(newName, TestData.docs.SingleOrDefault(v => v.Id == id).Name);
+        }
+
+        [Fact]
+        public void Update_ShouldFailWithNull()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.docs.Count());
+            int wrongId = 999;
+
+            var newDocRequest = new DocUpdateRequest
+            {
+                Name="NewUpdate",
+            };
+            
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newDocRequest));
+
+            _mockDocRepo.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Never);
+        }
+
+        // [Fact]
+        // public void Update_ShouldFailWithConflict()
+        // {
+        //     // Arrange
+        //     // Possible conflict values
+        //     var conflictMarkId = TestData.Docs[0].Mark.Id;
+        //     var conflictDesignation = TestData.Docs[0].Designation;
+        //     var id = TestData.Docs[3].Id;
+
+        //     var newDocRequest = new DocUpdateRequest{
+        //         Designation=conflictDesignation,
+        //         Name="NewUpdate",
+        //     };
+            
+        //     // Act & Assert
+        //     Assert.Throws<ConflictException>(() => _service.Update(id, newDocRequest));
+
+        //     _mockDocRepo.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Never);
+        // }
+
+        [Fact]
+        public void Delete_ShouldDeleteDoc()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.docs.Count());
+            
+            // Act
+            _service.Delete(id);
+
+            // Assert
+            _mockDocRepo.Verify(mock => mock.Delete(It.IsAny<Doc>()), Times.Once);
+        }
+
+        [Fact]
+        public void Delete_ShouldFailWithNull()
+        {
+            // Arrange
+            var wrongId = 999;
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(wrongId));
+
+            _mockDocRepo.Verify(mock => mock.Delete(It.IsAny<Doc>()), Times.Never);
         }
     }
 }

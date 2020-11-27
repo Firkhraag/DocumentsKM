@@ -1,21 +1,47 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using DocumentsKM.Models;
+using DocumentsKM.Data;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlSheetNameRepo : ISheetNameRepo
+    public class SheetNameRepoTest : IDisposable
     {
-        private readonly ApplicationContext _context;
+        private readonly ISheetNameRepo _repo;
 
-        public SqlSheetNameRepo(ApplicationContext context)
+        public SheetNameRepoTest()
         {
-            _context = context;
+            // Arrange
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "SheetNameTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.SheetNames.AddRange(TestData.sheetNames);
+            context.SaveChanges();
+            _repo = new SqlSheetNameRepo(context);
         }
 
-        public IEnumerable<SheetName> GetAll()
+        public void Dispose()
         {
-            return _context.SheetNames.ToList();
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "SheetNameTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void GetAll_ShouldReturnAllSheetNames()
+        {
+            // Act
+            var sheetNames = _repo.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.sheetNames, sheetNames);
         }
     }
 }

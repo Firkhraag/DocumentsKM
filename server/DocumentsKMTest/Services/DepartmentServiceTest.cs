@@ -7,21 +7,27 @@ namespace DocumentsKM.Tests
 {
     public class DepartmentServiceTest
     {
+        private readonly DepartmentService _service;
+
+        public DepartmentServiceTest()
+        {
+            // Arrange
+            var mockDepartmentRepo = new Mock<IDepartmentRepo>();
+
+            mockDepartmentRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.departments);
+                
+            _service = new DepartmentService(mockDepartmentRepo.Object);
+        }
+
         [Fact]
         public void GetAll_ShouldReturnAllDepartments()
         {
-            // Arrange
-            var departments = TestData.departments;
-            var mockDepartmentRepo = new Mock<IDepartmentRepo>();
-            mockDepartmentRepo.Setup(mock=>
-                mock.GetAll()).Returns(departments);
-            var service = new DepartmentService(mockDepartmentRepo.Object);
-            
             // Act
-            var returnedDepartments = service.GetAll();
+            var returnedDepartments = _service.GetAll();
 
             // Assert
-            Assert.Equal(departments, returnedDepartments);
+            Assert.Equal(TestData.departments, returnedDepartments);
         }
     }
 }

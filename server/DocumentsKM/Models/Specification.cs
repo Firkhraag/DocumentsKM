@@ -29,6 +29,8 @@ namespace DocumentsKM.Models
         public string Note { get; set; }
 
         // дата_созд
-        public DateTime? CreatedDate { get; set; }
+        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedDate { get; set; }
     }
 }

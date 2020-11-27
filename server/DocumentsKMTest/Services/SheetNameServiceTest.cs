@@ -1,21 +1,35 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class SheetNameService : ISheetNameService
+    public class SheetNameServiceTest
     {
-        private ISheetNameRepo _repository;
+        private readonly SheetNameService _service;
 
-        public SheetNameService(ISheetNameRepo sheetNameRepoo)
+        public SheetNameServiceTest()
         {
-            _repository = sheetNameRepoo;
+            // Arrange
+            var mockSheetNameRepo = new Mock<ISheetNameRepo>();
+
+            mockSheetNameRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.sheetNames);
+            
+            _service = new SheetNameService(mockSheetNameRepo.Object);
         }
 
-        public IEnumerable<SheetName> GetAll()
+        [Fact]
+        public void GetAll_ShouldReturnAllSheetNames()
         {
-            return _repository.GetAll();
+            // Act
+            var returnedSheetNames = _service.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.sheetNames,
+                returnedSheetNames);
         }
     }
 }
+

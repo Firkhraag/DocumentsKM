@@ -34,6 +34,10 @@
     margin-left: 0.75em;
 }
 
+.mrg-left-2 {
+    margin-left: 1em;
+}
+
 .component-cnt {
     margin: 4.85vh 0;
 }
@@ -54,6 +58,10 @@
     width: 44vw;
 }
 
+.component-width-3 {
+    width: 50vw;
+}
+
 .info-area {
     height: 100%;
 }
@@ -72,6 +80,10 @@
 
 .doc-note-col-width {
     width: 18em;
+}
+
+.spec-note-col-width {
+	width: 25em;
 }
 
 /* Linked doc */

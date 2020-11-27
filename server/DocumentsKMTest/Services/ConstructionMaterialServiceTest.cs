@@ -7,21 +7,28 @@ namespace DocumentsKM.Tests
 {
     public class ConstructionMaterialServiceTest
     {
+        private readonly ConstructionMaterialService _service;
+
+        public ConstructionMaterialServiceTest()
+        {
+            // Arrange
+            var mockConstructionMaterialRepo = new Mock<IConstructionMaterialRepo>();
+
+            mockConstructionMaterialRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.constructionMaterials);
+            
+            _service = new ConstructionMaterialService(mockConstructionMaterialRepo.Object);
+        }
+
         [Fact]
         public void GetAll_ShouldReturnAllConstructionMaterials()
         {
-            // Arrange
-            var constructionMaterials = TestData.constructionMaterials;
-            var mockConstructionMaterialRepo = new Mock<IConstructionMaterialRepo>();
-            mockConstructionMaterialRepo.Setup(mock=>
-                mock.GetAll()).Returns(constructionMaterials);
-            var service = new ConstructionMaterialService(mockConstructionMaterialRepo.Object);
-            
             // Act
-            var returnedConstructionMaterials = service.GetAll();
+            var returnedConstructionMaterials = _service.GetAll();
 
             // Assert
-            Assert.Equal(constructionMaterials, returnedConstructionMaterials);
+            Assert.Equal(TestData.constructionMaterials,
+                returnedConstructionMaterials);
         }
     }
 }

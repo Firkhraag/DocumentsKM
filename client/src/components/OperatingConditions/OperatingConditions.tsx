@@ -387,7 +387,7 @@ const OperatingConditions = () => {
 						id="coeff"
 						type="text"
 						placeholder="Введите коэффициент надежности"
-						defaultValue={selectedObject.safetyCoeff.toFixed(1)}
+						defaultValue={selectedObject.safetyCoeff}
 						className="auto-width flex-grow"
 						onBlur={onCoeffChange}
 					/>

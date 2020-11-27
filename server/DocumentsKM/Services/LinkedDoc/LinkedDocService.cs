@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private ILinkedDocRepo _repository;
 
-        public LinkedDocService(ILinkedDocRepo linkedDocRepoo)
+        public LinkedDocService(ILinkedDocRepo linkedDocRepo)
         {
-            _repository = linkedDocRepoo;
+            _repository = linkedDocRepo;
         }
 
         public IEnumerable<LinkedDoc> GetAllByDocTypeId(int docTypeId)

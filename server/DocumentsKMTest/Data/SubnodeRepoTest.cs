@@ -1,26 +1,77 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using DocumentsKM.Models;
+using DocumentsKM.Data;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlSubnodeRepo : ISubnodeRepo
+    public class SubnodeRepoTest : IDisposable
     {
-        private readonly ApplicationContext _context;
+        private readonly ISubnodeRepo _repo;
+        private readonly Random _rnd = new Random();
 
-        public SqlSubnodeRepo(ApplicationContext context)
+        public SubnodeRepoTest()
         {
-            _context = context;
+            // Arrange
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "SubnodeTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.Subnodes.AddRange(TestData.subnodes);
+            context.SaveChanges();
+            _repo = new SqlSubnodeRepo(context);
         }
 
-        public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
+        public void Dispose()
         {
-            return _context.Subnodes.Where(s => s.Node.Id == nodeId).ToList();
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "SubnodeTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
         }
 
-        public Subnode GetById(int id)
+        [Fact]
+        public void GetAllByNodeId_ShouldReturnAllSubnodesWithGivenNodeId()
         {
-            return _context.Subnodes.FirstOrDefault(s => s.Id == id);
+            // Arrange
+            int nodeId = _rnd.Next(1, TestData.nodes.Count());
+
+            // Act
+            var subnodes = _repo.GetAllByNodeId(nodeId);
+
+            // Assert
+            Assert.Equal(TestData.subnodes.Where(v => v.Node.Id == nodeId), subnodes);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnSubnode()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.subnodes.Count());
+
+            // Act
+            var subnode = _repo.GetById(id);
+
+            // Assert
+            Assert.Equal(TestData.subnodes.SingleOrDefault(v => v.Id == id), subnode);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Arrange
+            int wrongId = 999;
+
+            // Act
+            var subnode = _repo.GetById(wrongId);
+
+            // Assert
+            Assert.Null(subnode);
         }
     }
 }

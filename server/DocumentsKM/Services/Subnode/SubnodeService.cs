@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private ISubnodeRepo _repository;
 
-        public SubnodeService(ISubnodeRepo SubnodeRepo)
+        public SubnodeService(ISubnodeRepo subnodeRepo)
         {
-            _repository = SubnodeRepo;
+            _repository = subnodeRepo;
         }
 
         public IEnumerable<Subnode> GetAllByNodeId(int nodeId)

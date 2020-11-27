@@ -8,25 +8,34 @@ namespace DocumentsKM.Tests
 {
     public class DocTypeServiceTest
     {
-        [Fact]
-        public void GetAllAttachedDocTypes_ShouldReturnAllDocTypes()
+        private readonly DocTypeService _service;
+
+        public DocTypeServiceTest()
         {
             // Arrange
-            var docTypes = TestData.docTypes;
             var mockDocTypeRepo = new Mock<IDocTypeRepo>();
-            mockDocTypeRepo.Setup(mock=>
-                mock.GetAllExceptId(1)).Returns(docTypes.Where(v => v.Id != 1));
-            mockDocTypeRepo.Setup(mock=>
-                mock.GetAllExceptId(2)).Returns(docTypes.Where(v => v.Id != 2));
-            mockDocTypeRepo.Setup(mock=>
-                mock.GetAllExceptId(3)).Returns(docTypes.Where(v => v.Id != 3));
-            var service = new DocTypeService(mockDocTypeRepo.Object);
-            
+
+            foreach (var docType in TestData.docTypes)
+            {
+                mockDocTypeRepo.Setup(mock=>
+                    mock.GetAllExceptId(docType.Id)).Returns(
+                        TestData.docTypes.Where(v => v.Id != docType.Id));
+            }
+
+            _service = new DocTypeService(mockDocTypeRepo.Object);
+        }
+
+        [Fact]
+        public void GetAllAttached_ShouldReturnAllDocTypes()
+        {
+            // Arrange
+            int sheetDocTypeId = 1;
+
             // Act
-            var returnedDocTypes = service.GetAllAttached();
+            var returnedDocTypes = _service.GetAllAttached();
 
             // Assert
-            Assert.Equal(docTypes.Where(v => v.Id != 1), returnedDocTypes);
+            Assert.Equal(TestData.docTypes.Where(v => v.Id != sheetDocTypeId), returnedDocTypes);
         }
     }
 }

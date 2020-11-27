@@ -1,21 +1,44 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
+using System;
+using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class LinkedDocService : ILinkedDocService
+    public class LinkedDocServiceTest
     {
-        private ILinkedDocRepo _repository;
+        private readonly LinkedDocService _service;
+        private readonly Random _rnd = new Random();
 
-        public LinkedDocService(ILinkedDocRepo linkedDocRepoo)
+        public LinkedDocServiceTest()
         {
-            _repository = linkedDocRepoo;
+            // Arrange
+            var mockLinkedDocRepo = new Mock<ILinkedDocRepo>();
+
+            foreach (var type in TestData.linkedDocTypes)
+            {
+                mockLinkedDocRepo.Setup(mock=>
+                    mock.GetAllByDocTypeId(type.Id)).Returns(
+                        TestData.linkedDocs.Where(v => v.Type.Id == type.Id));
+            }
+
+            _service = new LinkedDocService(mockLinkedDocRepo.Object);
         }
 
-        public IEnumerable<LinkedDoc> GetAllByDocTypeId(int docTypeId)
+        [Fact]
+        public void GetAll_ShouldReturnAllLinkedDocs()
         {
-            return _repository.GetAllByDocTypeId(docTypeId);
+            // Arrange
+            int typeId = _rnd.Next(1, TestData.linkedDocTypes.Count());
+
+            // Act
+            var returnedLinkedDocs = _service.GetAllByDocTypeId(typeId);
+
+            // Assert
+            Assert.Equal(TestData.linkedDocs.Where(v => v.Type.Id == typeId),
+                returnedLinkedDocs);
         }
     }
 }

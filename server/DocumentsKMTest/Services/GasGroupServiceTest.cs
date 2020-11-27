@@ -1,21 +1,35 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class GasGroupService : IGasGroupService
+    public class GasGroupServiceTest
     {
-        private IGasGroupRepo _repository;
+        private readonly GasGroupService _service;
 
-        public GasGroupService(IGasGroupRepo gasGroupRepoo)
+        public GasGroupServiceTest()
         {
-            _repository = gasGroupRepoo;
+            // Arrange
+            var mockGasGroupRepo = new Mock<IGasGroupRepo>();
+
+            mockGasGroupRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.gasGroups);
+            
+            _service = new GasGroupService(mockGasGroupRepo.Object);
         }
 
-        public IEnumerable<GasGroup> GetAll()
+        [Fact]
+        public void GetAll_ShouldReturnAllGasGroups()
         {
-            return _repository.GetAll();
+            // Act
+            var returnedGasGroups = _service.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.gasGroups,
+                returnedGasGroups);
         }
     }
 }
+

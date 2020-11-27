@@ -12,6 +12,7 @@ import MarkData from '../components/Mark/MarkData'
 import MarkApproval from '../components/MarkApproval/MarkApproval'
 import SpecificationTable from '../components/Specification/SpecificationTable'
 import SpecificationData from '../components/Specification/SpecificationData'
+import ConstructionData from '../components/Construction/ConstructionData'
 import SheetTable from '../components/Sheet/SheetTable'
 import SheetData from '../components/Sheet/SheetData'
 import DevelopingAttachedDocTable from '../components/DevelopingAttachedDoc/DevelopingAttachedDocTable'
@@ -21,14 +22,18 @@ import OtherAttachedDocData from '../components/OtherAttachedDoc/OtherAttachedDo
 import LinkedDocTable from '../components/LinkedDoc/LinkedDocTable'
 import LinkedDocData from '../components/LinkedDoc/LinkedDocData'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
+import GeneralData from '../components/GeneralData/GeneralData'
+import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import Specification from '../model/Specification'
+import Construction from '../model/Construction'
 import Doc from '../model/Doc'
 import AttachedDoc from '../model/AttachedDoc'
 import MarkLinkedDoc from '../model/MarkLinkedDoc'
 
 const AuthApp = () => {
 	const [popupObj, setPopupObj] = useState(defaultPopupObj)
-	const [specification, setSpecification] = useState<Specification>(null)
+    const [specification, setSpecification] = useState<Specification>(null)
+    const [construction, setConstruction] = useState<Construction>(null)
 	const [sheet, setSheet] = useState<Doc>(null)
 	const [developingAttachedDoc, setDevelopingAttachedDoc] = useState<Doc>(
 		null
@@ -76,6 +81,16 @@ const AuthApp = () => {
 						<Route exact path="/specifications/:specificationId">
 							<div className="full-width div-container">
 								<SpecificationData specification={specification} />
+							</div>
+						</Route>
+                        <Route exact path="/specifications/:specificationId/constructions/:constructionId">
+							<div className="full-width div-container">
+								<ConstructionData construction={construction} isCreateMode={false} />
+							</div>
+						</Route>
+                        <Route exact path="/specifications/:specificationId/construction-create">
+							<div className="full-width div-container">
+								<ConstructionData construction={construction} isCreateMode={true} />
 							</div>
 						</Route>
 
@@ -185,6 +200,18 @@ const AuthApp = () => {
 						<Route exact path="/operating-conditions">
 							<div className="full-width div-container">
 								<OperatingConditions />
+							</div>
+						</Route>
+
+                        <Route exact path="/general-data">
+							<div className="full-width div-container">
+								<GeneralData />
+							</div>
+						</Route>
+
+                        <Route exact path="/user/general-data">
+							<div className="full-width div-container">
+								<UserGeneralData />
 							</div>
 						</Route>
 					</div>

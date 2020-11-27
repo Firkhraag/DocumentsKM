@@ -7,5 +7,7 @@ namespace DocumentsKM.Data
     {
         // Получить контроль сварки
         IEnumerable<WeldingControl> GetAll();
+        // Получить контроль сварки по id
+        WeldingControl GetById(int id);
     }
 }

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class ConstructionMaterialRepoTest
+    public class ConstructionMaterialRepoTest : IDisposable
     {
         private readonly IConstructionMaterialRepo _repo;
 
@@ -25,7 +25,7 @@ namespace DocumentsKM.Tests
             _repo = new SqlConstructionMaterialRepo(context);
         }
 
-        ~ConstructionMaterialRepoTest()
+        public void Dispose()
         {
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
             builder.UseInMemoryDatabase(databaseName: "ConstructionMaterialTestDb");
@@ -41,8 +41,7 @@ namespace DocumentsKM.Tests
             var constructionMaterials = _repo.GetAll();
 
             // Assert
-            Assert.Equal(TestData.constructionMaterials.Count(),
-                constructionMaterials.Count());
+            Assert.Equal(TestData.constructionMaterials, constructionMaterials);
         }
 
         [Fact]
@@ -63,8 +62,11 @@ namespace DocumentsKM.Tests
         [Fact]
         public void GetById_ShouldReturnNull()
         {
+            // Arrange
+            int wrongId = 999;
+
             // Act
-            var constructionMaterial = _repo.GetById(999);
+            var constructionMaterial = _repo.GetById(wrongId);
 
             // Assert
             Assert.Null(constructionMaterial);

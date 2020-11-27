@@ -1,21 +1,35 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class WeldingControlService : IWeldingControlService
+    public class WeldingControlServiceTest
     {
-        private IWeldingControlRepo _repository;
+        private readonly WeldingControlService _service;
 
-        public WeldingControlService(IWeldingControlRepo weldingControlRepoo)
+        public WeldingControlServiceTest()
         {
-            _repository = weldingControlRepoo;
+            // Arrange
+            var mockWeldingControlRepo = new Mock<IWeldingControlRepo>();
+
+            mockWeldingControlRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.weldingControl);
+            
+            _service = new WeldingControlService(mockWeldingControlRepo.Object);
         }
 
-        public IEnumerable<WeldingControl> GetAll()
+        [Fact]
+        public void GetAll_ShouldReturnAllWeldingControl()
         {
-            return _repository.GetAll();
+            // Act
+            var returnedWeldingControls = _service.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.weldingControl,
+                returnedWeldingControls);
         }
     }
 }
+

@@ -3,6 +3,7 @@ import React, { useState, useEffect, createRef } from 'react'
 import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
+import Form from 'react-bootstrap/Form'
 import { PlusCircle } from 'react-bootstrap-icons'
 import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
@@ -11,7 +12,6 @@ import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Specification from '../../model/Specification'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
-import './SpecificationTable.css'
 
 type SpecificationTableProps = {
 	setPopupObj: (popupObj: IPopupObj) => void
@@ -54,7 +54,7 @@ const SpecificationTable = ({
 					try {
 						const specificationsFetchedResponse = await httpClient.get(
 							`/marks/${mark.id}/specifications`
-						)
+                        )
 						for (let s of specificationsFetchedResponse.data) {
 							if (s.isCurrent) {
 								setCurrentSpecId(s.id)
@@ -62,7 +62,6 @@ const SpecificationTable = ({
 							refs.push(createRef())
 						}
 						setSpecifications(specificationsFetchedResponse.data)
-						// setRerender(!rerender)
 					} catch (e) {
 						console.log('Failed to fetch the data', e)
 					}
@@ -141,7 +140,7 @@ const SpecificationTable = ({
 					<tr>
 						<th>№</th>
 						<th>Создан</th>
-						<th className="note-col-width">Примечание</th>
+						<th className="spec-note-col-width">Примечание</th>
 						<th>Текущий</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
@@ -160,7 +159,7 @@ const SpecificationTable = ({
 												s.createdDate
 										  ).toLocaleDateString()}
 								</td>
-								<td className="note-col-width">{s.note}</td>
+								<td className="spec-note-col-width">{s.note}</td>
 								<td
 									onClick={() =>
 										currentSpecId === s.id
@@ -181,13 +180,14 @@ const SpecificationTable = ({
 									}
 									className="pointer text-centered"
 								>
-									<input
+									{/* <input
 										ref={refs[index]}
 										className="current-radio-btn pointer"
 										type="radio"
 										id={`is${s.id}`}
 										name="currentRelease"
-									/>
+									/> */}
+                                    <Form.Check ref={refs[index]} id={`is${s.id}`} name="currentRelease" type="radio" style={{pointerEvents: 'none'}} />
 								</td>
 								<td
 									onClick={() => {

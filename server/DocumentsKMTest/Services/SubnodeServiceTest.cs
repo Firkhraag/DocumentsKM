@@ -1,26 +1,44 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
+using System;
+using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class SubnodeService : ISubnodeService
+    public class SubnodeServiceTest
     {
-        private ISubnodeRepo _repository;
+        private readonly SubnodeService _service;
+        private readonly Random _rnd = new Random();
 
-        public SubnodeService(ISubnodeRepo SubnodeRepo)
+        public SubnodeServiceTest()
         {
-            _repository = SubnodeRepo;
+            // Arrange
+            var mockSubnodeRepo = new Mock<ISubnodeRepo>();
+
+            foreach (var node in TestData.nodes)
+            {
+                mockSubnodeRepo.Setup(mock=>
+                    mock.GetAllByNodeId(node.Id)).Returns(
+                        TestData.subnodes.Where(v => v.Node.Id == node.Id));
+            }
+
+            _service = new SubnodeService(mockSubnodeRepo.Object);
         }
 
-        public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
+        [Fact]
+        public void GetAllByNodeId_ShouldReturnAllSubnodesWithGivenNodeId()
         {
-            return _repository.GetAllByNodeId(nodeId);
-        }
+            // Arrange
+            int nodeId = _rnd.Next(1, TestData.nodes.Count());
 
-        public Subnode GetById(int id)
-        {
-            return _repository.GetById(id);
+            // Act
+            var returnedSubnodes = _service.GetAllByNodeId(nodeId);
+
+            // Assert
+            Assert.Equal(TestData.subnodes.Where(v => v.Node.Id == nodeId),
+                returnedSubnodes);
         }
     }
 }

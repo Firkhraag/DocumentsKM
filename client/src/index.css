@@ -17,6 +17,12 @@
 	border: 1px solid #ced4da !important;
 }
 
+.form-check .form-check-input {
+	width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
 button:focus {
 	box-shadow: none !important;
 }

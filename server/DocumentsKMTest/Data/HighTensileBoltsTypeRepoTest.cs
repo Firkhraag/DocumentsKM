@@ -1,26 +1,75 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using DocumentsKM.Models;
+using DocumentsKM.Data;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlHighTensileBoltsTypeRepo : IHighTensileBoltsTypeRepo
+    public class HighTensileBoltsTypeRepoTest : IDisposable
     {
-        private readonly ApplicationContext _context;
+        private readonly IHighTensileBoltsTypeRepo _repo;
 
-        public SqlHighTensileBoltsTypeRepo(ApplicationContext context)
+        public HighTensileBoltsTypeRepoTest()
         {
-            _context = context;
+            // Arrange
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "HighTensileBoltsTypeTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.HighTensileBoltsTypes.AddRange(TestData.highTensileBoltsTypes);
+            context.SaveChanges();
+            _repo = new SqlHighTensileBoltsTypeRepo(context);
         }
 
-        public IEnumerable<HighTensileBoltsType> GetAll()
+        public void Dispose()
         {
-            return _context.HighTensileBoltsTypes.ToList();
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "HighTensileBoltsTypeTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
         }
 
-        public HighTensileBoltsType GetById(int id)
+        [Fact]
+        public void GetAll_ShouldReturnAllHighTensileBoltsTypes()
         {
-            return _context.HighTensileBoltsTypes.FirstOrDefault(t => t.Id == id);
+            // Act
+            var highTensileBoltsTypes = _repo.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.highTensileBoltsTypes, highTensileBoltsTypes);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnHighTensileBoltsType()
+        {
+            // Arrange
+            var rnd = new Random();
+            int id = rnd.Next(1, TestData.highTensileBoltsTypes.Count());
+
+            // Act
+            var highTensileBoltsType = _repo.GetById(id);
+
+            // Assert
+            Assert.Equal(TestData.highTensileBoltsTypes.SingleOrDefault(v => v.Id == id),
+                highTensileBoltsType);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Arrange
+            int wrongId = 999;
+
+            // Act
+            var highTensileBoltsType = _repo.GetById(wrongId);
+
+            // Assert
+            Assert.Null(highTensileBoltsType);
         }
     }
 }

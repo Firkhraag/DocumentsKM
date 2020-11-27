@@ -12,6 +12,8 @@ const Home = () => {
 	const mark = useMark()
 
 	return (
+        <div>
+            <h2 className="home-cnt-header text-centered">Данные</h2>
 		<div className="home-cnt">
 			<Link to="/marks">
 				<Button variant="outline-secondary">
@@ -91,6 +93,19 @@ const Home = () => {
 				</Button>
 			</Link>
 		</div>
+
+        <h2 className="home-cnt-header text-centered">Документы</h2>
+		<div className="home-cnt">
+			<Link to={mark != null ? `/general-data` : '/'}>
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+				>
+					Общие данные
+				</Button>
+			</Link>
+		</div>
+        </div>
 	)
 }
 

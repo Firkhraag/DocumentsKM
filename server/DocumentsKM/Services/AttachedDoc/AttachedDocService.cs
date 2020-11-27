@@ -35,9 +35,9 @@ namespace DocumentsKM.Services
                 throw new ArgumentNullException(nameof(foundMark));
 
             var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
-                foundMark.Id, attachedDoc.Designation);
+                markId, attachedDoc.Designation);
             if (uniqueConstraintViolationCheck != null)
-                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+                throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
 
             attachedDoc.Mark = foundMark;
             _repository.Add(attachedDoc);
@@ -58,7 +58,7 @@ namespace DocumentsKM.Services
                 var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
                     foundAttachedDoc.Mark.Id, attachedDoc.Designation);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+                    throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
                 foundAttachedDoc.Designation = attachedDoc.Designation;
             }
             if (attachedDoc.Name != null)

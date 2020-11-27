@@ -1,8 +1,7 @@
 using System.Linq;
 using DocumentsKM.Models;
-using DocumentsKM.Data;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Data
 {
     public class SqlUserRepo : IUserRepo
     {

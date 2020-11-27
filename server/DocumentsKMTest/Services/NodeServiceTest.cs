@@ -1,21 +1,44 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
+using System;
+using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class NodeService : INodeService
+    public class NodeServiceTest
     {
-        private INodeRepo _repository;
+        private readonly NodeService _service;
+        private readonly Random _rnd = new Random();
 
-        public NodeService(INodeRepo NodeRepo)
+        public NodeServiceTest()
         {
-            _repository = NodeRepo;
+            // Arrange
+            var mockNodeRepo = new Mock<INodeRepo>();
+
+            foreach (var project in TestData.projects)
+            {
+                mockNodeRepo.Setup(mock=>
+                    mock.GetAllByProjectId(project.Id)).Returns(
+                        TestData.nodes.Where(v => v.Project.Id == project.Id));
+            }
+
+            _service = new NodeService(mockNodeRepo.Object);
         }
 
-        public IEnumerable<Node> GetAllByProjectId(int projectId)
+        [Fact]
+        public void GetAllByProjectId_ShouldReturnAllNodesWithGivenProjectId()
         {
-            return _repository.GetAllByProjectId(projectId);
+            // Arrange
+            int projectId = _rnd.Next(1, TestData.projects.Count());
+
+            // Act
+            var returnedNodes = _service.GetAllByProjectId(projectId);
+
+            // Assert
+            Assert.Equal(TestData.nodes.Where(v => v.Project.Id == projectId),
+                returnedNodes);
         }
     }
 }

@@ -1,21 +1,35 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
 using DocumentsKM.Data;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class HighTensileBoltsTypeService : IHighTensileBoltsTypeService
+    public class HighTensileBoltsTypeServiceTest
     {
-        private IHighTensileBoltsTypeRepo _repository;
+        private readonly HighTensileBoltsTypeService _service;
 
-        public HighTensileBoltsTypeService(IHighTensileBoltsTypeRepo highTensileBoltsTypeRepoo)
+        public HighTensileBoltsTypeServiceTest()
         {
-            _repository = highTensileBoltsTypeRepoo;
+            // Arrange
+            var mockHighTensileBoltsTypeRepo = new Mock<IHighTensileBoltsTypeRepo>();
+
+            mockHighTensileBoltsTypeRepo.Setup(mock=>
+                mock.GetAll()).Returns(TestData.highTensileBoltsTypes);
+            
+            _service = new HighTensileBoltsTypeService(mockHighTensileBoltsTypeRepo.Object);
         }
 
-        public IEnumerable<HighTensileBoltsType> GetAll()
+        [Fact]
+        public void GetAll_ShouldReturnAllHighTensileBoltsTypes()
         {
-            return _repository.GetAll();
+            // Act
+            var returnedHighTensileBoltsTypes = _service.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.highTensileBoltsTypes,
+                returnedHighTensileBoltsTypes);
         }
     }
 }
+

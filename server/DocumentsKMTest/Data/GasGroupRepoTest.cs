@@ -1,26 +1,75 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using DocumentsKM.Models;
+using DocumentsKM.Data;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlGasGroupRepo : IGasGroupRepo
+    public class GasGroupRepoTest : IDisposable
     {
-        private readonly ApplicationContext _context;
+        private readonly IGasGroupRepo _repo;
 
-        public SqlGasGroupRepo(ApplicationContext context)
+        public GasGroupRepoTest()
         {
-            _context = context;
+            // Arrange
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "GasGroupTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.GasGroups.AddRange(TestData.gasGroups);
+            context.SaveChanges();
+            _repo = new SqlGasGroupRepo(context);
         }
 
-        public IEnumerable<GasGroup> GetAll()
+        public void Dispose()
         {
-            return _context.GasGroups.ToList();
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "GasGroupTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
         }
 
-        public GasGroup GetById(int id)
+        [Fact]
+        public void GetAll_ShouldReturnAllGasGroups()
         {
-            return _context.GasGroups.FirstOrDefault(g => g.Id == id);
+            // Act
+            var gasGroups = _repo.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.gasGroups, gasGroups);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnGasGroup()
+        {
+            // Arrange
+            var rnd = new Random();
+            int id = rnd.Next(1, TestData.gasGroups.Count());
+
+            // Act
+            var gasGroup = _repo.GetById(id);
+
+            // Assert
+            Assert.Equal(TestData.gasGroups.SingleOrDefault(v => v.Id == id),
+                gasGroup);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Arrange
+            int wrongId = 999;
+
+            // Act
+            var gasGroup = _repo.GetById(wrongId);
+
+            // Assert
+            Assert.Null(gasGroup);
         }
     }
 }

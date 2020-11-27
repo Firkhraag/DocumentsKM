@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using DocumentsKM.Data;
 using DocumentsKM.Tests;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -54,13 +53,35 @@ public class TestWebApplicationFactory<TStartup>
     private void InitializeDbForTests(ApplicationContext context)
     {
         context.ConstructionMaterials.AddRange(TestData.constructionMaterials);
-        context.SaveChanges();
         context.ConstructionMaterials.AttachRange(TestData.constructionMaterials);
-        // if (!context.ConstructionMaterials.Any())
-        // {
-        //     context.ConstructionMaterials.AddRange(TestData.constructionMaterials);
-        //     context.SaveChanges();
-        //     context.ConstructionMaterials.AttachRange(TestData.constructionMaterials);
-        // }
+
+        context.EnvAggressiveness.AddRange(TestData.envAggressiveness);
+        context.EnvAggressiveness.AttachRange(TestData.envAggressiveness);
+
+        context.GasGroups.AddRange(TestData.gasGroups);
+        context.GasGroups.AttachRange(TestData.gasGroups);
+
+        context.HighTensileBoltsTypes.AddRange(TestData.highTensileBoltsTypes);
+        context.HighTensileBoltsTypes.AttachRange(TestData.highTensileBoltsTypes);
+
+        context.PaintworkTypes.AddRange(TestData.paintworkTypes);
+        context.PaintworkTypes.AttachRange(TestData.paintworkTypes);
+
+        context.WeldingControl.AddRange(TestData.weldingControl);
+        context.WeldingControl.AttachRange(TestData.weldingControl);
+
+        context.Projects.AddRange(TestData.projects);
+        context.Projects.AttachRange(TestData.projects);
+
+        context.Nodes.AddRange(TestData.nodes);
+        context.Nodes.AttachRange(TestData.nodes);
+
+        context.Subnodes.AddRange(TestData.subnodes);
+        context.Subnodes.AttachRange(TestData.subnodes);
+
+        context.Marks.AddRange(TestData.marks);
+        context.Marks.AttachRange(TestData.marks);
+
+        context.SaveChanges();
     }
 }

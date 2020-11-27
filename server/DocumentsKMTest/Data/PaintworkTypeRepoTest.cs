@@ -1,26 +1,75 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using DocumentsKM.Models;
+using DocumentsKM.Data;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlPaintworkTypeRepo : IPaintworkTypeRepo
+    public class PaintworkTypeRepoTest : IDisposable
     {
-        private readonly ApplicationContext _context;
+        private readonly IPaintworkTypeRepo _repo;
 
-        public SqlPaintworkTypeRepo(ApplicationContext context)
+        public PaintworkTypeRepoTest()
         {
-            _context = context;
+            // Arrange
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "PaintworkTypeTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.PaintworkTypes.AddRange(TestData.paintworkTypes);
+            context.SaveChanges();
+            _repo = new SqlPaintworkTypeRepo(context);
         }
 
-        public IEnumerable<PaintworkType> GetAll()
+        public void Dispose()
         {
-            return _context.PaintworkTypes.ToList();
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "PaintworkTypeTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
         }
 
-        public PaintworkType GetById(int id)
+        [Fact]
+        public void GetAll_ShouldReturnAllPaintworkTypes()
         {
-            return _context.PaintworkTypes.FirstOrDefault(t => t.Id == id);
+            // Act
+            var paintworkTypes = _repo.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.paintworkTypes, paintworkTypes);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnPaintworkType()
+        {
+            // Arrange
+            var rnd = new Random();
+            int id = rnd.Next(1, TestData.paintworkTypes.Count());
+
+            // Act
+            var paintworkType = _repo.GetById(id);
+
+            // Assert
+            Assert.Equal(TestData.paintworkTypes.SingleOrDefault(v => v.Id == id),
+                paintworkType);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Arrange
+            int wrongId = 999;
+
+            // Act
+            var paintworkType = _repo.GetById(wrongId);
+
+            // Assert
+            Assert.Null(paintworkType);
         }
     }
 }

@@ -53,6 +53,7 @@ namespace DocumentsKM.Tests
             {
                 Id=2,
                 Name="E2",
+                Department=departments[1],
                 Position=positions[1],
             },
             new Employee
@@ -61,6 +62,13 @@ namespace DocumentsKM.Tests
                 Name="E3",
                 Department=departments[0],
                 Position=positions[2],
+            },
+            new Employee
+            {
+                Id=4,
+                Name="E4",
+                Department=departments[1],
+                Position=positions[1],
             },
         };
 
@@ -190,6 +198,50 @@ namespace DocumentsKM.Tests
             },
         };
 
+        public static readonly List<ConstructionType> constructionTypes = new List<ConstructionType>
+        {
+            new ConstructionType
+            {
+                Id=1,
+                Name="T1",
+            },
+            new ConstructionType
+            {
+                Id=2,
+                Name="T2",
+            },
+            new ConstructionType
+            {
+                Id=3,
+                Name="T3",
+            },
+        };
+
+        public static readonly List<ConstructionSubtype> constructionSubtypes = new List<ConstructionSubtype>
+        {
+            new ConstructionSubtype
+            {
+                Id=1,
+                Type=constructionTypes[0],
+                Name="S1",
+                Valuation="V1",
+            },
+            new ConstructionSubtype
+            {
+                Id=2,
+                Type=constructionTypes[1],
+                Name="S2",
+                Valuation="V2",
+            },
+            new ConstructionSubtype
+            {
+                Id=3,
+                Type=constructionTypes[2],
+                Name="S3",
+                Valuation="V3",
+            },
+        };
+
         public static readonly List<DocType> docTypes = new List<DocType>
         {
             new DocType
@@ -244,6 +296,36 @@ namespace DocumentsKM.Tests
                 NumOfPages=1,
                 Form=1.0f,
             },
+            new Doc
+            {
+                Id=4,
+                Mark=marks[0],
+                Type=docTypes[1],
+                Name="Name 4",
+                Creator=employees[1],
+                NumOfPages=1,
+                Form=1.0f,
+            },
+            new Doc
+            {
+                Id=5,
+                Mark=marks[1],
+                Type=docTypes[1],
+                Name="Name 5",
+                Creator=employees[1],
+                NumOfPages=1,
+                Form=1.0f,
+            },
+            new Doc
+            {
+                Id=6,
+                Mark=marks[2],
+                Type=docTypes[1],
+                Name="Name 6",
+                Creator=employees[1],
+                NumOfPages=1,
+                Form=1.0f,
+            },
         };
 
         public static readonly List<User> users = new List<User>
@@ -287,6 +369,139 @@ namespace DocumentsKM.Tests
             },
         };
 
+        public static readonly List<EnvAggressiveness> envAggressiveness = new List<EnvAggressiveness>
+        {
+            new EnvAggressiveness
+            {
+                Id=1,
+                Name="EA1",
+            },
+            new EnvAggressiveness
+            {
+                Id=2,
+                Name="EA2",
+            },
+            new EnvAggressiveness
+            {
+                Id=3,
+                Name="EA3",
+            },
+        };
+
+        public static readonly List<GasGroup> gasGroups = new List<GasGroup>
+        {
+            new GasGroup
+            {
+                Id=1,
+                Name="GG1",
+            },
+            new GasGroup
+            {
+                Id=2,
+                Name="GG2",
+            },
+            new GasGroup
+            {
+                Id=3,
+                Name="GG3",
+            },
+        };
+
+        public static readonly List<HighTensileBoltsType> highTensileBoltsTypes = new List<HighTensileBoltsType>
+        {
+            new HighTensileBoltsType
+            {
+                Id=1,
+                Name="HTBT1",
+            },
+            new HighTensileBoltsType
+            {
+                Id=2,
+                Name="HTBT2",
+            },
+            new HighTensileBoltsType
+            {
+                Id=3,
+                Name="HTBT3",
+            },
+        };
+
+        public static readonly List<OperatingArea> operatingAreas = new List<OperatingArea>
+        {
+            new OperatingArea
+            {
+                Id=1,
+                Name="OA1",
+            },
+            new OperatingArea
+            {
+                Id=2,
+                Name="OA2",
+            },
+            new OperatingArea
+            {
+                Id=3,
+                Name="OA3",
+            },
+        };
+
+        public static readonly List<PaintworkType> paintworkTypes = new List<PaintworkType>
+        {
+            new PaintworkType
+            {
+                Id=1,
+                Name="PT1",
+            },
+            new PaintworkType
+            {
+                Id=2,
+                Name="PT2",
+            },
+            new PaintworkType
+            {
+                Id=3,
+                Name="PT3",
+            },
+        };
+
+        public static readonly List<SheetName> sheetNames = new List<SheetName>
+        {
+            new SheetName
+            {
+                Id=1,
+                Name="SN1",
+            },
+            new SheetName
+            {
+                Id=2,
+                Name="SN2",
+            },
+            new SheetName
+            {
+                Id=3,
+                Name="SN3",
+            },
+        };
+
+        public static readonly List<WeldingControl> weldingControl = new List<WeldingControl>
+        {
+            new WeldingControl
+            {
+                Id=1,
+                Name="WC1",
+            },
+            new WeldingControl
+            {
+                Id=2,
+                Name="WC2",
+            },
+            new WeldingControl
+            {
+                Id=3,
+                Name="WC3",
+            },
+        };
+
         public static readonly List<AttachedDoc> attachedDocs = new List<AttachedDoc>
         {
             new AttachedDoc
@@ -317,6 +532,103 @@ namespace DocumentsKM.Tests
                 Mark=marks[0],
                 Designation="D4",
                 Name="AD4",
+            },
+        };
+
+        public static readonly List<LinkedDocType> linkedDocTypes = new List<LinkedDocType>
+        {
+            new LinkedDocType
+            {
+                Id=1,
+                Name="LDT1",
+            },
+            new LinkedDocType
+            {
+                Id=2,
+                Name="LDT2",
+            },
+            new LinkedDocType
+            {
+                Id=3,
+                Name="LDT3",
+            },
+        };
+
+        public static readonly List<LinkedDoc> linkedDocs = new List<LinkedDoc>
+        {
+            new LinkedDoc
+            {
+                Id=1,
+                Type=linkedDocTypes[0],
+                Code="C1",
+                Name="LD1",
+                Designation="D1",
+            },
+            new LinkedDoc
+            {
+                Id=2,
+                Type=linkedDocTypes[0],
+                Code="C2",
+                Name="LD2",
+                Designation="D2",
+            },
+            new LinkedDoc
+            {
+                Id=3,
+                Type=linkedDocTypes[1],
+                Code="C3",
+                Name="LD3",
+                Designation="D3",
+            },
+            new LinkedDoc
+            {
+                Id=4,
+                Type=linkedDocTypes[1],
+                Code="C4",
+                Name="LD4",
+                Designation="D4",
+            },
+            new LinkedDoc
+            {
+                Id=5,
+                Type=linkedDocTypes[2],
+                Code="C5",
+                Name="LD5",
+                Designation="D5",
+            },
+        };
+
+        public static readonly List<MarkLinkedDoc> markLinkedDocs = new List<MarkLinkedDoc>
+        {
+            new MarkLinkedDoc
+            {
+                Id=1,
+                Mark=marks[0],
+                LinkedDoc=linkedDocs[0],
+            },
+            new MarkLinkedDoc
+            {
+                Id=2,
+                Mark=marks[0],
+                LinkedDoc=linkedDocs[1],
+            },
+            new MarkLinkedDoc
+            {
+                Id=3,
+                Mark=marks[1],
+                LinkedDoc=linkedDocs[0],
+            },
+            new MarkLinkedDoc
+            {
+                Id=4,
+                Mark=marks[1],
+                LinkedDoc=linkedDocs[1],
+            },
+            new MarkLinkedDoc
+            {
+                Id=5,
+                Mark=marks[2],
+                LinkedDoc=linkedDocs[0],
             },
         };
 

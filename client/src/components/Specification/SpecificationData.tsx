@@ -8,7 +8,8 @@ import Button from 'react-bootstrap/Button'
 import { PlusCircle } from 'react-bootstrap-icons'
 import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
-// Other
+// Util
+import httpClient from '../../axios'
 import Specification from '../../model/Specification'
 import { useMark } from '../../store/MarkStore'
 
@@ -17,16 +18,16 @@ type SpecificationDataProps = {
 }
 
 const SpecificationData = ({ specification }: SpecificationDataProps) => {
-    const history = useHistory()
+	const history = useHistory()
 	const mark = useMark()
 
-    const [selectedObject, setSelectedObject] = useState(specification)
+	const [selectedObject, setSelectedObject] = useState(specification)
 
-    // const [constructions, setConstructions] = useState([] as ConstructionType[])
-    // const [highTensileBolts, setHighTensileBolts] = useState([] as Specification[])
-    // const [standardConstructions, setStandardConstructions] = useState([] as StandardConstruction[])
+	// const [constructions, setConstructions] = useState([] as ConstructionType[])
+	// const [highTensileBolts, setHighTensileBolts] = useState([] as Specification[])
+	// const [standardConstructions, setStandardConstructions] = useState([] as StandardConstruction[])
 
-    useEffect(() => {
+	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			if (selectedObject == null) {
 				history.push('/specifications')
@@ -34,8 +35,15 @@ const SpecificationData = ({ specification }: SpecificationDataProps) => {
 			}
 		}
 	}, [mark])
-    
-    const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+
+	const onNoteChange = async (event: React.FormEvent<HTMLTextAreaElement>) => {
+        try {
+            await httpClient.patch(`/specifications/${selectedObject.id}`, {
+                note: event.currentTarget.value,
+            })
+        } catch (e) {
+            console.log('Error')
+        }
 		setSelectedObject({
 			...selectedObject,
 			note: event.currentTarget.value,
@@ -45,7 +53,7 @@ const SpecificationData = ({ specification }: SpecificationDataProps) => {
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Данные выпуска спецификации</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
+			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
 				<Form.Group style={{ marginBottom: 0 }}>
 					<Form.Label>Примечание</Form.Label>
 					<Form.Control
@@ -58,18 +66,28 @@ const SpecificationData = ({ specification }: SpecificationDataProps) => {
 					/>
 				</Form.Group>
 
-                <div className="mrg-top-2 bold">
-                    Перечень видов конструкций
-                </div>
+				<div className="mrg-top-2 bold">Перечень видов конструкций</div>
 
-                <PlusCircle
-                    onClick={() => history.push('/sheet-create')}
-                    color="#666"
-                    size={28}
-                    className="pointer"
-                />
+				<PlusCircle
+					onClick={() => history.push(`/specifications/${selectedObject.id}/construction-create`)}
+					color="#666"
+					size={28}
+					className="pointer mrg-top"
+				/>
 
-				<table>
+				<Table bordered striped className="mrg-top no-bot-mrg">
+					<thead>
+						<tr>
+							<th>№</th>
+							<th>Вид конструкции</th>
+							<th className="text-centered" colSpan={2}>
+								Действия
+							</th>
+						</tr>
+					</thead>
+				</Table>
+
+				{/* <table>
 					<tbody>
 						<tr className="head-tr">
 							<td>Вид конструкции</td>
@@ -100,72 +118,16 @@ const SpecificationData = ({ specification }: SpecificationDataProps) => {
 							<td>+</td>
 						</tr>
 					</tbody>
-				</table>
+				</table> */}
+
+				{/* <Button
+					variant="secondary"
+					className="btn-mrg-top-2 full-width"
+					onClick={null}
+				>
+					Сохранить изменения
+				</Button> */}
 			</div>
-
-            <Table bordered striped className="mrg-top no-bot-mrg">
-                    <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Код</th>
-                            <th>Вид конструкции</th>
-                            <th>Включать</th>
-                            <th className="text-centered" colSpan={2}>
-                                Действия
-                            </th>
-                        </tr>
-                    </thead>
-                    {/* <tbody>
-                        {sheets.map((s, index) => {
-                            return (
-                                <tr key={s.id}>
-                                    <td>{s.num}</td>
-                                    <td className="doc-name-col-width">{s.name}</td>
-                                    <td>{s.form}</td>
-                                    <td className="doc-employee-col-width">
-                                        {s.creator == null ? '' : s.creator.name}
-                                    </td>
-                                    <td className="doc-employee-col-width">
-                                        {s.inspector == null
-                                            ? ''
-                                            : s.inspector.name}
-                                    </td>
-                                    <td className="doc-employee-col-width">
-                                        {s.normContr == null
-                                            ? ''
-                                            : s.normContr.name}
-                                    </td>
-                                    <td className="doc-note-col-width">{s.note}</td>
-                                    <td
-                                        onClick={() => {
-                                            setSheet(s)
-                                            history.push(`/sheets/${s.id}`)
-                                        }}
-                                        className="pointer action-cell-width text-centered"
-                                    >
-                                        <PencilSquare color="#666" size={26} />
-                                    </td>
-                                    <td
-                                        onClick={() =>
-                                            setPopupObj({
-                                                isShown: true,
-                                                msg: `Вы действительно хотите удалить лист основного комплекта №${s.num}?`,
-                                                onAccept: () =>
-                                                    onDeleteClick(index, s.id),
-                                                onCancel: () =>
-                                                    setPopupObj(defaultPopupObj),
-                                            })
-                                        }
-                                        className="pointer action-cell-width text-centered"
-                                    >
-                                        <Trash color="#666" size={26} />
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody> */}
-                </Table>
-
 		</div>
 	)
 

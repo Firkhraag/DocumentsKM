@@ -17,5 +17,10 @@ namespace DocumentsKM.Data
         {
             return _context.WeldingControl.ToList();
         }
+
+        public WeldingControl GetById(int id)
+        {
+            return _context.WeldingControl.FirstOrDefault(c => c.Id == id);
+        }
     }
 }

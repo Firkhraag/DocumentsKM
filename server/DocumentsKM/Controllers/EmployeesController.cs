@@ -30,7 +30,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<EmployeeBaseResponse>> GetByDepartmentId(int departmentId)
         {
-            var employees = _service.GetByDepartmentId(departmentId);
+            var employees = _service.GetAllByDepartmentId(departmentId);
             return Ok(_mapper.Map<IEnumerable<EmployeeBaseResponse>>(employees));
         }
 
