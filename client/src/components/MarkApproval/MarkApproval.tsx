@@ -201,8 +201,8 @@ const MarkApproval = () => {
 			<h1 className="text-centered">Согласования</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
 				<div className="flex">
-					<label className="bold input-width no-bot-mrg">Отдел</label>
-					<label className="bold input-width mrg-left no-bot-mrg">Специалист</label>
+					<label className="bold input-width no-bot-mrg" htmlFor="approvalDepartment0">Отдел</label>
+					<label className="bold input-width mrg-left no-bot-mrg" htmlFor="approvalEmployee0">Специалист</label>
 				</div>
 				{[...Array(optionsObject.employees.length).keys()].map(
 					(rowNumber) => {

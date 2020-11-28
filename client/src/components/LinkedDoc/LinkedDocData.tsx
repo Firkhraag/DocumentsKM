@@ -121,7 +121,6 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 						`/linked-docs-types/${id}/docs`
 					)
 					cachedDocs.set(v.id, linkedDocsResponse.data)
-                    // selectedObject.linkedDoc.type = v
                     setSelectedObject({
                         ...selectedObject,
                         linkedDoc: {
@@ -240,70 +239,80 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				</div>
 
 				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
-					<label className="bold no-bot-mrg" htmlFor="type">
-						Вид
-					</label>
-					<Select
-						inputId="type"
-						maxMenuHeight={250}
-						isClearable={true}
-						isSearchable={true}
-						placeholder="Выберите вид ссылочного документа"
-						noOptionsMessage={() => 'Виды не найдены'}
-						className="mrg-top"
-						onChange={(selectedOption) =>
-							onTypeSelect((selectedOption as any)?.value)
-						}
-						value={
-							selectedObject.linkedDoc.type == null
-								? null
-								: {
-										value: selectedObject.linkedDoc.type.id,
-										label:
-											selectedObject.linkedDoc.type.name,
-								  }
-						}
-						options={optionsObject.types.map((t) => {
-							return {
-								value: t.id,
-								label: t.name,
-							}
-						})}
-						styles={reactSelectstyle}
-					/>
+                    <Form.Group>
+                        <Form.Label
+                            className="no-bot-mrg"
+                            htmlFor="type"
+                        >
+                            Вид
+                        </Form.Label>
+                        <Select
+                            inputId="type"
+                            maxMenuHeight={250}
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder="Выберите вид ссылочного документа"
+                            noOptionsMessage={() => 'Виды не найдены'}
+                            className="mrg-top"
+                            onChange={(selectedOption) =>
+                                onTypeSelect((selectedOption as any)?.value)
+                            }
+                            value={
+                                selectedObject.linkedDoc.type == null
+                                    ? null
+                                    : {
+                                            value: selectedObject.linkedDoc.type.id,
+                                            label:
+                                                selectedObject.linkedDoc.type.name,
+                                    }
+                            }
+                            options={optionsObject.types.map((t) => {
+                                return {
+                                    value: t.id,
+                                    label: t.name,
+                                }
+                            })}
+                            styles={reactSelectstyle}
+                        />
+                    </Form.Group>
 
-					<label className="bold no-bot-mrg mrg-top-2" htmlFor="code">
-						Шифр
-					</label>
-					<Select
-						inputId="code"
-						maxMenuHeight={250}
-						isClearable={true}
-						isSearchable={true}
-						placeholder="Выберите шифр ссылочного документа"
-						noOptionsMessage={() =>
-							'Ссылочные документы не найдены'
-						}
-						className="mrg-top"
-						onChange={(selectedOption) =>
-							onDocSelect((selectedOption as any)?.value)
-						}
-						value={
-							selectedObject.linkedDoc.id === -1
-								? null
-								: {
-										value: selectedObject.id,
-										label: selectedObject.linkedDoc.code,
-								  }
-						}
-						options={optionsObject.docs.map((d) => {
-							return {
-								value: d.id,
-								label: d.code,
-							}
-						})}
-						styles={reactSelectstyle}
-					/>
+                    <Form.Group className="mrg-top-2 no-bot-mrg">
+                        <Form.Label
+                            className="no-bot-mrg"
+                            htmlFor="code"
+                        >
+                            Шифр
+                        </Form.Label>
+                        <Select
+                            inputId="code"
+                            maxMenuHeight={250}
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder="Выберите шифр ссылочного документа"
+                            noOptionsMessage={() =>
+                                'Ссылочные документы не найдены'
+                            }
+                            className="mrg-top"
+                            onChange={(selectedOption) =>
+                                onDocSelect((selectedOption as any)?.value)
+                            }
+                            value={
+                                selectedObject.linkedDoc.id === -1
+                                    ? null
+                                    : {
+                                            value: selectedObject.id,
+                                            label: selectedObject.linkedDoc.code,
+                                    }
+                            }
+                            options={optionsObject.docs.map((d) => {
+                                return {
+                                    value: d.id,
+                                    label: d.code,
+                                }
+                            })}
+                            styles={reactSelectstyle}
+                        />
+                    </Form.Group>
 
 					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 

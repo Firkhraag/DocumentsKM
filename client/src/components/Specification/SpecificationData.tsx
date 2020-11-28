@@ -54,9 +54,10 @@ const SpecificationData = ({ specification }: SpecificationDataProps) => {
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Данные выпуска спецификации</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
-				<Form.Group style={{ marginBottom: 0 }}>
-					<Form.Label>Примечание</Form.Label>
+				<Form.Group className="no-bot-mrg">
+					<Form.Label htmlFor="note">Примечание</Form.Label>
 					<Form.Control
+                        id="note"
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}
@@ -66,7 +67,7 @@ const SpecificationData = ({ specification }: SpecificationDataProps) => {
 					/>
 				</Form.Group>
 
-				<div className="mrg-top-2 bold">Перечень видов конструкций</div>
+				<h2 className="mrg-top-2 bold text-centered">Перечень видов конструкций</h2>
 
 				<PlusCircle
 					onClick={() => history.push(`/specifications/${selectedObject.id}/construction-create`)}

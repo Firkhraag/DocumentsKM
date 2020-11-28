@@ -89,7 +89,7 @@ const GeneralData = () => {
             const blob = new Blob([response.data], { type: 'application/x-tex' })
             const link = document.createElement('a')
             link.href = window.URL.createObjectURL(blob)
-            link.download = 'Report.tex'
+            link.download = 'Общие данные.tex'
             link.click()
             link.remove()
         } catch (e) {

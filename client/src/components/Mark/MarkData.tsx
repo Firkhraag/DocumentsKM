@@ -441,7 +441,6 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						/>
 					</Form.Group>
 					<Form.Group className="flex-cent-v">
-						{/* <Form.Label>Главный инженер проекта</Form.Label> */}
 						<Form.Label
 							className="no-bot-mrg"
 							style={{ marginRight: '7.62em' }}
@@ -512,16 +511,16 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						/>
 					</Form.Group>
 
-					<div className="flex-cent-v">
-						<label
-							className="bold no-bot-mrg"
-							style={{ marginRight: '1em' }}
+					<Form.Group className="flex-cent-v mrg-top-2">
+						<Form.Label
+                            className="no-bot-mrg"
 							htmlFor="department"
+							style={{ marginRight: '1em' }}
 						>
 							Отдел
-						</label>
+						</Form.Label>
 						<Select
-                            inputId="department"
+							inputId="department"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -550,18 +549,18 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 
-					<div className="flex-cent-v mrg-top-2">
-						<label
-							className="bold no-bot-mrg"
-							style={{ marginRight: '1em' }}
+					<Form.Group className="flex-cent-v mrg-top-2">
+						<Form.Label
+                            className="no-bot-mrg"
 							htmlFor="groupLeader"
+							style={{ marginRight: '1em' }}
 						>
 							Заведующий группы
-						</label>
+						</Form.Label>
 						<Select
-                            inputId="groupLeader"
+							inputId="groupLeader"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -591,18 +590,18 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 
-					<div className="flex-cent-v mrg-top-2">
-						<label
-							className="bold no-bot-mrg"
-							style={{ marginRight: '1.15em' }}
+					<Form.Group className="flex-cent-v mrg-top-2">
+						<Form.Label
+                            className="no-bot-mrg"
 							htmlFor="chiefSpecialist"
+							style={{ marginRight: '1.15em' }}
 						>
 							Главный специалист
-						</label>
+						</Form.Label>
 						<Select
-                            inputId="chiefSpecialist"
+							inputId="chiefSpecialist"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -634,24 +633,23 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 
-					<div className="flex-cent-v mrg-top-2">
-						<label
-							className="bold no-bot-mrg"
-							style={{ marginRight: '1.3em' }}
+					<Form.Group className="flex-cent-v mrg-top-2 no-bot-mrg">
+						<Form.Label
+                            className="no-bot-mrg"
 							htmlFor="mainBuilder"
+							style={{ marginRight: '1.3em' }}
 						>
 							Главный строитель?
-						</label>
+						</Form.Label>
 						<Select
-                            inputId="mainBuilder"
+							inputId="mainBuilder"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите главного строителя"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							// className="mrg-top"
 							className="auto-width flex-grow"
 							onChange={(selectedOption) =>
 								onMainBuilderSelect(
@@ -676,7 +674,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 
 					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 

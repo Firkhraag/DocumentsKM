@@ -104,18 +104,10 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	}
 
 	const onFormatChange = (event: React.FormEvent<HTMLInputElement>) => {
-		try {
-			const v = parseFloat(event.currentTarget.value)
-			setSelectedObject({
-				...selectedObject,
-				form: v,
-			})
-		} catch (e) {
-			setSelectedObject({
-				...selectedObject,
-				form: null,
-			})
-		}
+        setSelectedObject({
+			...selectedObject,
+			form: parseInt(event.currentTarget.value),
+		})
 	}
 
 	const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
@@ -190,7 +182,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 			setErrMsg('Пожалуйста, введите наименование листа')
 			return false
 		}
-		if (selectedObject.form == null) {
+		if (isNaN(selectedObject.form)) {
 			setErrMsg('Пожалуйста, введите формат листа')
 			return false
 		}
@@ -306,19 +298,19 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						id="format"
 						type="text"
 						placeholder="Введите формат"
-						defaultValue={selectedObject.form}
+						defaultValue={isNaN(selectedObject.form) ? '' : selectedObject.form}
 						onBlur={onFormatChange}
 					/>
 				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-                        style={{ marginRight: '3.9em' }}
-                        htmlFor="creator"
+				<Form.Group className="mrg-top-2 flex-cent-v">
+                    <Form.Label
+						className="no-bot-mrg"
+						htmlFor="creator"
+						style={{ marginRight: '3.9em' }}
 					>
 						Разработал
-					</label>
+					</Form.Label>
 					<Select
                         inputId="creator"
 						maxMenuHeight={250}
@@ -346,16 +338,16 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-                        style={{ marginRight: '4.5em' }}
-                        htmlFor="inspector"
+				<Form.Group className="mrg-top-2 flex-cent-v">
+                    <Form.Label
+						className="no-bot-mrg"
+						htmlFor="inspector"
+						style={{ marginRight: '4.5em' }}
 					>
 						Проверил
-					</label>
+					</Form.Label>
 					<Select
                         inputId="inspector"
 						maxMenuHeight={250}
@@ -383,16 +375,16 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-                        style={{ marginRight: '1em' }}
-                        htmlFor="normContr"
+				<Form.Group className="mrg-top-2 flex-cent-v">
+                    <Form.Label
+						className="no-bot-mrg"
+						htmlFor="normContr"
+						style={{ marginRight: '1em' }}
 					>
 						Нормоконтролер
-					</label>
+					</Form.Label>
 					<Select
                         inputId="normContr"
 						maxMenuHeight={250}
@@ -400,7 +392,6 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						isSearchable={true}
 						placeholder="Выбор нормоконтролера"
 						noOptionsMessage={() => 'Сотрудники не найдены'}
-						// className="mrg-top"
 						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
 							onNormControllerSelect(
@@ -423,7 +414,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
 				<Form.Group className="mrg-top-2" style={{ marginBottom: 0 }}>
 					<Form.Label htmlFor="note">Примечание</Form.Label>

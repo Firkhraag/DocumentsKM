@@ -15,25 +15,33 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectstyle } from '../../util/react-select-style'
-import './ConstructionData.css'
 
 type ConstructionDataProps = {
 	construction: Construction
 	isCreateMode: boolean
 }
 
-const ConstructionData = ({ construction, isCreateMode }: ConstructionDataProps) => {
+const ConstructionData = ({
+	construction,
+	isCreateMode,
+}: ConstructionDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
 
 	const [selectedObject, setSelectedObject] = useState<Construction>({
-        id: -1,
-        name: '',
-        type: null,
-        subtype: null,
-        valuation: '',
+		id: -1,
+		name: '',
+		type: null,
+		subtype: null,
+		valuation: '',
+		standardAlbumCode: '',
+		numOfStandardConstructions: 0,
+		paintworkCoeff: 0,
         weldingControl: null,
-    })
+        hasEdgeBlunting: false,
+        hasDynamicLoad: false,
+        hasFlangedConnections: false,
+	})
 	const [
 		defaultSelectedObject,
 		setDefaultSelectedObject,
@@ -80,8 +88,8 @@ const ConstructionData = ({ construction, isCreateMode }: ConstructionDataProps)
 			setSelectedObject({
 				...selectedObject,
 				type: null,
-                subtype: null,
-                name: '',
+				subtype: null,
+				name: '',
 			})
 			return
 		}
@@ -94,9 +102,9 @@ const ConstructionData = ({ construction, isCreateMode }: ConstructionDataProps)
 				})
 				setSelectedObject({
 					...selectedObject,
-                    type: v,
-                    subtype: null,
-                    name: v.name,
+					type: v,
+					subtype: null,
+					name: v.name,
 				})
 			} else {
 				try {
@@ -106,40 +114,72 @@ const ConstructionData = ({ construction, isCreateMode }: ConstructionDataProps)
 					cachedSubtypes.set(v.id, constructionSubtypeResponse.data)
 					setOptionsObject({
 						...optionsObject,
-					    subtypes: constructionSubtypeResponse.data,
+						subtypes: constructionSubtypeResponse.data,
 					})
 					setSelectedObject({
 						...selectedObject,
-                        type: v,
-                        subtype: null,
-                        name: v.name,
+						type: v,
+						subtype: null,
+						name: v.name,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
 			}
 		}
-    }
-    
-    const onConstructionSubtypeSelect = (id: number) => {
+	}
+
+	const onConstructionSubtypeSelect = (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
-                subtype: null,
-                name: selectedObject.type.name,
+				subtype: null,
+				name: selectedObject.type.name,
 			})
 			return
 		}
-		const v = getFromOptions(id, optionsObject.subtypes, selectedObject.subtype)
+		const v = getFromOptions(
+			id,
+			optionsObject.subtypes,
+			selectedObject.subtype
+		)
 		if (v != null) {
 			setSelectedObject({
 				...selectedObject,
-                subtype: v,
-                name: selectedObject.name + ' ' + v.name,
-                valuation: v.valuation,
+				subtype: v,
+				name: selectedObject.name + ' ' + v.name,
+				valuation: v.valuation,
 			})
 		}
-	}
+    }
+    
+    const onValuationChange = (event: React.FormEvent<HTMLInputElement>) => {
+		setSelectedObject({
+			...selectedObject,
+			valuation: event.currentTarget.value,
+		})
+    }
+    
+    const onStandardAlbumCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
+		setSelectedObject({
+			...selectedObject,
+			standardAlbumCode: event.currentTarget.value,
+		})
+    }
+    
+    const onNumOfStandardConstructionsChange = (event: React.FormEvent<HTMLInputElement>) => {
+		setSelectedObject({
+			...selectedObject,
+			numOfStandardConstructions: parseInt(event.currentTarget.value),
+		})
+    }
+    
+    const onPaintworkCoeffChange = (event: React.FormEvent<HTMLInputElement>) => {
+		setSelectedObject({
+			...selectedObject,
+			paintworkCoeff: parseFloat(event.currentTarget.value),
+		})
+    }
 
 	const onWeldingControlSelect = (id: number) => {
 		if (id == null) {
@@ -151,7 +191,7 @@ const ConstructionData = ({ construction, isCreateMode }: ConstructionDataProps)
 		const v = getFromOptions(
 			id,
 			optionsObject.weldingControl,
-			selectedObject.weldingControl,
+			selectedObject.weldingControl
 		)
 		if (v != null) {
 			setSelectedObject({
@@ -159,25 +199,31 @@ const ConstructionData = ({ construction, isCreateMode }: ConstructionDataProps)
 				weldingControl: v,
 			})
 		}
-	}
+    }
+    
+    const onEdgeBluntingCheck = () => {
+        setSelectedObject({
+			...selectedObject,
+			hasEdgeBlunting: !selectedObject.hasEdgeBlunting,
+		})
+    }
 
-	const onNameChange = (event: React.FormEvent<HTMLInputElement>) => {
-		// try {
-		// 	const v = parseInt(event.currentTarget.value)
-		// 	setSelectedObject({
-		// 		...selectedObject,
-		// 		name: v,
-		// 	})
-		// } catch (e) {
-		// 	setSelectedObject({
-		// 		...selectedObject,
-		// 		temperature: null,
-		// 	})
-		// }
-	}
+    const onDynamicLoadCheck = () => {
+        setSelectedObject({
+			...selectedObject,
+			hasDynamicLoad: !selectedObject.hasDynamicLoad,
+		})
+    }
+
+    const onFlangedConnectionsCheck = () => {
+        setSelectedObject({
+			...selectedObject,
+			hasFlangedConnections: !selectedObject.hasFlangedConnections,
+		})
+    }
 
 	const checkIfValid = () => {
-        if (selectedObject.type == null) {
+		if (selectedObject.type == null) {
 			setErrMsg('Пожалуйста, выберите тип конструкции')
 			return false
 		}
@@ -190,201 +236,166 @@ const ConstructionData = ({ construction, isCreateMode }: ConstructionDataProps)
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
-			<h1 className="text-centered">{isCreateMode ? 'Добавление вида конструкции' : 'Данные по виду конструкций'}</h1>
+			<h1 className="text-centered">
+				{isCreateMode
+					? 'Добавление вида конструкции'
+					: 'Данные по виду конструкций'}
+			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
-                <label className="bold no-bot-mrg">
-                    Шифр вида конструкции
-                </label>
-                <Select
-                    maxMenuHeight={250}
-                    isClearable={true}
-                    isSearchable={true}
-                    placeholder="Выберите вид конструкции"
-                    noOptionsMessage={() =>
-                        'Вид конструкции не найден'
-                    }
-                    className="mrg-top"
-                    onChange={(selectedOption) =>
-                        onConstructionTypeSelect(
-                            (selectedOption as any)?.value
-                        )
-                    }
-                    value={
-                        selectedObject.type == null
-                            ? null
-                            : {
-                                    value:
-                                        selectedObject.type.id,
-                                    label:
-                                        selectedObject.type.name,
-                                }
-                    }
-                    options={optionsObject.types.map((t) => {
-                        return {
-                            value: t.id,
-                            label: t.name,
-                        }
-                    })}
-                    styles={reactSelectstyle}
-                />
+				<label className="bold no-bot-mrg">Шифр вида конструкции</label>
+				<Select
+					maxMenuHeight={250}
+					isClearable={true}
+					isSearchable={true}
+					placeholder="Выберите вид конструкции"
+					noOptionsMessage={() => 'Вид конструкции не найден'}
+					className="mrg-top"
+					onChange={(selectedOption) =>
+						onConstructionTypeSelect((selectedOption as any)?.value)
+					}
+					value={
+						selectedObject.type == null
+							? null
+							: {
+									value: selectedObject.type.id,
+									label: selectedObject.type.name,
+							  }
+					}
+					options={optionsObject.types.map((t) => {
+						return {
+							value: t.id,
+							label: t.name,
+						}
+					})}
+					styles={reactSelectstyle}
+				/>
 
-                <label className="bold no-bot-mrg mrg-top-2">
-                    Шифр подвида конструкции
-                </label>
-                <Select
-                    maxMenuHeight={250}
-                    isClearable={true}
-                    isSearchable={true}
-                    placeholder="Выберите подвид конструкции"
-                    noOptionsMessage={() =>
-                        'Подвид конструкции не найден'
-                    }
-                    className="mrg-top"
-                    onChange={(selectedOption) =>
-                        onConstructionSubtypeSelect(
-                            (selectedOption as any)?.value
-                        )
-                    }
-                    value={
-                        selectedObject.subtype == null
-                            ? null
-                            : {
-                                    value:
-                                        selectedObject.subtype.id,
-                                    label:
-                                        selectedObject.subtype
-                                            .name,
-                                }
-                    }
-                    options={optionsObject.subtypes.map((s) => {
-                        return {
-                            value: s.id,
-                            label: s.name,
-                        }
-                    })}
-                    styles={reactSelectstyle}
-                />
+				<label className="bold no-bot-mrg mrg-top-2">
+					Шифр подвида конструкции
+				</label>
+				<Select
+					maxMenuHeight={250}
+					isClearable={true}
+					isSearchable={true}
+					placeholder="Выберите подвид конструкции"
+					noOptionsMessage={() => 'Подвид конструкции не найден'}
+					className="mrg-top"
+					onChange={(selectedOption) =>
+						onConstructionSubtypeSelect(
+							(selectedOption as any)?.value
+						)
+					}
+					value={
+						selectedObject.subtype == null
+							? null
+							: {
+									value: selectedObject.subtype.id,
+									label: selectedObject.subtype.name,
+							  }
+					}
+					options={optionsObject.subtypes.map((s) => {
+						return {
+							value: s.id,
+							label: s.name,
+						}
+					})}
+					styles={reactSelectstyle}
+				/>
 
-                <Form.Group className="mrg-top-2">
-					<Form.Label htmlFor="name">
-						Название
-					</Form.Label>
+				<Form.Group className="mrg-top-2">
+					<Form.Label htmlFor="name">Название</Form.Label>
 					<Form.Control
-                        id="name"
-                        as="textarea"
-                        rows={4}
-                        style={{ resize: 'none' }}
-                        value={selectedObject.name}
-                        readOnly={true}
-                        // defaultValue={selectedObject.name}
-                        // onBlur={null}
-                    />
+						id="name"
+						as="textarea"
+						rows={4}
+						style={{ resize: 'none' }}
+						value={selectedObject.name}
+						readOnly={true}
+					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-					<Form.Label htmlFor="temp" style={{ marginRight: '1em' }}>
+					<Form.Label
+                        className="no-bot-mrg"
+						htmlFor="valuation"
+						style={{ marginRight: '13.35em' }}
+					>
 						Расценка
 					</Form.Label>
 					<Form.Control
-						id="temp"
+						id="valuation"
 						type="text"
-						placeholder="Введите наименование"
+						placeholder="Введите расценку"
 						className="auto-width flex-grow"
 						defaultValue={selectedObject.valuation}
-						onBlur={null}
+						onBlur={onValuationChange}
 					/>
 				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-						style={{ marginRight: '11.65em' }}
+				<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Label
+                        className="no-bot-mrg"
+						htmlFor="standardAlbumCode"
+						style={{ marginRight: '5.8em' }}
 					>
 						Шифр типового альбома
-					</label>
+					</Form.Label>
 					<Form.Control
-						id="temp"
+						id="standardAlbumCode"
 						type="text"
-						placeholder="Введите наименование"
+						placeholder="Не введено"
 						className="auto-width flex-grow"
 						defaultValue={''}
-						onBlur={null}
+						onBlur={onStandardAlbumCodeChange}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-						style={{ marginRight: '14.65em' }}
+				<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Label
+                        className="no-bot-mrg"
+						htmlFor="numOfStandardConstructions"
+						style={{ marginRight: '4.15em' }}
 					>
 						Число типовых конструкций
-					</label>
+					</Form.Label>
 					<Form.Control
-						id="temp"
+						id="numOfStandardConstructions"
 						type="text"
-						placeholder="Введите наименование"
+						placeholder="Не введено"
 						className="auto-width flex-grow"
 						defaultValue={''}
-						onBlur={null}
+						onBlur={onNumOfStandardConstructionsChange}
 					/>
-				</div>
+				</Form.Group>
 
-                <Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="flex-cent-v mrg-top-2">
 					<Form.Label
-						htmlFor="coeff"
-						style={{ marginRight: '2.5em' }}
+                        className="no-bot-mrg"
+						htmlFor="paintworkCoeff"
+						style={{ marginRight: '4.5em' }}
 					>
 						Коэффициент окрашивания
 					</Form.Label>
 					<Form.Control
-						id="coeff"
+						id="paintworkCoeff"
 						type="text"
-						placeholder="Введите коэффициент окрашивания"
+						placeholder="Не введено"
 						defaultValue={''}
 						className="auto-width flex-grow"
-						onBlur={null}
+						onBlur={onPaintworkCoeffChange}
 					/>
 				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-						style={{ marginRight: '9.65em' }}
-					>
-						Притупление кромок
-					</label>
-					<Form.Check type="checkbox" className="checkmark" />
-				</div>
-
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-						style={{ marginRight: '5.75em' }}
-					>
-						Динамическая нагрузка
-					</label>
-					<Form.Check type="checkbox" className="checkmark" />
-				</div>
-
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-						style={{ marginRight: '9.65em' }}
-					>
-						Фланцевые соединения
-					</label>
-					<Form.Check type="checkbox" className="checkmark" />
-					{/* <input type="checkbox" className="checkmark" /> */}
-				</div>
-
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
-						style={{ marginRight: '9.65em' }}
+				<Form.Group className="flex-cent-v mrg-top-2">
+                    <Form.Label
+                        className="no-bot-mrg"
+						htmlFor="weldingControl"
+						style={{ marginRight: '1em' }}
 					>
 						Контроль плотности сварных швов
-					</label>
+					</Form.Label>
 					<Select
+                        inputId="weldingControl"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -413,7 +424,52 @@ const ConstructionData = ({ construction, isCreateMode }: ConstructionDataProps)
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
+
+				<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Label
+						htmlFor="edgeBlunting"
+						style={{ marginRight: '7.6em' }}
+					>
+						Притупление кромок
+					</Form.Label>
+					<Form.Check
+						id="edgeBlunting"
+						type="checkbox"
+                        className="checkmark"
+                        onChange={onEdgeBluntingCheck}
+					/>
+				</Form.Group>
+
+				<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Label
+						htmlFor="dynamicLoad"
+						style={{ marginRight: '6.4em' }}
+					>
+						Динамическая нагрузка
+					</Form.Label>
+					<Form.Check
+						id="dynamicLoad"
+						type="checkbox"
+                        className="checkmark"
+                        onChange={onDynamicLoadCheck}
+					/>
+				</Form.Group>
+
+				<Form.Group className="flex-cent-v mrg-top-2 no-bot-mrg">
+					<Form.Label
+						htmlFor="flangedConnections"
+						style={{ marginRight: '6.4em' }}
+					>
+						Фланцевые соединения
+					</Form.Label>
+					<Form.Check
+						id="flangedConnections"
+						type="checkbox"
+                        className="checkmark"
+                        onChange={onFlangedConnectionsCheck}
+					/>
+				</Form.Group>
 
 				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
