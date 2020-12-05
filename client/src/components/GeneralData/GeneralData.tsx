@@ -1,6 +1,7 @@
 // Global
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -23,10 +24,9 @@ const GeneralData = () => {
 	const history = useHistory()
 	const mark = useMark()
 
-	const [selectedObject, setSelectedObject] = useState<string>('')
+	const [selectedObject, setSelectedObject] = useState<GeneralDataSection>(null)
 	const [optionsObject, setOptionsObject] = useState({
 		sections: [] as GeneralDataSection[],
-		points: [] as any[],
 	})
 
 	useEffect(() => {
@@ -49,28 +49,24 @@ const GeneralData = () => {
 	}, [mark])
 
 	const onSectionSelect = async (id: number) => {
-		try {
-			const pointsResponse = await httpClient.get(
-				`/general-data-sections/${id}/general-data-points`
-			)
-			setOptionsObject({
-				...optionsObject,
-				points: pointsResponse.data,
-			})
-			setSelectedObject(
-				pointsResponse.data.length === 1
-					? pointsResponse.data[0].text == null
-						? ''
-						: pointsResponse.data[0].text
-					: ''
-			)
-		} catch (e) {
-			console.log('Failed to fetch the data')
-		}
-	}
-
-	const onPointSelect = async (text: string) => {
-		setSelectedObject(text == null ? '' : text)
+		// try {
+		// 	const pointsResponse = await httpClient.get(
+		// 		`/general-data-sections/${id}/general-data-points`
+		// 	)
+		// 	setOptionsObject({
+		// 		...optionsObject,
+		// 		points: pointsResponse.data,
+		// 	})
+		// 	setSelectedObject(
+		// 		pointsResponse.data.length === 1
+		// 			? pointsResponse.data[0].text == null
+		// 				? ''
+		// 				: pointsResponse.data[0].text
+		// 			: ''
+		// 	)
+		// } catch (e) {
+		// 	console.log('Failed to fetch the data')
+		// }
 	}
 
 	const onDownloadButtonClick = async () => {
@@ -101,7 +97,39 @@ const GeneralData = () => {
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Состав общих указаний</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-3 component-cnt-div">
-				<div className="flex">
+            <Form.Group>
+					<Form.Label className="bold" htmlFor="sections">
+						Разделы
+					</Form.Label>
+					<Select
+						inputId="sections"
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите раздел общих указаний"
+						noOptionsMessage={() => 'Разделы не найдены'}
+						onChange={(selectedOption) =>
+							onSectionSelect((selectedOption as any)?.value)
+						}
+						value={
+							selectedObject == null
+								? null
+								: {
+										value: selectedObject.id,
+										label: selectedObject.name,
+								  }
+						}
+						options={optionsObject.sections.map((s) => {
+							return {
+								value: s.id,
+								label: s.name,
+							}
+						})}
+						styles={reactSelectstyle}
+					/>
+				</Form.Group>
+
+				{/* <div className="flex">
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Разделы</label>
 						<div className="flex-v general-data-selection mrg-top">
@@ -134,14 +162,14 @@ const GeneralData = () => {
 							})}
 						</div>
 					</div>
-				</div>
+				</div> */}
 				<Form.Group className="mrg-top-2">
 					<Form.Control
 						id="name"
 						as="textarea"
 						rows={8}
 						style={{ resize: 'none' }}
-						value={selectedObject}
+						value={''}
 						onChange={null}
 					/>
 				</Form.Group>

@@ -27,11 +27,13 @@ namespace DocumentsKM.Services
             return _repository.GetAllByMarkId(markId);
         }
 
-        public void Add(
+        public void Create(
             MarkLinkedDoc markLinkedDoc,
             int markId,
             int linkedDocId)
         {
+            if (markLinkedDoc == null)
+                throw new ArgumentNullException(nameof(markLinkedDoc));
             var foundLinkedDoc = _linkedDocRepo.GetById(linkedDocId);
             if (foundLinkedDoc == null)
                 throw new ArgumentNullException(nameof(foundLinkedDoc));
@@ -51,6 +53,8 @@ namespace DocumentsKM.Services
 
         public void Update(int id, MarkLinkedDocRequest markLinkedDocRequest)
         {
+            if (markLinkedDocRequest == null)
+                throw new ArgumentNullException(nameof(markLinkedDocRequest));
             var foundMarkLinkedDoc = _repository.GetById(id);
             if (foundMarkLinkedDoc == null)
                 throw new ArgumentNullException(nameof(foundMarkLinkedDoc));

@@ -59,7 +59,7 @@ namespace DocumentsKM.Services
             doc.Type = foundDocType;
 
             var docs = _repository.GetAllByMarkIdAndDocType(markId, docTypeId);
-            int maxNum = 1;
+            int maxNum = 0;
             foreach (var s in docs)
             {
                 if (s.Num > maxNum)
@@ -96,17 +96,11 @@ namespace DocumentsKM.Services
             int id,
             DocUpdateRequest doc)
         {
-            // ToDo: Конфликты по юник ки
-            // TBD: выпуск для спецификации металлопроката
-            // TBD: unique key violation при смене типа документа
-            // Conflict exception
             if (doc == null)
                 throw new ArgumentNullException(nameof(doc));
             var foundDoc = _repository.GetById(id);
             if (foundDoc == null)
                 throw new ArgumentNullException(nameof(foundDoc));
-            if (doc.Num != null)
-                foundDoc.Num = doc.Num.GetValueOrDefault();
             if (doc.Name != null)
                 foundDoc.Name = doc.Name;
             if (doc.Form != null)
@@ -118,6 +112,17 @@ namespace DocumentsKM.Services
             if (doc.Note != null)
                 foundDoc.Note = doc.Note;
             if (doc.TypeId != null) {
+
+                var docs = _repository.GetAllByMarkIdAndDocType(
+                    foundDoc.Mark.Id, doc.TypeId.GetValueOrDefault());
+                int maxNum = 0;
+                foreach (var s in docs)
+                {
+                    if (s.Num > maxNum)
+                        maxNum = s.Num;
+                }
+                foundDoc.Num = maxNum + 1;
+
                 var docType = _docTypeRepo.GetById(doc.TypeId.GetValueOrDefault());
                 if (docType == null)
                     throw new ArgumentNullException(nameof(docType));

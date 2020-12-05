@@ -9,26 +9,26 @@ namespace DocumentsKM.Tests
 {
     public class SubnodeServiceTest
     {
-        private readonly SubnodeService _service;
+        private readonly ISubnodeService _service;
         private readonly Random _rnd = new Random();
 
         public SubnodeServiceTest()
         {
             // Arrange
-            var mockSubnodeRepo = new Mock<ISubnodeRepo>();
+            var repository = new Mock<ISubnodeRepo>();
 
             foreach (var node in TestData.nodes)
             {
-                mockSubnodeRepo.Setup(mock=>
+                repository.Setup(mock=>
                     mock.GetAllByNodeId(node.Id)).Returns(
                         TestData.subnodes.Where(v => v.Node.Id == node.Id));
             }
 
-            _service = new SubnodeService(mockSubnodeRepo.Object);
+            _service = new SubnodeService(repository.Object);
         }
 
         [Fact]
-        public void GetAllByNodeId_ShouldReturnAllSubnodesWithGivenNodeId()
+        public void GetAllByNodeId_ShouldReturnSubnodes()
         {
             // Arrange
             int nodeId = _rnd.Next(1, TestData.nodes.Count());

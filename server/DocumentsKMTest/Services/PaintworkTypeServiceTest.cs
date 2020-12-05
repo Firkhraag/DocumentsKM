@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class PaintworkTypeServiceTest
     {
-        private readonly PaintworkTypeService _service;
+        private readonly IPaintworkTypeService _service;
 
         public PaintworkTypeServiceTest()
         {
             // Arrange
-            var mockPaintworkTypeRepo = new Mock<IPaintworkTypeRepo>();
+            var repository = new Mock<IPaintworkTypeRepo>();
 
-            mockPaintworkTypeRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.paintworkTypes);
             
-            _service = new PaintworkTypeService(mockPaintworkTypeRepo.Object);
+            _service = new PaintworkTypeService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllPaintworkTypes()
+        public void GetAll_ShouldReturnPaintworkTypes()
         {
             // Act
             var returnedPaintworkTypes = _service.GetAll();

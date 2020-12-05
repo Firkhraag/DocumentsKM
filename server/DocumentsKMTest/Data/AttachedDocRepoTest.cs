@@ -1,147 +1,223 @@
-// using System;
-// using System.Linq;
-// using DocumentsKM.Data;
-// using Microsoft.EntityFrameworkCore;
-// using Xunit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using DocumentsKM.Data;
+using DocumentsKM.Models;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-// namespace DocumentsKM.Tests
-// {
-//     public class AttachedDocRepoTest
-//     {
-//         // public void Add_WhenHaveNoEmail()
-//         // {
-//         //     IPersonRepository sut = GetInMemoryPersonRepository();
-//         //     Person person = new Person()
-//         //     {
-//         //         PersonId = 1,
-//         //         FirstName = "fred",
-//         //         Surname = "Blogs"
-//         //     };
+namespace DocumentsKM.Tests
+{
+    public class AttachedDocRepoTest
+    {
+        private readonly Random _rnd = new Random();
+        private readonly int _maxMarkId = 3;
 
-//         //     Person savedPerson = sut.Add(person);
+        private ApplicationContext GetContext(List<AttachedDoc> attachedDocs)
+        {
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "AttachedDocTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            
+            context.Marks.AddRange(TestData.marks);
+            context.AttachedDocs.AddRange(attachedDocs);
+            context.SaveChanges();
+            return context;
+        }
 
-//         //     Assert.Equal(1, sut.GetAll().Count());
-//         //     Assert.Equal("fred", savedPerson.FirstName);
-//         //     Assert.Equal("Blogs", savedPerson.Surname);
-//         //     Assert.Null(savedPerson.EmailAddresses);
-//         // }
+        [Fact]
+        public void GetAllByMarkId_ShouldReturnAttachedDocs()
+        {
+            // Arrange
+            var context = GetContext(TestData.attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
 
-//         private readonly IAttachedDocRepo _repo;
+            var markId = _rnd.Next(1, _maxMarkId);
 
-//         public AttachedDocRepoTest()
-//         {
-//             // Arrange
-//             var builder = new DbContextOptionsBuilder<ApplicationContext>();
-//             builder.UseInMemoryDatabase(databaseName: "AttachedDocTestDb");
-//             var options = builder.Options;
-//             var context = new ApplicationContext(options);
-//             context.Database.EnsureDeleted();
-//             context.Database.EnsureCreated();
+            // Act
+            var attachedDocs = repo.GetAllByMarkId(markId);
 
-//             context.AttachedDocs.AddRange(TestData.attachedDocs);
-//             context.SaveChanges();
+            // Assert
+            Assert.Equal(TestData.attachedDocs.Where(v => v.Mark.Id == markId),
+                attachedDocs);
 
-//             _repo = new SqlAttachedDocRepo(context);
-//         }
+            context.Database.EnsureDeleted();
+        }
 
-//         ~AttachedDocRepoTest()
-//         {
-//             var builder = new DbContextOptionsBuilder<ApplicationContext>();
-//             builder.UseInMemoryDatabase(databaseName: "AttachedDocTestDb");
-//             var options = builder.Options;
-//             var context = new ApplicationContext(options);
-//             context.Database.EnsureDeleted();
-//         }
+        [Fact]
+        public void GetAllByMarkId_ShouldReturnEmptyArray_WhenWrongMarkId()
+        {
+            // Arrange
+            var context = GetContext(TestData.attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
 
-//         [Fact]
-//         public void GetAllByMarkId_ShouldReturnAllAttachedDocsByMarkId()
-//         {
-//             // Arrange
-//             var id = TestData.marks[0].Id;
+            var wrongMarkId = 999;
 
-//             // Act
-//             var attachedDocs = _repo.GetAllByMarkId(TestData.marks[0].Id);
+            // Act
+            var attachedDocs = repo.GetAllByMarkId(wrongMarkId);
 
-//             // Assert
-//             Assert.Equal(TestData.attachedDocs.Where(v => v.Mark.Id == id),
-//                 attachedDocs);
-//         }
+            // Assert
+            Assert.Empty(attachedDocs);
 
-//         [Fact]
-//         public void GetById_ShouldReturnAttachedDoc()
-//         {
-//             // Arrange
-//             var rnd = new Random();
-//             int id = rnd.Next(1, TestData.attachedDocs.Count());
+            context.Database.EnsureDeleted();
+        }
 
-//             // Act
-//             var attachedDoc = _repo.GetById(id);
+        [Fact]
+        public void GetById_ShouldReturnAttachedDoc()
+        {
+            // Arrange
+            var context = GetContext(TestData.attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
 
-//             // Assert
-//             Assert.Equal(TestData.attachedDocs.SingleOrDefault(v => v.Id == id),
-//                 attachedDoc);
-//         }
+            int id = _rnd.Next(1, TestData.attachedDocs.Count());
 
-//         [Fact]
-//         public void GetById_ShouldReturnNull()
-//         {
-//             // Act
-//             var attachedDoc = _repo.GetById(999);
+            // Act
+            var attachedDoc = repo.GetById(id);
 
-//             // Assert
-//             Assert.Null(attachedDoc);
-//         }
+            // Assert
+            Assert.Equal(TestData.attachedDocs.SingleOrDefault(v => v.Id == id),
+                attachedDoc);
 
-//         [Fact]
-//         public void GetByUniqueKeyValues_ShouldReturnAttachedDoc()
-//         {
-//             // FAILED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//             // Arrange
-//             var markId = TestData.marks[0].Id;
-//             var designation = TestData.attachedDocs[0].Designation;
+            context.Database.EnsureDeleted();
+        }
 
-//             // Act
-//             var attachedDoc = _repo.GetByUniqueKeyValues(markId, designation);
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Act
+            var context = GetContext(TestData.attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
 
-//             // Assert
-//             Assert.Equal(TestData.attachedDocs.SingleOrDefault(
-//                 v => v.Mark.Id == markId && v.Designation == designation), attachedDoc);
-//         }
+            var attachedDoc = repo.GetById(999);
 
-//         [Fact]
-//         public void GetByUniqueKeyValues_ShouldReturnNull()
-//         {
-//             // Arrange
-//             var markId = TestData.marks[0].Id;
-//             var wrongMarkId = 999;
-//             var designation = TestData.attachedDocs[0].Designation;
-//             var wrongDesignation = "NotFound";
+            // Assert
+            Assert.Null(attachedDoc);
 
-//             // Act
-//             var attachedDoc1 = _repo.GetByUniqueKeyValues(wrongMarkId, designation);
-//             var attachedDoc2 = _repo.GetByUniqueKeyValues(markId, wrongDesignation);
+            context.Database.EnsureDeleted();
+        }
 
-//             // Assert
-//             Assert.Null(attachedDoc1);
-//             Assert.Null(attachedDoc2);
-//         }
-//     }
-// }
+        [Fact]
+        public void GetByUniqueKeyValues_ShouldReturnAttachedDoc()
+        {
+            // Arrange
+            var context = GetContext(TestData.attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
 
-//         // public void Add(AttachedDoc attachedDoc)
-//         // {
-//         //     _context.AttachedDocs.Add(attachedDoc);
-//         //     _context.SaveChanges();
-//         // }
+            int id = _rnd.Next(1, TestData.attachedDocs.Count());
+            var foundAttachedDoc = TestData.attachedDocs.FirstOrDefault(v => v.Id == id);
+            var markId = foundAttachedDoc.Mark.Id;
+            var designation = foundAttachedDoc.Designation;
 
-//         // public void Update(AttachedDoc attachedDoc)
-//         // {
-//         //     _context.Entry(attachedDoc).State = EntityState.Modified;
-//         //     _context.SaveChanges();
-//         // }
+            // Act
+            var attachedDoc = repo.GetByUniqueKeyValues(markId, designation);
 
-//         // public void Delete(AttachedDoc attachedDoc)
-//         // {
-//         //     _context.AttachedDocs.Remove(attachedDoc);
-//         //     _context.SaveChanges();
-//         // }
+            // Assert
+            Assert.Equal(id, attachedDoc.Id);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void GetByUniqueKeyValues_ShouldReturnNull()
+        {
+            // Arrange
+            var context = GetContext(TestData.attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
+
+            var markId = TestData.marks[0].Id;
+            var wrongMarkId = 999;
+            var designation = TestData.attachedDocs[0].Designation;
+            var wrongDesignation = "NotFound";
+
+            // Act
+            var attachedDoc1 = repo.GetByUniqueKeyValues(wrongMarkId, designation);
+            var attachedDoc2 = repo.GetByUniqueKeyValues(markId, wrongDesignation);
+
+            // Assert
+            Assert.Null(attachedDoc1);
+            Assert.Null(attachedDoc2);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void Add_ShouldAddAttachedDoc()
+        {
+            // Arrange
+            var context = GetContext(TestData.attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
+
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var attachedDoc = new AttachedDoc
+            {
+                Mark=TestData.marks.SingleOrDefault(v => v.Id == markId),
+                Designation="NewCreate",
+                Name="NewCreate",
+            };
+
+            // Act
+            repo.Add(attachedDoc);
+
+            // Assert
+            Assert.NotEqual(0, attachedDoc.Id);
+            Assert.Equal(
+                TestData.attachedDocs.Where(v => v.Mark.Id == markId).Count() + 1,
+                repo.GetAllByMarkId(markId).Count());
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void Update_ShouldUpdateAttachedDoc()
+        {
+            // Arrange
+            var attachedDocs = new List<AttachedDoc>{};
+            foreach (var ad in TestData.attachedDocs)
+            {
+                attachedDocs.Add(new AttachedDoc
+                {
+                    Id = ad.Id,
+                    Mark = ad.Mark,
+                    Designation = ad.Designation,
+                    Name = ad.Name,
+                });
+            }
+            var context = GetContext(attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
+
+            int id = _rnd.Next(1, attachedDocs.Count());
+            var attachedDoc = attachedDocs.FirstOrDefault(v => v.Id == id);
+            attachedDoc.Name = "NewUpdate";
+
+            // Act
+            repo.Update(attachedDoc);
+
+            // Assert
+            Assert.Equal(attachedDoc.Name, repo.GetById(id).Name);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void Delete_ShouldDeleteAttachedDoc()
+        {
+            // Arrange
+            var context = GetContext(TestData.attachedDocs);
+            var repo = new SqlAttachedDocRepo(context);
+
+            int id = _rnd.Next(1, TestData.attachedDocs.Count());
+            var attachedDoc = TestData.attachedDocs.FirstOrDefault(v => v.Id == id);
+
+            // Act
+            repo.Delete(attachedDoc);
+
+            // Assert
+            Assert.Null(repo.GetById(id));
+
+            context.Database.EnsureDeleted();
+        }
+    }
+}

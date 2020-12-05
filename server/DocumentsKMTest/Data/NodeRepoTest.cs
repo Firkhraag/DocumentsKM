@@ -1,19 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class NodeRepoTest : IDisposable
+    public class NodeRepoTest
     {
-        private readonly INodeRepo _repo;
         private readonly Random _rnd = new Random();
 
-        public NodeRepoTest()
+        private ApplicationContext GetContext(List<Node> nodes)
         {
-            // Arrange
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
             builder.UseInMemoryDatabase(databaseName: "NodeTestDb");
             var options = builder.Options;
@@ -21,57 +21,64 @@ namespace DocumentsKM.Tests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            context.Nodes.AddRange(TestData.nodes);
+            context.Projects.AddRange(TestData.projects);
+            context.Nodes.AddRange(nodes);
             context.SaveChanges();
-            _repo = new SqlNodeRepo(context);
-        }
-
-        public void Dispose()
-        {
-            var builder = new DbContextOptionsBuilder<ApplicationContext>();
-            builder.UseInMemoryDatabase(databaseName: "NodeTestDb");
-            var options = builder.Options;
-            var context = new ApplicationContext(options);
-            context.Database.EnsureDeleted();
+            return context;
         }
 
         [Fact]
-        public void GetAllByProjectId_ShouldReturnAllNodesWithGivenProjectId()
+        public void GetAllByProjectId_ShouldReturnNodes()
         {
             // Arrange
+            var context = GetContext(TestData.nodes);
+            var repo = new SqlNodeRepo(context);
+
             int projectId = _rnd.Next(1, TestData.projects.Count());
 
             // Act
-            var nodes = _repo.GetAllByProjectId(projectId);
+            var nodes = repo.GetAllByProjectId(projectId);
 
             // Assert
             Assert.Equal(TestData.nodes.Where(v => v.Project.Id == projectId), nodes);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnNode()
         {
             // Arrange
+            var context = GetContext(TestData.nodes);
+            var repo = new SqlNodeRepo(context);
+
             int id = _rnd.Next(1, TestData.nodes.Count());
 
             // Act
-            var node = _repo.GetById(id);
+            var node = repo.GetById(id);
 
             // Assert
             Assert.Equal(TestData.nodes.SingleOrDefault(v => v.Id == id), node);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnNull()
         {
             // Arrange
+            var context = GetContext(TestData.nodes);
+            var repo = new SqlNodeRepo(context);
+
             int wrongId = 999;
 
             // Act
-            var node = _repo.GetById(wrongId);
+            var node = repo.GetById(wrongId);
 
             // Assert
             Assert.Null(node);
+
+            context.Database.EnsureDeleted();
         }
     }
 }

@@ -57,8 +57,6 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult Update(int id, [FromBody] SpecificationUpdateRequest specificationRequest)
         {
-            // DEBUG
-            // Log.Information(JsonSerializer.Serialize(specificationRequest));
             try
             {
                 _service.Update(id, specificationRequest);

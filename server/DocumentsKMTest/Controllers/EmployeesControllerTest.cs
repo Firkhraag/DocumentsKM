@@ -1,58 +1,191 @@
+using System;
 using System.Collections.Generic;
-using AutoMapper;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using DocumentsKM.Dtos;
-using DocumentsKM.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-namespace DocumentsKM.Controllers
+namespace DocumentsKM.Tests
 {
-    // AMQP
-    [Route("api")]
-    [Authorize]
-    [ApiController]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class EmployeesController : ControllerBase
+    public class EmployeesControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
-        private readonly IEmployeeService _service;
-        private readonly IMapper _mapper;
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-        public EmployeesController(
-            IEmployeeService employeeService,
-            IMapper mapper)
+        public EmployeesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            _service = employeeService;
-            _mapper = mapper;
+            
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
         }
 
-        [HttpGet, Route("departments/{departmentId}/employees")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<EmployeeBaseResponse>> GetByDepartmentId(int departmentId)
+        [Fact]
+        public async Task GetAllByDepartmentId_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
-            var employees = _service.GetAllByDepartmentId(departmentId);
-            return Ok(_mapper.Map<IEnumerable<EmployeeBaseResponse>>(employees));
+            // Arrange
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            var endpoint = $"/api/departments/{departmentId}/employees";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var employees = TestData.employees.Where(v => v.Department.Id == departmentId)
+                .Select(e => new EmployeeBaseResponse{
+                    Id = e.Id,
+                    Name = e.Name,
+                }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            employees.Should().BeEquivalentTo(
+                JsonSerializer.Deserialize<IEnumerable<EmployeeBaseResponse>>(responseBody, options));
         }
 
-        [HttpGet, Route("departments/{departmentId}/mark-approval-employees")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<EmployeeBaseResponse>> GetMarkApprovalEmployeesByDepartmentId(int departmentId)
+        [Fact]
+        public async Task GetAllByDepartmentId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
-            var employees = _service.GetMarkApprovalEmployeesByDepartmentId(departmentId);
-            return Ok(_mapper.Map<IEnumerable<EmployeeBaseResponse>>(employees));
+            // Arrange
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            var endpoint = $"/api/departments/{departmentId}/employees";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [HttpGet, Route("departments/{departmentId}/mark-main-employees")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<MarkMainEmployeesResponse> GetMarkMainEmployeesByDepartmentId(int departmentId)
+        [Fact]
+        public async Task GetMarkApprovalEmployeesByDepartmentId_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
-            (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) = _service
-                .GetMarkMainEmployeesByDepartmentId(departmentId);
-            return Ok(new MarkMainEmployeesResponse(
-                _mapper.Map<EmployeeBaseResponse>(departmentHead),
-                _mapper.Map<IEnumerable<EmployeeBaseResponse>>(chiefSpecialists),
-                _mapper.Map<IEnumerable<EmployeeBaseResponse>>(groupLeaders),
-                _mapper.Map<IEnumerable<EmployeeBaseResponse>>(mainBuilders)));
+            // Arrange
+            int[] approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            var endpoint = $"/api/departments/{departmentId}/mark-approval-employees";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var employees = TestData.employees.Where(
+                v => v.Department.Id == departmentId && approvalPosIds.Contains(v.Position.Id))
+                    .Select(e => new EmployeeBaseResponse{
+                        Id = e.Id,
+                        Name = e.Name,
+                    }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            employees.Should().BeEquivalentTo(
+                JsonSerializer.Deserialize<IEnumerable<EmployeeBaseResponse>>(responseBody, options));
+        }
+
+        [Fact]
+        public async Task GetMarkApprovalEmployeesByDepartmentId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            var endpoint = $"/api/departments/{departmentId}/mark-approval-employees";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetMarkMainEmployeesByDepartmentId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int[] approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            var endpoint = $"/api/departments/{departmentId}/mark-main-employees";
+            var departmentHeadPosId = 7;
+            var chiefSpecialistPosId = 9;
+            var groupLeaderPosId = 10;
+            var mainBuilderPosId = 4;
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var employee = TestData.employees.SingleOrDefault(
+                v => v.Department.Id == departmentId && v.Position.Id == departmentHeadPosId);
+            var departmentHead = new EmployeeBaseResponse
+            {
+                Id = employee.Id,
+                Name = employee.Name,
+            };
+            var chiefSpecialists = TestData.employees.Where(
+                v => v.Department.Id == departmentId && v.Position.Id == chiefSpecialistPosId)
+                    .Select(e => new EmployeeBaseResponse{
+                        Id = e.Id,
+                        Name = e.Name,
+                    }).ToArray();
+            var groupLeaders = TestData.employees.Where(
+                v => v.Department.Id == departmentId && v.Position.Id == groupLeaderPosId)
+                    .Select(e => new EmployeeBaseResponse{
+                        Id = e.Id,
+                        Name = e.Name,
+                    }).ToArray();
+            var mainBuilders = TestData.employees.Where(
+                v => v.Department.Id == departmentId && v.Position.Id == mainBuilderPosId)
+                    .Select(e => new EmployeeBaseResponse{
+                        Id = e.Id,
+                        Name = e.Name,
+                    }).ToArray();
+
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var responseModel = JsonSerializer.Deserialize<MarkMainEmployeesResponse>(responseBody, options);
+            Assert.Equal(departmentHead.Id, responseModel.DepartmentHead.Id);
+            chiefSpecialists.Should().BeEquivalentTo(responseModel.ChiefSpecialists);
+            groupLeaders.Should().BeEquivalentTo(responseModel.GroupLeaders);
+            mainBuilders.Should().BeEquivalentTo(responseModel.MainBuilders);
+        }
+
+        [Fact]
+        public async Task GetMarkMainEmployeesByDepartmentId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            var endpoint = $"/api/departments/{departmentId}/mark-main-employees";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
 }

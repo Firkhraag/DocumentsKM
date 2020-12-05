@@ -50,8 +50,7 @@ namespace DocumentsKM.Controllers
             try
             {
                 var markLinkedDocModel = _mapper.Map<MarkLinkedDoc>(markLinkedDocRequest);
-                // var markLinkedDocModel = new MarkLinkedDoc{};
-                _service.Add(markLinkedDocModel, markId, markLinkedDocRequest.LinkedDocId);
+                _service.Create(markLinkedDocModel, markId, markLinkedDocRequest.LinkedDocId);
                 return Created($"mark-linked-docs/", markLinkedDocModel);
             }
             catch (ArgumentNullException)

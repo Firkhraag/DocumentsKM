@@ -1,154 +1,402 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
-using DocumentsKM.Data;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using DocumentsKM.Data;
 using DocumentsKM.Dtos;
+using DocumentsKM.Models;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class MarkOperatingConditionsService : IMarkOperatingConditionsService
+    public class MarkOperatingConditionsServiceTest
     {
-        private IMarkOperatingConditionsRepo _repository;
-        private IMarkRepo _markRepository;
-        private IOperatingAreaRepo _operatingAreaRepo;
-        private IGasGroupRepo _gasGroupRepo;
-        private IEnvAggressivenessRepo _envAggressivenessRepo;
-        private IConstructionMaterialRepo _constructionMaterialRepo;
-        private IPaintworkTypeRepo _paintworkTypeRepo;
-        private IHighTensileBoltsTypeRepo _highTensileBoltsTypeRepo;
+        private readonly Mock<IMarkOperatingConditionsRepo> _repository = new Mock<IMarkOperatingConditionsRepo>();
+        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
+        private readonly Mock<IOperatingAreaRepo> _mockOperatingAreaRepo = new Mock<IOperatingAreaRepo>();
+        private readonly Mock<IGasGroupRepo> _mockGasGroupRepo = new Mock<IGasGroupRepo>();
+        private readonly Mock<IEnvAggressivenessRepo> _mockEnvAggressivenessRepo = new Mock<IEnvAggressivenessRepo>();
+        private readonly Mock<IConstructionMaterialRepo> _mockConstructionMaterialRepo = new Mock<IConstructionMaterialRepo>();
+        private readonly Mock<IPaintworkTypeRepo> _mockPaintworkTypeRepo = new Mock<IPaintworkTypeRepo>();
+        private readonly Mock<IHighTensileBoltsTypeRepo> _mockHighTensileBoltsTypeRepo = new Mock<IHighTensileBoltsTypeRepo>();
+        private readonly IMarkOperatingConditionsService _service;
+        private readonly Random _rnd = new Random();
+        private readonly List<MarkOperatingConditions> _markOperatingConditions =
+            new List<MarkOperatingConditions>{};
+        private readonly int _maxMarkId = 2;
 
-        public MarkOperatingConditionsService(
-            IMarkOperatingConditionsRepo markOperatingConditionsRepo,
-            IMarkRepo markRepository,
-            IOperatingAreaRepo operatingAreaRepo,
-            IGasGroupRepo gasGroupRepo,
-            IEnvAggressivenessRepo envAggressivenessRepo,
-            IConstructionMaterialRepo constructionMaterialRepo,
-            IPaintworkTypeRepo paintworkTypeRepo,
-            IHighTensileBoltsTypeRepo highTensileBoltsTypeRepo)
+        public MarkOperatingConditionsServiceTest()
         {
-            _repository = markOperatingConditionsRepo;
-            _markRepository = markRepository;
-            _operatingAreaRepo = operatingAreaRepo;
-            _gasGroupRepo = gasGroupRepo;
-            _envAggressivenessRepo = envAggressivenessRepo;
-            _constructionMaterialRepo = constructionMaterialRepo;
-            _paintworkTypeRepo = paintworkTypeRepo;
-            _highTensileBoltsTypeRepo = highTensileBoltsTypeRepo;
+            // Arrange
+            foreach (var moc in TestData.markOperatingConditions)
+            {
+                _markOperatingConditions.Add(new MarkOperatingConditions
+                {
+                    Mark = moc.Mark,
+                    MarkId = moc.MarkId,
+                    SafetyCoeff = moc.SafetyCoeff,
+                    EnvAggressiveness = moc.EnvAggressiveness,
+                    Temperature = moc.Temperature,
+                    OperatingArea = moc.OperatingArea,
+                    GasGroup = moc.GasGroup,
+                    ConstructionMaterial = moc.ConstructionMaterial,
+                    PaintworkType = moc.PaintworkType,
+                    HighTensileBoltsType = moc.HighTensileBoltsType,
+                });
+            }
+
+            foreach (var mark in TestData.marks)
+            {
+                _mockMarkRepo.Setup(mock=>
+                    mock.GetById(mark.Id)).Returns(
+                        TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
+
+                _repository.Setup(mock=>
+                    mock.GetByMarkId(mark.Id)).Returns(
+                        _markOperatingConditions.SingleOrDefault(v => v.Mark.Id == mark.Id));
+            }
+            foreach (var envAggressiveness in TestData.envAggressiveness)
+            {
+                _mockEnvAggressivenessRepo.Setup(mock=>
+                    mock.GetById(envAggressiveness.Id)).Returns(
+                        TestData.envAggressiveness.SingleOrDefault(v => v.Id == envAggressiveness.Id));
+            }
+            foreach (var operatingArea in TestData.operatingAreas)
+            {
+                _mockOperatingAreaRepo.Setup(mock=>
+                    mock.GetById(operatingArea.Id)).Returns(
+                        TestData.operatingAreas.SingleOrDefault(v => v.Id == operatingArea.Id));
+            }
+            foreach (var gasGroup in TestData.gasGroups)
+            {
+                _mockGasGroupRepo.Setup(mock=>
+                    mock.GetById(gasGroup.Id)).Returns(
+                        TestData.gasGroups.SingleOrDefault(v => v.Id == gasGroup.Id));
+            }
+            foreach (var constructionMaterial in TestData.constructionMaterials)
+            {
+                _mockConstructionMaterialRepo.Setup(mock=>
+                    mock.GetById(constructionMaterial.Id)).Returns(
+                        TestData.constructionMaterials.SingleOrDefault(v => v.Id == constructionMaterial.Id));
+            }
+            foreach (var paintworkType in TestData.paintworkTypes)
+            {
+                _mockPaintworkTypeRepo.Setup(mock=>
+                    mock.GetById(paintworkType.Id)).Returns(
+                        TestData.paintworkTypes.SingleOrDefault(v => v.Id == paintworkType.Id));
+            }
+            foreach (var highTensileBoltsType in TestData.highTensileBoltsTypes)
+            {
+                _mockHighTensileBoltsTypeRepo.Setup(mock=>
+                    mock.GetById(highTensileBoltsType.Id)).Returns(
+                        TestData.highTensileBoltsTypes.SingleOrDefault(v => v.Id == highTensileBoltsType.Id));
+            }
+
+            _repository.Setup(mock=>
+                mock.Add(It.IsAny<MarkOperatingConditions>())).Verifiable();
+            _repository.Setup(mock=>
+                mock.Update(It.IsAny<MarkOperatingConditions>())).Verifiable();
+
+            _service = new MarkOperatingConditionsService(
+                _repository.Object,
+                _mockMarkRepo.Object,
+                _mockOperatingAreaRepo.Object,
+                _mockGasGroupRepo.Object,
+                _mockEnvAggressivenessRepo.Object,
+                _mockConstructionMaterialRepo.Object,
+                _mockPaintworkTypeRepo.Object,
+                _mockHighTensileBoltsTypeRepo.Object);
         }
 
-        public MarkOperatingConditions GetByMarkId(int markId)
+        [Fact]
+        public void GetByMarkId_ShouldReturnMarkOperatingConditions()
         {
-            return _repository.GetByMarkId(markId);
-        }
-
-        public void Create(MarkOperatingConditions markOperatingConditions,
-            int markId,
-            int envAggressivenessId,
-            int operatingAreaId,
-            int gasGroupId,
-            int constructionMaterialId,
-            int paintworkTypeId,
-            int highTensileBoltsTypeId)
-        {
-            if (markOperatingConditions == null)
-                throw new ArgumentNullException(nameof(markOperatingConditions));
-            var foundMark = _markRepository.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
-            markOperatingConditions.Mark = foundMark;
-
-            var envAggressiveness = _envAggressivenessRepo.GetById(envAggressivenessId);
-            if (envAggressiveness == null)
-                throw new ArgumentNullException(nameof(envAggressiveness));
-            markOperatingConditions.EnvAggressiveness = envAggressiveness;
-
-            var operatingArea = _operatingAreaRepo.GetById(operatingAreaId);
-            if (operatingArea == null)
-                throw new ArgumentNullException(nameof(operatingArea));
-            markOperatingConditions.OperatingArea = operatingArea;
+            // Arrange
+            int markId = _rnd.Next(1, _maxMarkId);
             
-            var gasGroup = _gasGroupRepo.GetById(gasGroupId);
-            if (gasGroup == null)
-                throw new ArgumentNullException(nameof(gasGroup));
-            markOperatingConditions.GasGroup = gasGroup;
+            // Act
+            var markOperatingConditions = _service.GetByMarkId(markId);
 
-            var constructionMaterial = _constructionMaterialRepo.GetById(constructionMaterialId);
-            if (constructionMaterial == null)
-                throw new ArgumentNullException(nameof(constructionMaterial));
-            markOperatingConditions.ConstructionMaterial = constructionMaterial;
-
-            var paintworkType = _paintworkTypeRepo.GetById(paintworkTypeId);
-            if (paintworkType == null)
-                throw new ArgumentNullException(nameof(paintworkType));
-            markOperatingConditions.PaintworkType = paintworkType;
-
-            var highTensileBoltsType = _highTensileBoltsTypeRepo.GetById(highTensileBoltsTypeId);
-            if (highTensileBoltsType == null)
-                throw new ArgumentNullException(nameof(highTensileBoltsType));
-            markOperatingConditions.HighTensileBoltsType = highTensileBoltsType;
-
-            _repository.Add(markOperatingConditions);
+            // Assert
+            Assert.NotNull(markOperatingConditions);
         }
 
-        public void Update(
-            int markId,
-            MarkOperatingConditionsUpdateRequest markOperatingConditions)
+        [Fact]
+        public void Create_ShouldCreateMarkOperatingConditions()
         {
-            if (markOperatingConditions == null)
-                throw new ArgumentNullException(nameof(markOperatingConditions));
-            var foundMarkOperatingConditions = _repository.GetByMarkId(markId);
-            if (foundMarkOperatingConditions == null)
-                throw new ArgumentNullException(nameof(foundMarkOperatingConditions));
-            
-            if (markOperatingConditions.SafetyCoeff != null)
-                foundMarkOperatingConditions.SafetyCoeff = markOperatingConditions.SafetyCoeff.GetValueOrDefault();
-            if (markOperatingConditions.Temperature != null)
-                foundMarkOperatingConditions.Temperature = markOperatingConditions.Temperature.GetValueOrDefault();
+            // Arrange
+            int markId = 3;
+            int envAggressivenessId = _rnd.Next(1, TestData.envAggressiveness.Count());
+            int operatingAreaId = _rnd.Next(1, TestData.operatingAreas.Count());
+            int gasGroupId = _rnd.Next(1, TestData.gasGroups.Count());
+            int constructionMaterialId = _rnd.Next(1, TestData.constructionMaterials.Count());
+            int paintworkTypeId = _rnd.Next(1, TestData.paintworkTypes.Count());
+            int highTensileBoltsTypeId = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
 
-            if (markOperatingConditions.EnvAggressivenessId != null)
+            var newMarkOperatingConditions = new MarkOperatingConditions
             {
-                var envAggressiveness = _envAggressivenessRepo.GetById(markOperatingConditions.EnvAggressivenessId.GetValueOrDefault());
-                if (envAggressiveness == null)
-                    throw new ArgumentNullException(nameof(envAggressiveness));
-                foundMarkOperatingConditions.EnvAggressiveness = envAggressiveness;
-            }
-            if (markOperatingConditions.OperatingAreaId != null)
+                SafetyCoeff = 1.0f,
+                Temperature = -34,
+            };
+            
+            // Act
+            _service.Create(newMarkOperatingConditions,
+                markId,
+                envAggressivenessId,
+                operatingAreaId,
+                gasGroupId,
+                constructionMaterialId,
+                paintworkTypeId,
+                highTensileBoltsTypeId);
+
+            // Assert
+            _repository.Verify(mock => mock.Add(It.IsAny<MarkOperatingConditions>()), Times.Once);
+            Assert.NotNull(newMarkOperatingConditions.Mark);
+        }
+
+        [Fact]
+        public void Create_ShouldFailWithNull()
+        {
+            // Arrange
+            int markId = 3;
+            int wrongMarkId = 999;
+            int envAggressivenessId = _rnd.Next(1, TestData.envAggressiveness.Count());
+            int wrongEnvAggressivenessId = 999;
+            int operatingAreaId = _rnd.Next(1, TestData.operatingAreas.Count());
+            int wrongOperatingAreaId = 999;
+            int gasGroupId = _rnd.Next(1, TestData.gasGroups.Count());
+            int wrongGasGroupId = 999;
+            int constructionMaterialId = _rnd.Next(1, TestData.constructionMaterials.Count());
+            int wrongConstructionMaterialId = 999;
+            int paintworkTypeId = _rnd.Next(1, TestData.paintworkTypes.Count());
+            int wrongPaintworkTypeId = 999;
+            int highTensileBoltsTypeId = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
+            int wrongHighTensileBoltsTypeId = 999;
+
+            var newMarkOperatingConditions = new MarkOperatingConditions
             {
-                var operatingArea = _operatingAreaRepo.GetById(markOperatingConditions.OperatingAreaId.GetValueOrDefault());
-                if (operatingArea == null)
-                    throw new ArgumentNullException(nameof(operatingArea));
-                foundMarkOperatingConditions.OperatingArea = operatingArea;
-            }
-            if (markOperatingConditions.GasGroupId != null)
+                SafetyCoeff = 1.0f,
+                Temperature = -34,
+            };
+            
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null,
+                markId,
+                envAggressivenessId,
+                operatingAreaId,
+                gasGroupId,
+                constructionMaterialId,
+                paintworkTypeId,
+                highTensileBoltsTypeId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkOperatingConditions,
+                wrongMarkId,
+                envAggressivenessId,
+                operatingAreaId,
+                gasGroupId,
+                constructionMaterialId,
+                paintworkTypeId,
+                highTensileBoltsTypeId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkOperatingConditions,
+                markId,
+                wrongEnvAggressivenessId,
+                operatingAreaId,
+                gasGroupId,
+                constructionMaterialId,
+                paintworkTypeId,
+                highTensileBoltsTypeId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkOperatingConditions,
+                markId,
+                envAggressivenessId,
+                wrongOperatingAreaId,
+                gasGroupId,
+                constructionMaterialId,
+                paintworkTypeId,
+                highTensileBoltsTypeId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkOperatingConditions,
+                markId,
+                envAggressivenessId,
+                operatingAreaId,
+                wrongGasGroupId,
+                constructionMaterialId,
+                paintworkTypeId,
+                highTensileBoltsTypeId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkOperatingConditions,
+                markId,
+                envAggressivenessId,
+                operatingAreaId,
+                gasGroupId,
+                wrongConstructionMaterialId,
+                paintworkTypeId,
+                highTensileBoltsTypeId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkOperatingConditions,
+                markId,
+                envAggressivenessId,
+                operatingAreaId,
+                gasGroupId,
+                constructionMaterialId,
+                wrongPaintworkTypeId,
+                highTensileBoltsTypeId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkOperatingConditions,
+                markId,
+                envAggressivenessId,
+                operatingAreaId,
+                gasGroupId,
+                constructionMaterialId,
+                paintworkTypeId,
+                wrongHighTensileBoltsTypeId));
+
+            _repository.Verify(mock => mock.Add(It.IsAny<MarkOperatingConditions>()), Times.Never);
+        }
+
+        [Fact]
+        public void Create_ShouldFailWithConflict()
+        {
+            // Arrange
+            int markId = 1;
+            int envAggressivenessId = _rnd.Next(1, TestData.envAggressiveness.Count());
+            int operatingAreaId = _rnd.Next(1, TestData.operatingAreas.Count());
+            int gasGroupId = _rnd.Next(1, TestData.gasGroups.Count());
+            int constructionMaterialId = _rnd.Next(1, TestData.constructionMaterials.Count());
+            int paintworkTypeId = _rnd.Next(1, TestData.paintworkTypes.Count());
+            int highTensileBoltsTypeId = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
+
+            var newMarkOperatingConditions = new MarkOperatingConditions
             {
-                var gasGroup = _gasGroupRepo.GetById(markOperatingConditions.GasGroupId.GetValueOrDefault());
-                if (gasGroup == null)
-                    throw new ArgumentNullException(nameof(gasGroup));
-                foundMarkOperatingConditions.GasGroup = gasGroup;
-            }
-            if (markOperatingConditions.ConstructionMaterialId != null)
+                SafetyCoeff = 1.0f,
+                Temperature = -34,
+            };
+            
+            // Act & Assert
+            Assert.Throws<ConflictException>(() => _service.Create(newMarkOperatingConditions,
+                markId,
+                envAggressivenessId,
+                operatingAreaId,
+                gasGroupId,
+                constructionMaterialId,
+                paintworkTypeId,
+                highTensileBoltsTypeId));
+
+            _repository.Verify(mock => mock.Add(It.IsAny<MarkOperatingConditions>()), Times.Never);
+        }
+        
+        [Fact]
+        public void Update_ShouldUpdateMarkOperatingConditions()
+        {
+            // Arrange
+            int markId = 1;
+            int envAggressivenessId = _rnd.Next(1, TestData.envAggressiveness.Count());
+            int operatingAreaId = _rnd.Next(1, TestData.operatingAreas.Count());
+            int gasGroupId = _rnd.Next(1, TestData.gasGroups.Count());
+            int constructionMaterialId = _rnd.Next(1, TestData.constructionMaterials.Count());
+            int paintworkTypeId = _rnd.Next(1, TestData.paintworkTypes.Count());
+            int highTensileBoltsTypeId = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
+
+            var markOperatingConditionsRequest = new MarkOperatingConditionsUpdateRequest
             {
-                var constructionMaterial = _constructionMaterialRepo.GetById(markOperatingConditions.ConstructionMaterialId.GetValueOrDefault());
-                if (constructionMaterial == null)
-                    throw new ArgumentNullException(nameof(constructionMaterial));
-                foundMarkOperatingConditions.ConstructionMaterial = constructionMaterial;
-            }
-            if (markOperatingConditions.PaintworkTypeId != null)
+                SafetyCoeff = 2.0f,
+                Temperature = -40,
+                EnvAggressivenessId = envAggressivenessId,
+                OperatingAreaId = operatingAreaId,
+                GasGroupId = gasGroupId,
+                ConstructionMaterialId = constructionMaterialId,
+                PaintworkTypeId = paintworkTypeId,
+                HighTensileBoltsTypeId = highTensileBoltsTypeId,
+            };
+            
+            // Act
+            _service.Update(markId,
+                markOperatingConditionsRequest);
+
+            // Assert
+            _repository.Verify(mock => mock.Update(It.IsAny<MarkOperatingConditions>()), Times.Once);
+            Assert.Equal(envAggressivenessId, _markOperatingConditions.SingleOrDefault(
+                v => v.Mark.Id == markId).EnvAggressiveness.Id);
+            Assert.Equal(operatingAreaId, _markOperatingConditions.SingleOrDefault(
+                v => v.Mark.Id == markId).OperatingArea.Id);
+            Assert.Equal(gasGroupId, _markOperatingConditions.SingleOrDefault(
+                v => v.Mark.Id == markId).GasGroup.Id);
+            Assert.Equal(constructionMaterialId, _markOperatingConditions.SingleOrDefault(
+                v => v.Mark.Id == markId).ConstructionMaterial.Id);
+            Assert.Equal(paintworkTypeId, _markOperatingConditions.SingleOrDefault(
+                v => v.Mark.Id == markId).PaintworkType.Id);
+            Assert.Equal(highTensileBoltsTypeId, _markOperatingConditions.SingleOrDefault(
+                v => v.Mark.Id == markId).HighTensileBoltsType.Id);
+        }
+
+        [Fact]
+        public void Update_ShouldFailWithNull()
+        {
+            // Arrange
+            int markId = 1;
+            int wrongMarkId = 999;
+            int envAggressivenessId = _rnd.Next(1, TestData.envAggressiveness.Count());
+            int wrongEnvAggressivenessId = 999;
+            int operatingAreaId = _rnd.Next(1, TestData.operatingAreas.Count());
+            int wrongOperatingAreaId = 999;
+            int gasGroupId = _rnd.Next(1, TestData.gasGroups.Count());
+            int wrongGasGroupId = 999;
+            int constructionMaterialId = _rnd.Next(1, TestData.constructionMaterials.Count());
+            int wrongConstructionMaterialId = 999;
+            int paintworkTypeId = _rnd.Next(1, TestData.paintworkTypes.Count());
+            int wrongPaintworkTypeId = 999;
+            int highTensileBoltsTypeId = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
+            int wrongHighTensileBoltsTypeId = 999;
+
+            var markOperatingConditionsRequest = new MarkOperatingConditionsUpdateRequest
             {
-                var paintworkType = _paintworkTypeRepo.GetById(markOperatingConditions.PaintworkTypeId.GetValueOrDefault());
-                if (paintworkType == null)
-                    throw new ArgumentNullException(nameof(paintworkType));
-                foundMarkOperatingConditions.PaintworkType = paintworkType;
-            }
-            if (markOperatingConditions.HighTensileBoltsTypeId != null)
+                SafetyCoeff = 2.0f,
+            };
+            var wrongMarkOperatingConditionsRequest1 = new MarkOperatingConditionsUpdateRequest
             {
-                var highTensileBoltsType = _highTensileBoltsTypeRepo.GetById(markOperatingConditions.HighTensileBoltsTypeId.GetValueOrDefault());
-                if (highTensileBoltsType == null)
-                    throw new ArgumentNullException(nameof(highTensileBoltsType));
-                foundMarkOperatingConditions.HighTensileBoltsType = highTensileBoltsType;
-            }
-            _repository.Update(foundMarkOperatingConditions);
+                EnvAggressivenessId = wrongEnvAggressivenessId,
+            };
+            var wrongMarkOperatingConditionsRequest2 = new MarkOperatingConditionsUpdateRequest
+            {
+                OperatingAreaId = wrongOperatingAreaId,
+            };
+            var wrongMarkOperatingConditionsRequest3 = new MarkOperatingConditionsUpdateRequest
+            {
+                GasGroupId = wrongGasGroupId,
+            };
+            var wrongMarkOperatingConditionsRequest4 = new MarkOperatingConditionsUpdateRequest
+            {
+                ConstructionMaterialId = wrongConstructionMaterialId,
+            };
+            var wrongMarkOperatingConditionsRequest5 = new MarkOperatingConditionsUpdateRequest
+            {
+                PaintworkTypeId = wrongPaintworkTypeId,
+            };
+            var wrongMarkOperatingConditionsRequest6 = new MarkOperatingConditionsUpdateRequest
+            {
+                HighTensileBoltsTypeId = wrongHighTensileBoltsTypeId,
+            };
+            
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => _service.Update(markId, null));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                wrongMarkId,
+                markOperatingConditionsRequest));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                markId,
+                wrongMarkOperatingConditionsRequest1));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                markId,
+                wrongMarkOperatingConditionsRequest2));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                markId,
+                wrongMarkOperatingConditionsRequest3));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                markId,
+                wrongMarkOperatingConditionsRequest4));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                markId,
+                wrongMarkOperatingConditionsRequest5));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                markId,
+                wrongMarkOperatingConditionsRequest6));
+
+            _repository.Verify(mock => mock.Update(It.IsAny<MarkOperatingConditions>()), Times.Never);
         }
     }
 }

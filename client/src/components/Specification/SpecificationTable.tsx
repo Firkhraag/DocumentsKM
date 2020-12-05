@@ -73,9 +73,6 @@ const SpecificationTable = ({
 
 	const onSelectCurrentClick = async (row: number, id: number) => {
 		try {
-			await httpClient.patch(`/specifications/${currentSpecId}`, {
-				isCurrent: false,
-			})
 			await httpClient.patch(`/specifications/${id}`, {
 				isCurrent: true,
 			})
@@ -180,13 +177,6 @@ const SpecificationTable = ({
 									}
 									className="pointer text-centered"
 								>
-									{/* <input
-										ref={refs[index]}
-										className="current-radio-btn pointer"
-										type="radio"
-										id={`is${s.id}`}
-										name="currentRelease"
-									/> */}
                                     <Form.Check ref={refs[index]} id={`is${s.id}`} name="currentRelease" type="radio" style={{pointerEvents: 'none'}} />
 								</td>
 								<td

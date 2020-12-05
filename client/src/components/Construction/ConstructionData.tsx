@@ -242,65 +242,75 @@ const ConstructionData = ({
 					: 'Данные по виду конструкций'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
-				<label className="bold no-bot-mrg">Шифр вида конструкции</label>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выберите вид конструкции"
-					noOptionsMessage={() => 'Вид конструкции не найден'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onConstructionTypeSelect((selectedOption as any)?.value)
-					}
-					value={
-						selectedObject.type == null
-							? null
-							: {
-									value: selectedObject.type.id,
-									label: selectedObject.type.name,
-							  }
-					}
-					options={optionsObject.types.map((t) => {
-						return {
-							value: t.id,
-							label: t.name,
-						}
-					})}
-					styles={reactSelectstyle}
-				/>
+                <Form.Group>
+                    <Form.Label
+						htmlFor="type"
+					>
+						Шифр вида конструкции
+					</Form.Label>
+                    <Select
+                        inputId="type"
+                        maxMenuHeight={250}
+                        isClearable={true}
+                        isSearchable={true}
+                        placeholder="Выберите вид конструкции"
+                        noOptionsMessage={() => 'Вид конструкции не найден'}
+                        onChange={(selectedOption) =>
+                            onConstructionTypeSelect((selectedOption as any)?.value)
+                        }
+                        value={
+                            selectedObject.type == null
+                                ? null
+                                : {
+                                        value: selectedObject.type.id,
+                                        label: selectedObject.type.name,
+                                }
+                        }
+                        options={optionsObject.types.map((t) => {
+                            return {
+                                value: t.id,
+                                label: t.name,
+                            }
+                        })}
+                        styles={reactSelectstyle}
+                    />
+                </Form.Group>
 
-				<label className="bold no-bot-mrg mrg-top-2">
-					Шифр подвида конструкции
-				</label>
-				<Select
-					maxMenuHeight={250}
-					isClearable={true}
-					isSearchable={true}
-					placeholder="Выберите подвид конструкции"
-					noOptionsMessage={() => 'Подвид конструкции не найден'}
-					className="mrg-top"
-					onChange={(selectedOption) =>
-						onConstructionSubtypeSelect(
-							(selectedOption as any)?.value
-						)
-					}
-					value={
-						selectedObject.subtype == null
-							? null
-							: {
-									value: selectedObject.subtype.id,
-									label: selectedObject.subtype.name,
-							  }
-					}
-					options={optionsObject.subtypes.map((s) => {
-						return {
-							value: s.id,
-							label: s.name,
-						}
-					})}
-					styles={reactSelectstyle}
-				/>
+                <Form.Group className="mrg-top-2">
+                    <Form.Label
+						htmlFor="subtype"
+					>
+						Шифр подвида конструкции
+					</Form.Label>
+                    <Select
+                        inputId="subtype"
+                        maxMenuHeight={250}
+                        isClearable={true}
+                        isSearchable={true}
+                        placeholder="Выберите подвид конструкции"
+                        noOptionsMessage={() => 'Подвид конструкции не найден'}
+                        onChange={(selectedOption) =>
+                            onConstructionSubtypeSelect(
+                                (selectedOption as any)?.value
+                            )
+                        }
+                        value={
+                            selectedObject.subtype == null
+                                ? null
+                                : {
+                                        value: selectedObject.subtype.id,
+                                        label: selectedObject.subtype.name,
+                                }
+                        }
+                        options={optionsObject.subtypes.map((s) => {
+                            return {
+                                value: s.id,
+                                label: s.name,
+                            }
+                        })}
+                        styles={reactSelectstyle}
+                    />
+                </Form.Group>
 
 				<Form.Group className="mrg-top-2">
 					<Form.Label htmlFor="name">Название</Form.Label>

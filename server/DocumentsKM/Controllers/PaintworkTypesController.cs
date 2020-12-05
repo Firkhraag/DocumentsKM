@@ -11,21 +11,21 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class OperatingAreaController : ControllerBase
+    public class PaintworkTypesController : ControllerBase
     {
-        private readonly IOperatingAreaService _service;
+        private readonly IPaintworkTypeService _service;
 
-        public OperatingAreaController(IOperatingAreaService operatingAreaService)
+        public PaintworkTypesController(IPaintworkTypeService paintworkTypeService)
         {
-            _service = operatingAreaService;
+            _service = paintworkTypeService;
         }
 
-        [HttpGet, Route("operating-areas")]
+        [HttpGet, Route("paintwork-types")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<OperatingArea>> GetAll()
+        public ActionResult<IEnumerable<PaintworkType>> GetAll()
         {
-            var operatingArea = _service.GetAll();
-            return Ok(operatingArea);
+            var paintworkTypes = _service.GetAll();
+            return Ok(paintworkTypes);
         }
     }
 }

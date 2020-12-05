@@ -1,21 +1,40 @@
 using System.Collections.Generic;
-using System.Linq;
+using DocumentsKM.Data;
 using DocumentsKM.Models;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlLinkedDocTypeRepo : ILinkedDocTypeRepo
+    public class LinkedDocTypeRepoTest
     {
-        private readonly ApplicationContext _context;
-
-        public SqlLinkedDocTypeRepo(ApplicationContext context)
+        private ApplicationContext GetContext(List<LinkedDocType> linkedDocTypes)
         {
-            _context = context;
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "LinkedDocTypeTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            context.LinkedDocTypes.AddRange(linkedDocTypes);
+            context.SaveChanges();
+            return context;
         }
 
-        public IEnumerable<LinkedDocType> GetAll()
+        [Fact]
+        public void GetAll_ShouldReturnLinkedDocTypes()
         {
-            return _context.LinkedDocTypes.ToList();
+            // Arrange
+            var context = GetContext(TestData.linkedDocTypes);
+            var repo = new SqlLinkedDocTypeRepo(context);
+
+            // Act
+            var linkedDocTypes = repo.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.linkedDocTypes, linkedDocTypes);
+
+            context.Database.EnsureDeleted();
         }
     }
 }

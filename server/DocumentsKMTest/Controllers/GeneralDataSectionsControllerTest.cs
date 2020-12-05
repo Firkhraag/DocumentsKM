@@ -1,37 +1,68 @@
 using System.Collections.Generic;
-using AutoMapper;
-using DocumentsKM.Dtos;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using DocumentsKM.Models;
-using DocumentsKM.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-namespace DocumentsKM.Controllers
+namespace DocumentsKM.Tests
 {
-    [Route("api")]
-    [Authorize]
-    [ApiController]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class GeneralDataSectionsController : ControllerBase
+    public class GeneralDataSectionsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
-        private readonly IGeneralDataSectionService _service;
-        private readonly IMapper _mapper;
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
 
-        public GeneralDataSectionsController(
-            IGeneralDataSectionService generalDataSectionService,
-            IMapper mapper)
+        public GeneralDataSectionsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            _service = generalDataSectionService;
-            _mapper = mapper;
+            
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
         }
 
-        [HttpGet, Route("general-data-sections")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<GeneralDataSection>> GetAll()
+        [Fact]
+        public async Task GetAll_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
-            var sections = _service.GetAll();
-            return Ok(sections);
+            // Arrange
+            var endpoint = "/api/general-data-sections";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            TestData.generalDataSections.Should().BeEquivalentTo(
+                JsonSerializer.Deserialize<IEnumerable<GeneralDataSection>>(responseBody, options));
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            var endpoint = "/api/general-data-sections";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
 }

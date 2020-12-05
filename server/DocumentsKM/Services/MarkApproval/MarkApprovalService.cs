@@ -36,6 +36,8 @@ namespace DocumentsKM.Services
             int markId,
             List<int> employeeIds)
         {
+            if (employeeIds == null)
+                throw new ArgumentNullException(nameof(employeeIds));
             var foundMark = _markRepo.GetById(markId);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));

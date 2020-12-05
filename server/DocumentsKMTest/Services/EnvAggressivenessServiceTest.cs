@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class EnvAggressivenessServiceTest
     {
-        private readonly EnvAggressivenessService _service;
+        private readonly IEnvAggressivenessService _service;
 
         public EnvAggressivenessServiceTest()
         {
             // Arrange
-            var mockEnvAggressivenessRepo = new Mock<IEnvAggressivenessRepo>();
+            var repository = new Mock<IEnvAggressivenessRepo>();
 
-            mockEnvAggressivenessRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.envAggressiveness);
             
-            _service = new EnvAggressivenessService(mockEnvAggressivenessRepo.Object);
+            _service = new EnvAggressivenessService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllEnvAggressiveness()
+        public void GetAll_ShouldReturnEnvAggressiveness()
         {
             // Act
             var returnedEnvAggressivenesss = _service.GetAll();

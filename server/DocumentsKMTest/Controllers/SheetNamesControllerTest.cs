@@ -1,31 +1,68 @@
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using DocumentsKM.Models;
-using DocumentsKM.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-namespace DocumentsKM.Controllers
+namespace DocumentsKM.Tests
 {
-    [Route("api")]
-    [Authorize]
-    [ApiController]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class SheetNamesController : ControllerBase
+    public class SheetNamesControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
-        private readonly ISheetNameService _service;
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
 
-        public SheetNamesController(ISheetNameService sheetNameService)
+        public SheetNamesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            _service = sheetNameService;
+            
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
         }
 
-        [HttpGet, Route("sheet-names")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<SheetName>> GetAll()
+        [Fact]
+        public async Task GetAll_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
-            var sheetNames = _service.GetAll();
-            return Ok(sheetNames);
+            // Arrange
+            var endpoint = "/api/sheet-names";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            TestData.sheetNames.Should().BeEquivalentTo(
+                JsonSerializer.Deserialize<IEnumerable<SheetName>>(responseBody, options));
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            var endpoint = "/api/sheet-names";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
 }

@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class ProjectServiceTest
     {
-        private readonly ProjectService _service;
+        private readonly IProjectService _service;
 
         public ProjectServiceTest()
         {
             // Arrange
-            var mockProjectRepo = new Mock<IProjectRepo>();
+            var repository = new Mock<IProjectRepo>();
 
-            mockProjectRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.projects);
             
-            _service = new ProjectService(mockProjectRepo.Object);
+            _service = new ProjectService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllProjects()
+        public void GetAll_ShouldReturnProjects()
         {
             // Act
             var returnedProjects = _service.GetAll();

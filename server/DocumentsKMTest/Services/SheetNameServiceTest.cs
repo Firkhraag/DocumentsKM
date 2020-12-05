@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class SheetNameServiceTest
     {
-        private readonly SheetNameService _service;
+        private readonly ISheetNameService _service;
 
         public SheetNameServiceTest()
         {
             // Arrange
-            var mockSheetNameRepo = new Mock<ISheetNameRepo>();
+            var repository = new Mock<ISheetNameRepo>();
 
-            mockSheetNameRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.sheetNames);
             
-            _service = new SheetNameService(mockSheetNameRepo.Object);
+            _service = new SheetNameService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllSheetNames()
+        public void GetAll_ShouldReturnSheetNames()
         {
             // Act
             var returnedSheetNames = _service.GetAll();

@@ -1,74 +1,80 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class ProjectRepoTest : IDisposable
+    public class ProjectRepoTest
     {
-        private readonly IProjectRepo _repo;
+        private readonly Random _rnd = new Random();
 
-        public ProjectRepoTest()
+        private ApplicationContext GetContext(List<Project> projects)
         {
-            // Arrange
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
             builder.UseInMemoryDatabase(databaseName: "ProjectTestDb");
             var options = builder.Options;
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
-            context.Projects.AddRange(TestData.projects);
+            context.Projects.AddRange(projects);
             context.SaveChanges();
-            _repo = new SqlProjectRepo(context);
-        }
-
-        public void Dispose()
-        {
-            var builder = new DbContextOptionsBuilder<ApplicationContext>();
-            builder.UseInMemoryDatabase(databaseName: "ProjectTestDb");
-            var options = builder.Options;
-            var context = new ApplicationContext(options);
-            context.Database.EnsureDeleted();
+            return context;
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllProjects()
+        public void GetAll_ShouldReturnProjects()
         {
+            // Arrange
+            var context = GetContext(TestData.projects);
+            var repo = new SqlProjectRepo(context);
+
             // Act
-            var projects = _repo.GetAll();
+            var projects = repo.GetAll();
 
             // Assert
             Assert.Equal(TestData.projects, projects);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnProject()
         {
             // Arrange
-            var rnd = new Random();
-            int id = rnd.Next(1, TestData.projects.Count());
+            var context = GetContext(TestData.projects);
+            var repo = new SqlProjectRepo(context);
+
+            int id = _rnd.Next(1, TestData.projects.Count());
 
             // Act
-            var project = _repo.GetById(id);
+            var project = repo.GetById(id);
 
             // Assert
             Assert.Equal(TestData.projects.SingleOrDefault(v => v.Id == id), project);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnNull()
         {
             // Arrange
+            var context = GetContext(TestData.projects);
+            var repo = new SqlProjectRepo(context);
+
             int wrongId = 999;
 
             // Act
-            var project = _repo.GetById(wrongId);
+            var project = repo.GetById(wrongId);
 
             // Assert
             Assert.Null(project);
+
+            context.Database.EnsureDeleted();
         }
     }
 }

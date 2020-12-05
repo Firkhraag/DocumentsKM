@@ -6,3 +6,5 @@ public/
 bin/
 obj/
 logs/
+
+coverage.cobertura.xml

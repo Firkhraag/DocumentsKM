@@ -1,26 +1,104 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentsKM.Data;
 using DocumentsKM.Models;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlLinkedDocRepo : ILinkedDocRepo
+    public class LinkedDocRepoTest
     {
-        private readonly ApplicationContext _context;
+        private readonly Random _rnd = new Random();
 
-        public SqlLinkedDocRepo(ApplicationContext context)
+        private ApplicationContext GetContext(List<LinkedDoc> linkedDocs)
         {
-            _context = context;
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "LinkedDocTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
+            context.LinkedDocTypes.AddRange(TestData.linkedDocTypes);
+            context.LinkedDocs.AddRange(linkedDocs);
+            context.SaveChanges();
+            return context;
         }
 
-        public LinkedDoc GetById(int id)
+        [Fact]
+        public void GetAllByDocTypeId_ShouldReturnLinkedDocs()
         {
-            return _context.LinkedDocs.FirstOrDefault(ld => ld.Id == id);
+            // Arrange
+            var context = GetContext(TestData.linkedDocs);
+            var repo = new SqlLinkedDocRepo(context);
+
+            var docTypeId = _rnd.Next(1, TestData.linkedDocTypes.Count());
+
+            // Act
+            var linkedDocs = repo.GetAllByDocTypeId(docTypeId);
+
+            // Assert
+            Assert.Equal(TestData.linkedDocs.Where(
+                v => v.Type.Id == docTypeId), linkedDocs);
+
+            context.Database.EnsureDeleted();
         }
 
-        public IEnumerable<LinkedDoc> GetAllByDocTypeId(int docTypeId)
+        [Fact]
+        public void GetAllByDocTypeId_ShouldReturnEmptyArray_WhenWrongMarkId()
         {
-            return _context.LinkedDocs.Where(ld => ld.Type.Id == docTypeId).ToList();
+            // Arrange
+            var context = GetContext(TestData.linkedDocs);
+            var repo = new SqlLinkedDocRepo(context);
+
+            var wrongDocTypeId = 999;
+
+            // Act
+            var linkedDocs = repo.GetAllByDocTypeId(wrongDocTypeId);
+
+            // Assert
+            Assert.Empty(linkedDocs);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnLinkedDoc()
+        {
+            // Arrange
+            var context = GetContext(TestData.linkedDocs);
+            var repo = new SqlLinkedDocRepo(context);
+
+            int id = _rnd.Next(1, TestData.linkedDocs.Count());
+
+            // Act
+            var linkedDoc = repo.GetById(id);
+
+            // Assert
+            Assert.Equal(TestData.linkedDocs.SingleOrDefault(v => v.Id == id),
+                linkedDoc);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Arrange
+            var context = GetContext(TestData.linkedDocs);
+            var repo = new SqlLinkedDocRepo(context);
+
+            int wrongId = 999;
+
+            // Act
+            var linkedDoc = repo.GetById(wrongId);
+
+            // Assert
+            Assert.Null(linkedDoc);
+
+            context.Database.EnsureDeleted();
         }
     }
 }

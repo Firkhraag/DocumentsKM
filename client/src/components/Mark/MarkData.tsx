@@ -10,6 +10,7 @@ import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
+import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
 import { useMark, useSetMark } from '../../store/MarkStore'
 import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
@@ -18,10 +19,11 @@ import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
 
 type MarkDataProps = {
+    subnodeForCreate: Subnode
 	isCreateMode: boolean
 }
 
-const MarkData = ({ isCreateMode }: MarkDataProps) => {
+const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 	const defaultOptionsObject = {
 		departments: [] as Department[],
 		chiefSpecialists: [] as Employee[],
@@ -43,38 +45,34 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 
 	useEffect(() => {
 		if (isCreateMode) {
-			const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
-			const recentMarkIds = JSON.parse(recentMarkIdsStr) as number[]
-			const selectedMarkId = recentMarkIds[0]
-			if (selectedMarkId != null) {
-				const fetchData = async () => {
-					try {
-						const departmentsResponse = await httpClient.get(
-							'/departments'
-						)
-						const markResponse = await httpClient.get(
-							`/marks/${selectedMarkId}`
-						)
-						setOptionsObject({
-							...defaultOptionsObject,
-							departments: departmentsResponse.data,
-						})
-						setSelectedObject({
-							id: 0,
-							code: '',
-							name: '',
-							subnode: markResponse.data.subnode,
-							department: null,
-							chiefSpecialist: null,
-							groupLeader: null,
-							mainBuilder: null,
-						})
-					} catch (e) {
-						console.log('Failed to fetch departments')
-					}
-				}
-				fetchData()
-			}
+            if (isCreateMode && subnodeForCreate == null) {
+				history.push('/sheets')
+				return
+            }
+            const fetchData = async () => {
+                try {
+                    const departmentsResponse = await httpClient.get(
+                        '/departments'
+                    )
+                    setOptionsObject({
+                        ...defaultOptionsObject,
+                        departments: departmentsResponse.data,
+                    })
+                    setSelectedObject({
+                        id: 0,
+                        code: '',
+                        name: '',
+                        subnode: subnodeForCreate,
+                        department: null,
+                        chiefSpecialist: null,
+                        groupLeader: null,
+                        mainBuilder: null,
+                    })
+                } catch (e) {
+                    console.log('Failed to fetch departments')
+                }
+            }
+            fetchData()
 		} else {
 			const selectedMarkId = localStorage.getItem('selectedMarkId')
 			if (selectedMarkId != null) {
@@ -163,7 +161,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					chiefSpecialist: null,
 					groupLeader: null,
 					mainBuilder: null,
-				})
+                })
+                setDepartmentHead(cachedMainEmployees.get(v.id).departmentHead)
 			} else {
 				try {
 					const fetchedMainEmployeesResponse = await httpClient.get(
@@ -185,7 +184,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						chiefSpecialist: null,
 						groupLeader: null,
 						mainBuilder: null,
-					})
+                    })
+                    setDepartmentHead(fetchedMainEmployees.departmentHead)
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}

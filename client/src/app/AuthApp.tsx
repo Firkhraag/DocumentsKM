@@ -31,6 +31,7 @@ import AttachedDoc from '../model/AttachedDoc'
 import MarkLinkedDoc from '../model/MarkLinkedDoc'
 
 const AuthApp = () => {
+	const [subnode, setSubnode] = useState(null)
 	const [popupObj, setPopupObj] = useState(defaultPopupObj)
     const [specification, setSpecification] = useState<Specification>(null)
     const [construction, setConstruction] = useState<Construction>(null)
@@ -54,17 +55,17 @@ const AuthApp = () => {
 
 						<Route exact path="/marks">
 							<div className="full-width div-container">
-								<MarkSelect />
+								<MarkSelect setSubnode={setSubnode} />
 							</div>
 						</Route>
 						<Route exact path="/marks/:markId">
 							<div className="full-width div-container">
-								<MarkData isCreateMode={false} />
+								<MarkData isCreateMode={false} subnodeForCreate={subnode} />
 							</div>
 						</Route>
 						<Route exact path="/mark-create">
 							<div className="full-width div-container">
-								<MarkData isCreateMode={true} />
+								<MarkData isCreateMode={true} subnodeForCreate={subnode} />
 							</div>
 						</Route>
 

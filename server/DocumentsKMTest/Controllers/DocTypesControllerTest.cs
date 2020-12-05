@@ -1,31 +1,70 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using DocumentsKM.Models;
-using DocumentsKM.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-namespace DocumentsKM.Controllers
+namespace DocumentsKM.Tests
 {
-    [Route("api")]
-    [Authorize]
-    [ApiController]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class DocTypesController : ControllerBase
+    public class DocTypesControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
-        private readonly IDocTypeService _service;
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
 
-        public DocTypesController(IDocTypeService docTypeService)
+        public DocTypesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            _service = docTypeService;
+            
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
         }
 
-        [HttpGet, Route("doc-types/attached")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<DocType>> GetAll()
+        [Fact]
+        public async Task GetAllAttached_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
-            var docTypes = _service.GetAllAttached();
-            return Ok(docTypes);
+            // Arrange
+            var endpoint = "/api/doc-types/attached";
+            var sheetDocTypeId = 1;
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            TestData.docTypes.Where(v => v.Id != sheetDocTypeId).Should().BeEquivalentTo(
+                JsonSerializer.Deserialize<IEnumerable<DocType>>(responseBody, options));
+        }
+
+        [Fact]
+        public async Task GetAllAttached_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            var endpoint = "/api/doc-types/attached";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
 }

@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class LinkedDocTypeServiceTest
     {
-        private readonly LinkedDocTypeService _service;
+        private readonly ILinkedDocTypeService _service;
 
         public LinkedDocTypeServiceTest()
         {
             // Arrange
-            var mockLinkedDocTypeRepo = new Mock<ILinkedDocTypeRepo>();
+            var repository = new Mock<ILinkedDocTypeRepo>();
 
-            mockLinkedDocTypeRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.linkedDocTypes);
             
-            _service = new LinkedDocTypeService(mockLinkedDocTypeRepo.Object);
+            _service = new LinkedDocTypeService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllLinkedDocTypes()
+        public void GetAll_ShouldReturnLinkedDocTypes()
         {
             // Act
             var returnedLinkedDocTypes = _service.GetAll();

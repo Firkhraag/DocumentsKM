@@ -1,75 +1,81 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class EnvAggressivenessRepoTest : IDisposable
+    public class EnvAggressivenessRepoTest
     {
-        private readonly IEnvAggressivenessRepo _repo;
+        private readonly Random _rnd = new Random();
 
-        public EnvAggressivenessRepoTest()
+        private ApplicationContext GetContext(List<EnvAggressiveness> envAggressiveness)
         {
-            // Arrange
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
             builder.UseInMemoryDatabase(databaseName: "EnvAggressivenessTestDb");
             var options = builder.Options;
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
-            context.EnvAggressiveness.AddRange(TestData.envAggressiveness);
+            context.EnvAggressiveness.AddRange(envAggressiveness);
             context.SaveChanges();
-            _repo = new SqlEnvAggressivenessRepo(context);
-        }
-
-        public void Dispose()
-        {
-            var builder = new DbContextOptionsBuilder<ApplicationContext>();
-            builder.UseInMemoryDatabase(databaseName: "EnvAggressivenessTestDb");
-            var options = builder.Options;
-            var context = new ApplicationContext(options);
-            context.Database.EnsureDeleted();
+            return context;
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllEnvAggressiveness()
+        public void GetAll_ShouldReturnEnvAggressiveness()
         {
+            // Arrange
+            var context = GetContext(TestData.envAggressiveness);
+            var repo = new SqlEnvAggressivenessRepo(context);
+
             // Act
-            var envAggressiveness = _repo.GetAll();
+            var envAggressiveness = repo.GetAll();
 
             // Assert
             Assert.Equal(TestData.envAggressiveness, envAggressiveness);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnEnvAggressiveness()
         {
             // Arrange
-            var rnd = new Random();
-            int id = rnd.Next(1, TestData.envAggressiveness.Count());
+            var context = GetContext(TestData.envAggressiveness);
+            var repo = new SqlEnvAggressivenessRepo(context);
+
+            int id = _rnd.Next(1, TestData.envAggressiveness.Count());
 
             // Act
-            var envAggressiveness = _repo.GetById(id);
+            var envAggressiveness = repo.GetById(id);
 
             // Assert
             Assert.Equal(TestData.envAggressiveness.SingleOrDefault(v => v.Id == id),
                 envAggressiveness);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnNull()
         {
             // Arrange
+            var context = GetContext(TestData.envAggressiveness);
+            var repo = new SqlEnvAggressivenessRepo(context);
+
             int wrongId = 999;
 
             // Act
-            var envAggressiveness = _repo.GetById(wrongId);
+            var envAggressiveness = repo.GetById(wrongId);
 
             // Assert
             Assert.Null(envAggressiveness);
+
+            context.Database.EnsureDeleted();
         }
     }
 }

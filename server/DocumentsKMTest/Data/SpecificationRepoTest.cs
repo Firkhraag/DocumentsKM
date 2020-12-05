@@ -1,45 +1,177 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentsKM.Data;
 using DocumentsKM.Models;
 using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-namespace DocumentsKM.Data
+namespace DocumentsKM.Tests
 {
-    public class SqlSpecificationRepo : ISpecificationRepo
+    public class SpecificationRepoTest
     {
-        private readonly ApplicationContext _context;
+        private readonly Random _rnd = new Random();
+        private readonly int _maxMarkId = 3;
 
-        public SqlSpecificationRepo(ApplicationContext context)
+        private ApplicationContext GetContext(List<Specification> specifications)
         {
-            _context = context;
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "SpecificationTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+            context.Specifications.AddRange(specifications);
+            context.SaveChanges();
+            return context;
         }
 
-        public IEnumerable<Specification> GetAllByMarkId(int markId)
+        [Fact]
+        public void GetAllByMarkId_ShouldReturnSpecifications()
         {
-            return _context.Specifications.Where(s => s.Mark.Id == markId).ToList();
+            // Arrange
+            var context = GetContext(TestData.specifications);
+            var repo = new SqlSpecificationRepo(context);
+
+            var markId = _rnd.Next(1, _maxMarkId);
+
+            // Act
+            var specifications = repo.GetAllByMarkId(markId);
+
+            // Assert
+            Assert.Equal(TestData.specifications.Where(v => v.Mark.Id == markId), specifications);
+
+            context.Database.EnsureDeleted();
         }
 
-        public Specification GetById(int id)
+        [Fact]
+        public void GetAllByMarkId_ShouldReturnEmptyArray_WhenWrongMarkId()
         {
-            return _context.Specifications.FirstOrDefault(m => m.Id == id);
+            // Arrange
+            var context = GetContext(TestData.specifications);
+            var repo = new SqlSpecificationRepo(context);
+
+            var wrongMarkId = 999;
+
+            // Act
+            var specifications = repo.GetAllByMarkId(wrongMarkId);
+
+            // Assert
+            Assert.Empty(specifications);
+
+            context.Database.EnsureDeleted();
         }
 
-        public void Add(Specification specification)
+        [Fact]
+        public void GetById_ShouldReturnSpecification()
         {
-            _context.Specifications.Add(specification);
-            _context.SaveChanges();
+            // Arrange
+            var context = GetContext(TestData.specifications);
+            var repo = new SqlSpecificationRepo(context);
+
+            int id = _rnd.Next(1, TestData.specifications.Count());
+
+            // Act
+            var specification = repo.GetById(id);
+
+            // Assert
+            Assert.Equal(TestData.specifications.SingleOrDefault(v => v.Id == id),
+                specification);
+
+            context.Database.EnsureDeleted();
         }
 
-        public void Update(Specification specification)
+        [Fact]
+        public void GetById_ShouldReturnNull()
         {
-            _context.Entry(specification).State = EntityState.Modified;
-            _context.SaveChanges();
+            // Arrange
+            var context = GetContext(TestData.specifications);
+            var repo = new SqlSpecificationRepo(context);
+
+            // Act
+            var specification = repo.GetById(999);
+
+            // Assert
+            Assert.Null(specification);
+
+            context.Database.EnsureDeleted();
         }
 
-        public void Delete(Specification specification)
+        [Fact]
+        public void Add_ShouldAddSpecification()
         {
-            _context.Specifications.Remove(specification);
-            _context.SaveChanges();
+            // Arrange
+            var context = GetContext(TestData.specifications);
+            var repo = new SqlSpecificationRepo(context);
+
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var specification = new Specification
+            {
+                Mark = TestData.marks.SingleOrDefault(v => v.Id == markId),
+                Num = 42,
+                IsCurrent = false,
+            };
+
+            // Act
+            repo.Add(specification);
+
+            // Assert
+            Assert.NotEqual(0, specification.Id);
+            Assert.Equal(
+                TestData.specifications.Where(v => v.Mark.Id == markId).Count() + 1,
+                repo.GetAllByMarkId(markId).Count());
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void Update_ShouldUpdateSpecification()
+        {
+            // Arrange
+            var specifications = new List<Specification>{};
+            foreach (var s in TestData.specifications)
+            {
+                specifications.Add(new Specification
+                {
+                    Id=s.Id,
+                    Mark=s.Mark,
+                    Num=s.Num,
+                    IsCurrent=s.IsCurrent,
+                });
+            }
+            var context = GetContext(specifications);
+            var repo = new SqlSpecificationRepo(context);
+
+            int id = _rnd.Next(1, specifications.Count());
+            var specification = specifications.FirstOrDefault(v => v.Id == id);
+            specification.Note = "NewUpdate";
+
+            // Act
+            repo.Update(specification);
+
+            // Assert
+            Assert.Equal(specification.Note, repo.GetById(id).Note);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public void Delete_ShouldDeleteSpecification()
+        {
+            // Arrange
+            var context = GetContext(TestData.specifications);
+            var repo = new SqlSpecificationRepo(context);
+
+            int id = _rnd.Next(1, TestData.specifications.Count());
+            var specification = TestData.specifications.FirstOrDefault(v => v.Id == id);
+
+            // Act
+            repo.Delete(specification);
+
+            // Assert
+            Assert.Null(repo.GetById(id));
+
+            context.Database.EnsureDeleted();
         }
     }
 }

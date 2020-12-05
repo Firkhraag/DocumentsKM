@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DocumentsKM.Models;
 
@@ -6,7 +5,6 @@ namespace DocumentsKM.Tests
 {
     public static class TestData
     {
-
         public static readonly List<Department> departments = new List<Department>
         {
             new Department
@@ -37,6 +35,26 @@ namespace DocumentsKM.Tests
             {
                 Id=3,
                 Name="P3",
+            },
+            new Position
+            {
+                Id=4,
+                Name="P4",
+            },
+            new Position
+            {
+                Id=7,
+                Name="P7",
+            },
+            new Position
+            {
+                Id=9,
+                Name="P9",
+            },
+            new Position
+            {
+                Id=10,
+                Name="P10",
             },
         };
 
@@ -69,6 +87,34 @@ namespace DocumentsKM.Tests
                 Name="E4",
                 Department=departments[1],
                 Position=positions[1],
+            },
+            new Employee
+            {
+                Id=5,
+                Name="E5",
+                Department=departments[0],
+                Position=positions[4],
+            },
+            new Employee
+            {
+                Id=6,
+                Name="E6",
+                Department=departments[1],
+                Position=positions[4],
+            },
+            new Employee
+            {
+                Id=7,
+                Name="E7",
+                Department=departments[0],
+                Position=positions[5],
+            },
+            new Employee
+            {
+                Id=8,
+                Name="E8",
+                Department=departments[1],
+                Position=positions[6],
             },
         };
 
@@ -163,6 +209,40 @@ namespace DocumentsKM.Tests
                 Name="Name 4",
                 Department=departments[1],
                 MainBuilder=employees[2],
+            },
+        };
+
+        public static readonly List<MarkApproval> markApprovals = new List<MarkApproval>
+        {
+            new MarkApproval
+            {
+                Mark=marks[0],
+                Employee=employees[0],
+            },
+            new MarkApproval
+            {
+                Mark=marks[0],
+                Employee=employees[1],
+            },
+            new MarkApproval
+            {
+                Mark=marks[1],
+                Employee=employees[0],
+            },
+            new MarkApproval
+            {
+                Mark=marks[1],
+                Employee=employees[1],
+            },
+            new MarkApproval
+            {
+                Mark=marks[2],
+                Employee=employees[0],
+            },
+            new MarkApproval
+            {
+                Mark=marks[2],
+                Employee=employees[1],
             },
         };
 
@@ -502,6 +582,7 @@ namespace DocumentsKM.Tests
             },
         };
 
+        // Mark ids: 1-3
         public static readonly List<AttachedDoc> attachedDocs = new List<AttachedDoc>
         {
             new AttachedDoc
@@ -598,6 +679,7 @@ namespace DocumentsKM.Tests
             },
         };
 
+        // LinkedDoc ids: 1-3
         public static readonly List<MarkLinkedDoc> markLinkedDocs = new List<MarkLinkedDoc>
         {
             new MarkLinkedDoc
@@ -630,208 +712,60 @@ namespace DocumentsKM.Tests
                 Mark=marks[2],
                 LinkedDoc=linkedDocs[0],
             },
+            new MarkLinkedDoc
+            {
+                Id=6,
+                Mark=marks[2],
+                LinkedDoc=linkedDocs[2],
+            },
+
         };
 
-        // public static readonly List<Position> positions = new List<Position>
-        // {
-        //     new Position
-        //     {
-        //         Id=1,
-        //         Name="Test position1",
-        //     },
-        //     new Position
-        //     {
-        //         Id=2,
-        //         Name="Test position2",
-        //     },
-        //     new Position
-        //     {
-        //         Id=3,
-        //         Name="Test position3",
-        //     },
-        // };
+        public static readonly List<GeneralDataSection> generalDataSections = new List<GeneralDataSection>
+        {
+            new GeneralDataSection
+            {
+                Id=1,
+                Name="S1",
+            },
+            new GeneralDataSection
+            {
+                Id=2,
+                Name="S2",
+            },
+            new GeneralDataSection
+            {
+                Id=3,
+                Name="S3",
+            },
+        };
 
-        // public static readonly List<Employee> employees = new List<Employee>
-        // {
-        //     new Employee
-        //     {
-        //         Id=0,
-        //         FullName="Test employee1",
-        //         Department=departments[0],
-        //         Position=positions[0],
-        //         RecruitedDate=DateTime.Parse("2020-09-01"),
-        //     },
-        //     new Employee
-        //     {
-        //         Id=1,
-        //         FullName="Test employee2",
-        //         Department=departments[0],
-        //         Position=positions[1],
-        //         RecruitedDate=DateTime.Parse("2020-09-01"),
-        //     },
-        //     new Employee
-        //     {
-        //         Id=2,
-        //         FullName="Test employee3",
-        //         Department=departments[1],
-        //         Position=positions[2],
-        //         RecruitedDate=DateTime.Parse("2020-09-01"),
-        //     },
-        // };
-
-        // public static readonly List<Project> projects = new List<Project>
-        // {
-        //     new Project
-        //     {
-        //         Id=0,
-        //         Type=0,
-        //         Name="Name 1",
-        //         AdditionalName="Additional name 1",
-        //         BaseSeries="M32788",
-        //     },
-        //     new Project
-        //     {
-        //         Id=1,
-        //         Type=0,
-        //         Name="Name 2",
-        //         AdditionalName="Additional name 2",
-        //         BaseSeries="V14578",
-        //     },
-        //     new Project
-        //     {
-        //         Id=2,
-        //         Type=0,
-        //         Name="Name 3",
-        //         AdditionalName="Additional name 3",
-        //         BaseSeries="G29856",
-        //     },
-        // };
-
-        // public static readonly List<Node> nodes = new List<Node>
-        // {
-        //     new Node
-        //     {
-        //         Id=0,
-        //         Project=projects[0],
-        //         Code="111",
-        //         Name="Name 1",
-        //         AdditionalName="AdditionalName 1",
-        //         ChiefEngineer=employees[0],
-        //         ActiveNode="1",
-        //         Created=DateTime.Parse("2020-09-01"),
-        //     },
-        //     new Node
-        //     {
-        //         Id=1,
-        //         Project=projects[0],
-        //         Code="222",
-        //         Name="Name 2",
-        //         AdditionalName="AdditionalName 2",
-        //         ChiefEngineer=employees[1],
-        //         ActiveNode="1",
-        //         Created=DateTime.Parse("2020-09-01"),
-        //     },
-        //     new Node
-        //     {
-        //         Id=2,
-        //         Project=projects[1],
-        //         Code="333",
-        //         Name="Name 3",
-        //         AdditionalName="AdditionalName 3",
-        //         ChiefEngineer=employees[2],
-        //         ActiveNode="1",
-        //         Created=DateTime.Parse("2020-09-01"),
-        //     },
-        // };
-
-        // public static readonly List<Subnode> subnodes = new List<Subnode>
-        // {
-        //     new Subnode
-        //     {
-        //         Id=0,
-        //         Node=nodes[0],
-        //         Code="Test subnode1",
-        //         Name="Name 1",
-        //         AdditionalName="AdditionalName 1",
-        //         Created=DateTime.Parse("2020-09-01"),
-        //     },
-        //     new Subnode
-        //     {
-        //         Id=1,
-        //         Node=nodes[1],
-        //         Code="Test subnode2",
-        //         Name="Name 2",
-        //         AdditionalName="AdditionalName 2",
-        //         Created=DateTime.Parse("2020-09-01"),
-        //     },
-        //     new Subnode
-        //     {
-        //         Id=2,
-        //         Node=nodes[1],
-        //         Code="Test subnode3",
-        //         Name="Name 3",
-        //         AdditionalName="AdditionalName 3",
-        //         Created=DateTime.Parse("2020-09-01"),
-        //     },
-        // };
-
-        // public static readonly List<Mark> marks = new List<Mark>
-        // {
-        //     new Mark
-        //     {
-        //         Id=0,
-        //         Subnode=subnodes[0],
-        //         Code="Test mark1",
-        //         AdditionalCode="C1",
-        //         Name="Name 1",
-        //         Department=departments[0],
-        //         MainBuilder=employees[0],
-        //     },
-        //     new Mark
-        //     {
-        //         Id=1,
-        //         Subnode=subnodes[0],
-        //         Code="Test mark2",
-        //         AdditionalCode="C2",
-        //         Name="Name 2",
-        //         Department=departments[1],
-        //         MainBuilder=employees[1],
-        //     },
-        //     new Mark
-        //     {
-        //         Id=2,
-        //         Subnode=subnodes[1],
-        //         Code="Test mark3",
-        //         AdditionalCode="C3",
-        //         Name="Name 3",
-        //         Department=departments[2],
-        //         MainBuilder=employees[2],
-        //     },
-        // };
-
-        // public static readonly List<User> users = new List<User>
-        // {
-        //     new User
-        //     {
-        //         Id=0,
-        //         Login="1",
-        //         Password=BCrypt.Net.BCrypt.HashPassword("1"),
-        //         Employee=employees[0],
-        //     },
-        //     new User
-        //     {
-        //         Id=1,
-        //         Login="2",
-        //         Password=BCrypt.Net.BCrypt.HashPassword("2"),
-        //         Employee=employees[1],
-        //     },
-        //     new User
-        //     {
-        //         Id=2,
-        //         Login="3",
-        //         Password=BCrypt.Net.BCrypt.HashPassword("3"),
-        //         Employee=employees[2],
-        //     },
-        // };
+        public static readonly List<MarkOperatingConditions> markOperatingConditions = new List<MarkOperatingConditions>
+        {
+            new MarkOperatingConditions
+            {
+                Mark=marks[0],
+                SafetyCoeff=1.0f,
+                EnvAggressiveness=envAggressiveness[0],
+                Temperature=-34,
+                OperatingArea=operatingAreas[0],
+                GasGroup=gasGroups[0],
+                ConstructionMaterial=constructionMaterials[0],
+                PaintworkType=paintworkTypes[0],
+                HighTensileBoltsType=highTensileBoltsTypes[0],
+            },
+            new MarkOperatingConditions
+            {
+                Mark=marks[1],
+                SafetyCoeff=1.0f,
+                EnvAggressiveness=envAggressiveness[1],
+                Temperature=-34,
+                OperatingArea=operatingAreas[1],
+                GasGroup=gasGroups[0],
+                ConstructionMaterial=constructionMaterials[0],
+                PaintworkType=paintworkTypes[1],
+                HighTensileBoltsType=highTensileBoltsTypes[0],
+            },
+        };
     }
 }

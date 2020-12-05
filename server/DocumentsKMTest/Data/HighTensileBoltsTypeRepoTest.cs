@@ -1,75 +1,81 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class HighTensileBoltsTypeRepoTest : IDisposable
+    public class HighTensileBoltsTypeRepoTest
     {
-        private readonly IHighTensileBoltsTypeRepo _repo;
+        private readonly Random _rnd = new Random();
 
-        public HighTensileBoltsTypeRepoTest()
+        private ApplicationContext GetContext(List<HighTensileBoltsType> highTensileBoltsTypes)
         {
-            // Arrange
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
             builder.UseInMemoryDatabase(databaseName: "HighTensileBoltsTypeTestDb");
             var options = builder.Options;
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
-            context.HighTensileBoltsTypes.AddRange(TestData.highTensileBoltsTypes);
+            context.HighTensileBoltsTypes.AddRange(highTensileBoltsTypes);
             context.SaveChanges();
-            _repo = new SqlHighTensileBoltsTypeRepo(context);
-        }
-
-        public void Dispose()
-        {
-            var builder = new DbContextOptionsBuilder<ApplicationContext>();
-            builder.UseInMemoryDatabase(databaseName: "HighTensileBoltsTypeTestDb");
-            var options = builder.Options;
-            var context = new ApplicationContext(options);
-            context.Database.EnsureDeleted();
+            return context;
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllHighTensileBoltsTypes()
+        public void GetAll_ShouldReturnHighTensileBoltsTypes()
         {
+            // Arrange
+            var context = GetContext(TestData.highTensileBoltsTypes);
+            var repo = new SqlHighTensileBoltsTypeRepo(context);
+
             // Act
-            var highTensileBoltsTypes = _repo.GetAll();
+            var highTensileBoltsTypes = repo.GetAll();
 
             // Assert
             Assert.Equal(TestData.highTensileBoltsTypes, highTensileBoltsTypes);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnHighTensileBoltsType()
         {
             // Arrange
-            var rnd = new Random();
-            int id = rnd.Next(1, TestData.highTensileBoltsTypes.Count());
+            var context = GetContext(TestData.highTensileBoltsTypes);
+            var repo = new SqlHighTensileBoltsTypeRepo(context);
+
+            int id = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
 
             // Act
-            var highTensileBoltsType = _repo.GetById(id);
+            var highTensileBoltsType = repo.GetById(id);
 
             // Assert
             Assert.Equal(TestData.highTensileBoltsTypes.SingleOrDefault(v => v.Id == id),
                 highTensileBoltsType);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnNull()
         {
             // Arrange
+            var context = GetContext(TestData.highTensileBoltsTypes);
+            var repo = new SqlHighTensileBoltsTypeRepo(context);
+
             int wrongId = 999;
 
             // Act
-            var highTensileBoltsType = _repo.GetById(wrongId);
+            var highTensileBoltsType = repo.GetById(wrongId);
 
             // Assert
             Assert.Null(highTensileBoltsType);
+
+            context.Database.EnsureDeleted();
         }
     }
 }

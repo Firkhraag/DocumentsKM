@@ -1,178 +1,358 @@
-using System.Collections.Generic;
-using DocumentsKM.Models;
-using DocumentsKM.Data;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using DocumentsKM.Data;
 using DocumentsKM.Dtos;
+using DocumentsKM.Models;
+using DocumentsKM.Services;
+using Moq;
+using Xunit;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Tests
 {
-    public class MarkService : IMarkService
+    public class MarkServiceTest
     {
-        private IMarkRepo _repository;
-        private readonly ISubnodeRepo _subnodeRepo;
-        private readonly IDepartmentRepo _departmentRepo;
-        private readonly IEmployeeRepo _employeeRepo;
+        private readonly Mock<IMarkRepo> _repository = new Mock<IMarkRepo>();
+        private readonly Mock<ISubnodeRepo> _mockSubnodeRepo = new Mock<ISubnodeRepo>();
+        private readonly Mock<IDepartmentRepo> _mockDepartmentRepo = new Mock<IDepartmentRepo>();
+        private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
+        private readonly Mock<ISpecificationService> _mockSpecificationService = new Mock<ISpecificationService>();
+        private readonly IMarkService _service;
+        private readonly Random _rnd = new Random();
+        private readonly List<Mark> _marks = new List<Mark>{};
 
-        private readonly ISpecificationService _specificationService;
-
-        public MarkService(
-            IMarkRepo markRepo,
-            ISubnodeRepo subnodeRepo,
-            IDepartmentRepo departmentRepo,
-            IEmployeeRepo employeeRepo,
-            ISpecificationService specificationService)
+        public MarkServiceTest()
         {
-            _repository = markRepo;
-            _subnodeRepo = subnodeRepo;
-            _departmentRepo = departmentRepo;
-            _employeeRepo = employeeRepo;
-
-            _specificationService = specificationService;
-        }
-
-        public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
-        {
-            return _repository.GetAllBySubnodeId(subnodeId);
-        }
-
-        public Mark GetById(int id)
-        {
-            return _repository.GetById(id);
-        }
-
-        public void Create(
-            Mark mark,
-            int subnodeId,
-            int departmentId,
-            int mainBuilderId,
-            int? chiefSpecialistId,
-            int? groupLeaderId)
-        {
-            if (mark == null)
-                throw new ArgumentNullException(nameof(mark));
-            var subnode = _subnodeRepo.GetById(subnodeId);
-            if (subnode == null)
-                throw new ArgumentNullException(nameof(subnode));
-
-            var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, mark.Code);
-            if (uniqueConstraintViolationCheck != null)
-                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-
-            mark.Subnode = subnode;
-            var department = _departmentRepo.GetById(departmentId);
-            if (department == null)
-                throw new ArgumentNullException(nameof(department));
-            mark.Department = department;
-            var mainBuilder = _employeeRepo.GetById(mainBuilderId);
-            if (mainBuilder == null)
-                throw new ArgumentNullException(nameof(mainBuilder));
-            mark.MainBuilder = mainBuilder;
-            if (chiefSpecialistId != null)
+            // Arrange
+            foreach (var mark in TestData.marks)
             {
-                var chiefSpecialist = _employeeRepo.GetById(chiefSpecialistId.GetValueOrDefault());
-                if (chiefSpecialist == null)
-                    throw new ArgumentNullException(nameof(chiefSpecialist));
-                mark.ChiefSpecialist = chiefSpecialist;
-            }
-            if (groupLeaderId != null)
-            {
-                var groupLeader = _employeeRepo.GetById(groupLeaderId.GetValueOrDefault());
-                if (groupLeader == null)
-                    throw new ArgumentNullException(nameof(groupLeader));
-                mark.GroupLeader = groupLeader;
-            }
-            
-            _repository.Add(mark);
-            _specificationService.Create(mark.Id);
-        }
-
-        public void Update(
-            int id,
-            MarkUpdateRequest mark)
-        {
-            if (mark == null)
-                throw new ArgumentNullException(nameof(mark));
-            var foundMark = _repository.GetById(id);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
-            if (mark.Name != null)
-                foundMark.Name = mark.Name;
-            
-            if ((mark.Code != null) && (mark.SubnodeId != null))
-            {
-                foundMark.Code = mark.Code;
-
-                var subnode = _subnodeRepo.GetById(mark.SubnodeId.GetValueOrDefault());
-                if (subnode == null)
-                    throw new ArgumentNullException(nameof(subnode));
-                foundMark.Subnode = subnode;
-
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, mark.Code);
-                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            }
-            else if (mark.Code != null)
-            {
-                foundMark.Code = mark.Code;
-
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(foundMark.Subnode.Id, mark.Code);
-                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            }
-            else if (mark.SubnodeId != null)
-            {
-                var subnode = _subnodeRepo.GetById(mark.SubnodeId.GetValueOrDefault());
-                if (subnode == null)
-                    throw new ArgumentNullException(nameof(subnode));
-                foundMark.Subnode = subnode;
-
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, foundMark.Code);
-                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            }
-
-            if (mark.DepartmentId != null)
-            {
-                var department = _departmentRepo.GetById(mark.DepartmentId.GetValueOrDefault());
-                if (department == null)
-                    throw new ArgumentNullException(nameof(department));
-                foundMark.Department = department;
-            }
-            if (mark.MainBuilderId != null)
-            {
-                var mainBuilder = _employeeRepo.GetById(mark.MainBuilderId.GetValueOrDefault());
-                if (mainBuilder == null)
-                    throw new ArgumentNullException(nameof(mainBuilder));
-                foundMark.MainBuilder = mainBuilder;
-            }
-            // Nullable section
-            if (mark.ChiefSpecialistId != null)
-            {
-                int chiefSpecialistId = mark.ChiefSpecialistId.GetValueOrDefault();
-                if (chiefSpecialistId == -1)
-                    foundMark.ChiefSpecialist = null;
-                else
+                _marks.Add(new Mark
                 {
-                    var chiefSpecialist = _employeeRepo.GetById(chiefSpecialistId);
-                    if (chiefSpecialist == null)
-                        throw new ArgumentNullException(nameof(chiefSpecialist));
-                    foundMark.ChiefSpecialist = chiefSpecialist;
+                    Id = mark.Id,
+                    Subnode = mark.Subnode,
+                    Code = mark.Code,
+                    Name = mark.Name,
+                    Department = mark.Department,
+                    ChiefSpecialist = mark.ChiefSpecialist,
+                    GroupLeader = mark.GroupLeader,
+                    MainBuilder = mark.MainBuilder,
+                });
+            }
+            foreach (var mark in _marks)
+            {
+                _repository.Setup(mock=>
+                    mock.GetById(mark.Id)).Returns(
+                        _marks.SingleOrDefault(v => v.Id == mark.Id));
+            }
+            foreach (var subnode in TestData.subnodes)
+            {
+                _mockSubnodeRepo.Setup(mock=>
+                    mock.GetById(subnode.Id)).Returns(
+                        TestData.subnodes.SingleOrDefault(v => v.Id == subnode.Id));
+                _repository.Setup(mock=>
+                    mock.GetAllBySubnodeId(subnode.Id)).Returns(
+                        _marks.Where(v => v.Subnode.Id == subnode.Id));
+
+                foreach (var mark in _marks)
+                {
+                    _repository.Setup(mock=>
+                        mock.GetBySubnodeIdAndCode(subnode.Id, mark.Code)).Returns(
+                            _marks.SingleOrDefault(v => v.Subnode.Id == subnode.Id &&
+                            v.Code == mark.Code));
                 }
             }
-            if (mark.GroupLeaderId != null)
+            foreach (var department in TestData.departments)
             {
-                int groupLeaderId = mark.GroupLeaderId.GetValueOrDefault();
-                if (groupLeaderId == -1)
-                    foundMark.GroupLeader = null;
-                else
-                {
-                    var groupLeader = _employeeRepo.GetById(groupLeaderId);
-                    if (groupLeader == null)
-                        throw new ArgumentNullException(nameof(groupLeader));
-                    foundMark.GroupLeader = groupLeader;
-                }
+                _mockDepartmentRepo.Setup(mock=>
+                    mock.GetById(department.Id)).Returns(
+                        TestData.departments.SingleOrDefault(v => v.Id == department.Id));
             }
-            _repository.Update(foundMark);
+            foreach (var employee in TestData.employees)
+            {
+                _mockEmployeeRepo.Setup(mock=>
+                    mock.GetById(employee.Id)).Returns(
+                        TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
+            }
+
+            _repository.Setup(mock=>
+                mock.Add(It.IsAny<Mark>())).Verifiable();
+            _repository.Setup(mock=>
+                mock.Update(It.IsAny<Mark>())).Verifiable();
+
+            _service = new MarkService(
+                _repository.Object,
+                _mockSubnodeRepo.Object,
+                _mockDepartmentRepo.Object,
+                _mockEmployeeRepo.Object,
+                _mockSpecificationService.Object);
+        }
+
+        [Fact]
+        public void GetAllBySubnodeId_ShouldReturnMarks()
+        {
+            // Arrange
+            int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
+            
+            // Act
+            var returnedMarks = _service.GetAllBySubnodeId(subnodeId);
+
+            // Assert
+            Assert.Equal(_marks.Where(
+                v => v.Subnode.Id == subnodeId), returnedMarks);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnMark()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, _marks.Count());
+            
+            // Act
+            var returnedMark = _service.GetById(markId);
+
+            // Assert
+            Assert.Equal(_marks.SingleOrDefault(
+                v => v.Id == markId), returnedMark);
+        }
+
+        [Fact]
+        public void GetById_ShouldReturnNull()
+        {
+            // Arrange
+            int wrongMarkId = 999;
+            
+            // Act
+            var returnedMark = _service.GetById(wrongMarkId);
+
+            // Assert
+            Assert.Null(returnedMark);
+        }
+
+        [Fact]
+        public void Create_ShouldCreateMark()
+        {
+            // Arrange
+            int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == mainBuilderId).Department.Id != departmentId)
+            {
+                mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            }
+            int chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == chiefSpecialistId).Department.Id != departmentId)
+            {
+                chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
+            }
+            int groupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == groupLeaderId).Department.Id != departmentId)
+            {
+                groupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            }
+
+            var newMark = new Mark
+            {
+                Name="NewCreate",
+                Code="NewCreate",
+            };
+            
+            // Act
+            _service.Create(newMark,
+                subnodeId,
+                departmentId,
+                mainBuilderId,
+                chiefSpecialistId,
+                groupLeaderId);
+
+            // Assert
+            _repository.Verify(mock => mock.Add(It.IsAny<Mark>()), Times.Once);
+            Assert.NotNull(newMark.Subnode);
+            Assert.NotNull(newMark.Department);
+            Assert.NotNull(newMark.MainBuilder);
+            Assert.NotNull(newMark.ChiefSpecialist);
+            Assert.NotNull(newMark.GroupLeader);
+        }
+
+        [Fact]
+        public void Create_ShouldFailWithNull()
+        {
+            // Arrange
+            int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
+            int wrongSubnodeId = 999;
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            int wrongDepartmentId = 999;
+            int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == mainBuilderId).Department.Id != departmentId)
+            {
+                mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            }
+            int wrongMainBuilderId = 999;
+            int chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == chiefSpecialistId).Department.Id != departmentId)
+            {
+                chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
+            }
+            int wrongChiefSpecialistId = 999;
+            int groupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == groupLeaderId).Department.Id != departmentId)
+            {
+                groupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            }
+            int wrongGroupLeaderId = 999;
+
+            var newMark = new Mark
+            {
+                Name="NewCreate",
+                Code="NewCreate",
+            };
+            
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null,
+                subnodeId,
+                departmentId,
+                mainBuilderId,
+                chiefSpecialistId,
+                groupLeaderId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null,
+                wrongSubnodeId,
+                departmentId,
+                mainBuilderId,
+                chiefSpecialistId,
+                groupLeaderId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null,
+                subnodeId,
+                wrongDepartmentId,
+                mainBuilderId,
+                chiefSpecialistId,
+                groupLeaderId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null,
+                subnodeId,
+                departmentId,
+                wrongMainBuilderId,
+                chiefSpecialistId,
+                groupLeaderId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null,
+                subnodeId,
+                departmentId,
+                mainBuilderId,
+                wrongChiefSpecialistId,
+                groupLeaderId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null,
+                subnodeId,
+                departmentId,
+                mainBuilderId,
+                chiefSpecialistId,
+                wrongGroupLeaderId));
+            _repository.Verify(mock => mock.Add(It.IsAny<Mark>()), Times.Never);
+        }
+
+        [Fact]
+        public void Create_ShouldFailWithConflict()
+        {
+            // Arrange
+            int subnodeId = _marks[0].Subnode.Id;
+            var conflictCode = _marks[0].Code;
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == mainBuilderId).Department.Id != departmentId)
+            {
+                mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            }
+            int chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == chiefSpecialistId).Department.Id != departmentId)
+            {
+                chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
+            }
+            int groupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == groupLeaderId).Department.Id != departmentId)
+            {
+                groupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            }
+
+            var newMark = new Mark
+            {
+                Name="NewCreate",
+                Code=conflictCode,
+            };
+
+            // Act & Assert
+            Assert.Throws<ConflictException>(() => _service.Create(newMark,
+                subnodeId,
+                departmentId,
+                mainBuilderId,
+                chiefSpecialistId,
+                groupLeaderId));
+
+            _repository.Verify(mock => mock.Add(It.IsAny<Mark>()), Times.Never);
+        }
+        
+        [Fact]
+        public void Update_ShouldUpdateMark()
+        {
+            // Arrange
+            int id = _rnd.Next(1, _marks.Count());
+            int newGroupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            while (TestData.employees.SingleOrDefault(v => v.Id == newGroupLeaderId).Department.Id !=
+                _marks.SingleOrDefault(v => v.Id == id).Department.Id)
+            {
+                newGroupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            }
+
+            var newMarkRequest = new MarkUpdateRequest
+            {
+                GroupLeaderId = newGroupLeaderId,
+            };
+            
+            // Act
+            _service.Update(id,
+                newMarkRequest);
+
+            // Assert
+            _repository.Verify(mock => mock.Update(It.IsAny<Mark>()), Times.Once);
+            Assert.Equal(newGroupLeaderId, _marks.SingleOrDefault(v => v.Id == id).GroupLeader.Id);
+        }
+
+        [Fact]
+        public void Update_ShouldFailWithNull()
+        {
+            // Arrange
+            int id = _rnd.Next(1, _marks.Count());
+            int wrongId = 999;
+            int newGroupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            int wrongGroupLeaderId = 999;
+
+            var newMarkRequest = new MarkUpdateRequest
+            {
+                GroupLeaderId = newGroupLeaderId,
+            };
+            var wrongMarkRequest = new MarkUpdateRequest
+            {
+                GroupLeaderId = wrongGroupLeaderId,
+            };
+            
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newMarkRequest));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(id, wrongMarkRequest));
+            _repository.Verify(mock => mock.Update(It.IsAny<Mark>()), Times.Never);
+        }
+
+        [Fact]
+        public void Update_ShouldFailWithConflict()
+        {
+            int id = 1;
+            var conflictCode = _marks[1].Code;
+
+            var newMarkRequest = new MarkUpdateRequest
+            {
+                Code = conflictCode,
+            };
+            
+            // Act & Assert
+            Assert.Throws<ConflictException>(() => _service.Update(id,
+                newMarkRequest));
+
+            _repository.Verify(mock => mock.Add(It.IsAny<Mark>()), Times.Never);
         }
     }
 }

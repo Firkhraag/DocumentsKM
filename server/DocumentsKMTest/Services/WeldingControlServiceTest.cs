@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class WeldingControlServiceTest
     {
-        private readonly WeldingControlService _service;
+        private readonly IWeldingControlService _service;
 
         public WeldingControlServiceTest()
         {
             // Arrange
-            var mockWeldingControlRepo = new Mock<IWeldingControlRepo>();
+            var repository = new Mock<IWeldingControlRepo>();
 
-            mockWeldingControlRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.weldingControl);
             
-            _service = new WeldingControlService(mockWeldingControlRepo.Object);
+            _service = new WeldingControlService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllWeldingControl()
+        public void GetAll_ShouldReturnWeldingControl()
         {
             // Act
             var returnedWeldingControls = _service.GetAll();

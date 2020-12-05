@@ -1,75 +1,80 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class DepartmentRepoTest : IDisposable
+    public class DepartmentRepoTest
     {
-        private readonly IDepartmentRepo _repo;
+        private readonly Random _rnd = new Random();
 
-        public DepartmentRepoTest()
+        private ApplicationContext GetContext(List<Department> departments)
         {
-            // Arrange
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
             builder.UseInMemoryDatabase(databaseName: "DepartmentTestDb");
             var options = builder.Options;
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
-            context.Departments.AddRange(TestData.departments);
+            context.Departments.AddRange(departments);
             context.SaveChanges();
-            _repo = new SqlDepartmentRepo(context);
-        }
-
-        public void Dispose()
-        {
-            var builder = new DbContextOptionsBuilder<ApplicationContext>();
-            builder.UseInMemoryDatabase(databaseName: "DepartmentTestDb");
-            var options = builder.Options;
-            var context = new ApplicationContext(options);
-            context.Database.EnsureDeleted();
+            return context;
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllDepartments()
+        public void GetAll_ShouldReturnDepartments()
         {
             // Act
-            var departments = _repo.GetAll();
+            var context = GetContext(TestData.departments);
+            var repo = new SqlDepartmentRepo(context);
+
+            var departments = repo.GetAll();
 
             // Assert
             Assert.Equal(TestData.departments, departments);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnDepartment()
         {
             // Arrange
-            var rnd = new Random();
-            int id = rnd.Next(1, TestData.departments.Count());
+            var context = GetContext(TestData.departments);
+            var repo = new SqlDepartmentRepo(context);
+
+            int id = _rnd.Next(1, TestData.departments.Count());
 
             // Act
-            var department = _repo.GetById(id);
+            var department = repo.GetById(id);
 
             // Assert
             Assert.Equal(TestData.departments.SingleOrDefault(v => v.Id == id),
                 department);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
         public void GetById_ShouldReturnNull()
         {
             // Arrange
+            var context = GetContext(TestData.departments);
+            var repo = new SqlDepartmentRepo(context);
+            
             int wrongId = 999;
 
             // Act
-            var department = _repo.GetById(wrongId);
+            var department = repo.GetById(wrongId);
 
             // Assert
             Assert.Null(department);
+
+            context.Database.EnsureDeleted();
         }
     }
 }

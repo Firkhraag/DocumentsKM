@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
@@ -13,17 +14,28 @@ namespace DocumentsKM.Tests
     {
         private readonly Mock<ISpecificationRepo> _mockSpecificationRepo = new Mock<ISpecificationRepo>();
         private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly SpecificationService _service;
+        private readonly ISpecificationService _service;
         private readonly Random _rnd = new Random();
+        private readonly List<Specification> _specifications = new List<Specification>{};
+        private readonly int _maxMarkId = 3;
 
         public SpecificationServiceTest()
         {
             // Arrange
-            foreach (var specification in TestData.specifications)
+            foreach (var spec in TestData.specifications)
+            {
+                _specifications.Add(new Specification{
+                    Id = spec.Id,
+                    Mark = spec.Mark,
+                    IsCurrent = spec.IsCurrent,
+                    Note = spec.Note,
+                });
+            }
+            foreach (var specification in _specifications)
             {
                 _mockSpecificationRepo.Setup(mock=>
                     mock.GetById(specification.Id)).Returns(
-                        TestData.specifications.SingleOrDefault(v => v.Id == specification.Id));
+                        _specifications.SingleOrDefault(v => v.Id == specification.Id));
             }
             foreach (var mark in TestData.marks)
             {
@@ -33,7 +45,7 @@ namespace DocumentsKM.Tests
 
                 _mockSpecificationRepo.Setup(mock=>
                     mock.GetAllByMarkId(mark.Id)).Returns(
-                        TestData.specifications.Where(v => v.Mark.Id == mark.Id));
+                        _specifications.Where(v => v.Mark.Id == mark.Id));
             }
 
             _mockSpecificationRepo.Setup(mock=>
@@ -49,16 +61,16 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByMarkId_ShouldReturnAllSpecificationsWithGivenMarkId()
+        public void GetAllByMarkId_ShouldReturnSpecifications()
         {
             // Arrange
-            int markId = _rnd.Next(1, TestData.marks.Count());
+            int markId = _rnd.Next(1, _maxMarkId);
             
             // Act
             var returnedSpecifications = _service.GetAllByMarkId(markId);
 
             // Assert
-            Assert.Equal(TestData.specifications.Where(
+            Assert.Equal(_specifications.Where(
                 v => v.Mark.Id == markId), returnedSpecifications);
         }
 
@@ -76,7 +88,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(specification.Mark);
 
             int maxNum = 0;
-            foreach (var s in TestData.specifications.Where(v => v.Mark.Id == markId))
+            foreach (var s in _specifications.Where(v => v.Mark.Id == markId))
             {
                 if (s.Num > maxNum)
                     maxNum = s.Num;
@@ -96,74 +108,53 @@ namespace DocumentsKM.Tests
             _mockSpecificationRepo.Verify(mock => mock.Add(It.IsAny<Specification>()), Times.Never);
         }
 
-        // TBD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        
-        // [Fact]
-        // public void Update_ShouldUpdateSpecification()
-        // {
-        //     // Arrange
-        //     int id = _rnd.Next(1, TestData.specifications.Count());
-        //     var newNote = "NewUpdate";
-
-        //     var newSpecificationRequest = new SpecificationUpdateRequest{
-        //         Designation=newDesignation,
-        //     };
+        [Fact]
+        public void Update_ShouldUpdateSpecification()
+        {
+            // Arrange
+            int id = 2;
+            var spec = _specifications.SingleOrDefault(v => v.Id == id);
+            var newNote = "NewUpdate";
+            var newSpecificationRequest = new SpecificationUpdateRequest{
+                IsCurrent = true,
+                Note = newNote,
+            };
             
-        //     // Act
-        //     _service.Update(id, newSpecificationRequest);
+            // Act
+            _service.Update(id, newSpecificationRequest);
 
-        //     // Assert
-        //     _mockSpecificationRepo.Verify(mock => mock.Update(It.IsAny<Specification>()), Times.Once);
-        //     Assert.Equal(newDesignation, TestData.Specifications.SingleOrDefault(v => v.Id == id).Designation);
-        // }
+            // Assert
+            _mockSpecificationRepo.Verify(mock => mock.Update(It.IsAny<Specification>()), Times.Exactly(2));
+            Assert.Equal(newNote, _specifications.SingleOrDefault(v => v.Id == id).Note);
+            Assert.Single(_specifications.Where(v => v.Mark.Id == spec.Mark.Id && v.IsCurrent));
+        }
 
-        // [Fact]
-        // public void Update_ShouldFailWithNull()
-        // {
-        //     // Arrange
-        //     int id = _rnd.Next(1, TestData.Specifications.Count());
-        //     int wrongId = 999;
+        [Fact]
+        public void Update_ShouldFailWithNull()
+        {
+            // Arrange
+            int id = _rnd.Next(1, _specifications.Count());
+            int wrongId = 999;
 
-        //     var newSpecificationRequest = new SpecificationUpdateRequest{
-        //         Designation="NewUpdate",
-        //         Name="NewUpdate",
-        //     };
+            var newSpecificationRequest = new SpecificationUpdateRequest{
+                Note="NewUpdate",
+            };
             
-        //     // Act & Assert
-        //     Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
-        //     Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newSpecificationRequest));
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newSpecificationRequest));
 
-        //     _mockSpecificationRepo.Verify(mock => mock.Update(It.IsAny<Specification>()), Times.Never);
-        // }
-
-        // [Fact]
-        // public void Update_ShouldFailWithConflict()
-        // {
-        //     // Arrange
-        //     // Possible conflict values
-        //     var conflictMarkId = TestData.Specifications[0].Mark.Id;
-        //     var conflictDesignation = TestData.Specifications[0].Designation;
-        //     var id = TestData.Specifications[3].Id;
-
-        //     var newSpecificationRequest = new SpecificationUpdateRequest{
-        //         Designation=conflictDesignation,
-        //         Name="NewUpdate",
-        //     };
-            
-        //     // Act & Assert
-        //     Assert.Throws<ConflictException>(() => _service.Update(id, newSpecificationRequest));
-
-        //     _mockSpecificationRepo.Verify(mock => mock.Update(It.IsAny<Specification>()), Times.Never);
-        // }
+            _mockSpecificationRepo.Verify(mock => mock.Update(It.IsAny<Specification>()), Times.Never);
+        }
 
         [Fact]
         public void Delete_ShouldDeleteSpecification()
         {
             // Arrange
-            int id = _rnd.Next(1, TestData.specifications.Count());
-            while (TestData.specifications.SingleOrDefault(v => v.Id == id).IsCurrent)
+            int id = _rnd.Next(1, _specifications.Count());
+            while (_specifications.SingleOrDefault(v => v.Id == id).IsCurrent)
             {
-                id = _rnd.Next(1, TestData.specifications.Count());
+                id = _rnd.Next(1, _specifications.Count());
             }
             
             // Act
@@ -189,10 +180,10 @@ namespace DocumentsKM.Tests
         public void Delete_ShouldFailWithConflict()
         {
             // Arrange
-            int id = _rnd.Next(1, TestData.specifications.Count());
-            while (TestData.specifications.SingleOrDefault(v => v.Id == id).IsCurrent == false)
+            int id = _rnd.Next(1, _specifications.Count());
+            while (_specifications.SingleOrDefault(v => v.Id == id).IsCurrent == false)
             {
-                id = _rnd.Next(1, TestData.specifications.Count());
+                id = _rnd.Next(1, _specifications.Count());
             }
 
             // Act & Assert
@@ -202,96 +193,3 @@ namespace DocumentsKM.Tests
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-// using System.Collections.Generic;
-// using DocumentsKM.Models;
-// using DocumentsKM.Data;
-// using System;
-// using DocumentsKM.Dtos;
-
-// namespace DocumentsKM.Services
-// {
-//     public class SpecificationService : ISpecificationService
-//     {
-//         private ISpecificationRepo _repository;
-//         private readonly IMarkRepo _markRepo;
-
-//         public SpecificationService(
-//             ISpecificationRepo specificationRepo,
-//             IMarkRepo markRepo)
-//         {
-//             _repository = specificationRepo;
-//             _markRepo = markRepo;
-//         }
-
-//         public IEnumerable<Specification> GetAllByMarkId(int markId)
-//         {
-//             return _repository.GetAllByMarkId(markId);
-//         }
-
-//         public Specification Create(int markId)
-//         {
-//             var foundMark = _markRepo.GetById(markId);
-//             if (foundMark == null)
-//                 throw new ArgumentNullException(nameof(foundMark));
-//             var specifications = _repository.GetAllByMarkId(markId);
-//             int maxNum = 0;
-//             foreach (var s in specifications)
-//             {
-//                 if (s.IsCurrent)
-//                 {
-//                     s.IsCurrent = false;
-//                     _repository.Update(s);
-//                 }
-//                 if (s.Num > maxNum)
-//                     maxNum = s.Num;
-//             }
-                
-//             var newSpecification = new Specification{
-//                 Mark = foundMark,
-//                 Num = maxNum + 1,
-//                 IsCurrent = true,
-//             };
-//             _repository.Add(newSpecification);
-//             return newSpecification;
-//         }
-
-//         public void Update(
-//             int id,
-//             SpecificationUpdateRequest specification)
-//         {
-//             if (specification == null)
-//                 throw new ArgumentNullException(nameof(specification));
-//             var foundSpecification = _repository.GetById(id);
-//             if (foundSpecification == null)
-//                 throw new ArgumentNullException(nameof(foundSpecification));
-
-//             if (specification.IsCurrent != null)
-//                 foundSpecification.IsCurrent = specification.IsCurrent ?? false;
-//             if (specification.Note != null)
-//                 foundSpecification.Note = specification.Note;
-//             _repository.Update(foundSpecification);
-//         }
-
-//         public void Delete(int id)
-//         {
-//             var foundSpecification = _repository.GetById(id);
-//             if (foundSpecification == null)
-//                 throw new ArgumentNullException(nameof(foundSpecification));
-//             if (foundSpecification.IsCurrent)
-//                 throw new ConflictException(nameof(foundSpecification.IsCurrent));
-
-//             _repository.Delete(foundSpecification);
-//         }
-//     }
-// }

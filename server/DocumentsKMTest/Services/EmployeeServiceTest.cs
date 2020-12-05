@@ -10,8 +10,9 @@ namespace DocumentsKM.Tests
     public class EmployeeServiceTest
     {
         private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
-        private readonly EmployeeService _service;
+        private readonly IEmployeeService _service;
         private readonly Random _rnd = new Random();
+        private readonly int[] _approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
         public EmployeeServiceTest()
         {
@@ -28,21 +29,21 @@ namespace DocumentsKM.Tests
                     mock.GetAllByDepartmentId(department.Id)).Returns(
                         TestData.employees.Where(v => v.Department.Id == department.Id));
 
+                _mockEmployeeRepo.Setup(mock=>
+                    mock.GetAllByDepartmentIdAndPositions(
+                        department.Id, _approvalPosIds)).Returns(
+                            TestData.employees.Where(
+                                v => v.Department.Id == department.Id &&
+                                _approvalPosIds.Contains(v.Position.Id)));
+                
                 foreach (var position in TestData.positions)
                 {
-                    // Will only consider an array of 2 positions
-                    for (var i = 0; i < TestData.positions.Count(); i++)
-                    {
-                        if (TestData.positions[i].Id == position.Id)
-                            continue;
-
-                        _mockEmployeeRepo.Setup(mock=>
-                            mock.GetAllByDepartmentIdAndPositions(
-                                department.Id, new int[2]{position.Id, TestData.positions[i].Id})).Returns(
-                                    TestData.employees.Where(
-                                        v => v.Department.Id == department.Id &&
-                                        new int[2]{position.Id, TestData.positions[i].Id}.Contains(v.Position.Id)));
-                    }
+                    _mockEmployeeRepo.Setup(mock=>
+                        mock.GetAllByDepartmentIdAndPosition(
+                            department.Id, position.Id)).Returns(
+                                TestData.employees.Where(
+                                    v => v.Department.Id == department.Id &&
+                                    v.Position.Id == position.Id));
                 }
             }
 
@@ -50,7 +51,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByDepartmentId_ShouldReturnAllEmployeesWithDepartmentId()
+        public void GetAllByDepartmentId_ShouldReturnEmployees()
         {
             // Arrange
             int departmentId = _rnd.Next(1, TestData.departments.Count());
@@ -63,98 +64,69 @@ namespace DocumentsKM.Tests
                 v => v.Department.Id == departmentId), returnedEmployees);
         }
 
-        // TBD
-
-        // [Fact]
-        // public void GetMarkApprovalEmployeesByDepartmentId_ShouldReturnAllEmployeesForMarkApproval()
-        // {
-        //     // Arrange
-        //     int departmentId = _rnd.Next(1, TestData.departments.Count());
-        //     int[] approvalPosIds = {1, 2};
+        [Fact]
+        public void GetAllByDepartmentId_ShouldReturnEmptyArray_WhenWrongDepartmentId()
+        {
+            // Arrange
+            int wrongDepartmentId = 999;
             
-        //     // Act
-        //     var returnedEmployees = _service.GetMarkApprovalEmployeesByDepartmentId(departmentId);
+            // Act
+            var returnedEmployees = _service.GetAllByDepartmentId(wrongDepartmentId);
 
-        //     // Assert
-        //     Assert.Equal(TestData.employees.Where(
-        //         v => v.Department.Id == departmentId && approvalPosIds.Contains(v.Position.Id)), returnedEmployees);
-        // }
+            // Assert
+            Assert.Empty(returnedEmployees);
+        }
+
+        [Fact]
+        public void GetMarkApprovalEmployeesByDepartmentId_ShouldReturnEmployees()
+        {
+            // Arrange
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            
+            // Act
+            var returnedEmployees = _service.GetMarkApprovalEmployeesByDepartmentId(departmentId);
+
+            // Assert
+            Assert.Equal(TestData.employees.Where(
+                v => v.Department.Id == departmentId && _approvalPosIds.Contains(v.Position.Id)), returnedEmployees);
+        }
+
+        [Fact]
+        public void GetMarkApprovalEmployeesByDepartmentId_ShouldReturnEmptyArray_WhenWrongDepartmentId()
+        {
+            // Arrange
+            int wrongDepartmentId = 999;
+            
+            // Act
+            var returnedEmployees = _service.GetMarkApprovalEmployeesByDepartmentId(wrongDepartmentId);
+
+            // Assert
+            Assert.Empty(returnedEmployees);
+        }
+
+        [Fact]
+        public void GetMarkMainEmployeesByDepartmentId_ShouldReturnEmployeesForMarkApproval()
+        {
+            // Arrange
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            var departmentHeadPosId = 7;
+            var chiefSpecialistPosId = 9;
+            var groupLeaderPosId = 10;
+            var mainBuilderPosId = 4;
+            
+            // Act
+            (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) =
+                _service.GetMarkMainEmployeesByDepartmentId(departmentId);
+
+            // Assert
+            Assert.Equal(TestData.employees.SingleOrDefault(
+                v => v.Position.Id == departmentHeadPosId && v.Department.Id == departmentId), departmentHead);
+            Assert.Equal(TestData.employees.Where(
+                v => v.Position.Id == chiefSpecialistPosId && v.Department.Id == departmentId), chiefSpecialists);
+            Assert.Equal(TestData.employees.Where(
+                v => v.Position.Id == groupLeaderPosId && v.Department.Id == departmentId), groupLeaders);
+            Assert.Equal(TestData.employees.Where(
+                v => v.Position.Id == mainBuilderPosId && v.Department.Id == departmentId), mainBuilders);
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// using System.Collections.Generic;
-// using DocumentsKM.Models;
-// using DocumentsKM.Data;
-// using System.Linq;
-// using Serilog;
-
-// namespace DocumentsKM.Services
-// {
-//     public class EmployeeService : IEmployeeService
-//     {
-//         private IEmployeeRepo _repository;
-
-//         public EmployeeService(IEmployeeRepo EmployeeRepo)
-//         {
-//             _repository = EmployeeRepo;
-//         }
-
-//         public IEnumerable<Employee> GetByDepartmentId(int departmentId)
-//         {
-//             return _repository.GetAllByDepartmentId(departmentId);
-//         }
-
-//         public IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentId(int departmentId)
-//         {
-//             int[] approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-            
-//             var employees = _repository.GetAllByDepartmentIdAndPositions(
-//                 departmentId,
-//                 approvalPosIds);
-//             return employees;
-//         }
-
-//         public (Employee, IEnumerable<Employee>,IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentId(
-//             int departmentId)
-//         {
-//             var departmentHeadPosId = 7;
-//             var chiefSpecialistPosId = 9;
-//             var groupLeaderPosId = 10;
-//             var mainBuilderPosId = 4;
-
-//             var departmentHeadArr = _repository.GetAllByDepartmentIdAndPosition(
-//                 departmentId,
-//                 departmentHeadPosId);
-//             // У каждого отдела должен быть один руководитель
-//             if (departmentHeadArr.Count() != 1)
-//                 throw new ConflictException();
-//             var departmentHead = departmentHeadArr.ToList()[0];
-//             var chiefSpecialists = _repository.GetAllByDepartmentIdAndPosition(
-//                 departmentId,
-//                 chiefSpecialistPosId);
-//             var groupLeaders = _repository.GetAllByDepartmentIdAndPosition(
-//                 departmentId,
-//                 groupLeaderPosId);
-//             var mainBuilders = _repository.GetAllByDepartmentIdAndPosition(
-//                 departmentId,
-//                 mainBuilderPosId);
-//             return (departmentHead, chiefSpecialists, groupLeaders, mainBuilders);
-//         }
-//     }
-// }

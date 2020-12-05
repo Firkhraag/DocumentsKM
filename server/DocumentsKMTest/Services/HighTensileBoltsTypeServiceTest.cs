@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class HighTensileBoltsTypeServiceTest
     {
-        private readonly HighTensileBoltsTypeService _service;
+        private readonly IHighTensileBoltsTypeService _service;
 
         public HighTensileBoltsTypeServiceTest()
         {
             // Arrange
-            var mockHighTensileBoltsTypeRepo = new Mock<IHighTensileBoltsTypeRepo>();
+            var repository = new Mock<IHighTensileBoltsTypeRepo>();
 
-            mockHighTensileBoltsTypeRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.highTensileBoltsTypes);
             
-            _service = new HighTensileBoltsTypeService(mockHighTensileBoltsTypeRepo.Object);
+            _service = new HighTensileBoltsTypeService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllHighTensileBoltsTypes()
+        public void GetAll_ShouldReturnHighTensileBoltsTypes()
         {
             // Act
             var returnedHighTensileBoltsTypes = _service.GetAll();

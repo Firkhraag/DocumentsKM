@@ -13,7 +13,6 @@ namespace DocumentsKM.Models
         [Required]
         [ForeignKey("MarkId")]
         public virtual Mark Mark { get; set; }
-        // public int MarkId { get; set; }
 
         // Номер
         [Required]
@@ -23,7 +22,6 @@ namespace DocumentsKM.Models
         [Required]
         [ForeignKey("TypeId")]
         public virtual DocType Type { get; set; }
-        // public int DocTypeId { get; set; }
 
         // Название
         [Required]

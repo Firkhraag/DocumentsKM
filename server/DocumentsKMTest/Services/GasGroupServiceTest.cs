@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class GasGroupServiceTest
     {
-        private readonly GasGroupService _service;
+        private readonly IGasGroupService _service;
 
         public GasGroupServiceTest()
         {
             // Arrange
-            var mockGasGroupRepo = new Mock<IGasGroupRepo>();
+            var repository = new Mock<IGasGroupRepo>();
 
-            mockGasGroupRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.gasGroups);
             
-            _service = new GasGroupService(mockGasGroupRepo.Object);
+            _service = new GasGroupService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllGasGroups()
+        public void GetAll_ShouldReturnGasGroups()
         {
             // Act
             var returnedGasGroups = _service.GetAll();

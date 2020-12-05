@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class DepartmentServiceTest
     {
-        private readonly DepartmentService _service;
+        private readonly IDepartmentService _service;
 
         public DepartmentServiceTest()
         {
             // Arrange
-            var mockDepartmentRepo = new Mock<IDepartmentRepo>();
+            var repository = new Mock<IDepartmentRepo>();
 
-            mockDepartmentRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.departments);
                 
-            _service = new DepartmentService(mockDepartmentRepo.Object);
+            _service = new DepartmentService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllDepartments()
+        public void GetAll_ShouldReturnDepartments()
         {
             // Act
             var returnedDepartments = _service.GetAll();

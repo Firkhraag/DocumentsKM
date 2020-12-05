@@ -9,7 +9,7 @@ namespace DocumentsKM.Tests
 {
     public class LinkedDocServiceTest
     {
-        private readonly LinkedDocService _service;
+        private readonly ILinkedDocService _service;
         private readonly Random _rnd = new Random();
 
         public LinkedDocServiceTest()
@@ -28,7 +28,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllLinkedDocs()
+        public void GetAll_ShouldReturnLinkedDocs()
         {
             // Arrange
             int typeId = _rnd.Next(1, TestData.linkedDocTypes.Count());

@@ -52,36 +52,35 @@ public class TestWebApplicationFactory<TStartup>
 
     private void InitializeDbForTests(ApplicationContext context)
     {
+        context.Positions.AddRange(TestData.positions);
+        context.Departments.AddRange(TestData.departments);
+        context.Employees.AddRange(TestData.employees);
+
         context.ConstructionMaterials.AddRange(TestData.constructionMaterials);
-        context.ConstructionMaterials.AttachRange(TestData.constructionMaterials);
-
         context.EnvAggressiveness.AddRange(TestData.envAggressiveness);
-        context.EnvAggressiveness.AttachRange(TestData.envAggressiveness);
-
         context.GasGroups.AddRange(TestData.gasGroups);
-        context.GasGroups.AttachRange(TestData.gasGroups);
-
         context.HighTensileBoltsTypes.AddRange(TestData.highTensileBoltsTypes);
-        context.HighTensileBoltsTypes.AttachRange(TestData.highTensileBoltsTypes);
-
         context.PaintworkTypes.AddRange(TestData.paintworkTypes);
-        context.PaintworkTypes.AttachRange(TestData.paintworkTypes);
-
+        context.OperatingAreas.AddRange(TestData.operatingAreas);
         context.WeldingControl.AddRange(TestData.weldingControl);
-        context.WeldingControl.AttachRange(TestData.weldingControl);
+        context.ConstructionTypes.AddRange(TestData.constructionTypes);
+        context.ConstructionSubtypes.AddRange(TestData.constructionSubtypes);
+        context.GeneralDataSections.AddRange(TestData.generalDataSections);
+        context.SheetNames.AddRange(TestData.sheetNames);
+        context.DocTypes.AddRange(TestData.docTypes);
+        context.LinkedDocTypes.AddRange(TestData.linkedDocTypes);
 
         context.Projects.AddRange(TestData.projects);
-        context.Projects.AttachRange(TestData.projects);
-
         context.Nodes.AddRange(TestData.nodes);
-        context.Nodes.AttachRange(TestData.nodes);
-
         context.Subnodes.AddRange(TestData.subnodes);
-        context.Subnodes.AttachRange(TestData.subnodes);
-
         context.Marks.AddRange(TestData.marks);
-        context.Marks.AttachRange(TestData.marks);
 
+        context.MarkApprovals.AddRange(TestData.markApprovals);
+        context.Specifications.AddRange(TestData.specifications);
+        
+        context.AttachedDocs.AddRange(TestData.attachedDocs);
+        context.LinkedDocs.AddRange(TestData.linkedDocs);
+        context.MarkLinkedDocs.AddRange(TestData.markLinkedDocs);
         context.SaveChanges();
     }
 }

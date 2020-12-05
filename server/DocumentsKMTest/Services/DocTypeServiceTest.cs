@@ -8,25 +8,25 @@ namespace DocumentsKM.Tests
 {
     public class DocTypeServiceTest
     {
-        private readonly DocTypeService _service;
+        private readonly IDocTypeService _service;
 
         public DocTypeServiceTest()
         {
             // Arrange
-            var mockDocTypeRepo = new Mock<IDocTypeRepo>();
+            var repository = new Mock<IDocTypeRepo>();
 
             foreach (var docType in TestData.docTypes)
             {
-                mockDocTypeRepo.Setup(mock=>
+                repository.Setup(mock=>
                     mock.GetAllExceptId(docType.Id)).Returns(
                         TestData.docTypes.Where(v => v.Id != docType.Id));
             }
 
-            _service = new DocTypeService(mockDocTypeRepo.Object);
+            _service = new DocTypeService(repository.Object);
         }
 
         [Fact]
-        public void GetAllAttached_ShouldReturnAllDocTypes()
+        public void GetAllAttached_ShouldReturnDocTypes()
         {
             // Arrange
             int sheetDocTypeId = 1;

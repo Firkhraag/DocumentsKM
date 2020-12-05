@@ -18,7 +18,11 @@ import getFromOptions from '../../util/get-from-options'
 import { reactSelectstyle } from '../../util/react-select-style'
 import { useSetMark } from '../../store/MarkStore'
 
-const MarkSelect = () => {
+type MarkSelectProps = {
+	setSubnode: (v: Subnode) => void
+}
+
+const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 	const defaultSelectedObject = {
 		recentMark: null as Mark,
 		project: null as Project,
@@ -367,7 +371,8 @@ const MarkSelect = () => {
 		}
 		const subnode = selectedObject.subnode
 		subnode.node = selectedObject.node
-		subnode.node.project = selectedObject.project
+        subnode.node.project = selectedObject.project
+        setSubnode(subnode)
 		history.push('/mark-create')
 	}
 
@@ -376,7 +381,6 @@ const MarkSelect = () => {
 			<h1 className="text-centered">Выбор / создание марки</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
                 <Form.Group>
-					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
                     <Form.Label
 						htmlFor="recentMarks"
 					>
@@ -580,6 +584,7 @@ const MarkSelect = () => {
 						/>
 					</Form.Group>
 				</div>
+                <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 				<div className="flex btn-mrg-top-2">
 					<Button
 						variant="secondary"

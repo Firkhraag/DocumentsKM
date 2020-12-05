@@ -19,14 +19,9 @@ namespace DocumentsKM.Data
             return _context.Docs.FirstOrDefault(d => d.Id == id);
         }
 
-        public Doc GetByUniqueKeyValues(int markId, int num, int docTypeId)
-        {
-            return _context.Docs.FirstOrDefault(d => (d.Mark.Id == markId) && (d.Num == num) && (d.Type.Id == docTypeId));
-        }
-
         public IEnumerable<Doc> GetAllByMarkId(int markId)
         {
-            return _context.Docs.Where(d => d.Mark.Id == markId).ToList();
+            return _context.Docs.Where(d => d.Mark.Id == markId).OrderBy(v => v.Type.Name).ThenBy(v => v.Num).ToList();
         }
 
         public IEnumerable<Doc> GetAllByMarkIdAndDocType(int markId, int docTypeId)

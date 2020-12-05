@@ -61,8 +61,21 @@ namespace DocumentsKM.Services
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
 
-            if (specification.IsCurrent != null)
-                foundSpecification.IsCurrent = specification.IsCurrent ?? false;
+            // if (specification.IsCurrent != null)
+            //     foundSpecification.IsCurrent = specification.IsCurrent ?? false;
+            if (specification.IsCurrent == true)
+            {
+                var specs = _repository.GetAllByMarkId(foundSpecification.Mark.Id);
+                foreach (var spec in specs)
+                {
+                    if (spec.IsCurrent)
+                    {
+                        spec.IsCurrent = false;
+                        _repository.Update(spec);
+                    }
+                }
+                foundSpecification.IsCurrent = true;
+            }
             if (specification.Note != null)
                 foundSpecification.Note = specification.Note;
             _repository.Update(foundSpecification);

@@ -7,21 +7,21 @@ namespace DocumentsKM.Tests
 {
     public class OperatingAreaServiceTest
     {
-        private readonly OperatingAreaService _service;
+        private readonly IOperatingAreaService _service;
 
         public OperatingAreaServiceTest()
         {
             // Arrange
-            var mockOperatingAreaRepo = new Mock<IOperatingAreaRepo>();
+            var repository = new Mock<IOperatingAreaRepo>();
 
-            mockOperatingAreaRepo.Setup(mock=>
+            repository.Setup(mock=>
                 mock.GetAll()).Returns(TestData.operatingAreas);
             
-            _service = new OperatingAreaService(mockOperatingAreaRepo.Object);
+            _service = new OperatingAreaService(repository.Object);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllOperatingAreas()
+        public void GetAll_ShouldReturnOperatingAreas()
         {
             // Act
             var returnedOperatingAreas = _service.GetAll();
