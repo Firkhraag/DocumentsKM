@@ -16,7 +16,7 @@ namespace DocumentsKM.Data
 
         public MarkOperatingConditions GetByMarkId(int markId)
         {
-            return _context.MarkOperatingConditions.FirstOrDefault(moc => moc.Mark.Id == markId);
+            return _context.MarkOperatingConditions.SingleOrDefault(v => v.Mark.Id == markId);
         }
 
         public void Add(MarkOperatingConditions markOperatingConditions)

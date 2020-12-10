@@ -20,7 +20,7 @@ namespace DocumentsKM.Data
 
         public WeldingControl GetById(int id)
         {
-            return _context.WeldingControl.FirstOrDefault(c => c.Id == id);
+            return _context.WeldingControl.SingleOrDefault(v => v.Id == id);
         }
     }
 }

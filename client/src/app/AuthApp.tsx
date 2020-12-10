@@ -22,7 +22,7 @@ import OtherAttachedDocData from '../components/OtherAttachedDoc/OtherAttachedDo
 import LinkedDocTable from '../components/LinkedDoc/LinkedDocTable'
 import LinkedDocData from '../components/LinkedDoc/LinkedDocData'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
-import GeneralData from '../components/GeneralData/GeneralData'
+import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
 import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
@@ -212,7 +212,7 @@ const AuthApp = () => {
 
                         <Route exact path="/user/general-data">
 							<div className="full-width div-container">
-								<UserGeneralData />
+								<UserGeneralData setPopupObj={setPopupObj} />
 							</div>
 						</Route>
 					</div>

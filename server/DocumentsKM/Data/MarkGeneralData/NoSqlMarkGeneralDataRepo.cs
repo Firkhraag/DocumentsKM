@@ -18,10 +18,10 @@ namespace DocumentsKM.Data
         }
 
         public MarkGeneralData GetById(string id) =>
-            _markGeneralData.Find<MarkGeneralData>(mgd => mgd.Id == id).FirstOrDefault();
+            _markGeneralData.Find<MarkGeneralData>(v => v.Id == id).FirstOrDefault();
 
         public MarkGeneralData GetByMarkId(int markId) =>
-            _markGeneralData.Find<MarkGeneralData>(mgd => mgd.MarkId == markId).FirstOrDefault();
+            _markGeneralData.Find<MarkGeneralData>(v => v.MarkId == markId).FirstOrDefault();
 
         public MarkGeneralData Add(MarkGeneralData markGeneralData)
         {
@@ -30,9 +30,9 @@ namespace DocumentsKM.Data
         }
 
         public void Update(MarkGeneralData markGeneralDataIn) =>
-            _markGeneralData.ReplaceOne(mgd => mgd.Id == markGeneralDataIn.Id, markGeneralDataIn);
+            _markGeneralData.ReplaceOne(v => v.Id == markGeneralDataIn.Id, markGeneralDataIn);
 
         public void Delete(MarkGeneralData markGeneralDataIn) =>
-            _markGeneralData.DeleteOne(mgd => mgd.Id == markGeneralDataIn.Id);
+            _markGeneralData.DeleteOne(v => v.Id == markGeneralDataIn.Id);
     }
 }

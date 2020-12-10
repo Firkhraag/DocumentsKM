@@ -1,5 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -15,15 +16,11 @@ import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectstyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
-import { useUser } from '../../store/UserStore'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import SectionsSelectPopup from './SectionsSelectPopup'
+import './MarkGeneralData.css'
 
-type UserGeneralDataProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
-}
-
-const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
-    const user = useUser()
+const MarkGeneralData = () => {
+	const history = useHistory()
 	const mark = useMark()
 
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
@@ -34,23 +31,24 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 	const [optionsObject, setOptionsObject] = useState({
 		sections: [] as GeneralDataSection[],
 		points: [] as GeneralDataPoint[],
-    })
-    
-    const [errMsg, setErrMsg] = useState('')
+	})
 
+	const [isSectionsSelectionShown, setSectionsSelectionShown] = useState(
+		false
+	)
 	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const sectionsResponse = await httpClient.get(
-						`/general-data-sections`
-					)
-					setOptionsObject({
-						...optionsObject,
-						sections: sectionsResponse.data,
-					})
+					// const sectionsResponse = await httpClient.get(
+					// 	`/general-data-sections`
+					// )
+					// setOptionsObject({
+					// 	...optionsObject,
+					// 	sections: sectionsResponse.data,
+					// })
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -90,19 +88,19 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 				})
 			} else {
 				try {
-					const pointsResponse = await httpClient.get(
-						`/users/${user.id}/general-data-sections/${id}/general-data-points`
-					)
-					cachedPoints.set(v.id, pointsResponse.data)
-					setOptionsObject({
-						...optionsObject,
-						points: pointsResponse.data,
-					})
-					setSelectedObject({
-						...selectedObject,
-						section: v,
-						point: null,
-					})
+					// const pointsResponse = await httpClient.get(
+					// 	`/general-data-sections/${id}/general-data-points`
+					// )
+					// cachedPoints.set(v.id, pointsResponse.data)
+					// setOptionsObject({
+					// 	...optionsObject,
+					// 	points: pointsResponse.data,
+					// })
+					// setSelectedObject({
+					//     ...selectedObject,
+					// 	section: v,
+					//     point: null,
+					// })
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -138,93 +136,101 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 		})
 	}
 
-	const onDeleteClick = async (row: number, id: number) => {
-		try {
-            // console.log(row)
-			await httpClient.delete(`/general-data-points/${id}`)
-			optionsObject.points.splice(row, 1)
-            setPopupObj(defaultPopupObj)
-            if (selectedObject.point.id == id) {
-                setSelectedObject({
-                    ...selectedObject,
-                    point: null,
-                })
-            }
-		} catch (e) {
-			console.log('Error')
+	const onSaveButtonClick = async () => {
+		if (selectedObject.pointText != '') {
+			try {
+				// await httpClient.patch(
+				// 	`/marks/${mark.id}/mark-operating-conditions`,
+				// 	{
+				// 		safetyCoeff:
+				// 			selectedObject.safetyCoeff ===
+				// 			defaultSelectedObject.safetyCoeff
+				// 				? undefined
+				// 				: selectedObject.safetyCoeff,
+				// 		temperature:
+				// 			selectedObject.temperature ===
+				// 			defaultSelectedObject.temperature
+				// 				? undefined
+				// 				: selectedObject.temperature,
+				// 		envAggressivenessId:
+				// 			selectedObject.envAggressiveness.id ===
+				// 			defaultSelectedObject.envAggressiveness.id
+				// 				? undefined
+				// 				: selectedObject.envAggressiveness.id,
+				// 		operatingAreaId:
+				// 			selectedObject.operatingArea.id ===
+				// 			defaultSelectedObject.operatingArea.id
+				// 				? undefined
+				// 				: selectedObject.operatingArea.id,
+				// 		gasGroupId:
+				// 			selectedObject.gasGroup.id ===
+				// 			defaultSelectedObject.gasGroup.id
+				// 				? undefined
+				// 				: selectedObject.gasGroup.id,
+				// 		constructionMaterialId:
+				// 			selectedObject.constructionMaterial.id ===
+				// 			defaultSelectedObject.constructionMaterial.id
+				// 				? undefined
+				// 				: selectedObject.constructionMaterial.id,
+				// 		paintworkTypeId:
+				// 			selectedObject.paintworkType.id ===
+				// 			defaultSelectedObject.paintworkType.id
+				// 				? undefined
+				// 				: selectedObject.paintworkType.id,
+				// 		highTensileBoltsTypeId:
+				// 			selectedObject.highTensileBoltsType.id ===
+				// 			defaultSelectedObject.highTensileBoltsType.id
+				// 				? undefined
+				// 				: selectedObject.highTensileBoltsType.id,
+				// 	}
+				// )
+				// history.push('/')
+			} catch (e) {
+				// setErrMsg('Произошла ошибка')
+				console.log('Error')
+			}
 		}
-    }
-    
-    const checkIfValid = () => {
-        if (selectedObject.section === null) {
-			setErrMsg('Пожалуйста, выберите раздел')
-			return false
-        }
-		if (selectedObject.pointText === '') {
-			setErrMsg('Пожалуйста, введите содержание пункта')
-			return false
-        }
-        if (selectedObject.point != null && selectedObject.pointText === selectedObject.point.text) {
-			setErrMsg('Пожалуйста, введите новое содержание пункта')
-			return false
-        }
-		return true
 	}
 
-	const onUpdatePointButtonClick = async () => {
-        if (checkIfValid()) {
-			try {
-				await httpClient.patch(
-					`/general-data-points/${selectedObject.point.id}`, {
-						text: selectedObject.pointText,
-					}
-                )
-                const p = { ...selectedObject.point }
-                p.text = selectedObject.pointText
-                optionsObject.points.find(v => v.id === p.id).text = selectedObject.pointText
-                setSelectedObject({
-                    ...selectedObject,
-                    point: p,
-                })
-			} catch (e) {
-                if (e.response.status === 409) {
-					setErrMsg('Пункт с таким содержанием уже существует')
-					return
-				}
-				setErrMsg('Произошла ошибка')
-				console.log('Error')
-			}
-		}
-    }
+	const onCreateSectionButtonClick = async () => {}
 
-	const onCreatePointButtonClick = async () => {
-        if (checkIfValid()) {
-			try {
-				const response = await httpClient.post(
-					`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points`, {
-						text: selectedObject.pointText,
-					}
-                )
-                console.log(response)
-                optionsObject.points.push(response.data)
-                setSelectedObject({
-                    ...selectedObject,
-                    point: response.data,
-                })
-			} catch (e) {
-                if (e.response.status === 409) {
-					setErrMsg('Пункт с таким содержанием уже существует')
-					return
-				}
-				setErrMsg('Произошла ошибка')
-				console.log('Error')
-			}
+	const onCreatePointButtonClick = async () => {}
+
+	const onDownloadButtonClick = async () => {
+		// node-latex
+		// Node worker that will be doing this task
+
+		// const input = fs.createReadStream('input.tex')
+		// const output = fs.createWriteStream('output.pdf')
+		// const pdf = latex(input)
+
+		// pdf.pipe(output)
+		// pdf.on('error', err => console.error(err))
+		// pdf.on('finish', () => console.log('PDF generated!'))
+		try {
+			const response = await httpClient.get(
+				`/marks/${mark.id}/general-data`
+			)
+			const blob = new Blob([response.data], {
+				type: 'application/x-tex',
+			})
+			const link = document.createElement('a')
+			link.href = window.URL.createObjectURL(blob)
+			link.download = 'Общие данные.tex'
+			link.click()
+			link.remove()
+		} catch (e) {
+			console.log('Failed to download the file')
 		}
-    }
+	}
 
 	return mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
-			<h1 className="text-centered">Шаблоны общих указаний</h1>
+			<SectionsSelectPopup
+				isShown={isSectionsSelectionShown}
+				close={() => setSectionsSelectionShown(false)}
+			/>
+			<h1 className="text-centered">Состав общих указаний марки</h1>
 
 			<div className="flex">
 				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
@@ -283,6 +289,14 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 							})}
 						</div>
 					</div>
+
+					<Button
+						variant="secondary"
+						className="btn-mrg-top-2 full-width"
+						onClick={() => setSectionsSelectionShown(true)}
+					>
+						Изменить
+					</Button>
 				</div>
 
 				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
@@ -321,40 +335,24 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Пункты</label>
 						<div className="flex-v general-data-selection mrg-top">
-							{optionsObject.points.map((p, index) => {
+							{optionsObject.points.map((p) => {
 								return (
 									<div
 										className={
 											selectedObject.point == null
-												? 'pointer selection-text flex-cent-v'
+												? 'pointer selection-text space-between'
 												: selectedObject.point.id ==
 												  p.id
-												? 'pointer selection-text selected-bg flex-cent-v'
-												: 'pointer selection-text flex-cent-v'
+												? 'pointer selection-text selected-bg space-between'
+												: 'pointer selection-text space-between'
 										}
+										onClick={() => onPointSelect(p.id)}
 										key={p.id}
 									>
-										<p className="no-bot-mrg" style={{flex: 1}} onClick={() => onPointSelect(p.id)}>
+										<p className="no-bot-mrg">
 											{truncateText(p.text, 100, null)}
 										</p>
-										<div
-											onClick={() =>
-												setPopupObj({
-													isShown: true,
-													msg: `Вы действительно хотите удалить ${truncateText(p.text, 100, null)}?`,
-													onAccept: () =>
-														onDeleteClick(
-															index,
-															p.id
-														),
-													onCancel: () =>
-														setPopupObj(
-															defaultPopupObj
-														),
-												})
-											}
-											className="trash-area"
-										>
+										<div className="trash-area">
 											<Trash color="#666" size={22} />
 										</div>
 									</div>
@@ -362,6 +360,14 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 							})}
 						</div>
 					</div>
+
+					<Button
+						variant="secondary"
+						className="btn-mrg-top-2 full-width"
+						onClick={onCreatePointButtonClick}
+					>
+						Добавить
+					</Button>
 				</div>
 			</div>
 
@@ -394,22 +400,21 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 						onChange={onPointTextChange}
 					/>
 				</Form.Group>
-                <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 				<div className="flex btn-mrg-top-2">
 					<Button
 						variant="secondary"
 						className="flex-grow"
-                        onClick={onUpdatePointButtonClick}
-                        disabled={selectedObject.point == null ? true : false}
+						onClick={onSaveButtonClick}
+						disabled={selectedObject.point == null ? true : false}
 					>
 						Сохранить изменения
 					</Button>
 					<Button
 						variant="secondary"
 						className="flex-grow mrg-left"
-						onClick={onCreatePointButtonClick}
+						onClick={onDownloadButtonClick}
 					>
-						Добавить новый пункт
+						Скачать документ
 					</Button>
 				</div>
 			</div>
@@ -417,4 +422,4 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 	)
 }
 
-export default UserGeneralData
+export default MarkGeneralData

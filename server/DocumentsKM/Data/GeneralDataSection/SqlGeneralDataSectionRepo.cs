@@ -15,12 +15,12 @@ namespace DocumentsKM.Data
 
         public IEnumerable<GeneralDataSection> GetAll()
         {
-            return _context.GeneralDataSections.ToList();
+            return _context.GeneralDataSections.OrderBy(v => v.OrderNum).ToList();
         }
 
         public GeneralDataSection GetById(int id)
         {
-            return _context.GeneralDataSections.FirstOrDefault(s => s.Id == id);
+            return _context.GeneralDataSections.SingleOrDefault(v => v.Id == id);
         }
     }
 }

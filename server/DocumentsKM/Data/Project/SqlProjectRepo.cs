@@ -20,7 +20,7 @@ namespace DocumentsKM.Data
 
         public Project GetById(int id)
         {
-            return _context.Projects.FirstOrDefault(p => p.Id == id);
+            return _context.Projects.SingleOrDefault(v => v.Id == id);
         }
     }
 }

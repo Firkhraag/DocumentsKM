@@ -14,12 +14,12 @@ namespace DocumentsKM.Data
 
         public User GetById(int id)
         {
-            return _context.Users.SingleOrDefault(u => u.Id == id);
+            return _context.Users.SingleOrDefault(v => v.Id == id);
         }
 
         public User GetByLogin(string login)
         {
-            return _context.Users.SingleOrDefault(u => u.Login == login);
+            return _context.Users.SingleOrDefault(v => v.Login == login);
         }
     }
 }

@@ -15,12 +15,12 @@ namespace DocumentsKM.Data
 
         public IEnumerable<ConstructionSubtype> GetAllByTypeId(int typeId)
         {
-            return _context.ConstructionSubtypes.Where(s => s.Type.Id == typeId).ToList();
+            return _context.ConstructionSubtypes.Where(v => v.Type.Id == typeId).ToList();
         }
 
         public ConstructionSubtype GetById(int id)
         {
-            return _context.ConstructionSubtypes.FirstOrDefault(s => s.Id == id);
+            return _context.ConstructionSubtypes.SingleOrDefault(v => v.Id == id);
         }
     }
 }

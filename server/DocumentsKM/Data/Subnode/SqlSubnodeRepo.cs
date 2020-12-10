@@ -15,12 +15,12 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
         {
-            return _context.Subnodes.Where(s => s.Node.Id == nodeId).ToList();
+            return _context.Subnodes.Where(v => v.Node.Id == nodeId).ToList();
         }
 
         public Subnode GetById(int id)
         {
-            return _context.Subnodes.FirstOrDefault(s => s.Id == id);
+            return _context.Subnodes.SingleOrDefault(v => v.Id == id);
         }
     }
 }

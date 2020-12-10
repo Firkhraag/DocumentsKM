@@ -20,7 +20,7 @@ namespace DocumentsKM.Data
 
         public ConstructionType GetById(int id)
         {
-            return _context.ConstructionTypes.FirstOrDefault(m => m.Id == id);
+            return _context.ConstructionTypes.SingleOrDefault(v => v.Id == id);
         }
     }
 }

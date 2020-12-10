@@ -20,7 +20,7 @@ namespace DocumentsKM.Data
 
         public GasGroup GetById(int id)
         {
-            return _context.GasGroups.FirstOrDefault(g => g.Id == id);
+            return _context.GasGroups.SingleOrDefault(v => v.Id == id);
         }
     }
 }

@@ -14,7 +14,6 @@ using System.Text;
 using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
-using System.Text.Json;
 using Microsoft.Extensions.Options;
 
 namespace DocumentsKM
@@ -158,7 +157,7 @@ namespace DocumentsKM
             services.AddScoped<IAttachedDocService, AttachedDocService>();
             
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
-
+            services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
             services.AddScoped<IGeneralDataDocService, GeneralDataDocService>();
         }
 
@@ -198,7 +197,7 @@ namespace DocumentsKM
             services.AddScoped<IAttachedDocRepo, SqlAttachedDocRepo>();
 
             services.AddScoped<IGeneralDataSectionRepo, SqlGeneralDataSectionRepo>();
-
+            services.AddScoped<IGeneralDataPointRepo, SqlGeneralDataPointRepo>();
             services.AddScoped<IMarkGeneralDataRepo, NoSqlMarkGeneralDataRepo>();
         }
 
