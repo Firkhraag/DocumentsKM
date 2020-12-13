@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private INodeRepo _repository;
 
-        public NodeService(INodeRepo NodeRepo)
+        public NodeService(INodeRepo nodeRepo)
         {
-            _repository = NodeRepo;
+            _repository = nodeRepo;
         }
 
         public IEnumerable<Node> GetAllByProjectId(int projectId)

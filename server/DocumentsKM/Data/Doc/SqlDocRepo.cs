@@ -16,27 +16,22 @@ namespace DocumentsKM.Data
 
         public Doc GetById(int id)
         {
-            return _context.Docs.FirstOrDefault(d => d.Id == id);
-        }
-
-        public Doc GetByUniqueKeyValues(int markId, int num, int docTypeId)
-        {
-            return _context.Docs.FirstOrDefault(d => (d.Mark.Id == markId) && (d.Num == num) && (d.Type.Id == docTypeId));
+            return _context.Docs.SingleOrDefault(d => d.Id == id);
         }
 
         public IEnumerable<Doc> GetAllByMarkId(int markId)
         {
-            return _context.Docs.Where(d => d.Mark.Id == markId).ToList();
+            return _context.Docs.Where(v => v.Mark.Id == markId).OrderBy(v => v.Type.Name).ThenBy(v => v.Num).ToList();
         }
 
         public IEnumerable<Doc> GetAllByMarkIdAndDocType(int markId, int docTypeId)
         {
-            return _context.Docs.Where(d => (d.Mark.Id == markId) && (d.Type.Id == docTypeId)).ToList();
+            return _context.Docs.Where(v => (v.Mark.Id == markId) && (v.Type.Id == docTypeId)).ToList();
         }
 
         public IEnumerable<Doc> GetAllByMarkIdAndNotDocType(int markId, int docTypeId)
         {
-            return _context.Docs.Where(d => (d.Mark.Id == markId) && (d.Type.Id != docTypeId)).ToList();
+            return _context.Docs.Where(v => (v.Mark.Id == markId) && (v.Type.Id != docTypeId)).ToList();
         }
 
         public void Add(Doc doc)

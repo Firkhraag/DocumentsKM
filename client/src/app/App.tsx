@@ -14,7 +14,7 @@ const App = () => {
 				<div className="div-container full-height">
 					<Spinner />
 				</div>
-			) : user ? (
+			) : user.id > 0 ? (
 				<AuthApp />
 			) : (
 				<UnauthApp />

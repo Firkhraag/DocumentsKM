@@ -1,0 +1,12 @@
+sudo: required
+services:
+  - docker
+
+# build
+before_install:
+  - docker build -t firkhraag/documents-km-test -f Dockerfile.test .
+
+# test
+script:
+  - docker run firkhraag/documents-km-test
+  

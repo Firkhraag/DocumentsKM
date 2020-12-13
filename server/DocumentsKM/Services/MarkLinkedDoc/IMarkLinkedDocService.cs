@@ -8,16 +8,8 @@ namespace DocumentsKM.Services
     {
         // Получить все ссылочные документы по id марки
         IEnumerable<MarkLinkedDoc> GetAllByMarkId(int markId);
-        // // Добавить ссылочный документ к марке
-        // MarkLinkedDoc Add(
-        //     int markId,
-        //     int linkedDocId);
-        // // Удалить ссылочный документ у марки
-        // void Delete(int markId, int linkedDocId);
-
-
         // Добавить ссылочный документ к марке
-        void Add(
+        void Create(
             MarkLinkedDoc markLinkedDoc,
             int markId,
             int linkedDocId);

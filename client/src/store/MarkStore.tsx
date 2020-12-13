@@ -25,8 +25,7 @@ export const MarkProvider = ({ children }: MarkProviderProps) => {
 					setMark(response.data)
 				} catch (e) {
 					localStorage.removeItem('selectedMarkId')
-					localStorage.removeItem('recentSubnodeIds')
-					localStorage.removeItem('recentMarkIds')
+					// localStorage.removeItem('recentMarkIds')
 				}
 			}
 			fetchData()

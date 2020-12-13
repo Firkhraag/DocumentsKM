@@ -28,10 +28,10 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("projects/{projectId}/nodes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<NodeBaseResponse>> GetAllByProjectId(int projectId)
+        public ActionResult<IEnumerable<NodeResponse>> GetAllByProjectId(int projectId)
         {
             var nodes = _service.GetAllByProjectId(projectId);
-            return Ok(_mapper.Map<IEnumerable<NodeBaseResponse>>(nodes));
+            return Ok(_mapper.Map<IEnumerable<NodeResponse>>(nodes));
         }
     }
 }

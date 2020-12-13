@@ -41,16 +41,18 @@ const Login = () => {
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
 				<Form>
 					<Form.Group>
-						<Form.Label>Логин</Form.Label>
+						<Form.Label htmlFor="login">Логин</Form.Label>
 						<Form.Control
+                            id="login"
 							type="text"
 							placeholder="Введите ваш логин"
 							onBlur={onLoginChange}
 						/>
 					</Form.Group>
 					<Form.Group>
-						<Form.Label>Пароль</Form.Label>
+						<Form.Label htmlFor="password">Пароль</Form.Label>
 						<Form.Control
+                            id="password"
 							type="password"
 							placeholder="Введите ваш пароль"
 							onBlur={onPasswordChange}

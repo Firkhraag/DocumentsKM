@@ -14,6 +14,7 @@ using System.Text;
 using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
+using Microsoft.Extensions.Options;
 
 namespace DocumentsKM
 {
@@ -93,6 +94,13 @@ namespace DocumentsKM
                 };
             });
 
+            // Mongodb
+            services.Configure<MongoSettings>(
+                Configuration.GetSection(nameof(MongoSettings)));
+
+            services.AddSingleton<IMongoSettings>(sp =>
+                sp.GetRequiredService<IOptions<MongoSettings>>().Value);
+
             // Подключение к базе данных
             // Postgres
             services.AddDbContext<ApplicationContext>(
@@ -124,7 +132,11 @@ namespace DocumentsKM
 
             services.AddScoped<IMarkService, MarkService>();
             services.AddScoped<IMarkApprovalService, MarkApprovalService>();
+
             services.AddScoped<ISpecificationService, SpecificationService>();
+            services.AddScoped<IConstructionTypeService, ConstructionTypeService>();
+            services.AddScoped<IConstructionSubtypeService, ConstructionSubtypeService>();
+            services.AddScoped<IWeldingControlService, WeldingControlService>();
 
             services.AddScoped<IDocService, DocService>();
             services.AddScoped<ISheetNameService, SheetNameService>();
@@ -143,6 +155,11 @@ namespace DocumentsKM
             services.AddScoped<IMarkOperatingConditionsService, MarkOperatingConditionsService>();
 
             services.AddScoped<IAttachedDocService, AttachedDocService>();
+            
+            services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
+            services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
+            services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
+            services.AddScoped<IGeneralDataDocService, GeneralDataDocService>();
         }
 
         private void injectScopedRepositories(IServiceCollection services)
@@ -152,12 +169,15 @@ namespace DocumentsKM
             services.AddScoped<ISubnodeRepo, SqlSubnodeRepo>();
             services.AddScoped<IEmployeeRepo, SqlEmployeeRepo>();
             services.AddScoped<IDepartmentRepo, SqlDepartmentRepo>();
-            services.AddScoped<IPositionRepo, SqlPositionRepo>();
             services.AddScoped<IUserRepo, SqlUserRepo>();
 
             services.AddScoped<IMarkRepo, SqlMarkRepo>();
             services.AddScoped<IMarkApprovalRepo, SqlMarkApprovalRepo>();
+
             services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
+            services.AddScoped<IConstructionTypeRepo, SqlConstructionTypeRepo>();
+            services.AddScoped<IConstructionSubtypeRepo, SqlConstructionSubtypeRepo>();
+            services.AddScoped<IWeldingControlRepo, SqlWeldingControlRepo>();
 
             services.AddScoped<IDocRepo, SqlDocRepo>();
             services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();
@@ -176,6 +196,11 @@ namespace DocumentsKM
             services.AddScoped<IMarkOperatingConditionsRepo, SqlMarkOperatingConditionsRepo>();
 
             services.AddScoped<IAttachedDocRepo, SqlAttachedDocRepo>();
+
+            services.AddScoped<IGeneralDataSectionRepo, SqlGeneralDataSectionRepo>();
+            services.AddScoped<IGeneralDataPointRepo, SqlGeneralDataPointRepo>();
+            services.AddScoped<IMarkGeneralDataPointRepo, SqlMarkGeneralDataPointRepo>();
+            services.AddScoped<IMarkGeneralDataRepo, NoSqlMarkGeneralDataRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

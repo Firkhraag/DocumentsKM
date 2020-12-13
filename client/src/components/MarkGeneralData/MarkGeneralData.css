@@ -1,0 +1,46 @@
+.general-data-selection {
+    overflow-y: auto;
+    height: 247px;
+    border: 1px solid #ced4da;
+}
+
+.general-data-selection .selection-text {
+    border-bottom: 1px solid #ccc;
+}
+
+.selection-text p {
+    padding: 0.5em;
+}
+
+.general-data-selection .selection-text:hover {
+    background: #dee2e6;
+}
+
+.selected-bg {
+    background: #ddd;
+}
+
+.general-data-selection .selection-text.selected-bg:hover {
+    background: #ddd;
+}
+
+.general-data-selection .selection-text .trash-area {
+    padding: 0.5em;
+}
+
+.general-data-selection .selection-text .trash-area:hover {
+    background: #ccc;
+}
+
+.selection-popup {
+	width: 40vw;
+	position: fixed;
+	top: 33%;
+	left: 50%;
+	margin-left: -20vw;
+	z-index: 500;
+}
+
+.general-data-selection .selection-text .check-area {
+    padding: 0.5em;
+}

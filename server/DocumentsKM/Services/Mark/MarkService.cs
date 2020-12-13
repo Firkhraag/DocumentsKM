@@ -66,12 +66,16 @@ namespace DocumentsKM.Services
             var mainBuilder = _employeeRepo.GetById(mainBuilderId);
             if (mainBuilder == null)
                 throw new ArgumentNullException(nameof(mainBuilder));
+            if (mainBuilder.Department.Id != departmentId)
+                throw new ConflictException(nameof(departmentId));
             mark.MainBuilder = mainBuilder;
             if (chiefSpecialistId != null)
             {
                 var chiefSpecialist = _employeeRepo.GetById(chiefSpecialistId.GetValueOrDefault());
                 if (chiefSpecialist == null)
                     throw new ArgumentNullException(nameof(chiefSpecialist));
+                if (chiefSpecialist.Department.Id != departmentId)
+                    throw new ConflictException(nameof(departmentId));
                 mark.ChiefSpecialist = chiefSpecialist;
             }
             if (groupLeaderId != null)
@@ -79,6 +83,8 @@ namespace DocumentsKM.Services
                 var groupLeader = _employeeRepo.GetById(groupLeaderId.GetValueOrDefault());
                 if (groupLeader == null)
                     throw new ArgumentNullException(nameof(groupLeader));
+                if (groupLeader.Department.Id != departmentId)
+                    throw new ConflictException(nameof(departmentId));
                 mark.GroupLeader = groupLeader;
             }
             
@@ -137,12 +143,15 @@ namespace DocumentsKM.Services
                 if (department == null)
                     throw new ArgumentNullException(nameof(department));
                 foundMark.Department = department;
+                // To Do: Check employees
             }
             if (mark.MainBuilderId != null)
             {
                 var mainBuilder = _employeeRepo.GetById(mark.MainBuilderId.GetValueOrDefault());
                 if (mainBuilder == null)
                     throw new ArgumentNullException(nameof(mainBuilder));
+                if (mainBuilder.Department.Id != foundMark.Department.Id)
+                        throw new ConflictException("departmentId");
                 foundMark.MainBuilder = mainBuilder;
             }
             // Nullable section
@@ -156,6 +165,8 @@ namespace DocumentsKM.Services
                     var chiefSpecialist = _employeeRepo.GetById(chiefSpecialistId);
                     if (chiefSpecialist == null)
                         throw new ArgumentNullException(nameof(chiefSpecialist));
+                    if (chiefSpecialist.Department.Id != foundMark.Department.Id)
+                        throw new ConflictException("departmentId");
                     foundMark.ChiefSpecialist = chiefSpecialist;
                 }
             }
@@ -169,6 +180,8 @@ namespace DocumentsKM.Services
                     var groupLeader = _employeeRepo.GetById(groupLeaderId);
                     if (groupLeader == null)
                         throw new ArgumentNullException(nameof(groupLeader));
+                    if (groupLeader.Department.Id != foundMark.Department.Id)
+                        throw new ConflictException("departmentId");
                     foundMark.GroupLeader = groupLeader;
                 }
             }

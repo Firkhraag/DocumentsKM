@@ -34,6 +34,10 @@
     margin-left: 0.75em;
 }
 
+.mrg-left-2 {
+    margin-left: 1em;
+}
+
 .component-cnt {
     margin: 4.85vh 0;
 }
@@ -52,6 +56,14 @@
 
 .component-width-2 {
     width: 44vw;
+}
+
+.component-width-3 {
+    width: 50vw;
+}
+
+.component-width-4 {
+    width: 76.7vw;
 }
 
 .info-area {
@@ -74,9 +86,17 @@
     width: 18em;
 }
 
+.spec-note-col-width {
+	width: 25em;
+}
+
+.num-field-width {
+    width: 200px;
+}
+
 /* Linked doc */
 .linked-doc-name-col-width {
-	width: 22em;
+	width: 35em;
 }
 
 /* Section */

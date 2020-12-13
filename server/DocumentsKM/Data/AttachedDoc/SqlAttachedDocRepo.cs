@@ -16,18 +16,18 @@ namespace DocumentsKM.Data
 
         public AttachedDoc GetById(int id)
         {
-            return _context.AttachedDocs.FirstOrDefault(d => d.Id == id);
+            return _context.AttachedDocs.SingleOrDefault(v => v.Id == id);
         }
 
         public AttachedDoc GetByUniqueKeyValues(int markId, string designation)
         {
-            return _context.AttachedDocs.FirstOrDefault(d => (d.Mark.Id == markId) &&
-                (d.Designation == designation));
+            return _context.AttachedDocs.SingleOrDefault(v => (v.Mark.Id == markId) &&
+                (v.Designation == designation));
         }
 
         public IEnumerable<AttachedDoc> GetAllByMarkId(int markId)
         {
-            return _context.AttachedDocs.Where(d => d.Mark.Id == markId).ToList();
+            return _context.AttachedDocs.Where(v => v.Mark.Id == markId).ToList();
         }
 
         public void Add(AttachedDoc attachedDoc)

@@ -7,8 +7,6 @@ namespace DocumentsKM.Data
     {
         // Получить документ по id
         Doc GetById(int id);
-        // Получить документ по марке, номеру и типу документа
-        Doc GetByUniqueKeyValues(int markId, int num, int docTypeId);
         // Получить все документы по id марки
         IEnumerable<Doc> GetAllByMarkId(int markId);
         // Получить все документы по марке и типу документа

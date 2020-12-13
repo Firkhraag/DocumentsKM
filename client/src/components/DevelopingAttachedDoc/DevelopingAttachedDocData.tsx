@@ -56,7 +56,7 @@ const DevelopingAttachedDocData = ({
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (!isCreateMode && selectedObject == null) {
+			if (selectedObject == null) {
 				history.push('/developing-attached-docs')
 				return
 			}
@@ -108,33 +108,17 @@ const DevelopingAttachedDocData = ({
     }
     
     const onNumOfPagesChange = (event: React.FormEvent<HTMLInputElement>) => {
-		try {
-			const v = parseFloat(event.currentTarget.value)
-			setSelectedObject({
-				...selectedObject,
-				numOfPages: v,
-			})
-		} catch (e) {
-			setSelectedObject({
-				...selectedObject,
-				numOfPages: null,
-			})
-		}
+        setSelectedObject({
+			...selectedObject,
+			numOfPages: parseInt(event.currentTarget.value),
+		})
 	}
 
 	const onFormatChange = (event: React.FormEvent<HTMLInputElement>) => {
-		try {
-			const v = parseFloat(event.currentTarget.value)
-			setSelectedObject({
-				...selectedObject,
-				form: v,
-			})
-		} catch (e) {
-			setSelectedObject({
-				...selectedObject,
-				form: null,
-			})
-		}
+        setSelectedObject({
+			...selectedObject,
+			form: parseFloat(event.currentTarget.value),
+		})
 	}
 
 	const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
@@ -213,7 +197,7 @@ const DevelopingAttachedDocData = ({
 			setErrMsg('Пожалуйста, введите наименование прилагаемого документа')
 			return false
 		}
-		if (selectedObject.form == null) {
+		if (isNaN(selectedObject.form)) {
 			setErrMsg('Пожалуйста, введите формат прилагаемого документа')
 			return false
 		}
@@ -285,7 +269,7 @@ const DevelopingAttachedDocData = ({
 		}
 	}
 
-	return selectedObject == null || (mark == null && !isCreateMode) ? null : (
+	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">
 				{isCreateMode
@@ -293,14 +277,16 @@ const DevelopingAttachedDocData = ({
 					: 'Данные прилагаемого документа'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-                <div className="flex-cent-v">
-					<label
-						className="bold no-bot-mrg"
+                <Form.Group className="flex-cent-v">
+                    <Form.Label
+						className="no-bot-mrg"
+						htmlFor="code"
 						style={{ marginRight: '1em' }}
 					>
 						Шифр документа
-					</label>
+					</Form.Label>
 					<Select
+                        inputId="code"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -326,7 +312,7 @@ const DevelopingAttachedDocData = ({
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
 				<Form.Group className="mrg-top-2">
 					<Form.Label htmlFor="name">Наименование</Form.Label>
@@ -353,7 +339,7 @@ const DevelopingAttachedDocData = ({
 						id="numOfPages"
 						type="text"
 						placeholder="Введите число листов"
-                        defaultValue={selectedObject.numOfPages}
+                        defaultValue={isNaN(selectedObject.numOfPages) ? '' : selectedObject.numOfPages}
                         className="auto-width flex-grow"
 						onBlur={onNumOfPagesChange}
 					/>
@@ -371,19 +357,21 @@ const DevelopingAttachedDocData = ({
 						id="format"
 						type="text"
 						placeholder="Введите формат"
-						defaultValue={selectedObject.form}
+						defaultValue={isNaN(selectedObject.form) ? '' : selectedObject.form}
 						onBlur={onFormatChange}
 					/>
 				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="mrg-top-2 flex-cent-v">
+                    <Form.Label
+						className="no-bot-mrg"
+						htmlFor="creator"
 						style={{ marginRight: '3.9em' }}
 					>
 						Разработал
-					</label>
+					</Form.Label>
 					<Select
+                        inputId="creator"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -409,16 +397,18 @@ const DevelopingAttachedDocData = ({
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="mrg-top-2 flex-cent-v">
+                    <Form.Label
+						className="no-bot-mrg"
+						htmlFor="inspector"
 						style={{ marginRight: '4.5em' }}
 					>
 						Проверил
-					</label>
+					</Form.Label>
 					<Select
+                        inputId="inspector"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -444,16 +434,18 @@ const DevelopingAttachedDocData = ({
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="mrg-top-2 flex-cent-v">
+                    <Form.Label
+						className="no-bot-mrg"
+						htmlFor="normContr"
 						style={{ marginRight: '1em' }}
 					>
 						Нормоконтролер
-					</label>
+					</Form.Label>
 					<Select
+                        inputId="normContr"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -481,11 +473,12 @@ const DevelopingAttachedDocData = ({
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
 				<Form.Group className="mrg-top-2" style={{ marginBottom: 0 }}>
-					<Form.Label>Примечание</Form.Label>
+					<Form.Label htmlFor="note">Примечание</Form.Label>
 					<Form.Control
+                        id="note"
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}

@@ -20,7 +20,7 @@ namespace DocumentsKM.Data
 
         public ConstructionMaterial GetById(int id)
         {
-            return _context.ConstructionMaterials.FirstOrDefault(m => m.Id == id);
+            return _context.ConstructionMaterials.SingleOrDefault(v => v.Id == id);
         }
     }
 }

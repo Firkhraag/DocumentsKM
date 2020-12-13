@@ -21,17 +21,17 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
         {
-            return _context.Marks.Where(m => m.Subnode.Id == subnodeId).ToList();
+            return _context.Marks.Where(v => v.Subnode.Id == subnodeId).ToList();
         }
 
         public Mark GetById(int id)
         {
-            return _context.Marks.FirstOrDefault(m => m.Id == id);
+            return _context.Marks.SingleOrDefault(v => v.Id == id);
         }
 
         public Mark GetBySubnodeIdAndCode(int subnodeId, string code)
         {
-            return _context.Marks.FirstOrDefault(m => m.Subnode.Id == subnodeId && m.Code == code);
+            return _context.Marks.SingleOrDefault(v => v.Subnode.Id == subnodeId && v.Code == code);
         }
 
         public void Add(Mark mark)

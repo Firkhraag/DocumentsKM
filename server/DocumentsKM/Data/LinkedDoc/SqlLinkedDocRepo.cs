@@ -15,12 +15,12 @@ namespace DocumentsKM.Data
 
         public LinkedDoc GetById(int id)
         {
-            return _context.LinkedDocs.FirstOrDefault(ld => ld.Id == id);
+            return _context.LinkedDocs.SingleOrDefault(v => v.Id == id);
         }
 
         public IEnumerable<LinkedDoc> GetAllByDocTypeId(int docTypeId)
         {
-            return _context.LinkedDocs.Where(ld => ld.Type.Id == docTypeId).ToList();
+            return _context.LinkedDocs.Where(v => v.Type.Id == docTypeId).ToList();
         }
     }
 }

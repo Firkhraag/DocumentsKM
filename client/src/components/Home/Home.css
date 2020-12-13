@@ -7,6 +7,10 @@
 	justify-items: center;
 }
 
+.home-cnt-header {
+    margin-top: .8em;
+}
+
 .home-cnt button {
 	width: 175px;
 	height: 100px;

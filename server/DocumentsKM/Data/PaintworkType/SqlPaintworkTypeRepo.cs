@@ -20,7 +20,7 @@ namespace DocumentsKM.Data
 
         public PaintworkType GetById(int id)
         {
-            return _context.PaintworkTypes.FirstOrDefault(t => t.Id == id);
+            return _context.PaintworkTypes.SingleOrDefault(v => v.Id == id);
         }
     }
 }

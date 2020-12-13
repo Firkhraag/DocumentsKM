@@ -1,9 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace DocumentsKM.Dtos
 {
     public class MarkUpdateRequest
     {
         public int? SubnodeId { get; set; }
+        [MaxLength(40)]
         public string Code { get; set; }
+        [MaxLength(255)]
         public string Name { get; set; }
         public int? DepartmentId { get; set; }
         public int? ChiefSpecialistId { get; set; }

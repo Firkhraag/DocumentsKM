@@ -23,12 +23,16 @@ const OperatingConditions = () => {
 	const history = useHistory()
 	const mark = useMark()
 
-	const [selectedObject, setSelectedObject] = useState<
-		MarkOperatingConditions
-	>(null)
-	const [defaultSelectedObject, setDefaultSelectedObject] = useState<
-		MarkOperatingConditions
-	>(null)
+	const [
+		defaultSelectedObject,
+		setDefaultSelectedObject,
+    ] = useState<MarkOperatingConditions>(null)
+    
+    const [
+		selectedObject,
+		setSelectedObject,
+    ] = useState<MarkOperatingConditions>(null)
+    
 	const [optionsObject, setOptionsObject] = useState({
 		envAggressiveness: [] as EnvAggressiveness[],
 		operatingAreas: [] as OperatingArea[],
@@ -108,18 +112,10 @@ const OperatingConditions = () => {
 	}, [mark])
 
 	const onCoeffChange = (event: React.FormEvent<HTMLInputElement>) => {
-		try {
-			const v = parseFloat(event.currentTarget.value)
-			setSelectedObject({
-				...selectedObject,
-				safetyCoeff: v,
-			})
-		} catch (e) {
-			setSelectedObject({
-				...selectedObject,
-				safetyCoeff: null,
-			})
-		}
+		setSelectedObject({
+			...selectedObject,
+			safetyCoeff: parseFloat(event.currentTarget.value),
+		})
 	}
 
 	const onEnvAggresivnessSelect = (id: number) => {
@@ -143,18 +139,10 @@ const OperatingConditions = () => {
 	}
 
 	const onTempChange = (event: React.FormEvent<HTMLInputElement>) => {
-		try {
-			const v = parseInt(event.currentTarget.value)
-			setSelectedObject({
-				...selectedObject,
-				temperature: v,
-			})
-		} catch (e) {
-			setSelectedObject({
-				...selectedObject,
-				temperature: null,
-			})
-		}
+		setSelectedObject({
+			...selectedObject,
+			temperature: parseInt(event.currentTarget.value),
+		})
 	}
 
 	const onOperatingAreaSelect = (id: number) => {
@@ -254,7 +242,7 @@ const OperatingConditions = () => {
 	}
 
 	const checkIfValid = () => {
-		if (selectedObject.safetyCoeff == null) {
+		if (isNaN(selectedObject.safetyCoeff)) {
 			setErrMsg('Пожалуйста, введите коэффициент надежности')
 			return false
 		}
@@ -262,7 +250,7 @@ const OperatingConditions = () => {
 			setErrMsg('Пожалуйста, введите агрессивность среды')
 			return false
 		}
-		if (selectedObject.temperature == null) {
+		if (isNaN(selectedObject.temperature)) {
 			setErrMsg('Пожалуйста, введите температуру эксплуатации')
 			return false
 		}
@@ -378,6 +366,7 @@ const OperatingConditions = () => {
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
 				<Form.Group className="flex-cent-v">
 					<Form.Label
+						className="no-bot-mrg"
 						htmlFor="coeff"
 						style={{ marginRight: '2.5em' }}
 					>
@@ -387,20 +376,26 @@ const OperatingConditions = () => {
 						id="coeff"
 						type="text"
 						placeholder="Введите коэффициент надежности"
-						defaultValue={selectedObject.safetyCoeff.toFixed(1)}
+						defaultValue={
+							isNaN(selectedObject.safetyCoeff)
+								? ''
+								: selectedObject.safetyCoeff
+						}
 						className="auto-width flex-grow"
 						onBlur={onCoeffChange}
 					/>
 				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="mrg-top-2 flex-cent-v">
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="aggressiveness"
 						style={{ marginRight: '10.5em' }}
 					>
 						Агрессивность среды
-					</label>
+					</Form.Label>
 					<Select
+						inputId="aggressiveness"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -433,10 +428,14 @@ const OperatingConditions = () => {
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-					<Form.Label htmlFor="temp" style={{ marginRight: '1em' }}>
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="temp"
+						style={{ marginRight: '1em' }}
+					>
 						Расчетная температура эксплуатации (°C)
 					</Form.Label>
 					<Form.Control
@@ -444,19 +443,25 @@ const OperatingConditions = () => {
 						type="text"
 						placeholder="Введите наименование"
 						className="auto-width flex-grow"
-						defaultValue={selectedObject.temperature}
+						defaultValue={
+							isNaN(selectedObject.temperature)
+								? ''
+								: selectedObject.temperature
+						}
 						onBlur={onTempChange}
 					/>
 				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="operatingArea"
 						style={{ marginRight: '11.65em' }}
 					>
 						Зона эксплуатации
-					</label>
+					</Form.Label>
 					<Select
+						inputId="operatingArea"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -485,16 +490,18 @@ const OperatingConditions = () => {
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="gasGroup"
 						style={{ marginRight: '14.65em' }}
 					>
 						Группа газов
-					</label>
+					</Form.Label>
 					<Select
+						inputId="gasGroup"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -520,16 +527,18 @@ const OperatingConditions = () => {
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="constructionMaterial"
 						style={{ marginRight: '9.65em' }}
 					>
 						Материал конструкций
-					</label>
+					</Form.Label>
 					<Select
+						inputId="constructionMaterial"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -565,16 +574,18 @@ const OperatingConditions = () => {
 						)}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="paintworkType"
 						style={{ marginRight: '5.75em' }}
 					>
 						Тип лакокрасочного материала
-					</label>
+					</Form.Label>
 					<Select
+						inputId="paintworkType"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -603,16 +614,18 @@ const OperatingConditions = () => {
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
-				<div className="flex-cent-v mrg-top-2">
-					<label
-						className="bold no-bot-mrg"
+				<Form.Group className="flex-cent-v mrg-top-2 no-bot-mrg">
+					<Form.Label
+						className="no-bot-mrg"
+						htmlFor="highTensileBoltsType"
 						style={{ marginRight: '9.65em' }}
 					>
 						Высокопрочные болты
-					</label>
+					</Form.Label>
 					<Select
+						inputId="highTensileBoltsType"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -648,7 +661,7 @@ const OperatingConditions = () => {
 						)}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
 				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 

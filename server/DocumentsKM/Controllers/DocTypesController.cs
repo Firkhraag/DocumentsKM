@@ -22,7 +22,7 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("doc-types/attached")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<DocType>> GetAll()
+        public ActionResult<IEnumerable<DocType>> GetAllAttached()
         {
             var docTypes = _service.GetAllAttached();
             return Ok(docTypes);

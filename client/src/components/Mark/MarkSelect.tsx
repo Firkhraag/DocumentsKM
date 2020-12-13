@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
+import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Components
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
@@ -17,7 +18,11 @@ import getFromOptions from '../../util/get-from-options'
 import { reactSelectstyle } from '../../util/react-select-style'
 import { useSetMark } from '../../store/MarkStore'
 
-const MarkSelect = () => {
+type MarkSelectProps = {
+	setSubnode: (v: Subnode) => void
+}
+
+const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 	const defaultSelectedObject = {
 		recentMark: null as Mark,
 		project: null as Project,
@@ -366,7 +371,8 @@ const MarkSelect = () => {
 		}
 		const subnode = selectedObject.subnode
 		subnode.node = selectedObject.node
-		subnode.node.project = selectedObject.project
+        subnode.node.project = selectedObject.project
+        setSubnode(subnode)
 		history.push('/mark-create')
 	}
 
@@ -374,16 +380,19 @@ const MarkSelect = () => {
 		<div className="component-cnt">
 			<h1 className="text-centered">Выбор / создание марки</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
-				<div>
-					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-					<div className="bold">Последние марки</div>
+                <Form.Group>
+                    <Form.Label
+						htmlFor="recentMarks"
+					>
+						Последние марки
+					</Form.Label>
 					<Select
+                        inputId="recentMarks"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
 						placeholder="Выберите последнюю марку"
 						noOptionsMessage={() => 'Марки не найдены'}
-						className="mrg-top"
 						onChange={(selectedOption) =>
 							onRecentMarkSelect((selectedOption as any)?.value)
 						}
@@ -416,18 +425,23 @@ const MarkSelect = () => {
 						})}
 						styles={reactSelectstyle}
 					/>
-				</div>
+				</Form.Group>
 
 				<div className="flex mrg-top-2">
-					<div>
-						<div className="bold">Базовая серия</div>
+                    <Form.Group className="no-bot-mrg">
+                        <Form.Label
+                            htmlFor="project"
+                        >
+                            Базовая серия
+                        </Form.Label>
 						<Select
+                            inputId="project"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите базовую серию"
 							noOptionsMessage={() => 'Базовые серии не найдены'}
-							className="input-width-2 mrg-top"
+							className="input-width-2"
 							onChange={(selectedOption) =>
 								onProjectSelect((selectedOption as any)?.value)
 							}
@@ -455,15 +469,20 @@ const MarkSelect = () => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
-					<div className="mrg-left">
-						<div className="bold">Узел</div>
+					</Form.Group>
+					<Form.Group className="mrg-left no-bot-mrg">
+                        <Form.Label
+                            htmlFor="node"
+                        >
+                            Узел
+                        </Form.Label>
 						<Select
+                            inputId="node"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите узел"
-							className="input-width-3 mrg-top"
+							className="input-width-3"
 							noOptionsMessage={() => 'Узлы не найдены'}
 							onChange={(selectedOption) =>
 								onNodeSelect((selectedOption as any)?.value)
@@ -487,16 +506,21 @@ const MarkSelect = () => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
-					<div className="mrg-left">
-						<div className="bold">Подузел</div>
+					</Form.Group>
+					<Form.Group className="mrg-left no-bot-mrg">
+                        <Form.Label
+                            htmlFor="subnode"
+                        >
+                            Подузел
+                        </Form.Label>
 						<Select
+                            inputId="subnode"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите подузел"
 							noOptionsMessage={() => 'Подузлы не найдены'}
-							className="input-width-3 mrg-top"
+							className="input-width-3"
 							onChange={(selectedOption) =>
 								onSubnodeSelect((selectedOption as any)?.value)
 							}
@@ -521,16 +545,21 @@ const MarkSelect = () => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
-					<div className="mrg-left">
-						<div className="bold">Марка</div>
+					</Form.Group>
+					<Form.Group className="mrg-left no-bot-mrg">
+                        <Form.Label
+                            htmlFor="mark"
+                        >
+                            Марка
+                        </Form.Label>
 						<Select
+                            inputId="mark"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите марку"
 							noOptionsMessage={() => 'Марки не найдены'}
-							className="input-width-3 mrg-top"
+							className="input-width-3"
 							onChange={(selectedOption) =>
 								onMarkSelect((selectedOption as any)?.value)
 							}
@@ -553,8 +582,9 @@ const MarkSelect = () => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 				</div>
+                <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 				<div className="flex btn-mrg-top-2">
 					<Button
 						variant="secondary"

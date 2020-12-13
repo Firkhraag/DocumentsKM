@@ -1,23 +1,94 @@
-import React from 'react'
+// Global
+import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
+// Bootstrap
+import Table from 'react-bootstrap/Table'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import { PlusCircle } from 'react-bootstrap-icons'
+import { PencilSquare } from 'react-bootstrap-icons'
+import { Trash } from 'react-bootstrap-icons'
+// Util
+import httpClient from '../../axios'
+import Specification from '../../model/Specification'
 import { useMark } from '../../store/MarkStore'
 
-const SpecificationData = () => {
+type SpecificationDataProps = {
+	specification: Specification
+}
+
+const SpecificationData = ({ specification }: SpecificationDataProps) => {
+	const history = useHistory()
 	const mark = useMark()
 
-	return mark == null ? null : (
+	const [selectedObject, setSelectedObject] = useState(specification)
+
+	// const [constructions, setConstructions] = useState([] as ConstructionType[])
+	// const [highTensileBolts, setHighTensileBolts] = useState([] as Specification[])
+	// const [standardConstructions, setStandardConstructions] = useState([] as StandardConstruction[])
+
+	useEffect(() => {
+		if (mark != null && mark.id != null) {
+			if (selectedObject == null) {
+				history.push('/specifications')
+				return
+			}
+		}
+	}, [mark])
+
+	const onNoteChange = async (event: React.FormEvent<HTMLTextAreaElement>) => {
+        try {
+            await httpClient.patch(`/specifications/${selectedObject.id}`, {
+                note: event.currentTarget.value,
+            })
+        } catch (e) {
+            console.log('Error')
+        }
+		setSelectedObject({
+			...selectedObject,
+			note: event.currentTarget.value,
+		})
+	}
+
+	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Данные выпуска спецификации</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-				<div>
-					<p>Выпуск №1</p>
-					<textarea />
-				</div>
-				<div>
-					<p>Примечание</p>
-					<textarea />
-				</div>
-				<p>Перечень видов конструкций</p>
-				<table>
+			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
+				<Form.Group className="no-bot-mrg">
+					<Form.Label htmlFor="note">Примечание</Form.Label>
+					<Form.Control
+                        id="note"
+						as="textarea"
+						rows={4}
+						style={{ resize: 'none' }}
+						placeholder="Не введено"
+						defaultValue={selectedObject.note}
+						onBlur={onNoteChange}
+					/>
+				</Form.Group>
+
+				<h2 className="mrg-top-2 bold text-centered">Перечень видов конструкций</h2>
+
+				<PlusCircle
+					onClick={() => history.push(`/specifications/${selectedObject.id}/construction-create`)}
+					color="#666"
+					size={28}
+					className="pointer mrg-top"
+				/>
+
+				<Table bordered striped className="mrg-top no-bot-mrg">
+					<thead>
+						<tr>
+							<th>№</th>
+							<th>Вид конструкции</th>
+							<th className="text-centered" colSpan={2}>
+								Действия
+							</th>
+						</tr>
+					</thead>
+				</Table>
+
+				{/* <table>
 					<tbody>
 						<tr className="head-tr">
 							<td>Вид конструкции</td>
@@ -48,7 +119,15 @@ const SpecificationData = () => {
 							<td>+</td>
 						</tr>
 					</tbody>
-				</table>
+				</table> */}
+
+				{/* <Button
+					variant="secondary"
+					className="btn-mrg-top-2 full-width"
+					onClick={null}
+				>
+					Сохранить изменения
+				</Button> */}
 			</div>
 		</div>
 	)

@@ -8,8 +8,7 @@ namespace DocumentsKM.Profiles
     {
         public SubnodesProfile()
         {
-            CreateMap<Subnode, SubnodeBaseResponse>();
-            CreateMap<Subnode, SubnodeParentResponse>();
+            CreateMap<Subnode, SubnodeResponse>();
         }
     }
 }

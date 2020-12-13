@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using DocumentsKM.Data;
-using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Moq;
 using Xunit;
@@ -10,39 +7,28 @@ namespace DocumentsKM.Tests
 {
     public class ProjectServiceTest
     {
-        // [Fact]
-        // public void GetAll_ShouldReturnAllProjects()
-        // {
-        //     // Arrange
-        //     var mockProjectRepo = new Mock<IProjectRepo>();
-        //     mockProjectRepo.Setup(mock=>
-        //         mock.GetAll()).Returns(TestData.projects);
-        //     var service = new ProjectService(mockProjectRepo.Object);
+        private readonly IProjectService _service;
+
+        public ProjectServiceTest()
+        {
+            // Arrange
+            var repository = new Mock<IProjectRepo>();
+
+            repository.Setup(mock=>
+                mock.GetAll()).Returns(TestData.projects);
             
-        //     // Act
-        //     var returnedProjects = service.GetAll().ToList();
+            _service = new ProjectService(repository.Object);
+        }
 
-        //     // Assert
-        //     Assert.Equal(TestData.projects, returnedProjects);
-        // }
+        [Fact]
+        public void GetAll_ShouldReturnProjects()
+        {
+            // Act
+            var returnedProjects = _service.GetAll();
 
-        // [Theory]
-        // [InlineData(0)]
-        // [InlineData(1)]
-        // [InlineData(2)]
-        // public void GetById_ShouldReturnProject(int id)
-        // {
-        //     // Arrange
-        //     var mockProjectRepo = new Mock<IProjectRepo>();
-        //     mockProjectRepo.Setup(mock=>
-        //         mock.GetById(id)).Returns(TestData.projects[id]);
-        //     var service = new ProjectService(mockProjectRepo.Object);
-            
-        //     // Act
-        //     var project = service.GetById(id);
-
-        //     // Assert
-        //     Assert.Equal(TestData.projects[id], project);
-        // }
+            // Assert
+            Assert.Equal(TestData.projects,
+                returnedProjects);
+        }
     }
 }

@@ -3,6 +3,7 @@ import React, { useState, useEffect, createRef } from 'react'
 import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
+import Form from 'react-bootstrap/Form'
 import { PlusCircle } from 'react-bootstrap-icons'
 import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
@@ -11,13 +12,16 @@ import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Specification from '../../model/Specification'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
-import './SpecificationTable.css'
 
 type SpecificationTableProps = {
 	setPopupObj: (popupObj: IPopupObj) => void
+	setSpecification: (spec: Specification) => void
 }
 
-const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
+const SpecificationTable = ({
+	setPopupObj,
+	setSpecification,
+}: SpecificationTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
 
@@ -50,7 +54,7 @@ const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
 					try {
 						const specificationsFetchedResponse = await httpClient.get(
 							`/marks/${mark.id}/specifications`
-						)
+                        )
 						for (let s of specificationsFetchedResponse.data) {
 							if (s.isCurrent) {
 								setCurrentSpecId(s.id)
@@ -58,7 +62,6 @@ const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
 							refs.push(createRef())
 						}
 						setSpecifications(specificationsFetchedResponse.data)
-						// setRerender(!rerender)
 					} catch (e) {
 						console.log('Failed to fetch the data', e)
 					}
@@ -70,9 +73,6 @@ const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
 
 	const onSelectCurrentClick = async (row: number, id: number) => {
 		try {
-			await httpClient.patch(`/specifications/${currentSpecId}`, {
-				isCurrent: false,
-			})
 			await httpClient.patch(`/specifications/${id}`, {
 				isCurrent: true,
 			})
@@ -137,7 +137,7 @@ const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
 					<tr>
 						<th>№</th>
 						<th>Создан</th>
-						<th className="note-col-width">Примечание</th>
+						<th className="spec-note-col-width">Примечание</th>
 						<th>Текущий</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
@@ -156,7 +156,7 @@ const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
 												s.createdDate
 										  ).toLocaleDateString()}
 								</td>
-								<td className="note-col-width">{s.note}</td>
+								<td className="spec-note-col-width">{s.note}</td>
 								<td
 									onClick={() =>
 										currentSpecId === s.id
@@ -177,18 +177,13 @@ const SpecificationTable = ({ setPopupObj }: SpecificationTableProps) => {
 									}
 									className="pointer text-centered"
 								>
-									<input
-										ref={refs[index]}
-										className="current-radio-btn pointer"
-										type="radio"
-										id={`is${s.id}`}
-										name="currentRelease"
-									/>
+                                    <Form.Check ref={refs[index]} id={`is${s.id}`} name="currentRelease" type="radio" style={{pointerEvents: 'none'}} />
 								</td>
 								<td
-									onClick={() =>
+									onClick={() => {
+										setSpecification(s)
 										history.push(`/specifications/${s.id}`)
-									}
+									}}
 									className="pointer action-cell-width text-centered"
 								>
 									<PencilSquare color="#666" size={26} />

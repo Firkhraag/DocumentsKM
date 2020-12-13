@@ -1,8 +1,7 @@
 using System.Linq;
 using DocumentsKM.Models;
-using DocumentsKM.Data;
 
-namespace DocumentsKM.Services
+namespace DocumentsKM.Data
 {
     public class SqlUserRepo : IUserRepo
     {
@@ -15,12 +14,12 @@ namespace DocumentsKM.Services
 
         public User GetById(int id)
         {
-            return _context.Users.SingleOrDefault(u => u.Id == id);
+            return _context.Users.SingleOrDefault(v => v.Id == id);
         }
 
         public User GetByLogin(string login)
         {
-            return _context.Users.SingleOrDefault(u => u.Login == login);
+            return _context.Users.SingleOrDefault(v => v.Login == login);
         }
     }
 }

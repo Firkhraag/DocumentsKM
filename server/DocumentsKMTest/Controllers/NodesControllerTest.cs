@@ -1,28 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
+using DocumentsKM.Dtos;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class NodesControllerTest : IClassFixture<WebApplicationFactory<DocumentsKM.Startup>>
+    public class NodesControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-        public NodesControllerTest(WebApplicationFactory<DocumentsKM.Startup> factory)
+        public NodesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            httpClient = factory.CreateClient();
+            
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
+        }
+
+        [Fact]
+        public async Task GetAllByProjectId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int projectId = _rnd.Next(1, TestData.projects.Count());
+            var endpoint = $"/api/projects/{projectId}/nodes";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var Nodes = TestData.nodes.Where(v => v.Project.Id == projectId)
+                .Select(s => new NodeResponse{
+                    Id = s.Id,
+                    Code = s.Code,
+                    Name = s.Name,
+                    // ChiefEngineer = new EmployeeBaseResponse
+                    // {
+                    //     Id = s.ChiefEngineer.Id,
+                    //     Name = s.ChiefEngineer.Name,
+                    // }
+                }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            Nodes.Should().BeEquivalentTo(
+                JsonSerializer.Deserialize<IEnumerable<NodeResponse>>(responseBody, options));
         }
 
         [Fact]
         public async Task GetAllByProjectId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            var endpoint = "/api/projects/0/nodes";
+            int projectId = _rnd.Next(1, TestData.projects.Count());
+            var endpoint = $"/api/projects/{projectId}/nodes";
 
             // Act
-            var response = await httpClient.GetAsync(endpoint);
+            var response = await _authHttpClient.GetAsync(endpoint);
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);

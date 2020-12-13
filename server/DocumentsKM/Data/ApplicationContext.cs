@@ -72,7 +72,12 @@ namespace DocumentsKM.Data
         // Current service data
         public DbSet<Mark> Marks { get; set; }
         public DbSet<MarkApproval> MarkApprovals { get; set; }
+
         public DbSet<Specification> Specifications { get; set; }
+        public DbSet<ConstructionType> ConstructionTypes { get; set; }
+        public DbSet<ConstructionSubtype> ConstructionSubtypes { get; set; }
+        public DbSet<WeldingControl> WeldingControl { get; set; }
+
         public DbSet<Doc> Docs { get; set; }
 
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
@@ -94,5 +99,9 @@ namespace DocumentsKM.Data
         public DbSet<MarkOperatingConditions> MarkOperatingConditions { get; set; }
 
         public DbSet<AttachedDoc> AttachedDocs { get; set; }
+
+        public DbSet<GeneralDataSection> GeneralDataSections { get; set; }
+        public DbSet<GeneralDataPoint> GeneralDataPoints { get; set; }
+        public DbSet<MarkGeneralDataPoint> MarkGeneralDataPoints { get; set; }
     }
 }

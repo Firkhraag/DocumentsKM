@@ -8,8 +8,7 @@ namespace DocumentsKM.Profiles
     {
         public NodesProfile()
         {
-            CreateMap<Node, NodeBaseResponse>();
-            CreateMap<Node, NodeParentResponse>();
+            CreateMap<Node, NodeResponse>();
         }
     }
 }

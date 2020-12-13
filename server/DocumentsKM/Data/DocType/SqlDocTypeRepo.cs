@@ -15,12 +15,12 @@ namespace DocumentsKM.Data
 
         public DocType GetById(int id)
         {
-            return _context.DocTypes.FirstOrDefault(dt => dt.Id == id);
+            return _context.DocTypes.SingleOrDefault(v => v.Id == id);
         }
 
         public IEnumerable<DocType> GetAllExceptId(int idToExclude)
         {
-            return _context.DocTypes.Where(d => d.Id != idToExclude).ToList();
+            return _context.DocTypes.Where(v => v.Id != idToExclude).ToList();
         }
     }
 }

@@ -39,13 +39,16 @@ const Header = () => {
 							mark.code
 					  )}
 			</Link>
-			<div
-				id="user-cnt"
-				className="profile-icon-cnt relative"
-				onClick={() => setDrawerShown(true)}
-			>
-				<Drawer isShown={isDrawerShown} />
-				<PersonFill size={36} className="pointer" />
+			<div id="user-cnt" className="profile-icon-cnt relative">
+				<Drawer
+					isShown={isDrawerShown}
+					hide={() => setDrawerShown(false)}
+				/>
+				<PersonFill
+					onClick={() => setDrawerShown(true)}
+					size={36}
+					className="pointer"
+				/>
 			</div>
 		</div>
 	)

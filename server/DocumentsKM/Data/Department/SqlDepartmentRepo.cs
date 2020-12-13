@@ -20,7 +20,7 @@ namespace DocumentsKM.Data
 
         public Department GetById(int id)
         {
-            return _context.Departments.FirstOrDefault(d => d.Id == id);
+            return _context.Departments.SingleOrDefault(v => v.Id == id);
         }
     }
 }

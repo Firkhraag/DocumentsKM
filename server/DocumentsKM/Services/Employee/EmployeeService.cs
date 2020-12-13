@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System.Linq;
-using Serilog;
 
 namespace DocumentsKM.Services
 {
@@ -15,7 +14,7 @@ namespace DocumentsKM.Services
             _repository = EmployeeRepo;
         }
 
-        public IEnumerable<Employee> GetByDepartmentId(int departmentId)
+        public IEnumerable<Employee> GetAllByDepartmentId(int departmentId)
         {
             return _repository.GetAllByDepartmentId(departmentId);
         }

@@ -10,6 +10,7 @@ import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
+import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
 import { useMark, useSetMark } from '../../store/MarkStore'
 import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
@@ -18,10 +19,11 @@ import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
 
 type MarkDataProps = {
+    subnodeForCreate: Subnode
 	isCreateMode: boolean
 }
 
-const MarkData = ({ isCreateMode }: MarkDataProps) => {
+const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 	const defaultOptionsObject = {
 		departments: [] as Department[],
 		chiefSpecialists: [] as Employee[],
@@ -43,38 +45,34 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 
 	useEffect(() => {
 		if (isCreateMode) {
-			const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
-			const recentMarkIds = JSON.parse(recentMarkIdsStr) as number[]
-			const selectedMarkId = recentMarkIds[0]
-			if (selectedMarkId != null) {
-				const fetchData = async () => {
-					try {
-						const departmentsResponse = await httpClient.get(
-							'/departments'
-						)
-						const markResponse = await httpClient.get(
-							`/marks/${selectedMarkId}`
-						)
-						setOptionsObject({
-							...defaultOptionsObject,
-							departments: departmentsResponse.data,
-						})
-						setSelectedObject({
-							id: 0,
-							code: '',
-							name: '',
-							subnode: markResponse.data.subnode,
-							department: null,
-							chiefSpecialist: null,
-							groupLeader: null,
-							mainBuilder: null,
-						})
-					} catch (e) {
-						console.log('Failed to fetch departments')
-					}
-				}
-				fetchData()
-			}
+            if (isCreateMode && subnodeForCreate == null) {
+				history.push('/sheets')
+				return
+            }
+            const fetchData = async () => {
+                try {
+                    const departmentsResponse = await httpClient.get(
+                        '/departments'
+                    )
+                    setOptionsObject({
+                        ...defaultOptionsObject,
+                        departments: departmentsResponse.data,
+                    })
+                    setSelectedObject({
+                        id: 0,
+                        code: '',
+                        name: '',
+                        subnode: subnodeForCreate,
+                        department: null,
+                        chiefSpecialist: null,
+                        groupLeader: null,
+                        mainBuilder: null,
+                    })
+                } catch (e) {
+                    console.log('Failed to fetch departments')
+                }
+            }
+            fetchData()
 		} else {
 			const selectedMarkId = localStorage.getItem('selectedMarkId')
 			if (selectedMarkId != null) {
@@ -163,7 +161,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 					chiefSpecialist: null,
 					groupLeader: null,
 					mainBuilder: null,
-				})
+                })
+                setDepartmentHead(cachedMainEmployees.get(v.id).departmentHead)
 			} else {
 				try {
 					const fetchedMainEmployeesResponse = await httpClient.get(
@@ -185,7 +184,8 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						chiefSpecialist: null,
 						groupLeader: null,
 						mainBuilder: null,
-					})
+                    })
+                    setDepartmentHead(fetchedMainEmployees.departmentHead)
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -441,7 +441,6 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						/>
 					</Form.Group>
 					<Form.Group className="flex-cent-v">
-						{/* <Form.Label>Главный инженер проекта</Form.Label> */}
 						<Form.Label
 							className="no-bot-mrg"
 							style={{ marginRight: '7.62em' }}
@@ -512,21 +511,21 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 						/>
 					</Form.Group>
 
-					<div className="flex-cent-v">
-						<label
-							className="bold no-bot-mrg"
+					<Form.Group className="flex-cent-v mrg-top-2">
+						<Form.Label
+                            className="no-bot-mrg"
+							htmlFor="department"
 							style={{ marginRight: '1em' }}
-							htmlFor="react-select-2-input"
 						>
 							Отдел
-						</label>
+						</Form.Label>
 						<Select
+							inputId="department"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите отдел"
 							noOptionsMessage={() => 'Отделы не найдены'}
-							// className="mrg-top"
 							className="auto-width flex-grow"
 							onChange={(selectedOption) =>
 								onDepartmentSelect(
@@ -550,23 +549,23 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 
-					<div className="flex-cent-v mrg-top-2">
-						<label
-							className="bold no-bot-mrg"
+					<Form.Group className="flex-cent-v mrg-top-2">
+						<Form.Label
+                            className="no-bot-mrg"
+							htmlFor="groupLeader"
 							style={{ marginRight: '1em' }}
-							htmlFor="react-select-3-input"
 						>
 							Заведующий группы
-						</label>
+						</Form.Label>
 						<Select
+							inputId="groupLeader"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите заведующего группы"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							// className="mrg-top"
 							className="auto-width flex-grow"
 							onChange={(selectedOption) =>
 								onGroupLeaderSelect(
@@ -591,23 +590,23 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 
-					<div className="flex-cent-v mrg-top-2">
-						<label
-							className="bold no-bot-mrg"
+					<Form.Group className="flex-cent-v mrg-top-2">
+						<Form.Label
+                            className="no-bot-mrg"
+							htmlFor="chiefSpecialist"
 							style={{ marginRight: '1.15em' }}
-							htmlFor="react-select-4-input"
 						>
 							Главный специалист
-						</label>
+						</Form.Label>
 						<Select
+							inputId="chiefSpecialist"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите главного специалиста"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							// className="mrg-top"
 							className="auto-width flex-grow"
 							onChange={(selectedOption) =>
 								onChiefSpecialistSelect(
@@ -634,23 +633,23 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 
-					<div className="flex-cent-v mrg-top-2">
-						<label
-							className="bold no-bot-mrg"
+					<Form.Group className="flex-cent-v mrg-top-2 no-bot-mrg">
+						<Form.Label
+                            className="no-bot-mrg"
+							htmlFor="mainBuilder"
 							style={{ marginRight: '1.3em' }}
-							htmlFor="react-select-5-input"
 						>
 							Главный строитель?
-						</label>
+						</Form.Label>
 						<Select
+							inputId="mainBuilder"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
 							placeholder="Выберите главного строителя"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							// className="mrg-top"
 							className="auto-width flex-grow"
 							onChange={(selectedOption) =>
 								onMainBuilderSelect(
@@ -675,7 +674,7 @@ const MarkData = ({ isCreateMode }: MarkDataProps) => {
 							})}
 							styles={reactSelectstyle}
 						/>
-					</div>
+					</Form.Group>
 
 					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
