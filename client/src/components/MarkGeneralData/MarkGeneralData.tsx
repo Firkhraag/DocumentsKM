@@ -1,6 +1,5 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -17,10 +16,15 @@ import getFromOptions from '../../util/get-from-options'
 import { reactSelectstyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
 import SectionsSelectPopup from './SectionsSelectPopup'
+import PointsSelectPopup from './PointsSelectPopup'
+import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
 import './MarkGeneralData.css'
 
-const MarkGeneralData = () => {
-	const history = useHistory()
+type MarkGeneralDataProps = {
+	setPopupObj: (popupObj: IPopupObj) => void
+}
+
+const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 	const mark = useMark()
 
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
@@ -35,20 +39,25 @@ const MarkGeneralData = () => {
 
 	const [isSectionsSelectionShown, setSectionsSelectionShown] = useState(
 		false
+    )
+    const [isPointsSelectionShown, setPointsSelectionShown] = useState(
+		false
 	)
-	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
+    const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
+    
+    const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					// const sectionsResponse = await httpClient.get(
-					// 	`/general-data-sections`
-					// )
-					// setOptionsObject({
-					// 	...optionsObject,
-					// 	sections: sectionsResponse.data,
-					// })
+					const sectionsResponse = await httpClient.get(
+						`/marks/${mark.id}/general-data-sections`
+					)
+					setOptionsObject({
+						...optionsObject,
+						sections: sectionsResponse.data,
+					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -88,19 +97,19 @@ const MarkGeneralData = () => {
 				})
 			} else {
 				try {
-					// const pointsResponse = await httpClient.get(
-					// 	`/general-data-sections/${id}/general-data-points`
-					// )
-					// cachedPoints.set(v.id, pointsResponse.data)
-					// setOptionsObject({
-					// 	...optionsObject,
-					// 	points: pointsResponse.data,
-					// })
-					// setSelectedObject({
-					//     ...selectedObject,
-					// 	section: v,
-					//     point: null,
-					// })
+					const pointsResponse = await httpClient.get(
+						`/marks/${mark.id}/general-data-sections/${id}/general-data-points`
+					)
+					cachedPoints.set(v.id, pointsResponse.data)
+					setOptionsObject({
+						...optionsObject,
+						points: pointsResponse.data,
+					})
+					setSelectedObject({
+						...selectedObject,
+						section: v,
+						point: null,
+					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -136,65 +145,88 @@ const MarkGeneralData = () => {
 		})
 	}
 
-	const onSaveButtonClick = async () => {
-		if (selectedObject.pointText != '') {
+	const onDeleteClick = async (row: number, id: number) => {
+		try {
+			await httpClient.delete(`/mark-general-data-points/${id}`)
+			optionsObject.points.splice(row, 1)
+            setPopupObj(defaultPopupObj)
+            if (selectedObject.point.id == id) {
+                setSelectedObject({
+                    ...selectedObject,
+                    point: null,
+                })
+            }
+		} catch (e) {
+			console.log('Error')
+		}
+    }
+    
+    const checkIfValid = () => {
+        if (selectedObject.section === null) {
+			setErrMsg('Пожалуйста, выберите раздел')
+			return false
+        }
+		if (selectedObject.pointText === '') {
+			setErrMsg('Пожалуйста, введите содержание пункта')
+			return false
+        }
+        if (selectedObject.point != null && selectedObject.pointText === selectedObject.point.text) {
+			setErrMsg('Пожалуйста, введите новое содержание пункта')
+			return false
+        }
+		return true
+	}
+
+	const onUpdatePointButtonClick = async () => {
+        if (checkIfValid()) {
 			try {
-				// await httpClient.patch(
-				// 	`/marks/${mark.id}/mark-operating-conditions`,
-				// 	{
-				// 		safetyCoeff:
-				// 			selectedObject.safetyCoeff ===
-				// 			defaultSelectedObject.safetyCoeff
-				// 				? undefined
-				// 				: selectedObject.safetyCoeff,
-				// 		temperature:
-				// 			selectedObject.temperature ===
-				// 			defaultSelectedObject.temperature
-				// 				? undefined
-				// 				: selectedObject.temperature,
-				// 		envAggressivenessId:
-				// 			selectedObject.envAggressiveness.id ===
-				// 			defaultSelectedObject.envAggressiveness.id
-				// 				? undefined
-				// 				: selectedObject.envAggressiveness.id,
-				// 		operatingAreaId:
-				// 			selectedObject.operatingArea.id ===
-				// 			defaultSelectedObject.operatingArea.id
-				// 				? undefined
-				// 				: selectedObject.operatingArea.id,
-				// 		gasGroupId:
-				// 			selectedObject.gasGroup.id ===
-				// 			defaultSelectedObject.gasGroup.id
-				// 				? undefined
-				// 				: selectedObject.gasGroup.id,
-				// 		constructionMaterialId:
-				// 			selectedObject.constructionMaterial.id ===
-				// 			defaultSelectedObject.constructionMaterial.id
-				// 				? undefined
-				// 				: selectedObject.constructionMaterial.id,
-				// 		paintworkTypeId:
-				// 			selectedObject.paintworkType.id ===
-				// 			defaultSelectedObject.paintworkType.id
-				// 				? undefined
-				// 				: selectedObject.paintworkType.id,
-				// 		highTensileBoltsTypeId:
-				// 			selectedObject.highTensileBoltsType.id ===
-				// 			defaultSelectedObject.highTensileBoltsType.id
-				// 				? undefined
-				// 				: selectedObject.highTensileBoltsType.id,
-				// 	}
-				// )
-				// history.push('/')
+				await httpClient.patch(
+					`/mark-general-data-points/${selectedObject.point.id}`, {
+						text: selectedObject.pointText,
+					}
+                )
+                const p = { ...selectedObject.point }
+                p.text = selectedObject.pointText
+                optionsObject.points.find(v => v.id === p.id).text = selectedObject.pointText
+                setSelectedObject({
+                    ...selectedObject,
+                    point: p,
+                })
 			} catch (e) {
-				// setErrMsg('Произошла ошибка')
+                if (e.response.status === 409) {
+					setErrMsg('Пункт с таким содержанием уже существует')
+					return
+				}
+				setErrMsg('Произошла ошибка')
 				console.log('Error')
 			}
 		}
-	}
+    }
 
-	const onCreateSectionButtonClick = async () => {}
-
-	const onCreatePointButtonClick = async () => {}
+	const onCreatePointButtonClick = async () => {
+        if (checkIfValid()) {
+			try {
+				const response = await httpClient.post(
+					`/marks/${mark.id}/general-data-sections/${selectedObject.section.id}/general-data-points`, {
+						text: selectedObject.pointText,
+					}
+                )
+                console.log(response)
+                optionsObject.points.push(response.data)
+                setSelectedObject({
+                    ...selectedObject,
+                    point: response.data,
+                })
+			} catch (e) {
+                if (e.response.status === 409) {
+					setErrMsg('Пункт с таким содержанием уже существует')
+					return
+				}
+				setErrMsg('Произошла ошибка')
+				console.log('Error')
+			}
+		}
+    }
 
 	const onDownloadButtonClick = async () => {
 		// node-latex
@@ -226,10 +258,17 @@ const MarkGeneralData = () => {
 
 	return mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
-			<SectionsSelectPopup
-				isShown={isSectionsSelectionShown}
-				close={() => setSectionsSelectionShown(false)}
-			/>
+			{isSectionsSelectionShown ? <SectionsSelectPopup
+                defaultSelectedSectionIds={optionsObject.sections.map(v => v.id)}
+                close={() => setSectionsSelectionShown(false)}
+                optionsObject={optionsObject}
+                setOptionsObject={setOptionsObject}
+			/> : null}
+            {isPointsSelectionShown ? <PointsSelectPopup
+                sectionId={selectedObject.section.id}
+                defaultSelectedPointIds={optionsObject.points.map(v => v.id)}
+				close={() => setPointsSelectionShown(false)}
+			/> : null}
 			<h1 className="text-centered">Состав общих указаний марки</h1>
 
 			<div className="flex">
@@ -335,24 +374,40 @@ const MarkGeneralData = () => {
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Пункты</label>
 						<div className="flex-v general-data-selection mrg-top">
-							{optionsObject.points.map((p) => {
+							{optionsObject.points.map((p, index) => {
 								return (
 									<div
 										className={
 											selectedObject.point == null
-												? 'pointer selection-text space-between'
+												? 'pointer selection-text flex'
 												: selectedObject.point.id ==
 												  p.id
-												? 'pointer selection-text selected-bg space-between'
-												: 'pointer selection-text space-between'
+												? 'pointer selection-text selected-bg flex'
+												: 'pointer selection-text flex'
 										}
-										onClick={() => onPointSelect(p.id)}
 										key={p.id}
 									>
-										<p className="no-bot-mrg">
+										<p className="no-bot-mrg" style={{flex: 1}} onClick={() => onPointSelect(p.id)}>
 											{truncateText(p.text, 100, null)}
 										</p>
-										<div className="trash-area">
+										<div
+											onClick={() =>
+												setPopupObj({
+													isShown: true,
+													msg: `Вы действительно хотите удалить ${truncateText(p.text, 100, null)}?`,
+													onAccept: () =>
+														onDeleteClick(
+															index,
+															p.id
+														),
+													onCancel: () =>
+														setPopupObj(
+															defaultPopupObj
+														),
+												})
+											}
+											className="trash-area"
+										>
 											<Trash color="#666" size={22} />
 										</div>
 									</div>
@@ -361,12 +416,21 @@ const MarkGeneralData = () => {
 						</div>
 					</div>
 
-					<Button
+					{/* <Button
 						variant="secondary"
 						className="btn-mrg-top-2 full-width"
-						onClick={onCreatePointButtonClick}
+                        onClick={onCreatePointButtonClick}
+                        disabled={selectedObject.section == null ? true : false}
 					>
-						Добавить
+						Просмотр
+					</Button> */}
+                    <Button
+						variant="secondary"
+						className="btn-mrg-top-2 full-width"
+                        onClick={() => setPointsSelectionShown(true)}
+                        disabled={selectedObject.section == null ? true : false}
+					>
+						Изменить
 					</Button>
 				</div>
 			</div>
@@ -400,14 +464,25 @@ const MarkGeneralData = () => {
 						onChange={onPointTextChange}
 					/>
 				</Form.Group>
+                {/* <Form.Group className="no-bot-mrg mrg-top-2">
+					<Form.Label className="bold" htmlFor="orderNum">
+						Номер пункта
+					</Form.Label>
+					<Form.Control
+						id="orderNum"
+						type="text"
+						value={selectedObject.point.orderNum}
+						onChange={null}
+					/>
+				</Form.Group> */}
 				<div className="flex btn-mrg-top-2">
 					<Button
 						variant="secondary"
 						className="flex-grow"
-						onClick={onSaveButtonClick}
-						disabled={selectedObject.point == null ? true : false}
+						onClick={onUpdatePointButtonClick}
+						disabled={selectedObject.section == null ? true : false}
 					>
-						Сохранить изменения
+						{selectedObject.point == null ? 'Добавить пункт' : 'Сохранить изменения'}
 					</Button>
 					<Button
 						variant="secondary"

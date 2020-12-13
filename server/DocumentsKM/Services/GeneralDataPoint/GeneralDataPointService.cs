@@ -3,6 +3,8 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
+using Serilog;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -49,19 +51,14 @@ namespace DocumentsKM.Services
             generalDataPoint.Section = foundSection;
             generalDataPoint.User = foundUser;
 
-            int maxNum = 0;
-            foreach (var p in _repository.GetAllByUserAndSectionId(userId, sectionId))
-            {
-                if (p.OrderNum > maxNum)
-                    maxNum = p.OrderNum;
-            }
-            generalDataPoint.OrderNum = maxNum + 1;
+            generalDataPoint.OrderNum = _repository.GetAllByUserAndSectionId(
+                userId, sectionId).Max(v => v.OrderNum) + 1;
             
             _repository.Add(generalDataPoint);
         }
 
         public void Update(
-            int id,
+            int id, int userId, int sectionId,
             GeneralDataPointUpdateRequest generalDataPoint)
         {
             if (generalDataPoint == null)
@@ -80,24 +77,45 @@ namespace DocumentsKM.Services
                     throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
                 foundGeneralDataPoint.Text = generalDataPoint.Text;
             }
-            if (generalDataPoint.OrderNum != null)
+            if (generalDataPoint.OrderNum != null && generalDataPoint.OrderNum != foundGeneralDataPoint.OrderNum)
             {
                 var orderNum = generalDataPoint.OrderNum.GetValueOrDefault();
-                var uniqueConstraintViolationCheck = _repository.GetByUserAndSectionIdAndOrderNum(
-                    foundGeneralDataPoint.User.Id, foundGeneralDataPoint.Section.Id, orderNum);
-                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                    throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
                 foundGeneralDataPoint.OrderNum = orderNum;
+                var num = 1;
+                foreach (var p in _repository.GetAllByUserAndSectionId(userId, sectionId))
+                {
+                    if (p.Id == id)
+                        continue;
+                    if (num == generalDataPoint.OrderNum)
+                    {
+                        num = num + 1;
+                        p.OrderNum = num;
+                        _repository.Update(p);
+                        num = num + 1;
+                        continue;
+                    }
+                    p.OrderNum = num;
+                    _repository.Update(p);
+                    num = num + 1;
+                }
             }
-
             _repository.Update(foundGeneralDataPoint);
         }
 
-        public void Delete(int id)
+        public void Delete(int id, int userId, int sectionId)
         {
             var foundGeneralDataPoint = _repository.GetById(id);
             if (foundGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundGeneralDataPoint));
+            foreach (var p in _repository.GetAllByUserAndSectionId(userId, sectionId))
+            {
+                if (p.OrderNum > foundGeneralDataPoint.OrderNum)
+                {
+                    // Log.Information(p.OrderNum.ToString());
+                    p.OrderNum = p.OrderNum - 1;
+                    _repository.Update(p);
+                }
+            }
             _repository.Delete(foundGeneralDataPoint);
         }
     }

@@ -3,6 +3,7 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -30,7 +31,6 @@ namespace DocumentsKM.Services
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
             var specifications = _repository.GetAllByMarkId(markId);
-            int maxNum = 0;
             foreach (var s in specifications)
             {
                 if (s.IsCurrent)
@@ -38,13 +38,11 @@ namespace DocumentsKM.Services
                     s.IsCurrent = false;
                     _repository.Update(s);
                 }
-                if (s.Num > maxNum)
-                    maxNum = s.Num;
             }
                 
             var newSpecification = new Specification{
                 Mark = foundMark,
-                Num = maxNum + 1,
+                Num = specifications.Max(v => v.Num) + 1,
                 IsCurrent = true,
             };
             _repository.Add(newSpecification);

@@ -34,12 +34,12 @@ namespace DocumentsKM.Data
                 v => v.User.Id == userId && v.Section.Id == sectionId && v.Text == text);
         }
 
-        public GeneralDataPoint GetByUserAndSectionIdAndOrderNum(
-            int userId, int sectionId, int orderNum)
-        {
-            return _context.GeneralDataPoints.SingleOrDefault(
-                v => v.User.Id == userId && v.Section.Id == sectionId && v.OrderNum == orderNum);
-        }
+        // public GeneralDataPoint GetByUserAndSectionIdAndOrderNum(
+        //     int userId, int sectionId, int orderNum)
+        // {
+        //     return _context.GeneralDataPoints.SingleOrDefault(
+        //         v => v.User.Id == userId && v.Section.Id == sectionId && v.OrderNum == orderNum);
+        // }
 
         public void Add(GeneralDataPoint generalDataPoint)
         {

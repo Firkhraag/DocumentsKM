@@ -5,27 +5,23 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
-import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import { useMark } from '../../store/MarkStore'
-
-type IOptionsObject = {
-    sections: GeneralDataSection[]
-	points: GeneralDataPoint[]
-}
+import { useUser } from '../../store/UserStore'
+// import './pointsSelectPopup.css'
 
 type PopupProps = {
-    defaultSelectedSectionIds: number[]
+    sectionId: number
+    defaultSelectedPointIds: number[]
     close: () => void
-    optionsObject: IOptionsObject
-    setOptionsObject: (optionObject: IOptionsObject) => void
 }
 
-const SectionsSelectPopup = ({ defaultSelectedSectionIds, close, optionsObject, setOptionsObject }: PopupProps) => {
-	const mark = useMark()
+const PointsSelectPopup = ({ sectionId, defaultSelectedPointIds, close }: PopupProps) => {
+    const mark = useMark()
+    const user = useUser()
 
-	const [sections, setSections] = useState<GeneralDataSection[]>([])
-    const [selectedSections, setSelectedSections] = useState<GeneralDataSection[]>([])
+	const [points, setPoints] = useState<GeneralDataPoint[]>([])
+    const [selectedPoints, setSelectedPoints] = useState<GeneralDataPoint[]>([])
     
     const refs = useState([] as React.MutableRefObject<undefined>[])[0]
 
@@ -33,14 +29,14 @@ const SectionsSelectPopup = ({ defaultSelectedSectionIds, close, optionsObject, 
 		if (mark != null && mark.id != null) {
             if (
 				refs.length > 0 &&
-				sections.length > 0
+				points.length > 0
 			) {
-				for (const [i, s] of sections.entries()) {
-					if (defaultSelectedSectionIds.includes(s.id)) {
+                console.log(defaultSelectedPointIds)
+				for (const [i, s] of points.entries()) {
+					if (defaultSelectedPointIds.includes(s.id)) {
 						const inputElement = refs[i].current as any
 						if (inputElement) {
-                            inputElement.checked = true
-                            selectedSections.push(sections[i])
+							inputElement.checked = true
 						}
 					}
 				}
@@ -48,57 +44,26 @@ const SectionsSelectPopup = ({ defaultSelectedSectionIds, close, optionsObject, 
 			}
 			const fetchData = async () => {
 				try {
-					const sectionsResponse = await httpClient.get(
-						`/general-data-sections`
+					const pointsResponse = await httpClient.get(
+						`/users/${user.id}/general-data-sections/${sectionId}/general-data-points`
                     )
-                    for (let _ of sectionsResponse.data) {
+                    for (let _ of pointsResponse.data) {
                         refs.push(createRef())
                     }
-					setSections(sectionsResponse.data)
+					setPoints(pointsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
 			}
             fetchData()
 		}
-    }, [mark, sections])
+    }, [mark, points])
     
-    const onSectionClick = (row: number, id: number) => {
+    const onPointClick = (row: number, id: number) => {
         const inputElement = refs[row].current as any
         if (inputElement) {
             inputElement.checked = !(inputElement.checked)
-            if (inputElement.checked) {
-                selectedSections.push(sections[row])
-            } else {
-                const index = selectedSections.map(
-                    v => v.id).indexOf(id);
-                selectedSections.splice(index, 1)
-            }
         }
-    }
-
-    const onSaveButtonClick = () => {
-        // Delete current points within section
-        // try {
-		// 	const employeeIdsToSend = [] as number[]
-		// 	for (let e of selectedObject.employees) {
-		// 		if (e != null) {
-		// 			employeeIdsToSend.push(e.id)
-		// 		}
-		// 	}
-		// 	await httpClient.patch(
-		// 		`/marks/${mark.id}/approvals`,
-		// 		employeeIdsToSend
-		// 	)
-		// 	history.push('/')
-		// } catch (e) {
-		// 	console.log('Error')
-        // }
-        setOptionsObject({
-            ...optionsObject,
-            sections: selectedSections.sort((a, b) => a.id - b.id),
-        })
-        close()
     }
 
 	return (
@@ -106,15 +71,15 @@ const SectionsSelectPopup = ({ defaultSelectedSectionIds, close, optionsObject, 
 			<div className="full-width">
 				<label className="bold no-bot-mrg">Разделы</label>
 				<div className="flex-v general-data-selection mrg-top">
-					{sections.map((s, index) => {
+					{points.map((p, index) => {
 						return (
                             <div
                                 className="pointer selection-text flex"
-                                key={s.id}
-                                onClick={() => onSectionClick(index, s.id)}
+                                key={p.id}
+                                onClick={() => onPointClick(index, p.id)}
                             >
                                 <p className="no-bot-mrg" style={{flex: 1}}>
-                                    {s.name}
+                                    {p.text}
                                 </p>
                                 <div
                                     className="check-area"
@@ -135,7 +100,7 @@ const SectionsSelectPopup = ({ defaultSelectedSectionIds, close, optionsObject, 
 				<Button
 					variant="secondary"
 					className="flex-grow"
-					onClick={onSaveButtonClick}
+					onClick={null}
 				>
 					ОК
 				</Button>
@@ -151,4 +116,4 @@ const SectionsSelectPopup = ({ defaultSelectedSectionIds, close, optionsObject, 
 	)
 }
 
-export default SectionsSelectPopup
+export default PointsSelectPopup

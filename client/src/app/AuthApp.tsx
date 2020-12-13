@@ -206,7 +206,7 @@ const AuthApp = () => {
 
                         <Route exact path="/general-data">
 							<div className="full-width div-container">
-								<GeneralData />
+								<GeneralData setPopupObj={setPopupObj} />
 							</div>
 						</Route>
 

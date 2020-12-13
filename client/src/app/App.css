@@ -90,6 +90,10 @@
 	width: 25em;
 }
 
+.num-field-width {
+    width: 200px;
+}
+
 /* Linked doc */
 .linked-doc-name-col-width {
 	width: 35em;
