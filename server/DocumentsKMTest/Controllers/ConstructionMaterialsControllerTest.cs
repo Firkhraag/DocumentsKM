@@ -25,6 +25,7 @@ namespace DocumentsKM.Tests
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                    
                 });
             }).CreateClient();
             

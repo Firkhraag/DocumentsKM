@@ -28,7 +28,8 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet, Route("users/{userId}/general-data-sections/{sectionId}/general-data-points")]
+        [HttpGet,
+            Route("users/{userId}/general-data-sections/{sectionId}/general-data-points")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<GeneralDataPointResponse>> GetAllByUserAndSectionId(
             int userId, int sectionId)
@@ -37,7 +38,8 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<GeneralDataPointResponse>>(points));
         }
 
-        [HttpPost, Route("users/{userId}/general-data-sections/{sectionId}/general-data-points")]
+        [HttpPost,
+            Route("users/{userId}/general-data-sections/{sectionId}/general-data-points")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -46,7 +48,8 @@ namespace DocumentsKM.Controllers
         public ActionResult<GeneralDataPoint> Create(int userId, int sectionId,
             [FromBody] GeneralDataPointCreateRequest generalDataPointRequest)
         {
-            var generalDataPointModel = _mapper.Map<GeneralDataPoint>(generalDataPointRequest);
+            var generalDataPointModel = _mapper.Map<GeneralDataPoint>(
+                generalDataPointRequest);
             try
             {
                 _service.Create(
@@ -66,7 +69,8 @@ namespace DocumentsKM.Controllers
                 _mapper.Map<GeneralDataPointResponse>(generalDataPointModel));
         }
 
-        [HttpPatch, Route("users/{userId}/general-data-sections/{sectionId}/general-data-points/{id}")]
+        [HttpPatch,
+            Route("users/{userId}/general-data-sections/{sectionId}/general-data-points/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -89,7 +93,8 @@ namespace DocumentsKM.Controllers
             return NoContent();
         }
 
-        [HttpDelete, Route("users/{userId}/general-data-sections/{sectionId}/general-data-points/{id}")]
+        [HttpDelete,
+            Route("users/{userId}/general-data-sections/{sectionId}/general-data-points/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult Delete(int userId, int sectionId, int id)

@@ -15,7 +15,8 @@ namespace DocumentsKM.Services
             int userId,
             int sectionId);
         // Обновить существующий пункт общих указаний
-        void Update(int id, int userId, int sectionId, GeneralDataPointUpdateRequest generalDataPoint);
+        void Update(int id, int userId, int sectionId,
+            GeneralDataPointUpdateRequest generalDataPoint);
         // Удалить существующий пункт общих указаний
         void Delete(int id, int userId, int sectionId);
     }

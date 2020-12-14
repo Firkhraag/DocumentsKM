@@ -15,9 +15,10 @@ namespace DocumentsKM.Services
             int markId,
             int sectionId);
         // Обновить существующий пункт общих указаний
-        void Update(int id, MarkGeneralDataPointUpdateRequest generalDataPoint);
+        void Update(int id, int markId, int sectionId,
+            MarkGeneralDataPointUpdateRequest generalDataPoint);
         // Удалить существующий пункт общих указаний
-        void Delete(int id);
+        void Delete(int id, int markId, int sectionId);
         // Получить разделы общих указаний по id марки
         IEnumerable<GeneralDataSection> GetSectionsByMarkId(int markId);
     }

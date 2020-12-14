@@ -3,6 +3,7 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -49,19 +50,14 @@ namespace DocumentsKM.Services
             markGeneralDataPoint.Section = foundSection;
             markGeneralDataPoint.Mark = foundmark;
 
-            int maxNum = 0;
-            foreach (var p in _repository.GetAllByMarkAndSectionId(markId, sectionId))
-            {
-                if (p.OrderNum > maxNum)
-                    maxNum = p.OrderNum;
-            }
-            markGeneralDataPoint.OrderNum = maxNum + 1;
+            markGeneralDataPoint.OrderNum = _repository.GetAllByMarkAndSectionId(
+                markId, sectionId).Max(v => v.OrderNum) + 1;
             
             _repository.Add(markGeneralDataPoint);
         }
 
         public void Update(
-            int id,
+            int id, int markId, int sectionId,
             MarkGeneralDataPointUpdateRequest markGeneralDataPoint)
         {
             if (markGeneralDataPoint == null)
@@ -83,21 +79,42 @@ namespace DocumentsKM.Services
             if (markGeneralDataPoint.OrderNum != null)
             {
                 var orderNum = markGeneralDataPoint.OrderNum.GetValueOrDefault();
-                var uniqueConstraintViolationCheck = _repository.GetByMarkAndSectionIdAndOrderNum(
-                    foundMarkGeneralDataPoint.Mark.Id, foundMarkGeneralDataPoint.Section.Id, orderNum);
-                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                    throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
                 foundMarkGeneralDataPoint.OrderNum = orderNum;
+                var num = 1;
+                foreach (var p in _repository.GetAllByMarkAndSectionId(markId, sectionId))
+                {
+                    if (p.Id == id)
+                        continue;
+                    if (num == markGeneralDataPoint.OrderNum)
+                    {
+                        num = num + 1;
+                        p.OrderNum = num;
+                        _repository.Update(p);
+                        num = num + 1;
+                        continue;
+                    }
+                    p.OrderNum = num;
+                    _repository.Update(p);
+                    num = num + 1;
+                }
             }
 
             _repository.Update(foundMarkGeneralDataPoint);
         }
 
-        public void Delete(int id)
+        public void Delete(int id, int markId, int sectionId)
         {
             var foundMarkGeneralDataPoint = _repository.GetById(id);
             if (foundMarkGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundMarkGeneralDataPoint));
+            foreach (var p in _repository.GetAllByMarkAndSectionId(markId, sectionId))
+            {
+                if (p.OrderNum > foundMarkGeneralDataPoint.OrderNum)
+                {
+                    p.OrderNum = p.OrderNum - 1;
+                    _repository.Update(p);
+                }
+            }
             _repository.Delete(foundMarkGeneralDataPoint);
         }
 

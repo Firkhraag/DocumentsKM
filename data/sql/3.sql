@@ -2,7 +2,7 @@ CREATE TABLE specifications (
 	id serial PRIMARY KEY,
 	mark_id int NOT NULL,
 	num smallint NOT NULL,
-	created_date timestamp DEFAULT NOW(),
+	created_date timestamp NOT NULL DEFAULT NOW(),
 	is_current boolean NOT NULL DEFAULT true,
 	note varchar(255),
 	UNIQUE (mark_id, num),

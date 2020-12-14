@@ -54,7 +54,8 @@ namespace DocumentsKM.Controllers
         public ActionResult<MarkGeneralDataPoint> Create(int markId, int sectionId,
             [FromBody] MarkGeneralDataPointCreateRequest markGeneralDataPointRequest)
         {
-            var markGeneralDataPointModel = _mapper.Map<MarkGeneralDataPoint>(markGeneralDataPointRequest);
+            var markGeneralDataPointModel = _mapper.Map<MarkGeneralDataPoint>(
+                markGeneralDataPointRequest);
             try
             {
                 _service.Create(
@@ -74,16 +75,18 @@ namespace DocumentsKM.Controllers
                 _mapper.Map<MarkGeneralDataPointResponse>(markGeneralDataPointModel));
         }
 
-        [HttpPatch, Route("mark-general-data-points/{id}")]
+        [HttpPatch,
+            Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int id, [FromBody] MarkGeneralDataPointUpdateRequest markGeneralDataPointRequest)
+        public ActionResult Update(int markId, int sectionId, int id,
+            [FromBody] MarkGeneralDataPointUpdateRequest markGeneralDataPointRequest)
         {
             try
             {
-                _service.Update(id, markGeneralDataPointRequest);
+                _service.Update(id, markId, sectionId, markGeneralDataPointRequest);
             }
             catch (ArgumentNullException)
             {
@@ -96,14 +99,15 @@ namespace DocumentsKM.Controllers
             return NoContent();
         }
 
-        [HttpDelete, Route("mark-general-data-points/{id}")]
+        [HttpDelete,
+            Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int markId, int sectionId, int id)
         {
             try
             {
-                _service.Delete(id);
+                _service.Delete(id, markId, sectionId);
                 return NoContent();
             }
             catch (ArgumentNullException)

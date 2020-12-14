@@ -94,6 +94,10 @@ const SectionsSelectPopup = ({ defaultSelectedSectionIds, close, optionsObject, 
 		// } catch (e) {
 		// 	console.log('Error')
         // }
+        
+        // const points = optionsObject.points.filter(
+        //     p => selectedSections.map(v => v.id).includes(p.section.id))
+        
         setOptionsObject({
             ...optionsObject,
             sections: selectedSections.sort((a, b) => a.id - b.id),
