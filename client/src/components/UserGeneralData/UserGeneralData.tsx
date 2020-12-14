@@ -196,8 +196,6 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
                 const foundPoint = optionsObject.points.find((v) => v.id === p.id)
 				foundPoint.text = selectedObject.pointText
                 foundPoint.orderNum = selectedObject.point.orderNum
-                
-
 
                 var num = 1;
                 for (let p of optionsObject.points)
@@ -225,9 +223,7 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
                     return 0;
                 }
                   
-                optionsObject.points.sort(compareFunc);
-
-
+                optionsObject.points.sort(compareFunc)
 
 				setSelectedObject({
 					...selectedObject,
@@ -253,7 +249,6 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 						text: selectedObject.pointText,
 					}
 				)
-				console.log(response)
 				optionsObject.points.push(response.data)
 				setSelectedObject({
 					...selectedObject,

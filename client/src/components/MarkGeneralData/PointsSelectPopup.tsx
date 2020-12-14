@@ -5,18 +5,26 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
+import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import { useMark } from '../../store/MarkStore'
 import { useUser } from '../../store/UserStore'
 // import './pointsSelectPopup.css'
 
+type IOptionsObject = {
+    sections: GeneralDataSection[]
+	points: GeneralDataPoint[]
+}
+
 type PopupProps = {
     sectionId: number
     defaultSelectedPointIds: number[]
     close: () => void
+    optionsObject: IOptionsObject
+    setOptionsObject: (optionObject: IOptionsObject) => void
 }
 
-const PointsSelectPopup = ({ sectionId, defaultSelectedPointIds, close }: PopupProps) => {
+const PointsSelectPopup = ({ sectionId, defaultSelectedPointIds, close, optionsObject, setOptionsObject }: PopupProps) => {
     const mark = useMark()
     const user = useUser()
 
@@ -31,7 +39,6 @@ const PointsSelectPopup = ({ sectionId, defaultSelectedPointIds, close }: PopupP
 				refs.length > 0 &&
 				points.length > 0
 			) {
-                console.log(defaultSelectedPointIds)
 				for (const [i, s] of points.entries()) {
 					if (defaultSelectedPointIds.includes(s.id)) {
 						const inputElement = refs[i].current as any
@@ -64,6 +71,14 @@ const PointsSelectPopup = ({ sectionId, defaultSelectedPointIds, close }: PopupP
         if (inputElement) {
             inputElement.checked = !(inputElement.checked)
         }
+    }
+
+    const onSaveButtonClick = () => {
+        setOptionsObject({
+            ...optionsObject,
+            points: selectedPoints.sort((a, b) => a.id - b.id),
+        })
+        close()
     }
 
 	return (

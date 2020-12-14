@@ -200,7 +200,6 @@ namespace DocumentsKM
             services.AddScoped<IGeneralDataSectionRepo, SqlGeneralDataSectionRepo>();
             services.AddScoped<IGeneralDataPointRepo, SqlGeneralDataPointRepo>();
             services.AddScoped<IMarkGeneralDataPointRepo, SqlMarkGeneralDataPointRepo>();
-            services.AddScoped<IMarkGeneralDataRepo, NoSqlMarkGeneralDataRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

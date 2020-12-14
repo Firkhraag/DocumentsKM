@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using AutoMapper;
 using DocumentsKM.Data;
+using DocumentsKM.Profiles;
 using DocumentsKM.Tests;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -20,6 +22,8 @@ public class TestWebApplicationFactory<TStartup>
                     typeof(DbContextOptions<ApplicationContext>));
 
             services.Remove(descriptor);
+
+            services.AddAutoMapper(typeof(TStartup));
 
             services.AddDbContext<ApplicationContext>(options =>
             {

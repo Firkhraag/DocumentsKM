@@ -48,23 +48,24 @@ namespace DocumentsKM.Tests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             string responseBody = await response.Content.ReadAsStringAsync();
 
-            var Nodes = TestData.nodes.Where(v => v.Project.Id == projectId)
+            var nodes = TestData.nodes.Where(v => v.Project.Id == projectId)
                 .Select(s => new NodeResponse{
                     Id = s.Id,
                     Code = s.Code,
                     Name = s.Name,
-                    // ChiefEngineer = new EmployeeBaseResponse
-                    // {
-                    //     Id = s.ChiefEngineer.Id,
-                    //     Name = s.ChiefEngineer.Name,
-                    // }
+                    ChiefEngineer = new EmployeeBaseResponse
+                    {
+                        Id = s.ChiefEngineer.Id,
+                        Name = s.ChiefEngineer.Name,
+                    }
                 }).ToArray();
             var options = new JsonSerializerOptions()
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            Nodes.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<NodeResponse>>(responseBody, options));
+            Assert.Equal(responseBody, "1");
+            // nodes.Should().BeEquivalentTo(
+            //     JsonSerializer.Deserialize<IEnumerable<NodeResponse>>(responseBody, options));
         }
 
         [Fact]
