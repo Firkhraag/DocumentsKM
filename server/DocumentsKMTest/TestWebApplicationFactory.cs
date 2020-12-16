@@ -25,9 +25,9 @@ public class TestWebApplicationFactory<TStartup>
 
             services.AddAutoMapper(typeof(TStartup));
 
-            services.AddDbContext<ApplicationContext>(options =>
+            services.AddDbContext<ApplicationContext>(opt =>
             {
-                options.UseInMemoryDatabase("TestDb");
+                opt.UseLazyLoadingProxies().UseInMemoryDatabase("TestDb");
             });
 
             var sp = services.BuildServiceProvider();
@@ -82,9 +82,14 @@ public class TestWebApplicationFactory<TStartup>
         context.MarkApprovals.AddRange(TestData.markApprovals);
         context.Specifications.AddRange(TestData.specifications);
         
+        context.Docs.AddRange(TestData.docs);
         context.AttachedDocs.AddRange(TestData.attachedDocs);
         context.LinkedDocs.AddRange(TestData.linkedDocs);
         context.MarkLinkedDocs.AddRange(TestData.markLinkedDocs);
+        context.MarkOperatingConditions.AddRange(TestData.markOperatingConditions);
+
+        context.GeneralDataPoints.AddRange(TestData.generalDataPoints);
+        context.MarkGeneralDataPoints.AddRange(TestData.markGeneralDataPoints);
         context.SaveChanges();
     }
 }

@@ -50,7 +50,8 @@ namespace DocumentsKM.Tests
 
             var attachedDocs = TestData.attachedDocs.Where(
                 v => v.Mark.Id == markId)
-                    .Select(d => new AttachedDocResponse{
+                    .Select(d => new AttachedDocResponse
+                    {
                         Id = d.Id,
                         Designation = d.Designation,
                         Name = d.Name,
@@ -60,8 +61,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            attachedDocs.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<AttachedDocResponse>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<AttachedDocResponse>>(
+                responseBody, options).Should().BeEquivalentTo(attachedDocs);
         }
 
         [Fact]

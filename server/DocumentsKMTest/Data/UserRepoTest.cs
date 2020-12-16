@@ -20,6 +20,7 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+            context.Employees.AddRange(TestData.employees);
             context.Users.AddRange(users);
             context.SaveChanges();
             return context;
@@ -68,12 +69,10 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.users);
             var repo = new SqlUserRepo(context);
 
-            int id = _rnd.Next(1, TestData.users.Count());
-            var u = TestData.users.SingleOrDefault(v => v.Id == id);
-            var login = u.Login;
+            var u = TestData.users[0];
 
             // Act
-            var user = repo.GetByLogin(login);
+            var user = repo.GetByLogin(u.Login);
 
             // Assert
             Assert.Equal(u, user);

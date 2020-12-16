@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public ConstructionMaterialsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -49,8 +48,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.constructionMaterials.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<ConstructionMaterial>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<ConstructionMaterial>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.constructionMaterials);
         }
 
         [Fact]

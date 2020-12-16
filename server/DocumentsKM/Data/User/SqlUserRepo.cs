@@ -1,5 +1,6 @@
 using System.Linq;
 using DocumentsKM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data
 {
@@ -14,12 +15,17 @@ namespace DocumentsKM.Data
 
         public User GetById(int id)
         {
+            // return _context.Users.Include(
+            //     v => v.Employee).SingleOrDefault(v => v.Id == id);
             return _context.Users.SingleOrDefault(v => v.Id == id);
         }
 
         public User GetByLogin(string login)
         {
-            return _context.Users.SingleOrDefault(v => v.Login == login);
+            // return _context.Users.Include(
+            //     v => v.Employee).SingleOrDefault(v => v.Login == login);
+            return _context.Users.Include(
+                v => v.Employee).SingleOrDefault(v => v.Login == login);
         }
     }
 }

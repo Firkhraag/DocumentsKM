@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public SheetNamesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -48,8 +47,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.sheetNames.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<SheetName>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<SheetName>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.sheetNames);
         }
 
         [Fact]

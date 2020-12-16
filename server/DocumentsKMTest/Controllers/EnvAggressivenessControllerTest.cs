@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public EnvAggressivenessControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -48,8 +47,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.envAggressiveness.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<EnvAggressiveness>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<EnvAggressiveness>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.envAggressiveness);
         }
 
         [Fact]

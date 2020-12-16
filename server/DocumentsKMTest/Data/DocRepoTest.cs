@@ -233,11 +233,11 @@ namespace DocumentsKM.Tests
                     Note = d.Note,
                 });
             }
-            var context = GetContext(TestData.docs);
+            var context = GetContext(docs);
             var repo = new SqlDocRepo(context);
 
-            int id = _rnd.Next(1, TestData.docs.Count());
-            var doc = TestData.docs.FirstOrDefault(v => v.Id == id);
+            int id = _rnd.Next(1, docs.Count());
+            var doc = docs.FirstOrDefault(v => v.Id == id);
             doc.Name = "NewUpdate";
 
             // Act

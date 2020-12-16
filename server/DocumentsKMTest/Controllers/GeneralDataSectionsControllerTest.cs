@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public GeneralDataSectionsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -48,8 +47,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.generalDataSections.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<GeneralDataSection>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<GeneralDataSection>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.generalDataSections);
         }
 
         [Fact]

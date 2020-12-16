@@ -22,7 +22,6 @@ namespace DocumentsKM.Tests
 
         public NodesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -49,7 +48,8 @@ namespace DocumentsKM.Tests
             string responseBody = await response.Content.ReadAsStringAsync();
 
             var nodes = TestData.nodes.Where(v => v.Project.Id == projectId)
-                .Select(s => new NodeResponse{
+                .Select(s => new NodeResponse
+                {
                     Id = s.Id,
                     Code = s.Code,
                     Name = s.Name,
@@ -63,9 +63,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            Assert.Equal(responseBody, "1");
-            // nodes.Should().BeEquivalentTo(
-            //     JsonSerializer.Deserialize<IEnumerable<NodeResponse>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<NodeResponse>>(
+                responseBody, options).Should().BeEquivalentTo(nodes);
         }
 
         [Fact]

@@ -94,13 +94,6 @@ namespace DocumentsKM
                 };
             });
 
-            // Mongodb
-            services.Configure<MongoSettings>(
-                Configuration.GetSection(nameof(MongoSettings)));
-
-            services.AddSingleton<IMongoSettings>(sp =>
-                sp.GetRequiredService<IOptions<MongoSettings>>().Value);
-
             // Подключение к базе данных
             // Postgres
             services.AddDbContext<ApplicationContext>(
@@ -108,6 +101,10 @@ namespace DocumentsKM
                     .UseNpgsql(
                         Configuration.GetConnectionString("PostgresConnection")
                     ));
+            services.AddDbContext<ApplicationContext>(
+                opt => opt.UseNpgsql(
+                    Configuration.GetConnectionString("PostgresConnection")
+                ));
 
             // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(Startup));
@@ -216,8 +213,9 @@ namespace DocumentsKM
 
             app.UseHttpsRedirection();
 
-            // Requests logger
-            app.UseSerilogRequestLogging();
+            // Logger
+            app.UseMiddleware<RequestResponseLoggingMiddleware>();
+            app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
 
             app.UseRouting();
 

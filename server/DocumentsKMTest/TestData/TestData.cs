@@ -767,5 +767,109 @@ namespace DocumentsKM.Tests
                 HighTensileBoltsType=highTensileBoltsTypes[0],
             },
         };
+
+        public static readonly List<GeneralDataPoint> generalDataPoints = new List<GeneralDataPoint>
+        {
+            new GeneralDataPoint
+            {
+                Id = 1,
+                User = users[0],
+                Section = generalDataSections[0],
+                Text = "gdp1",
+                OrderNum = 1,
+            },
+            new GeneralDataPoint
+            {
+                Id = 2,
+                User = users[0],
+                Section = generalDataSections[1],
+                Text = "gdp2",
+                OrderNum = 2,
+            },
+            new GeneralDataPoint
+            {
+                Id = 3,
+                User = users[1],
+                Section = generalDataSections[0],
+                Text = "gdp3",
+                OrderNum = 1,
+            },
+            new GeneralDataPoint
+            {
+                Id = 4,
+                User = users[1],
+                Section = generalDataSections[1],
+                Text = "gdp4",
+                OrderNum = 2,
+            },
+            new GeneralDataPoint
+            {
+                Id = 5,
+                User = users[2],
+                Section = generalDataSections[0],
+                Text = "gdp5",
+                OrderNum = 1,
+            },
+            new GeneralDataPoint
+            {
+                Id = 6,
+                User = users[2],
+                Section = generalDataSections[1],
+                Text = "gdp6",
+                OrderNum = 2,
+            },
+        };
+
+        public static readonly List<MarkGeneralDataPoint> markGeneralDataPoints = new List<MarkGeneralDataPoint>
+        {
+            new MarkGeneralDataPoint
+            {
+                Id = 1,
+                Mark = marks[0],
+                Section = generalDataSections[0],
+                Text = "mgdp1",
+                OrderNum = 1,
+            },
+            new MarkGeneralDataPoint
+            {
+                Id = 2,
+                Mark = marks[0],
+                Section = generalDataSections[1],
+                Text = "mgdp2",
+                OrderNum = 2,
+            },
+            new MarkGeneralDataPoint
+            {
+                Id = 3,
+                Mark = marks[1],
+                Section = generalDataSections[0],
+                Text = "mgdp3",
+                OrderNum = 1,
+            },
+            new MarkGeneralDataPoint
+            {
+                Id = 4,
+                Mark = marks[1],
+                Section = generalDataSections[1],
+                Text = "mgdp4",
+                OrderNum = 2,
+            },
+            new MarkGeneralDataPoint
+            {
+                Id = 5,
+                Mark = marks[2],
+                Section = generalDataSections[0],
+                Text = "mgdp5",
+                OrderNum = 1,
+            },
+            new MarkGeneralDataPoint
+            {
+                Id = 6,
+                Mark = marks[2],
+                Section = generalDataSections[1],
+                Text = "mgdp6",
+                OrderNum = 2,
+            },
+        };
     }
 }

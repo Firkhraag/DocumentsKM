@@ -20,7 +20,6 @@ namespace DocumentsKM.Tests
 
         public DocTypesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -50,8 +49,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.docTypes.Where(v => v.Id != sheetDocTypeId).Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<DocType>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<DocType>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.docTypes.Where(v => v.Id != sheetDocTypeId));
         }
 
         [Fact]

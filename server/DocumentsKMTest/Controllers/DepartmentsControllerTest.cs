@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public DepartmentsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -32,7 +31,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllAttached_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAll_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
             // Arrange
             var endpoint = "/api/departments";
@@ -48,12 +47,12 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.departments.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<Department>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<Department>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.departments);
         }
 
         [Fact]
-        public async Task GetAllAttached_ShouldReturnUnauthorized_WhenNoAccessToken()
+        public async Task GetAll_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
             var endpoint = "/api/departments";

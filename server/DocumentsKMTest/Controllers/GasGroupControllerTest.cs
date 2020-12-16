@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public GasGroupsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -48,8 +47,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.gasGroups.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<GasGroup>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<GasGroup>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.gasGroups);
         }
 
         [Fact]

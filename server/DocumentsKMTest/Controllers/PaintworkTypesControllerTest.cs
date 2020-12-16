@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public PaintworkTypesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -48,8 +47,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.paintworkTypes.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<PaintworkType>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<PaintworkType>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.paintworkTypes);
         }
 
         [Fact]

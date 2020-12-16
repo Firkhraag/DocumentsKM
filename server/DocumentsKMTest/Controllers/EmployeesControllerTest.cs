@@ -22,7 +22,6 @@ namespace DocumentsKM.Tests
 
         public EmployeesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -49,7 +48,8 @@ namespace DocumentsKM.Tests
             string responseBody = await response.Content.ReadAsStringAsync();
 
             var employees = TestData.employees.Where(v => v.Department.Id == departmentId)
-                .Select(e => new EmployeeBaseResponse{
+                .Select(e => new EmployeeBaseResponse
+                {
                     Id = e.Id,
                     Name = e.Name,
                 }).ToArray();
@@ -57,8 +57,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            employees.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<EmployeeBaseResponse>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<EmployeeBaseResponse>>(
+                responseBody, options).Should().BeEquivalentTo(employees);
         }
 
         [Fact]
@@ -92,7 +92,8 @@ namespace DocumentsKM.Tests
 
             var employees = TestData.employees.Where(
                 v => v.Department.Id == departmentId && approvalPosIds.Contains(v.Position.Id))
-                    .Select(e => new EmployeeBaseResponse{
+                    .Select(e => new EmployeeBaseResponse
+                    {
                         Id = e.Id,
                         Name = e.Name,
                     }).ToArray();
@@ -100,8 +101,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            employees.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<EmployeeBaseResponse>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<EmployeeBaseResponse>>(
+                responseBody, options).Should().BeEquivalentTo(employees);
         }
 
         [Fact]
@@ -146,19 +147,22 @@ namespace DocumentsKM.Tests
             };
             var chiefSpecialists = TestData.employees.Where(
                 v => v.Department.Id == departmentId && v.Position.Id == chiefSpecialistPosId)
-                    .Select(e => new EmployeeBaseResponse{
+                    .Select(e => new EmployeeBaseResponse
+                    {
                         Id = e.Id,
                         Name = e.Name,
                     }).ToArray();
             var groupLeaders = TestData.employees.Where(
                 v => v.Department.Id == departmentId && v.Position.Id == groupLeaderPosId)
-                    .Select(e => new EmployeeBaseResponse{
+                    .Select(e => new EmployeeBaseResponse
+                    {
                         Id = e.Id,
                         Name = e.Name,
                     }).ToArray();
             var mainBuilders = TestData.employees.Where(
                 v => v.Department.Id == departmentId && v.Position.Id == mainBuilderPosId)
-                    .Select(e => new EmployeeBaseResponse{
+                    .Select(e => new EmployeeBaseResponse
+                    {
                         Id = e.Id,
                         Name = e.Name,
                     }).ToArray();
@@ -169,9 +173,9 @@ namespace DocumentsKM.Tests
             };
             var responseModel = JsonSerializer.Deserialize<MarkMainEmployeesResponse>(responseBody, options);
             Assert.Equal(departmentHead.Id, responseModel.DepartmentHead.Id);
-            chiefSpecialists.Should().BeEquivalentTo(responseModel.ChiefSpecialists);
-            groupLeaders.Should().BeEquivalentTo(responseModel.GroupLeaders);
-            mainBuilders.Should().BeEquivalentTo(responseModel.MainBuilders);
+            responseModel.ChiefSpecialists.Should().BeEquivalentTo(chiefSpecialists);
+            responseModel.GroupLeaders.Should().BeEquivalentTo(groupLeaders);
+            responseModel.MainBuilders.Should().BeEquivalentTo(mainBuilders);
         }
 
         [Fact]

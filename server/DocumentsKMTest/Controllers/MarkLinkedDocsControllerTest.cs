@@ -1,106 +1,78 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Net.Mime;
-// using System.Text.Json;
-// using AutoMapper;
-// using DocumentsKM.Dtos;
-// using DocumentsKM.Models;
-// using DocumentsKM.Services;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Mvc;
-// using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using DocumentsKM.Dtos;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-// namespace DocumentsKM.Controllers
-// {
-//     [Route("api")]
-//     [Authorize]
-//     [ApiController]
-//     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-//     public class MarkLinkedDocsController : ControllerBase
-//     {
-//         private readonly IMarkLinkedDocService _service;
-//         private readonly IMapper _mapper;
+namespace DocumentsKM.Tests
+{
+    public class MarkLinkedDocsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    {
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-//         public MarkLinkedDocsController(
-//             IMarkLinkedDocService markLinkedDocService,
-//             IMapper mapper
-//         )
-//         {
-//             _service = markLinkedDocService;
-//             _mapper = mapper;
-//         }
+        public MarkLinkedDocsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        {
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
+        }
 
-//         [HttpGet, Route("marks/{markId}/mark-linked-docs")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         public ActionResult<IEnumerable<MarkLinkedDocResponse>> GetAllByMarkId(int markId)
-//         {
-//             var markLinkedDocs = _service.GetAllByMarkId(markId);
-//             return Ok(_mapper.Map<IEnumerable<MarkLinkedDocResponse>>(markLinkedDocs));
-//         }
+        [Fact]
+        public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/mark-linked-docs";
 
-//         [HttpPost, Route("marks/{markId}/mark-linked-docs")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status201Created)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         [ProducesResponseType(StatusCodes.Status409Conflict)]
-//         public ActionResult<MarkLinkedDoc> Add(int markId, MarkLinkedDocRequest markLinkedDocRequest)
-//         {
-//             Log.Information(JsonSerializer.Serialize(markLinkedDocRequest));
-//             try
-//             {
-//                 var markLinkedDocModel = new MarkLinkedDoc{};
-//                 _service.Create(markLinkedDocModel, markId, markLinkedDocRequest.LinkedDocId);
-//                 return Created($"mark-linked-docs/", markLinkedDocModel);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             catch (ConflictException)
-//             {
-//                 return Conflict();
-//             }
-//         }
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
 
-//         [HttpPatch, Route("mark-linked-docs/{id}")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status204NoContent)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         [ProducesResponseType(StatusCodes.Status409Conflict)]
-//         public ActionResult Update(int id, [FromBody] MarkLinkedDocRequest markLinkedDocRequest)
-//         {
-//             // DEBUG
-//             // Log.Information(JsonSerializer.Serialize(markRequest));
-//             try
-//             {
-//                 _service.Update(id, markLinkedDocRequest);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             catch (ConflictException)
-//             {
-//                 return Conflict();
-//             }
-//             return NoContent();
-//         }
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
 
-//         [HttpDelete, Route("mark-linked-docs/{id}")]
-//         [ProducesResponseType(StatusCodes.Status204NoContent)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult Delete(int id)
-//         {
-//             try
-//             {
-//                 _service.Delete(id);
-//                 return NoContent();
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//         }
-//     }
-// }
+            var markLinkedDocs = TestData.markLinkedDocs.Where(v => v.Mark.Id == markId)
+                .Select(v => new MarkLinkedDocResponse
+                {
+                    Id = v.Id,
+                    LinkedDoc = v.LinkedDoc,
+                }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<IEnumerable<MarkLinkedDocResponse>>(
+                responseBody, options).Should().BeEquivalentTo(markLinkedDocs);
+        }
+
+        [Fact]
+        public async Task GetAllByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/mark-linked-docs";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+    }
+}

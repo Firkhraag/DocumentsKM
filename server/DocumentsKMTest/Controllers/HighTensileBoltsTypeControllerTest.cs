@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public HighTensileBoltsTypesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -48,8 +47,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.highTensileBoltsTypes.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<HighTensileBoltsType>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<HighTensileBoltsType>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.highTensileBoltsTypes);
         }
 
         [Fact]

@@ -22,7 +22,6 @@ namespace DocumentsKM.Tests
 
         public ConstructionSubtypesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -49,7 +48,8 @@ namespace DocumentsKM.Tests
             string responseBody = await response.Content.ReadAsStringAsync();
 
             var subtypes = TestData.constructionSubtypes.Where(v => v.Type.Id == typeId)
-                .Select(s => new ConstructionSubtypeResponse{
+                .Select(s => new ConstructionSubtypeResponse
+                {
                     Id = s.Id,
                     Name = s.Name,
                     Valuation = s.Valuation,
@@ -58,8 +58,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            subtypes.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<ConstructionSubtypeResponse>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<ConstructionSubtypeResponse>>(
+                responseBody, options).Should().BeEquivalentTo(subtypes);
         }
 
         [Fact]

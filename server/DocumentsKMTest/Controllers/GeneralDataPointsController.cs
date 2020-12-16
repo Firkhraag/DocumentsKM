@@ -14,13 +14,16 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class SubnodesControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    public class GeneralDataPointsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
         private readonly Random _rnd = new Random();
 
-        public SubnodesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        private readonly int _maxUserId = 3;
+        private readonly int _maxSectionId = 3;
+
+        public GeneralDataPointsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
@@ -34,11 +37,12 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByNodeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
             // Arrange
-            int nodeId = _rnd.Next(1, TestData.nodes.Count());
-            var endpoint = $"/api/nodes/{nodeId}/subnodes";
+            int userId = _rnd.Next(1, _maxUserId);
+            int sectionId = _rnd.Next(1, _maxSectionId);
+            var endpoint = $"/api/users/{userId}/general-data-sections/{sectionId}/general-data-points";
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
@@ -47,27 +51,29 @@ namespace DocumentsKM.Tests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             string responseBody = await response.Content.ReadAsStringAsync();
 
-            var subnodes = TestData.subnodes.Where(v => v.Node.Id == nodeId)
-                .Select(s => new SubnodeResponse
+            var GeneralDataPoints = TestData.generalDataPoints.Where(
+                v => v.User.Id == userId && v.Section.Id == sectionId)
+                .Select(v => new GeneralDataPointResponse
                 {
-                    Id = s.Id,
-                    Code = s.Code,
-                    Name = s.Name,
+                    Id = v.Id,
+                    Text = v.Text,
+                    OrderNum = v.OrderNum,
                 }).ToArray();
             var options = new JsonSerializerOptions()
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            JsonSerializer.Deserialize<IEnumerable<SubnodeResponse>>(
-                responseBody, options).Should().BeEquivalentTo(subnodes);
+            JsonSerializer.Deserialize<IEnumerable<GeneralDataPointResponse>>(
+                responseBody, options).Should().BeEquivalentTo(GeneralDataPoints);
         }
 
         [Fact]
-        public async Task GetAllByNodeId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        public async Task GetAllByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            int nodeId = _rnd.Next(1, TestData.nodes.Count());
-            var endpoint = $"/api/nodes/{nodeId}/subnodes";
+            int userId = _rnd.Next(1, _maxUserId);
+            int sectionId = _rnd.Next(1, _maxSectionId);
+            var endpoint = $"/api/users/{userId}/general-data-sections/{sectionId}/general-data-points";
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);

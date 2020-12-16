@@ -16,7 +16,17 @@ namespace DocumentsKM.Data
 
         public MarkOperatingConditions GetByMarkId(int markId)
         {
-            return _context.MarkOperatingConditions.SingleOrDefault(v => v.Mark.Id == markId);
+            // return _context.MarkOperatingConditions.Include(
+            //     v => v.Mark).Include(
+            //         v => v.EnvAggressiveness).Include(
+            //             v => v.OperatingArea).Include(
+            //                 v => v.GasGroup).Include(
+            //                     v => v.ConstructionMaterial).Include(
+            //                         v => v.PaintworkType).Include(
+            //                             v => v.HighTensileBoltsType).SingleOrDefault(
+            //                                 v => v.Mark.Id == markId);
+            return _context.MarkOperatingConditions.SingleOrDefault(
+                v => v.Mark.Id == markId);
         }
 
         public void Add(MarkOperatingConditions markOperatingConditions)

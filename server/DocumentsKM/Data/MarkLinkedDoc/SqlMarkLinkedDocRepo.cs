@@ -16,16 +16,28 @@ namespace DocumentsKM.Data
 
         public IEnumerable<MarkLinkedDoc> GetAllByMarkId(int markId)
         {
-            return _context.MarkLinkedDocs.Where(v => v.Mark.Id == markId).ToList();
+            // return _context.MarkLinkedDocs.Include(
+            //         v => v.Mark).Include(
+            //             v => v.LinkedDoc).Where(
+            //                 v => v.Mark.Id == markId).ToList();
+            return _context.MarkLinkedDocs.Where(
+                v => v.Mark.Id == markId).ToList();
         }
         
         public MarkLinkedDoc GetById(int id)
         {
+            // return _context.MarkLinkedDocs.Include(
+            //         v => v.Mark).Include(
+            //             v => v.LinkedDoc).SingleOrDefault(v => v.Id == id);
             return _context.MarkLinkedDocs.SingleOrDefault(v => v.Id == id);
         }
 
         public MarkLinkedDoc GetByMarkIdAndLinkedDocId(int markId, int linkedDocId)
         {
+            // return _context.MarkLinkedDocs.Include(
+            //         v => v.Mark).Include(
+            //             v => v.LinkedDoc).SingleOrDefault(
+            //                 v => v.Mark.Id == markId && v.LinkedDoc.Id == linkedDocId);
             return _context.MarkLinkedDocs.SingleOrDefault(
                 v => v.Mark.Id == markId && v.LinkedDoc.Id == linkedDocId);
         }
