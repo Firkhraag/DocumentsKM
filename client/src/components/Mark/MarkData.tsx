@@ -307,7 +307,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 					history.push('/')
 				}
 			} catch (e) {
-				if (e.response.status === 409) {
+				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Марка с таким кодом уже существует')
 					return
 				}
@@ -349,7 +349,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 				setMark(selectedObject)
 				history.push('/')
 			} catch (e) {
-				if (e.response.status === 409) {
+				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Марка с таким кодом уже существует')
 					return
 				}

@@ -41,8 +41,8 @@ namespace DocumentsKM.Services
             var foundMark = _markRepo.GetById(markId);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
+                
             var employees = new List<Employee>{};
-
             foreach (var id in employeeIds)
             {
                 var employee = _employeeRepo.GetById(id);

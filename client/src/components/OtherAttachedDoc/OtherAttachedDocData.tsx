@@ -93,7 +93,7 @@ const OtherAttachedDocData = ({
 				})
 				history.push('/other-attached-docs')
 			} catch (e) {
-				if (e.response.status === 409) {
+				if (e.response != null && e.response.status === 409) {
 					setErrMsg(
 						'Прилагаемый документ с таким обозначением уже существует'
 					)
@@ -125,7 +125,7 @@ const OtherAttachedDocData = ({
 				})
 				history.push('/other-attached-docs')
 			} catch (e) {
-				if (e.response.status === 409) {
+				if (e.response != null && e.response.status === 409) {
 					setErrMsg(
 						'Прилагаемый документ с таким обозначением уже существует'
 					)

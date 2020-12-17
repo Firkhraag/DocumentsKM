@@ -14,6 +14,11 @@ namespace DocumentsKM.Services
             MarkGeneralDataPoint generalDataPoint,
             int markId,
             int sectionId);
+        // Обновить пункты общих указаний марки по id разделов
+        void UpdateAllBySectionIds(int markId, List<int> sectionIds);
+        // Обновить пункты общих указаний марки по id шаблонных пунктов
+        // void UpdateAllByPointIds(int markId, int sectionId, List<int> pointIds);
+        IEnumerable<MarkGeneralDataPoint> UpdateAllByPointIds(int markId, int sectionId, List<int> pointIds);
         // Обновить существующий пункт общих указаний
         void Update(int id, int markId, int sectionId,
             MarkGeneralDataPointUpdateRequest generalDataPoint);

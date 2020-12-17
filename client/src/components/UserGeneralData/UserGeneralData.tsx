@@ -148,21 +148,22 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 		try {
 			await httpClient.delete(
                 `/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${id}`)
-			optionsObject.points.splice(row, 1)
-            setPopupObj(defaultPopupObj)
-            
+                
             for (let p of optionsObject.points) {
-                if (p.orderNum > selectedObject.point.orderNum) {
-                    p.orderNum = p.orderNum - 1;
+                if (p.orderNum > optionsObject.points[row].orderNum) {
+                    p.orderNum = p.orderNum - 1
                 }
             }
+            
+            optionsObject.points.splice(row, 1)
 
-			if (selectedObject.point.id == id) {
-				setSelectedObject({
-					...selectedObject,
-					point: null,
-				})
+            if (selectedObject.point != null && selectedObject.point.id == id) {
+                setSelectedObject({
+                    ...selectedObject,
+                    point: null,
+                })
             }
+            setPopupObj(defaultPopupObj)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -228,7 +229,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 				setSelectedObject({
 					...selectedObject,
 					point: p,
-				})
+                })
+                window.scrollTo(0, 0)
 			} catch (e) {
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
@@ -253,7 +255,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 				setSelectedObject({
 					...selectedObject,
 					point: response.data,
-				})
+                })
+                window.scrollTo(0, 0)
 			} catch (e) {
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')

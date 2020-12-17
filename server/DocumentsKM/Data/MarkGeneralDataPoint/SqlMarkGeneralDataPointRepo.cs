@@ -64,7 +64,8 @@ namespace DocumentsKM.Data
         {
             return _context.MarkGeneralDataPoints.Where(
                 v => v.Mark.Id == markId).ToList().Select(
-                    v => v.Section).GroupBy(v => v.Id).Select(v => v.FirstOrDefault());
+                    v => v.Section).GroupBy(v => v.Id).Select(
+                        v => v.FirstOrDefault()).OrderBy(v => v.OrderNum);
         }
     }
 }
