@@ -12,38 +12,52 @@ import { useUser } from '../../store/UserStore'
 // import './pointsSelectPopup.css'
 
 type IOptionsObject = {
-    sections: GeneralDataSection[]
+	sections: GeneralDataSection[]
 	points: GeneralDataPoint[]
 }
 
-type PopupProps = {
-    sectionId: number
-    defaultSelectedPointIds: number[]
-    close: () => void
-    optionsObject: IOptionsObject
-    setOptionsObject: (optionObject: IOptionsObject) => void
+type ISelectionObject = {
+	section: GeneralDataSection
+	point: GeneralDataPoint
+	pointText: string
 }
 
-const PointsSelectPopup = ({ sectionId, defaultSelectedPointIds, close, optionsObject, setOptionsObject }: PopupProps) => {
-    const mark = useMark()
-    const user = useUser()
+type PopupProps = {
+	sectionId: number
+	defaultSelectedPointTexts: string[]
+	close: () => void
+	optionsObject: IOptionsObject
+	setOptionsObject: (optionObject: IOptionsObject) => void
+	selectedObject: ISelectionObject
+	setSelectedObject: (selectedObject: ISelectionObject) => void
+}
+
+const PointsSelectPopup = ({
+	sectionId,
+	defaultSelectedPointTexts,
+	close,
+	optionsObject,
+	setOptionsObject,
+	selectedObject,
+	setSelectedObject,
+}: PopupProps) => {
+	const mark = useMark()
+	const user = useUser()
 
 	const [points, setPoints] = useState<GeneralDataPoint[]>([])
-    const [selectedPoints, setSelectedPoints] = useState<GeneralDataPoint[]>([])
-    
-    const refs = useState([] as React.MutableRefObject<undefined>[])[0]
+	const [selectedPoints, setSelectedPoints] = useState<GeneralDataPoint[]>([])
+
+	const refs = useState([] as React.MutableRefObject<undefined>[])[0]
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-            if (
-				refs.length > 0 &&
-				points.length > 0
-			) {
+			if (refs.length > 0 && points.length > 0) {
 				for (const [i, s] of points.entries()) {
-					if (defaultSelectedPointIds.includes(s.id)) {
+					if (defaultSelectedPointTexts.includes(s.text)) {
 						const inputElement = refs[i].current as any
 						if (inputElement) {
-							inputElement.checked = true
+                            inputElement.checked = true
+                            selectedPoints.push(points[i])
 						}
 					}
 				}
@@ -53,33 +67,72 @@ const PointsSelectPopup = ({ sectionId, defaultSelectedPointIds, close, optionsO
 				try {
 					const pointsResponse = await httpClient.get(
 						`/users/${user.id}/general-data-sections/${sectionId}/general-data-points`
-                    )
-                    for (let _ of pointsResponse.data) {
-                        refs.push(createRef())
-                    }
+					)
+					for (let _ of pointsResponse.data) {
+						refs.push(createRef())
+					}
 					setPoints(pointsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
 			}
-            fetchData()
+			fetchData()
 		}
-    }, [mark, points])
-    
-    const onPointClick = (row: number, id: number) => {
-        const inputElement = refs[row].current as any
-        if (inputElement) {
-            inputElement.checked = !(inputElement.checked)
-        }
-    }
+	}, [mark, points])
 
-    const onSaveButtonClick = () => {
-        setOptionsObject({
-            ...optionsObject,
-            points: selectedPoints.sort((a, b) => a.id - b.id),
-        })
-        close()
-    }
+	const onPointClick = (row: number, id: number) => {
+		const inputElement = refs[row].current as any
+		if (inputElement) {
+			inputElement.checked = !inputElement.checked
+			if (inputElement.checked) {
+				selectedPoints.push(points[row])
+			} else {
+				const index = selectedPoints.map((v) => v.id).indexOf(id)
+				selectedPoints.splice(index, 1)
+			}
+		}
+	}
+
+	const onSaveButtonClick = async () => {
+		try {
+			const addedPointsResponse = await httpClient.patch(
+				`/users/${user.id}/marks/${mark.id}/general-data-sections/${sectionId}/general-data-points`,
+				selectedPoints.map((v) => v.id)
+			)
+			setSelectedObject({
+				...selectedObject,
+				point: null,
+            })
+
+            optionsObject.points = addedPointsResponse.data
+            // for (let p of selectedPoints)
+            // {
+            //     var doesNotContain = optionsObject.points.filter(v => v.text == p.text).length === 0
+            //     if (doesNotContain) {
+            //         let orderNum = 1
+            //         if (optionsObject.points.length > 0) {
+            //             orderNum = Math.max.apply(null, optionsObject.points.map(v => v.orderNum)) + 1
+            //         }
+            //         p.orderNum = orderNum
+            //         optionsObject.points.push(p)
+            //     }
+            // }
+
+			// setOptionsObject({
+			// 	...optionsObject,
+			// 	sections: selectedSections.sort((a, b) => a.id - b.id),
+			// })
+			close()
+		} catch (e) {
+			console.log('Error')
+		}
+
+		// setOptionsObject({
+		//     ...optionsObject,
+		//     points: selectedPoints.sort((a, b) => a.id - b.id),
+		// })
+		// close()
+	}
 
 	return (
 		<div className="div-container component-cnt-div white-bg selection-popup shadow p-3 mb-5 rounded">
@@ -88,34 +141,32 @@ const PointsSelectPopup = ({ sectionId, defaultSelectedPointIds, close, optionsO
 				<div className="flex-v general-data-selection mrg-top">
 					{points.map((p, index) => {
 						return (
-                            <div
-                                className="pointer selection-text flex"
-                                key={p.id}
-                                onClick={() => onPointClick(index, p.id)}
-                            >
-                                <p className="no-bot-mrg" style={{flex: 1}}>
-                                    {p.text}
-                                </p>
-                                <div
-                                    className="check-area"
-                                >
-                                    <Form.Check
-                                        ref={refs[index]}
-                                        type="checkbox"
-                                        className="checkmark"
-                                        style={{pointerEvents: 'none'}}
-                                    />
-                                </div>
-                            </div>
+							<div
+								className="pointer selection-text flex"
+								key={p.id}
+								onClick={() => onPointClick(index, p.id)}
+							>
+								<p className="no-bot-mrg" style={{ flex: 1 }}>
+									{p.text}
+								</p>
+								<div className="check-area">
+									<Form.Check
+										ref={refs[index]}
+										type="checkbox"
+										className="checkmark"
+										style={{ pointerEvents: 'none' }}
+									/>
+								</div>
+							</div>
 						)
 					})}
 				</div>
 			</div>
-            <div className="flex btns-mrg full-width mrg-top-2">
+			<div className="flex btns-mrg full-width mrg-top-2">
 				<Button
 					variant="secondary"
 					className="flex-grow"
-					onClick={null}
+					onClick={onSaveButtonClick}
 				>
 					ОК
 				</Button>

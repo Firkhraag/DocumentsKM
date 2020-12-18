@@ -3,6 +3,7 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -38,6 +39,29 @@ namespace DocumentsKM.Services
         public Mark GetById(int id)
         {
             return _repository.GetById(id);
+        }
+
+        public string GetNewMarkCode(int subnodeId){
+            var codes = _repository.GetAllBySubnodeId(subnodeId).Select(v => v.Code.Substring(2));
+            if (codes.Count() == 0)
+                return "КМ1";
+            var newNum = 1;
+            foreach (var code in codes)
+            {
+                Int16.Parse(code);
+                var n = string.Empty;
+                for (int i = 0; i < code.Length; i++)
+                    if (Char.IsDigit(code[i]))
+                        n += code[i];
+
+                if (n.Length > 0)
+                {
+                    var v = int.Parse(n);
+                    if (v >= newNum)
+                        newNum = v + 1;
+                }
+            }
+            return "КМ" + newNum.ToString();
         }
 
         public void Create(

@@ -1,92 +1,81 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Net.Mime;
-// using AutoMapper;
-// using DocumentsKM.Dtos;
-// using DocumentsKM.Services;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using DocumentsKM.Dtos;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-// namespace DocumentsKM.Controllers
-// {
-//     [Route("api")]
-//     [Authorize]
-//     [ApiController]
-//     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-//     public class SpecificationsController : ControllerBase
-//     {
-//         private readonly ISpecificationService _service;
-//         private readonly IMapper _mapper;
+namespace DocumentsKM.Tests
+{
+    public class SpecificationsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    {
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-//         public SpecificationsController(
-//             ISpecificationService specificationService,
-//             IMapper mapper)
-//         {
-//             _service = specificationService;
-//             _mapper = mapper;
-//         }
+        public SpecificationsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        {
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
+        }
 
-//         [HttpGet, Route("marks/{markId}/specifications")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         public ActionResult<IEnumerable<SpecificationResponse>> GetAllByMarkId(int markId)
-//         {
-//             var specifications = _service.GetAllByMarkId(markId);
-//             return Ok(_mapper.Map<IEnumerable<SpecificationResponse>>(specifications));
-//         }
+        [Fact]
+        public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/specifications";
 
-//         [HttpPost, Route("marks/{markId}/specifications")]
-//         [ProducesResponseType(StatusCodes.Status201Created)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult<IEnumerable<SpecificationResponse>> Create(int markId)
-//         {
-//             try
-//             {
-//                 var specification = _service.Create(markId);
-//                 return Created($"specifications/{specification.Id}", _mapper.Map<SpecificationResponse>(specification));
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//         }
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
 
-//         [HttpPatch, Route("specifications/{id}")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status204NoContent)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult Update(int id, [FromBody] SpecificationUpdateRequest specificationRequest)
-//         {
-//             try
-//             {
-//                 _service.Update(id, specificationRequest);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             return NoContent();
-//         }
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
 
-//         [HttpDelete, Route("specifications/{id}")]
-//         [ProducesResponseType(StatusCodes.Status204NoContent)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         [ProducesResponseType(StatusCodes.Status409Conflict)]
-//         public ActionResult Delete(int id)
-//         {
-//             try
-//             {
-//                 _service.Delete(id);
-//                 return NoContent();
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             catch (ConflictException)
-//             {
-//                 return Conflict();
-//             }
-//         }
-//     }
-// }
+            var specifications = TestData.specifications.Where(v => v.Mark.Id == markId)
+                .Select(s => new SpecificationResponse
+                {
+                    Id = s.Id,
+                    Num = s.Num,
+                    IsCurrent = s.IsCurrent,
+                    Note = s.Note,
+                    CreatedDate = s.CreatedDate,
+                }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<IEnumerable<SpecificationResponse>>(
+                responseBody, options).Should().BeEquivalentTo(specifications);
+        }
+
+        [Fact]
+        public async Task GetAllByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/specifications";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+    }
+}

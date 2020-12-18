@@ -1,110 +1,164 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Net.Mime;
-// using AutoMapper;
-// using DocumentsKM.Dtos;
-// using DocumentsKM.Models;
-// using DocumentsKM.Services;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using DocumentsKM.Dtos;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-// namespace DocumentsKM.Controllers
-// {
-//     [Route("api")]
-//     [Authorize]
-//     [ApiController]
-//     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-//     public class DocsController : ControllerBase
-//     {
-//         private readonly IDocService _service;
-//         private readonly IMapper _mapper;
+namespace DocumentsKM.Tests
+{
+    public class DocsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    {
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-//         public DocsController(
-//             IDocService docService,
-//             IMapper mapper)
-//         {
-//             _service = docService;
-//             _mapper = mapper;
-//         }
-
-//         // Endpoint для получения листов основного комплекта
-//         [HttpGet, Route("marks/{markId}/docs/sheets")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         public ActionResult<IEnumerable<SheetResponse>> GetAllSheetsByMarkId(int markId)
-//         {
-//             var docs = _service.GetAllSheetsByMarkId(markId);
-//             return Ok(_mapper.Map<IEnumerable<SheetResponse>>(docs));
-//         }
-
-//         // Endpoint для получения разрабатываемых прилагаемых документов
-//         [HttpGet, Route("marks/{markId}/docs/attached")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         public ActionResult<IEnumerable<DocResponse>> GetAllAttachedByMarkId(int markId)
-//         {
-//             var docs = _service.GetAllAttachedByMarkId(markId);
-//             return Ok(_mapper.Map<IEnumerable<DocResponse>>(docs));
-//         }
-
-//         [HttpPost, Route("marks/{markId}/docs")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status201Created)]
-//         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult<DocResponse> Create(int markId, [FromBody] DocCreateRequest docRequest)
-//         {
-//             var docModel = _mapper.Map<Doc>(docRequest);
-//             try
-//             {
-//                 _service.Create(
-//                     docModel,
-//                     markId,
-//                     docRequest.TypeId,
-//                     docRequest.CreatorId,
-//                     docRequest.InspectorId,
-//                     docRequest.NormContrId);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
+        public DocsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        {
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
             
-//             return Created($"docs/{docModel.Id}", _mapper.Map<DocResponse>(docModel));
-//         }
+            _authHttpClient = factory.CreateClient();
+        }
 
-//         [HttpPatch, Route("docs/{id}")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status204NoContent)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult Update(int id, [FromBody] DocUpdateRequest docRequest)
-//         {
-//             // DEBUG
-//             // Log.Information(JsonSerializer.Serialize(markRequest));
-//             try
-//             {
-//                 _service.Update(id, docRequest);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             return NoContent();
-//         }
+        [Fact]
+        public async Task GetAllSheetsByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int sheetDocTypeId = 1;
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/docs/sheets";
 
-//         [HttpDelete, Route("docs/{id}")]
-//         [ProducesResponseType(StatusCodes.Status204NoContent)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult Delete(int id)
-//         {
-//             try
-//             {
-//                 _service.Delete(id);
-//                 return NoContent();
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//         }
-//     }
-// }
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var docs = TestData.docs.Where(
+                v => v.Mark.Id == markId && v.Type.Id == sheetDocTypeId)
+                    .Select(d => new SheetResponse
+                    {
+                        Id = d.Id,
+                        Num = d.Num,
+                        Name = d.Name,
+                        Form = d.Form,
+                        Creator = d.Creator == null ? null : new EmployeeBaseResponse
+                        {
+                            Id = d.Creator.Id,
+                            Name = d.Creator.Name,
+                        },
+                        Inspector = d.Inspector == null ? null : new EmployeeBaseResponse
+                        {
+                            Id = d.Inspector.Id,
+                            Name = d.Inspector.Name,
+                        },
+                        NormContr = d.NormContr == null ? null : new EmployeeBaseResponse
+                        {
+                            Id = d.NormContr.Id,
+                            Name = d.NormContr.Name,
+                        },
+                        Note = d.Note,
+                    }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<IEnumerable<SheetResponse>>(
+                responseBody, options).Should().BeEquivalentTo(docs);
+        }
+
+        [Fact]
+        public async Task GetAllSheetsByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/docs/sheets";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetAllAttachedByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int sheetDocTypeId = 1;
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/docs/attached";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var docs = TestData.docs.Where(
+                v => v.Mark.Id == markId && v.Type.Id != sheetDocTypeId)
+                    .Select(d => new DocResponse
+                    {
+                        Id = d.Id,
+                        Num = d.Num,
+                        Type = d.Type,
+                        Name = d.Name,
+                        Form = d.Form,
+                        Creator = d.Creator == null ? null : new EmployeeBaseResponse
+                        {
+                            Id = d.Creator.Id,
+                            Name = d.Creator.Name,
+                        },
+                        Inspector = d.Inspector == null ? null : new EmployeeBaseResponse
+                        {
+                            Id = d.Inspector.Id,
+                            Name = d.Inspector.Name,
+                        },
+                        NormContr = d.NormContr == null ? null : new EmployeeBaseResponse
+                        {
+                            Id = d.NormContr.Id,
+                            Name = d.NormContr.Name,
+                        },
+                        ReleaseNum = d.ReleaseNum,
+                        NumOfPages = d.NumOfPages,
+                        Note = d.Note,
+                    }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<IEnumerable<DocResponse>>(
+                responseBody, options).Should().BeEquivalentTo(docs);
+        }
+
+        [Fact]
+        public async Task GetAllAttachedByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/docs/attached";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+    }
+}

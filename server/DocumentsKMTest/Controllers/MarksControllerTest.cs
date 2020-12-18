@@ -1,116 +1,181 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Net.Mime;
-// using AutoMapper;
-// using DocumentsKM.Dtos;
-// using DocumentsKM.Models;
-// using DocumentsKM.Services;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using DocumentsKM.Dtos;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-// namespace DocumentsKM.Controllers
-// {
-//     [Route("api")]
-//     [Authorize]
-//     [ApiController]
-//     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-//     public class MarksController : ControllerBase
-//     {
-//         private readonly IMarkService _service;
-//         private readonly IMapper _mapper;
+namespace DocumentsKM.Tests
+{
+    public class MarksControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    {
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-//         public MarksController(
-//             IMarkService markService,
-//             IMapper mapper)
-//         {
-//             _service = markService;
-//             _mapper = mapper;
-//         }
-
-//         [HttpGet, Route("subnodes/{subnodeId}/marks")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         public ActionResult<IEnumerable<MarkBaseResponse>> GetAllBySubnodeId(int subnodeId)
-//         {
-//             var marks = _service.GetAllBySubnodeId(subnodeId);
-//             return Ok(_mapper.Map<IEnumerable<MarkBaseResponse>>(marks));
-//         }
-
-//         [HttpGet, Route("marks/{id}")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult<MarkResponse> GetById(int id)
-//         {
-//             var mark = _service.GetById(id);
-//             if (mark != null)
-//                 return Ok(_mapper.Map<MarkResponse>(mark));
-//             return NotFound();
-//         }
-
-//         [HttpGet, Route("marks/{id}/parents")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult<MarkParentResponse> GetMarkParentResponseById(int id)
-//         {
-//             var mark = _service.GetById(id);
-//             if (mark != null)
-//                 return Ok(_mapper.Map<MarkParentResponse>(mark));
-//             return NotFound();
-//         }
-
-//         [HttpPost, Route("marks")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status201Created)]
-//         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-//         [ProducesResponseType(StatusCodes.Status409Conflict)]
-//         public ActionResult<MarkResponse> Create([FromBody] MarkCreateRequest markRequest)
-//         {
-//             var markModel = _mapper.Map<Mark>(markRequest);
-//             try
-//             {
-//                 _service.Create(
-//                     markModel,
-//                     markRequest.SubnodeId,
-//                     markRequest.DepartmentId,
-//                     markRequest.MainBuilderId,
-//                     markRequest.ChiefSpecialistId,
-//                     markRequest.GroupLeaderId);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             catch (ConflictException)
-//             {
-//                 return Conflict();
-//             }
+        public MarksControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        {
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
             
-//             var markResponse = _mapper.Map<MarkResponse>(markModel);
-//             return CreatedAtAction(nameof(GetById), new {Id = markResponse.Id}, markResponse);
-//         }
+            _authHttpClient = factory.CreateClient();
+        }
 
-//         [HttpPatch, Route("marks/{id}")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status204NoContent)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         [ProducesResponseType(StatusCodes.Status409Conflict)]
-//         public ActionResult Update(int id, [FromBody] MarkUpdateRequest markRequest)
-//         {
-//             // DEBUG
-//             // Log.Information(JsonSerializer.Serialize(markRequest));
-//             try
-//             {
-//                 _service.Update(id, markRequest);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             catch (ConflictException)
-//             {
-//                 return Conflict();
-//             }
-//             return NoContent();
-//         }
-//     }
-// }
+        // Added get new mark code endpoint
+
+        [Fact]
+        public async Task GetAllBySubnodeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
+            var endpoint = $"/api/subnodes/{subnodeId}/marks";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var marks = TestData.marks.Where(v => v.Subnode.Id == subnodeId)
+                .Select(v => new MarkBaseResponse
+                {
+                    Id = v.Id,
+                    Code = v.Code,
+                    Department = v.Department,
+                }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<IEnumerable<MarkBaseResponse>>(
+                responseBody, options).Should().BeEquivalentTo(marks);
+        }
+
+        [Fact]
+        public async Task GetAllBySubnodeId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/mark-linked-docs";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetById_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{id}";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var foundMark = TestData.marks.SingleOrDefault(v => v.Id == id);
+            var mark = new MarkBaseResponse
+            {
+                Id = foundMark.Id,
+                Code = foundMark.Code,
+                Department = foundMark.Department,
+            };
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<MarkBaseResponse>(
+                responseBody, options).Should().BeEquivalentTo(mark);
+        }
+
+        [Fact]
+        public async Task GetById_ShouldReturnNotFound_WhenWrongId()
+        {
+            // Arrange
+            int wrongId = 999;
+            var endpoint = $"/api/marks/{wrongId}";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetById_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{id}/parents";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetMarkParentResponseById_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{id}/parents";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var foundMark = TestData.marks.SingleOrDefault(v => v.Id == id);
+            var mark = new MarkBaseResponse
+            {
+                Id = foundMark.Id,
+                Code = foundMark.Code,
+                Department = foundMark.Department,
+            };
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<MarkBaseResponse>(
+                responseBody, options).Should().BeEquivalentTo(mark);
+        }
+
+        [Fact]
+        public async Task GetMarkParentResponseById_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{id}/parents";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+    }
+}

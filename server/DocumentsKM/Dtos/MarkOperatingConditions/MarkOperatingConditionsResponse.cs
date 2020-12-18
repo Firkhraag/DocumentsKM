@@ -4,7 +4,6 @@ namespace DocumentsKM.Dtos
 {
     public class MarkOperatingConditionsResponse
     {
-        public int Id { get; set; }
         public float SafetyCoeff { get; set; }
         public EnvAggressiveness EnvAggressiveness { get; set; }
         public int Temperature { get; set; }

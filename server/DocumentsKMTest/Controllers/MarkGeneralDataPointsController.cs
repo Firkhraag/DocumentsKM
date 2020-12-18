@@ -75,48 +75,6 @@ namespace DocumentsKM.Controllers
                 _mapper.Map<MarkGeneralDataPointResponse>(markGeneralDataPointModel));
         }
 
-        [HttpPatch, Route("marks/{markId}/general-data-points")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult UpdateAllBySectionIds(int markId, [FromBody] List<int> sectionIds)
-        {
-            try
-            {
-                _service.UpdateAllBySectionIds(markId, sectionIds);
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            catch (ConflictException)
-            {
-                return Conflict();
-            }
-            return NoContent();
-        }
-
-        [HttpPatch, Route("users/{userId}/marks/{markId}/general-data-sections/{sectionId}/general-data-points")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<MarkGeneralDataPointResponse>> UpdateAllByPointIds(
-            int userId, int markId, int sectionId, [FromBody] List<int> pointIds)
-        {
-            try
-            {
-                var addedPoints = _service.UpdateAllByPointIds(userId, markId, sectionId, pointIds);
-                return Ok(_mapper.Map<IEnumerable<MarkGeneralDataPointResponse>>(addedPoints));
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            // return NoContent();
-        }
-
         [HttpPatch,
             Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -133,6 +91,10 @@ namespace DocumentsKM.Controllers
             catch (ArgumentNullException)
             {
                 return NotFound();
+            }
+            catch (ConflictException)
+            {
+                return Conflict();
             }
             return NoContent();
         }

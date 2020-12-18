@@ -1,36 +1,67 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Net.Mime;
-// using AutoMapper;
-// using DocumentsKM.Dtos;
-// using DocumentsKM.Models;
-// using DocumentsKM.Services;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using DocumentsKM.Models;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-// // Только листы основного комплекта?
-// namespace DocumentsKM.Controllers
-// {
-//     [Route("api")]
-//     [Authorize]
-//     [ApiController]
-//     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-//     public class LinkedDocTypesController : ControllerBase
-//     {
-//         private readonly ILinkedDocTypeService _service;
+namespace DocumentsKM.Tests
+{
+    public class LinkedDocTypesControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    {
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
 
-//         public LinkedDocTypesController(ILinkedDocTypeService linkedDocTypeService)
-//         {
-//             _service = linkedDocTypeService;
-//         }
+        public LinkedDocTypesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        {
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
+        }
 
-//         [HttpGet, Route("linked-doc-types")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         public ActionResult<IEnumerable<LinkedDocType>> GetAll()
-//         {
-//             var linkedDocTypes = _service.GetAll();
-//             return Ok(linkedDocTypes);
-//         }
-//     }
-// }
+        [Fact]
+        public async Task GetAll_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            var endpoint = "/api/linked-doc-types";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<IEnumerable<LinkedDocType>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.linkedDocTypes);
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            var endpoint = "/api/linked-doc-types";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+    }
+}

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DocumentsKM.Controllers
 {
     [Route("api")]
-    // [Authorize]
+    [Authorize]
     [ApiController]
     public class GeneralDataDocController : ControllerBase
     {

@@ -1,92 +1,101 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Net.Mime;
-// using AutoMapper;
-// using DocumentsKM.Dtos;
-// using DocumentsKM.Models;
-// using DocumentsKM.Services;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using DocumentsKM.Dtos;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-// namespace DocumentsKM.Controllers
-// {
-//     [Route("api")]
-//     [Authorize]
-//     [ApiController]
-//     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-//     public class MarkOperatingConditionsController : ControllerBase
-//     {
-//         private readonly IMarkOperatingConditionsService _service;
-//         private readonly IMapper _mapper;
+namespace DocumentsKM.Tests
+{
+    public class MarkOperatingConditionsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    {
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-//         public MarkOperatingConditionsController(
-//             IMarkOperatingConditionsService markOperatingConditionsService,
-//             IMapper mapper)
-//         {
-//             _service = markOperatingConditionsService;
-//             _mapper = mapper;
-//         }
+        private readonly int _maxMarkId = 2;
 
-//         [HttpGet, Route("marks/{markId}/mark-operating-conditions")]
-//         [ProducesResponseType(StatusCodes.Status200OK)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult<MarkOperatingConditionsResponse> GetByMarkId(int markId)
-//         {
-//             var markOperatingConditions = _service.GetByMarkId(markId);
-//             if (markOperatingConditions != null)
-//                 return Ok(_mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditions));
-//             return NotFound();
-//         }
-
-//         [HttpPost, Route("marks/{markId}/mark-operating-conditions")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status201Created)]
-//         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-//         [ProducesResponseType(StatusCodes.Status409Conflict)]
-//         public ActionResult<MarkOperatingConditions> Create(int markId, [FromBody] MarkOperatingConditionsCreateRequest markOperatingConditionsRequest)
-//         {
-//             var markOperatingConditionsModel = _mapper.Map<MarkOperatingConditions>(markOperatingConditionsRequest);
-//             try
-//             {
-//                 _service.Create(
-//                     markOperatingConditionsModel,
-//                     markId,
-//                     markOperatingConditionsRequest.EnvAggressivenessId,
-//                     markOperatingConditionsRequest.OperatingAreaId,
-//                     markOperatingConditionsRequest.GasGroupId,
-//                     markOperatingConditionsRequest.ConstructionMaterialId,
-//                     markOperatingConditionsRequest.PaintworkTypeId,
-//                     markOperatingConditionsRequest.HighTensileBoltsTypeId);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             catch (ConflictException)
-//             {
-//                 return Conflict();
-//             }
+        public MarkOperatingConditionsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        {
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
             
-//             var markOperatingConditionsResponse = _mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditionsModel);
-//             return Created($"marks/{markId}/mark-operating-conditions", _mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditionsModel));
-//         }
+            _authHttpClient = factory.CreateClient();
+        }
 
-//         [HttpPatch, Route("marks/{markId}/mark-operating-conditions")]
-//         [Consumes(MediaTypeNames.Application.Json)]
-//         [ProducesResponseType(StatusCodes.Status204NoContent)]
-//         [ProducesResponseType(StatusCodes.Status404NotFound)]
-//         public ActionResult Update(int markId, [FromBody] MarkOperatingConditionsUpdateRequest markOperatingConditionsRequest)
-//         {
-//             try
-//             {
-//                 _service.Update(markId, markOperatingConditionsRequest);
-//             }
-//             catch (ArgumentNullException)
-//             {
-//                 return NotFound();
-//             }
-//             return NoContent();
-//         }
-//     }
-// }
+        [Fact]
+        public async Task GetByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, _maxMarkId);
+            var endpoint = $"/api/marks/{markId}/mark-operating-conditions";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var foundMarkOperatingConditions = TestData.markOperatingConditions.SingleOrDefault(
+                v => v.Mark.Id == markId);
+            var markOperatingConditions = new MarkOperatingConditionsResponse
+            {
+                SafetyCoeff = foundMarkOperatingConditions.SafetyCoeff,
+                EnvAggressiveness = foundMarkOperatingConditions.EnvAggressiveness,
+                Temperature = foundMarkOperatingConditions.Temperature,
+                OperatingArea = foundMarkOperatingConditions.OperatingArea,
+                GasGroup = foundMarkOperatingConditions.GasGroup,
+                ConstructionMaterial = foundMarkOperatingConditions.ConstructionMaterial,
+                PaintworkType = foundMarkOperatingConditions.PaintworkType,
+                HighTensileBoltsType = foundMarkOperatingConditions.HighTensileBoltsType,
+            };
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<MarkOperatingConditionsResponse>(
+                responseBody, options).Should().BeEquivalentTo(markOperatingConditions);
+        }
+
+        [Fact]
+        public async Task GetByMarkId_ShouldReturnNotFound_WhenWrongId()
+        {
+            // Arrange
+            int wrongId = 999;
+            var endpoint = $"/api/marks/{wrongId}/mark-operating-conditions";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetByMarkOperatingConditionId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, _maxMarkId);
+            var endpoint = $"/api/marks/{markId}/mark-operating-conditions";
+
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+    }
+}

@@ -178,7 +178,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				})
 				history.push('/linked-docs')
 			} catch (e) {
-				if (e.response.status === 409) {
+				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Данный ссылочный документ уже добавлен к марке')
 					return
 				}
@@ -199,7 +199,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				)
 				history.push('/linked-docs')
 			} catch (e) {
-				if (e.response.status === 409) {
+				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Данный ссылочный документ уже добавлен к марке')
 					return
 				}

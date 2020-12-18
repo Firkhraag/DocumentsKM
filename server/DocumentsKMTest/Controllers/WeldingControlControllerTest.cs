@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public WeldingControlControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -48,8 +47,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.weldingControl.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<WeldingControl>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<WeldingControl>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.weldingControl);
         }
 
         [Fact]

@@ -45,20 +45,15 @@ namespace DocumentsKM.Models
         public virtual Employee NormContr { get; set; }
 
         // Выпуск
-        public int? ReleaseNum { get; set; }
+        [Required]
+        public int ReleaseNum { get; set; }
 
         // Листов
-        public int? NumOfPages { get; set; }
+        [Required]
+        public int NumOfPages { get; set; }
 
         // Прим
         [MaxLength(255)]
         public string Note { get; set; }
-
-        public Doc()
-        {
-            Num = 1;
-            Form = 1.0f;
-            ReleaseNum = 0;
-        }
     }
 }

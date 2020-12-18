@@ -19,7 +19,6 @@ namespace DocumentsKM.Tests
 
         public ProjectsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -48,8 +47,8 @@ namespace DocumentsKM.Tests
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            TestData.projects.Should().BeEquivalentTo(
-                JsonSerializer.Deserialize<IEnumerable<Project>>(responseBody, options));
+            JsonSerializer.Deserialize<IEnumerable<Project>>(
+                responseBody, options).Should().BeEquivalentTo(TestData.projects);
         }
 
         [Fact]

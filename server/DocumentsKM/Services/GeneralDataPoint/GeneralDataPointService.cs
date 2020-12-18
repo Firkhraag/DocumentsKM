@@ -51,8 +51,13 @@ namespace DocumentsKM.Services
             generalDataPoint.Section = foundSection;
             generalDataPoint.User = foundUser;
 
-            generalDataPoint.OrderNum = _repository.GetAllByUserAndSectionId(
-                userId, sectionId).Max(v => v.OrderNum) + 1;
+            // generalDataPoint.OrderNum = _repository.GetAllByUserAndSectionId(
+            //     userId, sectionId).Max(v => v.OrderNum) + 1;
+            var currentPoints = _repository.GetAllByUserAndSectionId(userId, sectionId);
+            if (currentPoints.Count() == 0)
+                generalDataPoint.OrderNum = 1;
+            else
+                generalDataPoint.OrderNum = currentPoints.Max(v => v.OrderNum) + 1;
             
             _repository.Add(generalDataPoint);
         }

@@ -195,7 +195,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				await httpClient.post(`/marks/${mark.id}/docs`, {
 					name: selectedObject.name,
 					form: selectedObject.form,
-					docTypeId: basicSheetDocTypeId,
+					typeId: basicSheetDocTypeId,
 					creatorId: selectedObject.creator?.id,
 					inspectorId: selectedObject.inspector?.id,
 					normContrId: selectedObject.normContr?.id,

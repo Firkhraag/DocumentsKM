@@ -58,6 +58,15 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
+        [HttpGet, Route("subnodes/{subnodeId}/new-mark-code")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<string> GetNewMarkCode(int subnodeId)
+        {
+            var code = _service.GetNewMarkCode(subnodeId);
+            return Ok(code);
+        }
+
         [HttpPost, Route("marks")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]

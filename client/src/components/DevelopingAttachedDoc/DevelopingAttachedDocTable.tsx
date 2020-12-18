@@ -84,7 +84,7 @@ const DevelopingAttachedDocTable = ({
 					{docs.map((d, index) => {
 						return (
 							<tr key={d.id}>
-								<td>{d.num}</td>
+								<td>{index + 1}</td>
                                 <td>{d.type.code}</td>
 								<td>{d.name}</td>
                                 <td>{d.numOfPages}</td>
