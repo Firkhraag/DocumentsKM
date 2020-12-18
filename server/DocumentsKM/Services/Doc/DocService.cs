@@ -88,7 +88,6 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(normContr));
                 doc.NormContr = normContr;
             }
-            // Log.Information(doc.Creator.ToString());
             _repository.Add(doc);
         }
 

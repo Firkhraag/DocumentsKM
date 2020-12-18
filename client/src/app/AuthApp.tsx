@@ -22,6 +22,7 @@ import OtherAttachedDocData from '../components/OtherAttachedDoc/OtherAttachedDo
 import LinkedDocTable from '../components/LinkedDoc/LinkedDocTable'
 import LinkedDocData from '../components/LinkedDoc/LinkedDocData'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
+import AdditionalWork from '../components/AdditionalWork/AdditionalWork'
 import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
 import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import Specification from '../model/Specification'
@@ -201,6 +202,12 @@ const AuthApp = () => {
 						<Route exact path="/operating-conditions">
 							<div className="full-width div-container">
 								<OperatingConditions />
+							</div>
+						</Route>
+
+                        <Route exact path="/additional-work">
+							<div className="full-width div-container">
+								<AdditionalWork />
 							</div>
 						</Route>
 

@@ -33,6 +33,8 @@ namespace DocumentsKM.Tests
             _authHttpClient = factory.CreateClient();
         }
 
+        // Added get new mark code endpoint
+
         [Fact]
         public async Task GetAllBySubnodeId_ShouldReturnOK_WhenAccessTokenIsProvided()
         {

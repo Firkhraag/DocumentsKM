@@ -56,7 +56,8 @@ const PointsSelectPopup = ({
 					if (defaultSelectedPointTexts.includes(s.text)) {
 						const inputElement = refs[i].current as any
 						if (inputElement) {
-							inputElement.checked = true
+                            inputElement.checked = true
+                            selectedPoints.push(points[i])
 						}
 					}
 				}
@@ -95,7 +96,7 @@ const PointsSelectPopup = ({
 	const onSaveButtonClick = async () => {
 		try {
 			const addedPointsResponse = await httpClient.patch(
-				`/marks/${mark.id}/general-data-sections/${sectionId}/general-data-points`,
+				`/users/${user.id}/marks/${mark.id}/general-data-sections/${sectionId}/general-data-points`,
 				selectedPoints.map((v) => v.id)
 			)
 			setSelectedObject({
@@ -103,10 +104,7 @@ const PointsSelectPopup = ({
 				point: null,
             })
 
-            for (let p of addedPointsResponse.data) {
-                optionsObject.points.push(p)
-            }
-
+            optionsObject.points = addedPointsResponse.data
             // for (let p of selectedPoints)
             // {
             //     var doesNotContain = optionsObject.points.filter(v => v.text == p.text).length === 0

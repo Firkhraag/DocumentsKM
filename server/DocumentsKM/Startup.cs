@@ -214,8 +214,9 @@ namespace DocumentsKM
             app.UseHttpsRedirection();
 
             // Logger
-            app.UseMiddleware<RequestResponseLoggingMiddleware>();
-            app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
+            // app.UseMiddleware<RequestResponseLoggingMiddleware>();
+            // app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
+            app.UseSerilogRequestLogging();
 
             app.UseRouting();
 

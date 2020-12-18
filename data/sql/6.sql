@@ -9,7 +9,7 @@ CREATE TABLE docs (
 	norm_contr_id smallint,
 	type_id smallint NOT NULL,
 	release_num smallint,
-	num_of_pages smallint,
+	num_of_pages smallint NOT NULL DEFAULT 0,
 	note varchar(255),
 	UNIQUE (mark_id, num, type_id),
 	CONSTRAINT fk_mark FOREIGN KEY(mark_id) REFERENCES marks(id),

@@ -63,15 +63,15 @@ const LinkedDocTable = ({
 			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
 					<tr>
-						<td>№</td>
-						<td>Шифр</td>
-						<td>Обозначение</td>
-						<td className="linked-doc-name-col-width">
+						<th>№</th>
+						<th>Шифр</th>
+						<th>Обозначение</th>
+						<th className="linked-doc-name-col-width">
 							Наименование
-						</td>
-						<td className="text-centered" colSpan={2}>
+						</th>
+						<th className="text-centered" colSpan={2}>
 							Действия
-						</td>
+						</th>
 					</tr>
 				</thead>
 				<tbody>

@@ -49,33 +49,18 @@ const OperatingConditions = () => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const envAggressivenessResponse = await httpClient.get(
-						`/env-aggressiveness`
-					)
-					const operatingAreasResponse = await httpClient.get(
-						`/operating-areas`
-					)
-					const gasGroupsResponse = await httpClient.get(
-						`/gas-groups`
-					)
-					const constructionMaterialsResponse = await httpClient.get(
-						`/construction-materials`
-					)
-					const paintworkTypesResponse = await httpClient.get(
-						`/paintwork-types`
-					)
-					const highTensileBoltsTypesResponse = await httpClient.get(
-						`/high-tensile-bolts-types`
-					)
+					const operatinConditionsDataResponse = await httpClient.get(
+						`/operating-conditions/data`
+                    )
 					setOptionsObject({
-						envAggressiveness: envAggressivenessResponse.data,
-						operatingAreas: operatingAreasResponse.data,
-						gasGroups: gasGroupsResponse.data,
+						envAggressiveness: operatinConditionsDataResponse.data.envAggressiveness,
+						operatingAreas: operatinConditionsDataResponse.data.operatingAreas,
+						gasGroups: operatinConditionsDataResponse.data.gasGroups,
 						constructionMaterials:
-							constructionMaterialsResponse.data,
-						paintworkTypes: paintworkTypesResponse.data,
+                            operatinConditionsDataResponse.data.constructionMaterials,
+						paintworkTypes: operatinConditionsDataResponse.data.paintworkTypes,
 						highTensileBoltsTypes:
-							highTensileBoltsTypesResponse.data,
+                            operatinConditionsDataResponse.data.highTensileBoltsTypes,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')

@@ -45,8 +45,8 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 
 	useEffect(() => {
 		if (isCreateMode) {
-            if (isCreateMode && subnodeForCreate == null) {
-				history.push('/sheets')
+            if (subnodeForCreate == null) {
+				history.push('/marks')
 				return
             }
             const fetchData = async () => {
@@ -54,13 +54,16 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
                     const departmentsResponse = await httpClient.get(
                         '/departments'
                     )
+                    const newMarkCodeResponse = await httpClient.get(
+                        `/subnodes/${subnodeForCreate.id}/new-mark-code`
+                    )
                     setOptionsObject({
                         ...defaultOptionsObject,
                         departments: departmentsResponse.data,
                     })
                     setSelectedObject({
                         id: 0,
-                        code: '',
+                        code: newMarkCodeResponse.data,
                         name: '',
                         subnode: subnodeForCreate,
                         department: null,

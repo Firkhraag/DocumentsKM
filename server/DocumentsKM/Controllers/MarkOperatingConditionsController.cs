@@ -18,14 +18,48 @@ namespace DocumentsKM.Controllers
     public class MarkOperatingConditionsController : ControllerBase
     {
         private readonly IMarkOperatingConditionsService _service;
+        private readonly IEnvAggressivenessService _envAggressivenessService;
+        private readonly IOperatingAreaService _operatingAreaService;
+        private readonly IGasGroupService _gasGroupService;
+        private readonly IConstructionMaterialService _constructionMaterialService;
+        private readonly IPaintworkTypeService _paintworkTypeService;
+        private readonly IHighTensileBoltsTypeService _highTensileBoltsTypeService;
         private readonly IMapper _mapper;
 
         public MarkOperatingConditionsController(
             IMarkOperatingConditionsService markOperatingConditionsService,
+            IEnvAggressivenessService envAggressivenessService,
+            IOperatingAreaService operatingAreaService,
+            IGasGroupService gasGroupService,
+            IConstructionMaterialService constructionMaterialService,
+            IPaintworkTypeService paintworkTypeService,
+            IHighTensileBoltsTypeService highTensileBoltsTypeService,
             IMapper mapper)
         {
             _service = markOperatingConditionsService;
+            _envAggressivenessService = envAggressivenessService;
+            _operatingAreaService = operatingAreaService;
+            _gasGroupService = gasGroupService;
+            _constructionMaterialService = constructionMaterialService;
+            _paintworkTypeService = paintworkTypeService;
+            _highTensileBoltsTypeService = highTensileBoltsTypeService;
             _mapper = mapper;
+        }
+
+        [HttpGet, Route("operating-conditions/data")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<OperatingConditionsDataResponse> GetData()
+        {
+            var envAggressiveness = _envAggressivenessService.GetAll();
+            var operatingAreas = _operatingAreaService.GetAll();
+            var gasGroups = _gasGroupService.GetAll();
+            var constructionMaterials = _constructionMaterialService.GetAll();
+            var paintworkTypes = _paintworkTypeService.GetAll();
+            var highTensileBoltsTypes = _highTensileBoltsTypeService.GetAll();
+            return Ok(new OperatingConditionsDataResponse(
+                envAggressiveness, operatingAreas, gasGroups,
+                constructionMaterials, paintworkTypes, highTensileBoltsTypes
+            ));
         }
 
         [HttpGet, Route("marks/{markId}/mark-operating-conditions")]
