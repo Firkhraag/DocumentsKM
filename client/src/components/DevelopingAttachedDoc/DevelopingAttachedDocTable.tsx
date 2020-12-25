@@ -118,7 +118,7 @@ const DevelopingAttachedDocTable = ({
 									onClick={() =>
 										setPopupObj({
 											isShown: true,
-											msg: `Вы действительно хотите удалить прилагаемый документ №${d.num}?`,
+											msg: `Вы действительно хотите удалить прилагаемый документ?`,
 											onAccept: () =>
 												onDeleteClick(index, d.id),
 											onCancel: () =>

@@ -99,6 +99,7 @@ namespace DocumentsKM.Data
         public DbSet<MarkOperatingConditions> MarkOperatingConditions { get; set; }
 
         public DbSet<AttachedDoc> AttachedDocs { get; set; }
+        public DbSet<AdditionalWork> AdditionalWork { get; set; }
 
         public DbSet<GeneralDataSection> GeneralDataSections { get; set; }
         public DbSet<GeneralDataPoint> GeneralDataPoints { get; set; }
