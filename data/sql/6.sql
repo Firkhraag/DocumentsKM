@@ -8,7 +8,7 @@ CREATE TABLE docs (
 	inspector_id smallint,
 	norm_contr_id smallint,
 	type_id smallint NOT NULL,
-	release_num smallint,
+	release_num smallint NOT NULL DEFAULT 0,
 	num_of_pages smallint NOT NULL DEFAULT 0,
 	note varchar(255),
 	UNIQUE (mark_id, num, type_id),

@@ -22,7 +22,8 @@ import OtherAttachedDocData from '../components/OtherAttachedDoc/OtherAttachedDo
 import LinkedDocTable from '../components/LinkedDoc/LinkedDocTable'
 import LinkedDocData from '../components/LinkedDoc/LinkedDocData'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
-import AdditionalWork from '../components/AdditionalWork/AdditionalWork'
+import AdditionalWorkTable from '../components/AdditionalWork/AdditionalWorkTable'
+import AdditionalWorkData from '../components/AdditionalWork/AdditionalWorkData'
 import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
 import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import Specification from '../model/Specification'
@@ -30,13 +31,15 @@ import Construction from '../model/Construction'
 import Doc from '../model/Doc'
 import AttachedDoc from '../model/AttachedDoc'
 import MarkLinkedDoc from '../model/MarkLinkedDoc'
+import AdditionalWork from '../model/AdditionalWork'
 
 const AuthApp = () => {
 	const [subnode, setSubnode] = useState(null)
 	const [popupObj, setPopupObj] = useState(defaultPopupObj)
-    const [specification, setSpecification] = useState<Specification>(null)
-    const [construction, setConstruction] = useState<Construction>(null)
+	const [specification, setSpecification] = useState<Specification>(null)
+	const [construction, setConstruction] = useState<Construction>(null)
 	const [sheet, setSheet] = useState<Doc>(null)
+	const [additionalWork, setAdditionalWork] = useState<AdditionalWork>(null)
 	const [developingAttachedDoc, setDevelopingAttachedDoc] = useState<Doc>(
 		null
 	)
@@ -61,12 +64,18 @@ const AuthApp = () => {
 						</Route>
 						<Route exact path="/marks/:markId">
 							<div className="full-width div-container">
-								<MarkData isCreateMode={false} subnodeForCreate={subnode} />
+								<MarkData
+									isCreateMode={false}
+									subnodeForCreate={subnode}
+								/>
 							</div>
 						</Route>
 						<Route exact path="/mark-create">
 							<div className="full-width div-container">
-								<MarkData isCreateMode={true} subnodeForCreate={subnode} />
+								<MarkData
+									isCreateMode={true}
+									subnodeForCreate={subnode}
+								/>
 							</div>
 						</Route>
 
@@ -77,22 +86,39 @@ const AuthApp = () => {
 						</Route>
 						<Route exact path="/specifications">
 							<div className="full-width div-container">
-								<SpecificationTable setPopupObj={setPopupObj} setSpecification={setSpecification} />
+								<SpecificationTable
+									setPopupObj={setPopupObj}
+									setSpecification={setSpecification}
+								/>
 							</div>
 						</Route>
 						<Route exact path="/specifications/:specificationId">
 							<div className="full-width div-container">
-								<SpecificationData specification={specification} />
+								<SpecificationData
+									specification={specification}
+								/>
 							</div>
 						</Route>
-                        <Route exact path="/specifications/:specificationId/constructions/:constructionId">
+						<Route
+							exact
+							path="/specifications/:specificationId/constructions/:constructionId"
+						>
 							<div className="full-width div-container">
-								<ConstructionData construction={construction} isCreateMode={false} />
+								<ConstructionData
+									construction={construction}
+									isCreateMode={false}
+								/>
 							</div>
 						</Route>
-                        <Route exact path="/specifications/:specificationId/construction-create">
+						<Route
+							exact
+							path="/specifications/:specificationId/construction-create"
+						>
 							<div className="full-width div-container">
-								<ConstructionData construction={construction} isCreateMode={true} />
+								<ConstructionData
+									construction={construction}
+									isCreateMode={true}
+								/>
 							</div>
 						</Route>
 
@@ -205,19 +231,38 @@ const AuthApp = () => {
 							</div>
 						</Route>
 
-                        <Route exact path="/additional-work">
+						<Route exact path="/additional-work">
 							<div className="full-width div-container">
-								<AdditionalWork />
+								<AdditionalWorkTable
+									setPopupObj={setPopupObj}
+									setAdditionalWork={setAdditionalWork}
+								/>
+							</div>
+						</Route>
+                        <Route exact path="/additional-work/:additionalWorkId">
+							<div className="full-width div-container">
+								<AdditionalWorkData
+									additionalWork={additionalWork}
+									isCreateMode={false}
+								/>
+							</div>
+						</Route>
+						<Route exact path="/additional-work-add">
+							<div className="full-width div-container">
+								<AdditionalWorkData
+									additionalWork={additionalWork}
+									isCreateMode={true}
+								/>
 							</div>
 						</Route>
 
-                        <Route exact path="/general-data">
+						<Route exact path="/general-data">
 							<div className="full-width div-container">
 								<GeneralData setPopupObj={setPopupObj} />
 							</div>
 						</Route>
 
-                        <Route exact path="/user/general-data">
+						<Route exact path="/user/general-data">
 							<div className="full-width div-container">
 								<UserGeneralData setPopupObj={setPopupObj} />
 							</div>

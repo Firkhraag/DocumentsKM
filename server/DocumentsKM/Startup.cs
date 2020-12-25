@@ -152,6 +152,7 @@ namespace DocumentsKM
             services.AddScoped<IMarkOperatingConditionsService, MarkOperatingConditionsService>();
 
             services.AddScoped<IAttachedDocService, AttachedDocService>();
+            services.AddScoped<IAdditionalWorkService, AdditionalWorkService>();
             
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
             services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
@@ -193,6 +194,7 @@ namespace DocumentsKM
             services.AddScoped<IMarkOperatingConditionsRepo, SqlMarkOperatingConditionsRepo>();
 
             services.AddScoped<IAttachedDocRepo, SqlAttachedDocRepo>();
+            services.AddScoped<IAdditionalWorkRepo, SqlAdditionalWorkRepo>();
 
             services.AddScoped<IGeneralDataSectionRepo, SqlGeneralDataSectionRepo>();
             services.AddScoped<IGeneralDataPointRepo, SqlGeneralDataPointRepo>();

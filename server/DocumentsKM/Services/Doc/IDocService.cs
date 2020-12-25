@@ -6,6 +6,10 @@ namespace DocumentsKM.Services
 {
     public interface IDocService
     {
+        // Получить все документы по id марки
+        IEnumerable<Doc> GetAllByMarkId(int markId);
+        // Получить все документы по id марки
+        (IEnumerable<Doc>, IEnumerable<Doc>) GetAddWorkByMarkId(int markId);
         // Получить все прилагаемые документы по id марки
         IEnumerable<Doc> GetAllAttachedByMarkId(int markId);
         // Получить все листы по id марки
