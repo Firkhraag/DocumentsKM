@@ -95,7 +95,9 @@ const AuthApp = () => {
 						<Route exact path="/specifications/:specificationId">
 							<div className="full-width div-container">
 								<SpecificationData
-									specification={specification}
+                                    specification={specification}
+                                    setPopupObj={setPopupObj}
+									setConstruction={setConstruction}
 								/>
 							</div>
 						</Route>
@@ -106,7 +108,8 @@ const AuthApp = () => {
 							<div className="full-width div-container">
 								<ConstructionData
 									construction={construction}
-									isCreateMode={false}
+                                    isCreateMode={false}
+                                    specificationId={specification == null ? -1 : specification.id}
 								/>
 							</div>
 						</Route>
@@ -117,7 +120,8 @@ const AuthApp = () => {
 							<div className="full-width div-container">
 								<ConstructionData
 									construction={construction}
-									isCreateMode={true}
+                                    isCreateMode={true}
+                                    specificationId={specification == null ? -1 : specification.id}
 								/>
 							</div>
 						</Route>

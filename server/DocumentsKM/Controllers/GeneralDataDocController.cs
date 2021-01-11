@@ -22,7 +22,7 @@ namespace DocumentsKM.Controllers
         public async Task<IActionResult> GetGeneralDataDocument(int markId)
         {
             var file = await _service.GetDocByMarkId(markId);
-            return File(file, "application/x-tex", "Общие данные.tex");
+            return File(file, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Общие данные.docx");
         }
     }
 }

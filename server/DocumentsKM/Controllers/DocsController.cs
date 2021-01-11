@@ -28,17 +28,6 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet, Route("marks/{markId}/docs")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<AddWorkDocResponse>> GetAllByMarkId(int markId)
-        {
-            // var docs = _service.GetAllByMarkId(markId);
-            (var docsGroupedByCreator, var docsGroupedByNormContr) = _service.GetAddWorkByMarkId(markId);
-            return Ok(new { DocsGroupedByCreator = _mapper.Map<IEnumerable<AddWorkDocResponse>>(
-                docsGroupedByCreator), docsGroupedByNormContr = _mapper.Map<IEnumerable<AddWorkDocResponse>>(
-                    docsGroupedByNormContr) });
-        }
-
         // Endpoint для получения листов основного комплекта
         [HttpGet, Route("marks/{markId}/docs/sheets")]
         [ProducesResponseType(StatusCodes.Status200OK)]

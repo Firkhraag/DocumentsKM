@@ -130,10 +130,11 @@ namespace DocumentsKM
             services.AddScoped<IMarkService, MarkService>();
             services.AddScoped<IMarkApprovalService, MarkApprovalService>();
 
-            services.AddScoped<ISpecificationService, SpecificationService>();
             services.AddScoped<IConstructionTypeService, ConstructionTypeService>();
             services.AddScoped<IConstructionSubtypeService, ConstructionSubtypeService>();
             services.AddScoped<IWeldingControlService, WeldingControlService>();
+            services.AddScoped<ISpecificationService, SpecificationService>();
+            services.AddScoped<IConstructionService, ConstructionService>();
 
             services.AddScoped<IDocService, DocService>();
             services.AddScoped<ISheetNameService, SheetNameService>();
@@ -172,10 +173,11 @@ namespace DocumentsKM
             services.AddScoped<IMarkRepo, SqlMarkRepo>();
             services.AddScoped<IMarkApprovalRepo, SqlMarkApprovalRepo>();
 
-            services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
             services.AddScoped<IConstructionTypeRepo, SqlConstructionTypeRepo>();
             services.AddScoped<IConstructionSubtypeRepo, SqlConstructionSubtypeRepo>();
             services.AddScoped<IWeldingControlRepo, SqlWeldingControlRepo>();
+            services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
+            services.AddScoped<IConstructionRepo, SqlConstructionRepo>();
 
             services.AddScoped<IDocRepo, SqlDocRepo>();
             services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();

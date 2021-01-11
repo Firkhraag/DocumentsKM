@@ -1,27 +1,17 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DocumentsKM.Models
+namespace DocumentsKM.Dtos
 {
-    public class Construction
+    public class ConstructionCreateRequest
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        [ForeignKey("SpecificationId")]
-        public virtual Specification Specification { get; set; }
-
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
 
         [Required]
-        [ForeignKey("TypeId")]
-        public virtual ConstructionType Type { get; set; }
+        public int TypeId { get; set; }
 
-        [ForeignKey("SubtypeId")]
-        public virtual ConstructionSubtype Subtype { get; set; }
+        public int? SubtypeId { get; set; }
 
         [MaxLength(10)]
         public string Valuation { get; set; }
@@ -42,10 +32,16 @@ namespace DocumentsKM.Models
         public bool HasFlangedConnections { get; set; }
 
         [Required]
-        [ForeignKey("WeldingControlId")]
-        public virtual WeldingControl WeldingControl { get; set; }
+        public int WeldingControlId { get; set; }
 
         [Required]
         public float PaintworkCoeff { get; set; }
+
+        public ConstructionCreateRequest()
+        {
+            SubtypeId = null;
+            Valuation = null;
+            StandardAlbumCode = null;
+        }
     }
 }

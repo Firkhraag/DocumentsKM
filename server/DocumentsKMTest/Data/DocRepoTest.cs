@@ -163,10 +163,11 @@ namespace DocumentsKM.Tests
         [Fact]
         public void GetById_ShouldReturnNull()
         {
-            // Act
+            // Arrange
             var context = GetContext(TestData.docs);
             var repo = new SqlDocRepo(context);
 
+            // Act
             var doc = repo.GetById(999);
 
             // Assert
@@ -221,6 +222,7 @@ namespace DocumentsKM.Tests
             {
                 docs.Add(new Doc
                 {
+                    Id = d.Id,
                     Mark = d.Mark,
                     Type = d.Type,
                     Name = d.Name,

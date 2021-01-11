@@ -40,7 +40,12 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 		false
 	)
 	const [isPointsSelectionShown, setPointsSelectionShown] = useState(false)
-	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
+    const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
+    
+    let createBtnDisabled = false
+    if (optionsObject.points.length > 0 && optionsObject.points.map(v => v.text).includes(selectedObject.pointText)) {
+        createBtnDisabled = true
+    }
 
 	const [errMsg, setErrMsg] = useState('')
 
@@ -72,7 +77,8 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 			setSelectedObject({
 				...selectedObject,
 				section: null,
-				point: null,
+                point: null,
+                pointText: '',
 			})
 			return
 		}
@@ -90,7 +96,8 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 				setSelectedObject({
 					...selectedObject,
 					section: v,
-					point: null,
+                    point: null,
+                    pointText: '',
 				})
 			} else {
 				try {
@@ -105,7 +112,8 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					setSelectedObject({
 						...selectedObject,
 						section: v,
-						point: null,
+                        point: null,
+                        pointText: '',
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -263,7 +271,6 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					...selectedObject,
 					point: response.data,
 				})
-				window.scrollTo(0, 0)
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
@@ -281,11 +288,11 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 				`/marks/${mark.id}/general-data`
 			)
 			const blob = new Blob([response.data], {
-				type: 'application/x-tex',
+				type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 			})
 			const link = document.createElement('a')
 			link.href = window.URL.createObjectURL(blob)
-			link.download = 'Общие данные.tex'
+			link.download = 'Общие данные.docx'
 			link.click()
 			link.remove()
 		} catch (e) {
@@ -574,7 +581,8 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					<Button
 						variant="secondary"
 						className="flex-grow mrg-left"
-						onClick={onCreatePointButtonClick}
+                        onClick={onCreatePointButtonClick}
+                        disabled={createBtnDisabled ? true : false}
 					>
 						Добавить новый пункт
 					</Button>

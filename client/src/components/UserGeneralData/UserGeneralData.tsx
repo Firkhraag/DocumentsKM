@@ -33,7 +33,12 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 	const [optionsObject, setOptionsObject] = useState({
 		sections: [] as GeneralDataSection[],
 		points: [] as GeneralDataPoint[],
-	})
+    })
+    
+    let createBtnDisabled = false
+    if (optionsObject.points.length > 0 && optionsObject.points.map(v => v.text).includes(selectedObject.pointText)) {
+        createBtnDisabled = true
+    }
 
 	const [errMsg, setErrMsg] = useState('')
 
@@ -65,7 +70,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 			setSelectedObject({
 				...selectedObject,
 				section: null,
-				point: null,
+                point: null,
+                pointText: '',
 			})
 			return
 		}
@@ -83,7 +89,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 				setSelectedObject({
 					...selectedObject,
 					section: v,
-					point: null,
+                    point: null,
+                    pointText: '',
 				})
 			} else {
 				try {
@@ -98,7 +105,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 					setSelectedObject({
 						...selectedObject,
 						section: v,
-						point: null,
+                        point: null,
+                        pointText: '',
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -256,7 +264,6 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 					...selectedObject,
 					point: response.data,
                 })
-                window.scrollTo(0, 0)
 			} catch (e) {
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
@@ -504,7 +511,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 					<Button
 						variant="secondary"
 						className="flex-grow mrg-left"
-						onClick={onCreatePointButtonClick}
+                        onClick={onCreatePointButtonClick}
+                        disabled={createBtnDisabled ? true : false}
 					>
 						Добавить новый пункт
 					</Button>

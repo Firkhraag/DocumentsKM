@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
+using System.Text.Json;
 using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
@@ -8,6 +9,7 @@ using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace DocumentsKM.Controllers
 {
@@ -15,42 +17,44 @@ namespace DocumentsKM.Controllers
     [Authorize]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class AdditionalWorkController : ControllerBase
+    public class ConstructionsController : ControllerBase
     {
-        private readonly IAdditionalWorkService _service;
+        private readonly IConstructionService _service;
         private readonly IMapper _mapper;
 
-        public AdditionalWorkController(
-            IAdditionalWorkService docService,
+        public ConstructionsController(
+            IConstructionService constructionService,
             IMapper mapper)
         {
-            _service = docService;
+            _service = constructionService;
             _mapper = mapper;
         }
 
-        [HttpGet, Route("marks/{markId}/additional-work")]
+        [HttpGet, Route("specifications/{specificationId}/constructions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<AdditionalWorkResponse>> GetAllByMarkId(int markId)
+        public ActionResult<IEnumerable<ConstructionResponse>> GetAllBySpecificationId(int specificationId)
         {
-            return Ok(_service.GetAllByMarkId(markId));
+            var docs = _service.GetAllBySpecificationId(specificationId);
+            return Ok(_mapper.Map<IEnumerable<ConstructionResponse>>(docs));
         }
 
-        [HttpPost, Route("marks/{markId}/additional-work")]
+        [HttpPost, Route("specifications/{specificationId}/constructions")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<AdditionalWorkResponse> Create(
-            int markId, [FromBody] AdditionalWorkCreateRequest additionalWorkRequest)
+        public ActionResult<ConstructionResponse> Create(int specificationId, [FromBody] ConstructionCreateRequest constructionRequest)
         {
-            var additionalWorkModel = _mapper.Map<AdditionalWork>(additionalWorkRequest);
+            var constructionModel = _mapper.Map<Construction>(constructionRequest);
             try
             {
                 _service.Create(
-                    additionalWorkModel,
-                    markId,
-                    additionalWorkRequest.EmployeeId);
+                    constructionModel,
+                    specificationId,
+                    constructionRequest.TypeId,
+                    constructionRequest.SubtypeId,
+                    constructionRequest.WeldingControlId);
             }
             catch (ArgumentNullException)
             {
@@ -60,21 +64,21 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"additional-work/{additionalWorkModel.Id}", _mapper.Map<AdditionalWorkResponse>(additionalWorkModel));
+            return Created($"constructions/{constructionModel.Id}", _mapper.Map<ConstructionResponse>(constructionModel));
         }
 
-        [HttpPatch, Route("additional-work/{id}")]
+        [HttpPatch, Route("constructions/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int id, [FromBody] AdditionalWorkUpdateRequest additionalWorkRequest)
+        public ActionResult Update(int id, [FromBody] ConstructionUpdateRequest constructionRequest)
         {
             // DEBUG
-            // Log.Information(JsonSerializer.Serialize(markRequest));
+            Log.Information(JsonSerializer.Serialize(constructionRequest));
             try
             {
-                _service.Update(id, additionalWorkRequest);
+                _service.Update(id, constructionRequest);
             }
             catch (ArgumentNullException)
             {
@@ -87,7 +91,7 @@ namespace DocumentsKM.Controllers
             return NoContent();
         }
 
-        [HttpDelete, Route("additional-work/{id}")]
+        [HttpDelete, Route("constructions/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult Delete(int id)

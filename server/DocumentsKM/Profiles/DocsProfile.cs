@@ -11,7 +11,6 @@ namespace DocumentsKM.Profiles
             CreateMap<Doc, SheetResponse>();
             CreateMap<Doc, DocResponse>();
             CreateMap<DocCreateRequest, Doc>();
-            CreateMap<Doc, AddWorkDocResponse>();
         }
     }
 }

@@ -34,26 +34,6 @@ namespace DocumentsKM.Services
             return _repository.GetAllByMarkId(markId);
         }
 
-        public (IEnumerable<Doc>, IEnumerable<Doc>) GetAddWorkByMarkId(int markId)
-        {
-            var docs = _repository.GetAllByMarkId(markId);
-            var docsGroupedByCreator = docs.Where(v => v.Creator != null).GroupBy(d => d.Creator).Select(
-                g => new Doc
-                {
-                    Creator = g.First().Creator,
-                    Form = g.Sum(v => v.Form),
-                    NumOfPages = g.Sum(v => v.NumOfPages),
-                });
-            var docsGroupedByNormContr = docs.Where(v => v.NormContr != null).GroupBy(d => d.NormContr).Select(
-                g => new Doc
-                {
-                    NormContr = g.First().NormContr,
-                    Form = g.Sum(v => v.Form),
-                    NumOfPages = g.Sum(v => v.NumOfPages),
-                });
-            return (docsGroupedByCreator, docsGroupedByNormContr);
-        }
-
         public IEnumerable<Doc> GetAllSheetsByMarkId(int markId)
         {
             return _repository.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);

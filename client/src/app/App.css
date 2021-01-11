@@ -94,6 +94,10 @@
     width: 200px;
 }
 
+.construction-name-col-width {
+    width: 30em;
+}
+
 /* Linked Doc */
 .linked-doc-name-col-width {
 	width: 35em;

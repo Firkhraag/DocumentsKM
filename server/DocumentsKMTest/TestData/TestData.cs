@@ -679,6 +679,163 @@ namespace DocumentsKM.Tests
             },
         };
 
+        public static readonly List<Construction> constructions = new List<Construction>
+        {
+            new Construction
+            {
+                Id = 1,
+                Specification = specifications[0],
+                Name = "N1",
+                Type = constructionTypes[0],
+                Subtype = constructionSubtypes[0],
+                Valuation = "1701",
+                NumOfStandardConstructions = 1,
+                StandardAlbumCode = "C1",
+                HasEdgeBlunting = true,
+                HasDynamicLoad = false,
+                HasFlangedConnections = true,
+                WeldingControl = weldingControl[0],
+                PaintworkCoeff = 1,
+            },
+            new Construction
+            {
+                Id = 2,
+                Specification = specifications[0],
+                Name = "N2",
+                Type = constructionTypes[1],
+                Valuation = "1702",
+                NumOfStandardConstructions = 1,
+                StandardAlbumCode = "C1",
+                HasEdgeBlunting = true,
+                HasDynamicLoad = false,
+                HasFlangedConnections = true,
+                WeldingControl = weldingControl[1],
+                PaintworkCoeff = 1,
+            },
+            new Construction
+            {
+                Id = 3,
+                Specification = specifications[1],
+                Name = "N3",
+                Type = constructionTypes[0],
+                Valuation = "1703",
+                NumOfStandardConstructions = 0,
+                HasEdgeBlunting = true,
+                HasDynamicLoad = false,
+                HasFlangedConnections = true,
+                WeldingControl = weldingControl[1],
+                PaintworkCoeff = 1,
+            },
+            new Construction
+            {
+                Id = 4,
+                Specification = specifications[1],
+                Name = "N4",
+                Type = constructionTypes[2],
+                Valuation = "1704",
+                NumOfStandardConstructions = 0,
+                HasEdgeBlunting = true,
+                HasDynamicLoad = false,
+                HasFlangedConnections = true,
+                WeldingControl = weldingControl[2],
+                PaintworkCoeff = 2,
+            },
+            new Construction
+            {
+                Id = 5,
+                Specification = specifications[2],
+                Name = "N5",
+                Type = constructionTypes[0],
+                Valuation = "1705",
+                NumOfStandardConstructions = 0,
+                HasEdgeBlunting = true,
+                HasDynamicLoad = false,
+                HasFlangedConnections = true,
+                WeldingControl = weldingControl[0],
+                PaintworkCoeff = 2,
+            },
+        };
+
+        public static readonly List<MarkOperatingConditions> markOperatingConditions = new List<MarkOperatingConditions>
+        {
+            new MarkOperatingConditions
+            {
+                Mark=marks[0],
+                SafetyCoeff=1.0f,
+                EnvAggressiveness=envAggressiveness[0],
+                Temperature=-34,
+                OperatingArea=operatingAreas[0],
+                GasGroup=gasGroups[0],
+                ConstructionMaterial=constructionMaterials[0],
+                PaintworkType=paintworkTypes[0],
+                HighTensileBoltsType=highTensileBoltsTypes[0],
+            },
+            new MarkOperatingConditions
+            {
+                Mark=marks[1],
+                SafetyCoeff=1.0f,
+                EnvAggressiveness=envAggressiveness[1],
+                Temperature=-34,
+                OperatingArea=operatingAreas[1],
+                GasGroup=gasGroups[0],
+                ConstructionMaterial=constructionMaterials[0],
+                PaintworkType=paintworkTypes[1],
+                HighTensileBoltsType=highTensileBoltsTypes[0],
+            },
+        };
+
+        public static readonly List<AdditionalWork> additionalWork = new List<AdditionalWork>
+        {
+            new AdditionalWork
+            {
+                Id = 1,
+                Mark = marks[0],
+                Employee = employees[0],
+                Valuation = 1,
+                MetalOrder = 1,
+            },
+            new AdditionalWork
+            {
+                Id = 2,
+                Mark = marks[0],
+                Employee = employees[1],
+                Valuation = 1,
+                MetalOrder = 1,
+            },
+            new AdditionalWork
+            {
+                Id = 3,
+                Mark = marks[1],
+                Employee = employees[0],
+                Valuation = 2,
+                MetalOrder = 2,
+            },
+            new AdditionalWork
+            {
+                Id = 4,
+                Mark = marks[1],
+                Employee = employees[1],
+                Valuation = 2,
+                MetalOrder = 2,
+            },
+            new AdditionalWork
+            {
+                Id = 5,
+                Mark = marks[2],
+                Employee = employees[2],
+                Valuation = 3,
+                MetalOrder = 3,
+            },
+            new AdditionalWork
+            {
+                Id = 6,
+                Mark = marks[2],
+                Employee = employees[1],
+                Valuation = 3,
+                MetalOrder = 3,
+            },
+        };
+
         // LinkedDoc ids: 1-3
         public static readonly List<MarkLinkedDoc> markLinkedDocs = new List<MarkLinkedDoc>
         {
@@ -737,34 +894,6 @@ namespace DocumentsKM.Tests
             {
                 Id=3,
                 Name="S3",
-            },
-        };
-
-        public static readonly List<MarkOperatingConditions> markOperatingConditions = new List<MarkOperatingConditions>
-        {
-            new MarkOperatingConditions
-            {
-                Mark=marks[0],
-                SafetyCoeff=1.0f,
-                EnvAggressiveness=envAggressiveness[0],
-                Temperature=-34,
-                OperatingArea=operatingAreas[0],
-                GasGroup=gasGroups[0],
-                ConstructionMaterial=constructionMaterials[0],
-                PaintworkType=paintworkTypes[0],
-                HighTensileBoltsType=highTensileBoltsTypes[0],
-            },
-            new MarkOperatingConditions
-            {
-                Mark=marks[1],
-                SafetyCoeff=1.0f,
-                EnvAggressiveness=envAggressiveness[1],
-                Temperature=-34,
-                OperatingArea=operatingAreas[1],
-                GasGroup=gasGroups[0],
-                ConstructionMaterial=constructionMaterials[0],
-                PaintworkType=paintworkTypes[1],
-                HighTensileBoltsType=highTensileBoltsTypes[0],
             },
         };
 

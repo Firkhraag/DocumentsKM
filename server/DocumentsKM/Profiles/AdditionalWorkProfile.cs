@@ -8,7 +8,7 @@ namespace DocumentsKM.Profiles
     {
         public AdditionalWorkProfile()
         {
-            CreateMap<AdditionalWork, AdditionalWorkResponse>();
+            // CreateMap<AdditionalWork, AdditionalWorkResponse>();
             CreateMap<AdditionalWorkCreateRequest, AdditionalWork>();
             CreateMap<AdditionalWorkUpdateRequest, AdditionalWork>();
         }

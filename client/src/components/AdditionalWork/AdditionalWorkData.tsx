@@ -10,10 +10,8 @@ import httpClient from '../../axios'
 import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import AdditionalWork from '../../model/AdditionalWork'
-import DocType from '../../model/DocType'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectstyle } from '../../util/react-select-style'
 
 type AdditionalWorkDataProps = {
@@ -31,10 +29,12 @@ const AdditionalWorkData = ({
 	const [selectedObject, setSelectedObject] = useState<AdditionalWork>(
 		isCreateMode
 			? {
-                id: 0,
-                employee: null,
-                valuation: 0,
-                metalOrder: 0,
+					id: 0,
+					employee: null,
+					valuation: 0,
+					metalOrder: 0,
+					drawingsCompleted: 0,
+					drawingsCheck: 0,
 			  }
 			: additionalWork
 	)
@@ -50,30 +50,26 @@ const AdditionalWorkData = ({
 			}
 			const fetchData = async () => {
 				try {
-                    const employeesResponse = await httpClient.get(
+					const employeesResponse = await httpClient.get(
 						`/departments/${mark.department.id}/employees`
-                    )
-                    setEmployees(employeesResponse.data)
+					)
+					setEmployees(employeesResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
 			}
 			fetchData()
 		}
-    }, [mark])
-    
-    const onEmployeeSelect = async (id: number) => {
+	}, [mark])
+
+	const onEmployeeSelect = async (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
 				employee: null,
 			})
 		}
-		const v = getFromOptions(
-			id,
-			employees,
-			selectedObject.employee
-		)
+		const v = getFromOptions(id, employees, selectedObject.employee)
 		if (v != null) {
 			setSelectedObject({
 				...selectedObject,
@@ -81,31 +77,31 @@ const AdditionalWorkData = ({
 			})
 		}
 	}
-    
-    const onValuationChange = (event: React.FormEvent<HTMLInputElement>) => {
-        setSelectedObject({
+
+	const onValuationChange = (event: React.FormEvent<HTMLInputElement>) => {
+		setSelectedObject({
 			...selectedObject,
 			valuation: parseInt(event.currentTarget.value),
 		})
 	}
 
 	const onOrderChange = (event: React.FormEvent<HTMLInputElement>) => {
-        setSelectedObject({
+		setSelectedObject({
 			...selectedObject,
 			metalOrder: parseInt(event.currentTarget.value),
 		})
 	}
 
 	const checkIfValid = () => {
-        if (selectedObject.employee == null) {
+		if (selectedObject.employee == null) {
 			setErrMsg('Пожалуйста, выберите исполнителя')
 			return false
 		}
 		if (isNaN(selectedObject.valuation)) {
 			setErrMsg('Пожалуйста, введите расчет')
 			return false
-        }
-        if (isNaN(selectedObject.metalOrder)) {
+		}
+		if (isNaN(selectedObject.metalOrder)) {
 			setErrMsg('Пожалуйста, введите заказ металла')
 			return false
 		}
@@ -116,9 +112,9 @@ const AdditionalWorkData = ({
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/additional-work`, {
-                    employeeId: selectedObject.employee.id,
-                    valuation: selectedObject.valuation,
-                    order: selectedObject.metalOrder,
+					employeeId: selectedObject.employee.id,
+					valuation: selectedObject.valuation,
+					order: selectedObject.metalOrder,
 				})
 				history.push('/additional-work')
 			} catch (e) {
@@ -131,17 +127,26 @@ const AdditionalWorkData = ({
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-				await httpClient.patch(`/marks/${mark.id}/additional-work/${selectedObject.id}`, {
-                    employeeId: selectedObject.employee.id === additionalWork.employee.id
-                        ? undefined
-                        : selectedObject.employee.id,
-                    valuation: selectedObject.valuation === additionalWork.valuation
-                        ? undefined
-                        : selectedObject.valuation,
-                    order: selectedObject.metalOrder === additionalWork.metalOrder
-                        ? undefined
-                        : selectedObject.metalOrder,
-				})
+				await httpClient.patch(
+					`/marks/${mark.id}/additional-work/${selectedObject.id}`,
+					{
+						employeeId:
+							selectedObject.employee.id ===
+							additionalWork.employee.id
+								? undefined
+								: selectedObject.employee.id,
+						valuation:
+							selectedObject.valuation ===
+							additionalWork.valuation
+								? undefined
+								: selectedObject.valuation,
+						order:
+							selectedObject.metalOrder ===
+							additionalWork.metalOrder
+								? undefined
+								: selectedObject.metalOrder,
+					}
+				)
 				history.push('/additional-work')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
@@ -153,19 +158,19 @@ const AdditionalWorkData = ({
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">
-                Учет дополнительных проектных работ
+				Учет дополнительных проектных работ
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-                <Form.Group className="flex-cent-v">
-                    <Form.Label
+				<Form.Group className="flex-cent-v">
+					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="code"
 						style={{ marginRight: '4.7em' }}
 					>
 						Исполнитель
 					</Form.Label>
-                    <Select
-                        inputId="code"
+					<Select
+						inputId="code"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -193,7 +198,7 @@ const AdditionalWorkData = ({
 					/>
 				</Form.Group>
 
-                <Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="numOfPages"
@@ -204,9 +209,13 @@ const AdditionalWorkData = ({
 					<Form.Control
 						id="numOfPages"
 						type="text"
-                        placeholder="Введите число листов"
-                        className="auto-width flex-grow"
-                        defaultValue={isNaN(selectedObject.valuation) ? '' : selectedObject.valuation}
+						placeholder="Введите число листов"
+						className="auto-width flex-grow"
+						defaultValue={
+							isNaN(selectedObject.valuation)
+								? ''
+								: selectedObject.valuation
+						}
 						onBlur={onValuationChange}
 					/>
 				</Form.Group>
@@ -222,9 +231,13 @@ const AdditionalWorkData = ({
 					<Form.Control
 						id="format"
 						type="text"
-                        placeholder="Введите число строк"
-                        className="auto-width flex-grow"
-						defaultValue={isNaN(selectedObject.metalOrder) ? '' : selectedObject.metalOrder}
+						placeholder="Введите число строк"
+						className="auto-width flex-grow"
+						defaultValue={
+							isNaN(selectedObject.metalOrder)
+								? ''
+								: selectedObject.metalOrder
+						}
 						onBlur={onOrderChange}
 					/>
 				</Form.Group>

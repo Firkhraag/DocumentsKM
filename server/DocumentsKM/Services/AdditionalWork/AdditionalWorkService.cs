@@ -3,6 +3,7 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -11,20 +12,54 @@ namespace DocumentsKM.Services
         private IAdditionalWorkRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
+        private readonly IDocRepo _docRepo;
 
         public AdditionalWorkService(
             IAdditionalWorkRepo AdditionalWorkRepo,
             IMarkRepo markRepo,
-            IEmployeeRepo employeeRepo)
+            IEmployeeRepo employeeRepo,
+            IDocRepo docRepo)
         {
             _repository = AdditionalWorkRepo;
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
+            _docRepo = docRepo;
         }
 
-        public IEnumerable<AdditionalWork> GetAllByMarkId(int markId)
+        public IEnumerable<AdditionalWorkResponse> GetAllByMarkId(int markId)
         {
-            return _repository.GetAllByMarkId(markId);
+            var docs = _docRepo.GetAllByMarkId(markId);
+            var docsGroupedByCreator = docs.Where(v => v.Creator != null).GroupBy(d => d.Creator).Select(
+                g => new Doc
+                {
+                    Creator = g.First().Creator,
+                    Form = g.Sum(v => v.Form),
+                    // NumOfPages = g.Sum(v => v.NumOfPages),
+                });
+            var docsGroupedByNormContr = docs.Where(v => v.NormContr != null).GroupBy(d => d.NormContr).Select(
+                g => new Doc
+                {
+                    NormContr = g.First().NormContr,
+                    Form = g.Sum(v => v.Form),
+                    // NumOfPages = g.Sum(v => v.NumOfPages),
+                });
+
+            var addWork = _repository.GetAllByMarkId(markId).Select(v => 
+                new AdditionalWorkResponse {
+                    Id = v.Id,
+                    Employee = new EmployeeBaseResponse {
+                        Id = v.Employee.Id,
+                        Name = v.Employee.Name,
+                    },
+                    Valuation = v.Valuation,
+                    MetalOrder = v.MetalOrder,
+                    DrawingsCompleted = docsGroupedByCreator.SingleOrDefault(
+                        d => d.Creator.Id == v.Employee.Id)?.Form ?? 0,
+                    DrawingsCheck = docsGroupedByNormContr.SingleOrDefault(
+                        d => d.NormContr.Id == v.Employee.Id)?.Form ?? 0,
+                });
+
+            return addWork;
         }
 
         public void Create(

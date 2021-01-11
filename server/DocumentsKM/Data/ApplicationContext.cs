@@ -73,12 +73,13 @@ namespace DocumentsKM.Data
         public DbSet<Mark> Marks { get; set; }
         public DbSet<MarkApproval> MarkApprovals { get; set; }
 
-        public DbSet<Specification> Specifications { get; set; }
         public DbSet<ConstructionType> ConstructionTypes { get; set; }
         public DbSet<ConstructionSubtype> ConstructionSubtypes { get; set; }
         public DbSet<WeldingControl> WeldingControl { get; set; }
 
         public DbSet<Doc> Docs { get; set; }
+        public DbSet<Specification> Specifications { get; set; }
+        public DbSet<Construction> Constructions { get; set; }
 
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
         public DbSet<CorrProtVariant> CorrProtVariants { get; set; }
