@@ -13,7 +13,7 @@ import GeneralDataPoint from '../../model/GeneralDataPoint'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
 import SectionsSelectPopup from './SectionsSelectPopup'
 import PointsSelectPopup from './PointsSelectPopup'
@@ -372,7 +372,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 									label: s.name,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
@@ -438,7 +438,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 									label: p.text,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
@@ -565,7 +565,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 								label: v + 1,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 				<Form.Group className="no-bot-mrg mrg-top-2">

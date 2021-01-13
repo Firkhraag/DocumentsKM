@@ -15,7 +15,7 @@ import Mark from '../../model/Mark'
 import httpClient from '../../axios'
 import { makeMarkName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 import { useSetMark } from '../../store/MarkStore'
 
 type MarkSelectProps = {
@@ -423,7 +423,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 								),
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -467,7 +467,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 											: p.baseSeries,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 					<Form.Group className="mrg-left no-bot-mrg">
@@ -504,7 +504,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 									label: n.code === '' ? '-' : n.code,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 					<Form.Group className="mrg-left no-bot-mrg">
@@ -543,7 +543,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 									label: s.code === '' ? '-' : s.code,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 					<Form.Group className="mrg-left no-bot-mrg">
@@ -580,7 +580,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 									label: m.code === '' ? '-' : m.code,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 				</div>

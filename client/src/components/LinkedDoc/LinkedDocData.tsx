@@ -12,7 +12,7 @@ import MarkLinkedDoc from '../../model/MarkLinkedDoc'
 import LinkedDoc from '../../model/LinkedDoc'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 import LinkedDocType from '../../model/LinkedDocType'
 
 type LinkedDocDataProps = {
@@ -272,7 +272,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
                                     label: t.name,
                                 }
                             })}
-                            styles={reactSelectstyle}
+                            styles={reactSelectStyle}
                         />
                     </Form.Group>
 
@@ -310,7 +310,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
                                     label: d.code,
                                 }
                             })}
-                            styles={reactSelectstyle}
+                            styles={reactSelectStyle}
                         />
                     </Form.Group>
 

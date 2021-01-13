@@ -16,7 +16,7 @@ import { useMark, useSetMark } from '../../store/MarkStore'
 import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 type MarkDataProps = {
     subnodeForCreate: Subnode
@@ -550,7 +550,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 									label: d.name,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
@@ -591,7 +591,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 									label: e.name,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
@@ -634,7 +634,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 									label: e.name,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
@@ -675,7 +675,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 									label: e.name,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 

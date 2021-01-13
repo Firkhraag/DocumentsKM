@@ -11,7 +11,7 @@ import Employee from '../../model/Employee'
 import getFromOptions from '../../util/get-from-options'
 import { useMark } from '../../store/MarkStore'
 import { removeValueFromArray } from '../../util/array'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 const MarkApproval = () => {
 	const mark = useMark()
@@ -261,7 +261,7 @@ const MarkApproval = () => {
 													}
 											  )
 									}
-									styles={reactSelectstyle}
+									styles={reactSelectStyle}
 								/>
 								<Select
                                     inputId={`approvalEmployee${rowNumber}`}
@@ -316,7 +316,7 @@ const MarkApproval = () => {
 												label: e.name,
 											}
 										})}
-									styles={reactSelectstyle}
+									styles={reactSelectStyle}
 								/>
 							</div>
 						)

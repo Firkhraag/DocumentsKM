@@ -14,7 +14,7 @@ import WeldingControl from '../../model/WeldingControl'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 import getNullableFieldValue from '../../util/get-field-value'
 
 type ConstructionDataProps = {
@@ -401,7 +401,7 @@ const ConstructionData = ({
 								label: t.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -435,7 +435,7 @@ const ConstructionData = ({
 								label: s.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -559,7 +559,7 @@ const ConstructionData = ({
 								label: c.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 

@@ -14,7 +14,7 @@ import SheetName from '../../model/SheetName'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 type SheetDataProps = {
 	sheet: Doc
@@ -283,7 +283,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 							label: s.name,
 						}
 					})}
-					styles={reactSelectstyle}
+					styles={reactSelectStyle}
 				/>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
@@ -336,7 +336,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -373,7 +373,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -412,7 +412,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 

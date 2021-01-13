@@ -14,7 +14,7 @@ import DocType from '../../model/DocType'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 type DevelopingAttachedDocDataProps = {
 	developingAttachedDoc: Doc
@@ -310,7 +310,7 @@ const DevelopingAttachedDocData = ({
 								label: t.code,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -395,7 +395,7 @@ const DevelopingAttachedDocData = ({
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -432,7 +432,7 @@ const DevelopingAttachedDocData = ({
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -471,7 +471,7 @@ const DevelopingAttachedDocData = ({
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 

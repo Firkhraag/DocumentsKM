@@ -11,9 +11,8 @@ import GeneralDataModel from '../../model/GeneralDataModel'
 import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
-import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
 import { useUser } from '../../store/UserStore'
 import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
@@ -309,7 +308,7 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 									label: s.name,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
@@ -367,7 +366,7 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 									label: p.text,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
@@ -482,7 +481,7 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 								label: v + 1,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 				<Form.Group className="no-bot-mrg mrg-top-2">

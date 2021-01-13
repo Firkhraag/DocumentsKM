@@ -12,7 +12,7 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import AdditionalWork from '../../model/AdditionalWork'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 type AdditionalWorkDataProps = {
 	additionalWork: AdditionalWork
@@ -194,7 +194,7 @@ const AdditionalWorkData = ({
 								label: v.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 

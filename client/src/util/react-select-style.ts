@@ -1,6 +1,6 @@
 import { StylesConfig } from 'react-select'
 
-export const reactSelectstyle: StylesConfig = {
+export const reactSelectStyle: StylesConfig = {
 	control: (provided, state) => ({
 		...provided,
 		border: state.isFocused
@@ -12,7 +12,7 @@ export const reactSelectstyle: StylesConfig = {
 			border: '1px solid rgba(0, 0, 0, 0.4)',
 		},
 	}),
-	menu: (provided, state) => ({
+	menu: (provided) => ({
 		...provided,
 		border: '1px solid rgba(0, 0, 0, 0.4)',
 	}),
