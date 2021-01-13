@@ -1,6 +1,7 @@
-using System.Threading.Tasks;
+using System;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsKM.Controllers
@@ -19,10 +20,21 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet, Route("marks/{markId}/general-data")]
-        public async Task<IActionResult> GetGeneralDataDocument(int markId)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetGeneralDataDocument(int markId)
         {
-            var file = await _service.GetDocByMarkId(markId);
-            return File(file, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Общие данные.docx");
+            try
+            {
+                var file = _service.GetDocByMarkId(markId);
+                return File(
+                    file,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "Общие данные.docx");
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
         }
     }
 }

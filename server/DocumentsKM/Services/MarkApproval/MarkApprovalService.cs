@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
+using System.Text.Json;
+using Serilog;
 
 namespace DocumentsKM.Services
 {
@@ -36,6 +38,7 @@ namespace DocumentsKM.Services
             int markId,
             List<int> employeeIds)
         {
+            Log.Information(JsonSerializer.Serialize(employeeIds));
             if (employeeIds == null)
                 throw new ArgumentNullException(nameof(employeeIds));
             var foundMark = _markRepo.GetById(markId);

@@ -18,7 +18,8 @@ namespace DocumentsKM.Data
             //     .HasColumnType("SMALLINT");
 
             // Composite primary key
-            builder.Entity<MarkApproval>().HasKey(e => new { e.MarkId, e.EmployeeId });
+            builder.Entity<MarkApproval>().HasIndex(
+                e => new { e.MarkId, e.EmployeeId }).IsUnique();
 
             // Unique constrains
             builder.Entity<User>()

@@ -285,16 +285,29 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 	const onDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/general-data`
-			)
-			const blob = new Blob([response.data], {
-				type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-			})
-			const link = document.createElement('a')
-			link.href = window.URL.createObjectURL(blob)
-			link.download = 'Общие данные.docx'
-			link.click()
-			link.remove()
+                `/marks/${mark.id}/general-data`,
+                {
+                    responseType: 'blob',
+                }
+            )
+
+            const url = window.URL.createObjectURL(new Blob([response.data]))
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', 'Общие данные.docx')
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+
+            // console.log(response)
+			// const blob = new Blob([response.data], {
+			// 	type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			// })
+			// const link = document.createElement('a')
+			// link.href = window.URL.createObjectURL(blob)
+			// link.download = 'Общие данные.docx'
+			// link.click()
+			// link.remove()
 		} catch (e) {
 			console.log('Failed to download the file')
 		}
