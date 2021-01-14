@@ -44,7 +44,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkLinkedDoc> Add(int markId, MarkLinkedDocRequest markLinkedDocRequest)
+        public ActionResult<MarkLinkedDoc> Add(int markId, MarkLinkedDocCreateRequest markLinkedDocRequest)
         {
             // Log.Information(JsonSerializer.Serialize(markLinkedDocRequest));
             try
@@ -68,7 +68,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int id, [FromBody] MarkLinkedDocRequest markLinkedDocRequest)
+        public ActionResult Update(int id, [FromBody] MarkLinkedDocUpdateRequest markLinkedDocRequest)
         {
             // DEBUG
             // Log.Information(JsonSerializer.Serialize(markRequest));

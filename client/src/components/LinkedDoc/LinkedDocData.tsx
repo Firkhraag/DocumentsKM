@@ -40,7 +40,8 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		isCreateMode
 			? {
 					id: -1,
-					linkedDoc: defaultLinkedDoc,
+                    linkedDoc: defaultLinkedDoc,
+                    note: '',
 			  }
 			: markLinkedDoc
 	)
@@ -156,6 +157,13 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				linkedDoc: v,
 			})
 		}
+    }
+    
+    const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+		setSelectedObject({
+			...selectedObject,
+			note: event.currentTarget.value,
+		})
 	}
 
 	const checkIfValid = () => {
@@ -174,7 +182,8 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/mark-linked-docs`, {
-					linkedDocId: selectedObject.linkedDoc.id,
+                    linkedDocId: selectedObject.linkedDoc.id,
+                    note: selectedObject.note,
 				})
 				history.push('/linked-docs')
 			} catch (e) {
@@ -194,7 +203,12 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				await httpClient.patch(
 					`/mark-linked-docs/${selectedObject.id}`,
 					{
-						linkedDocId: selectedObject.linkedDoc.id,
+						linkedDocId: selectedObject.linkedDoc.id === markLinkedDoc.linkedDoc.id
+							? undefined
+							: selectedObject.linkedDoc.id,
+                        note: selectedObject.note === markLinkedDoc.note
+							? undefined
+							: selectedObject.note,
 					}
 				)
 				history.push('/linked-docs')
@@ -311,6 +325,19 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
                                 }
                             })}
                             styles={reactSelectStyle}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mrg-top-2" style={{ marginBottom: 0 }}>
+                        <Form.Label htmlFor="note">Примечание</Form.Label>
+                        <Form.Control
+                            id="note"
+                            as="textarea"
+                            rows={4}
+                            style={{ resize: 'none' }}
+                            placeholder="Не введено"
+                            defaultValue={selectedObject.note}
+                            onBlur={onNoteChange}
                         />
                     </Form.Group>
 

@@ -31,7 +31,8 @@ const LinkedDocTable = ({
 				try {
 					const linkedDocsFetchedResponse = await httpClient.get(
 						`/marks/${mark.id}/mark-linked-docs`
-					)
+                    )
+                    console.log(linkedDocsFetchedResponse.data)
 					setLinkedDocs(linkedDocsFetchedResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
@@ -69,6 +70,7 @@ const LinkedDocTable = ({
 						<th className="linked-doc-name-col-width">
 							Наименование
 						</th>
+                        <th>Примечание</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
@@ -85,6 +87,7 @@ const LinkedDocTable = ({
 								<td className="linked-doc-name-col-width">
 									{ld.name}
 								</td>
+                                <td>{mld.note}</td>
 								<td
 									onClick={() => {
 										setMarkLinkedDoc(mld)

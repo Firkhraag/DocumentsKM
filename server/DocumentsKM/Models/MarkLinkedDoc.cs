@@ -16,8 +16,8 @@ namespace DocumentsKM.Models
         [ForeignKey("LinkedDocId")]
         public virtual LinkedDoc LinkedDoc { get; set; }
 
-        // // прим
-        // [MaxLength(50)]
-        // public string Note { get; set; }
+        // прим
+        [MaxLength(50)]
+        public string Note { get; set; }
     }
 }

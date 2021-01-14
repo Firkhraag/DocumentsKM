@@ -9,7 +9,8 @@ namespace DocumentsKM.Profiles
         public MarkLinkedDocProfile()
         {
             CreateMap<MarkLinkedDoc, MarkLinkedDocResponse>();
-            CreateMap<MarkLinkedDocRequest, MarkLinkedDoc>();
+            CreateMap<MarkLinkedDocCreateRequest, MarkLinkedDoc>();
+            CreateMap<MarkLinkedDocUpdateRequest, MarkLinkedDoc>();
         }
     }
 }

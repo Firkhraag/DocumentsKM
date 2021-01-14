@@ -160,7 +160,7 @@ namespace DocumentsKM.Tests
                 newLinkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
             }
 
-            var newMarkLinkedDocRequest = new MarkLinkedDocRequest
+            var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
                 LinkedDocId=newLinkedDocId,
             };
@@ -186,11 +186,11 @@ namespace DocumentsKM.Tests
             int wrongId = 999;
             int wrongLinkedDocId = 999;
 
-            var newMarkLinkedDocRequest = new MarkLinkedDocRequest
+            var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
                 LinkedDocId=newLinkedDocId,
             };
-            var wrongMarkLinkedDocRequest = new MarkLinkedDocRequest
+            var wrongMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
                 LinkedDocId=wrongLinkedDocId,
             };
@@ -210,7 +210,7 @@ namespace DocumentsKM.Tests
             var conflictLinkedDocId = _markLinkedDocs[0].LinkedDoc.Id;
             var id = _markLinkedDocs[1].Id;
 
-            var newMarkLinkedDocRequest = new MarkLinkedDocRequest
+            var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
                LinkedDocId = conflictLinkedDocId,
             };

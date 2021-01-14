@@ -17,18 +17,28 @@ namespace DocumentsKM.Services
         private IMarkRepo _markRepo;
         private IMarkApprovalRepo _markApprovalRepo;
         private IEmployeeRepo _employeeRepo;
-        private int departmentHeadPosId = 7;
+        private IDocRepo _docRepo;
+        private IMarkLinkedDocRepo _markLinkedDocRepo;
+        private IAttachedDocRepo _attachedDocRepo;
+        private readonly int _departmentHeadPosId = 7;
+        private readonly int _sheetDocTypeId = 1;
 
         public GeneralDataDocService(
             IMarkGeneralDataPointRepo markGeneralDataPointRepo,
             IMarkRepo markRepo,
             IMarkApprovalRepo markApprovalRepo,
-            IEmployeeRepo employeeRepo)
+            IEmployeeRepo employeeRepo,
+            IDocRepo docRepo,
+            IMarkLinkedDocRepo markLinkedDocRepo,
+            IAttachedDocRepo attachedDocRepo)
         {
             _markGeneralDataPointRepo = markGeneralDataPointRepo;
             _markRepo = markRepo;
             _markApprovalRepo = markApprovalRepo;
             _employeeRepo = employeeRepo;
+            _docRepo = docRepo;
+            _markLinkedDocRepo = markLinkedDocRepo;
+            _attachedDocRepo = attachedDocRepo;
         }
 
         public MemoryStream GetDocByMarkId(int markId)
@@ -43,6 +53,7 @@ namespace DocumentsKM.Services
             var markGeneralDataPoints = _markGeneralDataPointRepo.GetAllByMarkId(
                 markId).OrderByDescending(
                     v => v.Section.OrderNum).ThenByDescending(v => v.OrderNum);
+            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
 
             var path = "D:\\Dev\\Gipromez\\word\\template.docx";
 
@@ -62,13 +73,18 @@ namespace DocumentsKM.Services
                     project.Name, node.Name, subnode.Name, mark.Name);
                 AppendList(wordDoc, markGeneralDataPoints);
 
-                AppendToTable(wordDoc, "Лист");
-                AppendToTable(wordDoc, "Обозначение");
+                // AppendToTable(wordDoc, "Лист");
+                AppendToSheetTable(wordDoc, sheets.ToList());
+                AppendToLinkedAndAttachedDocsTable(
+                    wordDoc,
+                    _markLinkedDocRepo.GetAllByMarkId(markId).ToList(),
+                    _attachedDocRepo.GetAllByMarkId(markId).ToList());
                 AppendToFirstFooterTable(
                     wordDoc,
                     markName,
                     complexName,
                     objectName,
+                    sheets.Count(),
                     mark,
                     markApprovals.ToList());
                 AppendToMainFooterTable(wordDoc, markName);
@@ -82,6 +98,7 @@ namespace DocumentsKM.Services
             string markFullCodeName,
             string complexName,
             string objectName,
+            int sheetsCount,
             Mark mark,
             List<MarkApproval> markApprovals)
         {
@@ -124,7 +141,7 @@ namespace DocumentsKM.Services
 
             tc = trCells.LastOrDefault();
             p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetWordTextElement("lists", 22));
+            p.Append(GetWordTextElement(sheetsCount.ToString(), 22));
 
             trCells = trArr[7].Descendants<TableCell>().ToList();
             tc = trCells[1];
@@ -132,7 +149,7 @@ namespace DocumentsKM.Services
 
             var departmentHeadArr = _employeeRepo.GetAllByDepartmentIdAndPosition(
                 mark.Department.Id,
-                departmentHeadPosId);
+                _departmentHeadPosId);
             if (departmentHeadArr.Count() != 1)
                 throw new ConflictException();
 
@@ -199,31 +216,107 @@ namespace DocumentsKM.Services
             p.Append(GetWordTextElement(markName, 24));
         }
 
-        private void AppendToTable(WordprocessingDocument document, string uniqueColumnName)
+        private void AppendToSheetTable(WordprocessingDocument document, List<Doc> docs)
+        {
+            if (docs.Count() > 0)
+            {
+                Body body = document.MainDocumentPart.Document.Body;
+                var t = body.Descendants<Table>().FirstOrDefault(
+                    tbl => tbl.InnerText.Contains("Лист"));
+
+                var firstTr = t.Descendants<TableRow>().ToList()[1];
+                var clonedFirstTr = firstTr.CloneNode(true);
+
+                var firstTrCells = firstTr.Descendants<TableCell>().ToList();
+                firstTrCells[0].GetFirstChild<Paragraph>().Append(
+                    GetWordTextElement("1", 24));
+                firstTrCells[1].GetFirstChild<Paragraph>().Append(
+                    GetWordTextElement(docs[0].Name, 24));
+                firstTrCells[2].GetFirstChild<Paragraph>().Append(
+                    GetWordTextElement(docs[0].Note, 24));
+
+                for (int i = 1; i < docs.Count(); i++)
+                {
+                    var newTr = clonedFirstTr.CloneNode(true);
+                    firstTrCells = newTr.Descendants<TableCell>().ToList();
+
+                    firstTrCells[0].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement((i + 1).ToString(), 24));
+                    firstTrCells[1].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement(docs[i].Name, 24));
+                    firstTrCells[2].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement(docs[i].Note, 24));
+
+                    t.Append(newTr);
+                }
+            }
+        }
+
+        private void AppendToLinkedAndAttachedDocsTable(
+            WordprocessingDocument document,
+            List<MarkLinkedDoc> markLinkedDocs,
+            List<AttachedDoc> attachedDocs)
         {
             Body body = document.MainDocumentPart.Document.Body;
-            var t = body.Descendants<Table>().FirstOrDefault(tbl => tbl.InnerText.Contains(uniqueColumnName));
+            var t = body.Descendants<Table>().FirstOrDefault(
+                tbl => tbl.InnerText.Contains("Обозначение"));
 
             var firstTr = t.Descendants<TableRow>().ToList()[1];
             var clonedFirstTr = firstTr.CloneNode(true);
 
-            var firstTrCells = firstTr.Descendants<TableCell>().ToList();
-            foreach (var tc in firstTrCells)
+            if (markLinkedDocs.Count() > 0)
             {
-                var p = tc.GetFirstChild<Paragraph>();
-                p.Append(GetWordTextElement("111", 24));
-            }
+                var firstTrCells = firstTr.Descendants<TableCell>().ToList();
+                var p = firstTrCells[1].GetFirstChild<Paragraph>();
+                var justification = new Justification
+                {
+                    Val = JustificationValues.Center,
+                };
+                p.ParagraphProperties.Append(justification);
+                p.Append(GetWordTextElement("Ссылочные документы", 24, true));
+                
+                for (int i = 0; i < markLinkedDocs.Count(); i++)
+                {
+                    var newTr = clonedFirstTr.CloneNode(true);
+                    firstTrCells = newTr.Descendants<TableCell>().ToList();
 
-            for (var i = 0; i < 3; i++)
+                    firstTrCells[0].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement(markLinkedDocs[i].LinkedDoc.Designation, 24));
+                    firstTrCells[1].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement(markLinkedDocs[i].LinkedDoc.Designation, 24));
+                    firstTrCells[2].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement(markLinkedDocs[i].Note, 24));
+                    t.Append(newTr);
+                }
+            }
+            if (attachedDocs.Count() > 0)
             {
                 var newTr = clonedFirstTr.CloneNode(true);
-                firstTrCells = newTr.Descendants<TableCell>().ToList();
-                foreach (var tc in firstTrCells)
+                var firstTrCells = newTr.Descendants<TableCell>().ToList();
+                var p = firstTrCells[1].GetFirstChild<Paragraph>();
+                var justification = new Justification
                 {
-                    var p = tc.GetFirstChild<Paragraph>();
-                    p.Append(GetWordTextElement("222", 24));
-                }
+                    Val = JustificationValues.Center,
+                };
+                p.ParagraphProperties.Append(justification);
+
+                p.Append(GetWordTextElement("Прилагаемые документы", 24, true));
                 t.Append(newTr);
+
+                for (int i = 0; i < attachedDocs.Count(); i++)
+                {
+                    newTr = clonedFirstTr.CloneNode(true);
+                    firstTrCells = newTr.Descendants<TableCell>().ToList();
+
+                    firstTrCells[0].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement(attachedDocs[i].Designation, 24));
+                    firstTrCells[1].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement(attachedDocs[i].Name, 24));
+                    firstTrCells[2].GetFirstChild<Paragraph>().Append(
+                        GetWordTextElement(attachedDocs[i].Note, 24));
+
+                    t.Append(newTr);
+                }
             }
         }
 
@@ -427,7 +520,7 @@ namespace DocumentsKM.Services
             }
         }
 
-        private Run GetWordTextElement(string text, int fSize)
+        private Run GetWordTextElement(string text, int fSize, bool isUnderlined = false)
         {
             Run run = new Run();
             RunProperties runProperties = run.AppendChild(new RunProperties());
@@ -443,8 +536,38 @@ namespace DocumentsKM.Services
                 ComplexScript  = "Calibri"
             };
             runProperties.Append(font);
+            if (isUnderlined)
+            {
+                Underline underline = new Underline()
+                {
+                    Val = UnderlineValues.Single,
+                };
+                runProperties.Append(underline);
+            }
             run.AppendChild(new Text(text));
             return run;
+        }
+
+        private MemoryStream GetStreamFromTemplate(string inputPath)
+        {
+            MemoryStream documentStream;
+            using (Stream stream = File.OpenRead(inputPath))
+            {
+                documentStream = new MemoryStream((int)stream.Length);
+                stream.CopyTo(documentStream);
+                documentStream.Position = 0L;
+            }
+            using (WordprocessingDocument template = WordprocessingDocument.Open(documentStream, true))
+            {
+                template.ChangeDocumentType(DocumentFormat.OpenXml.WordprocessingDocumentType.Document);
+                MainDocumentPart mainPart = template.MainDocumentPart;
+                mainPart.DocumentSettingsPart.AddExternalRelationship(
+                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate",
+                new Uri(inputPath, UriKind.Absolute));
+
+                mainPart.Document.Save();
+            }
+            return documentStream;
         }
 
         private string MakeMarkName(
@@ -486,53 +609,6 @@ namespace DocumentsKM.Services
             var objectName = nodeName + ". " + subnodeName + ". " + markName;
 
             return (complexName, objectName);
-        }
-
-        private MemoryStream GetStreamFromTemplate(string inputPath)
-        {
-            MemoryStream documentStream;
-            using (Stream stream = File.OpenRead(inputPath))
-            {
-                documentStream = new MemoryStream((int)stream.Length);
-                stream.CopyTo(documentStream);
-                documentStream.Position = 0L;
-            }
-            using (WordprocessingDocument template = WordprocessingDocument.Open(documentStream, true))
-            {
-                template.ChangeDocumentType(DocumentFormat.OpenXml.WordprocessingDocumentType.Document);
-                MainDocumentPart mainPart = template.MainDocumentPart;
-                mainPart.DocumentSettingsPart.AddExternalRelationship(
-                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate",
-                new Uri(inputPath, UriKind.Absolute));
-
-                mainPart.Document.Save();
-            }
-            return documentStream;
-        }
-
-        private MemoryStream createDocument(Table customTable)
-        {
-            var stream = new MemoryStream();
-
-            // Create a Wordprocessing document. 
-            using (WordprocessingDocument package = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
-            {
-                // Add a new main document part. 
-                package.AddMainDocumentPart();
-
-                // Create the Document DOM. 
-                package.MainDocumentPart.Document =
-                new Document(
-                    new Body(
-                    new Paragraph(
-                        new Run(
-                        new Table(customTable)))));
-
-                // Save changes to the main document part. 
-                package.MainDocumentPart.Document.Save();
-            }
-            stream.Seek(0, SeekOrigin.Begin);
-            return stream;
         }
     }
 }

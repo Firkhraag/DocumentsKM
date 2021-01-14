@@ -14,7 +14,7 @@ namespace DocumentsKM.Services
             int markId,
             int linkedDocId);
         // Обновить ссылочный документ у марки
-        void Update(int id, MarkLinkedDocRequest markLinkedDocRequest);
+        void Update(int id, MarkLinkedDocUpdateRequest markLinkedDocRequest);
         // Удалить ссылочный документ у марки
         void Delete(int id);
     }

@@ -51,7 +51,7 @@ namespace DocumentsKM.Services
             _repository.Add(markLinkedDoc);
         }
 
-        public void Update(int id, MarkLinkedDocRequest markLinkedDocRequest)
+        public void Update(int id, MarkLinkedDocUpdateRequest markLinkedDocRequest)
         {
             if (markLinkedDocRequest == null)
                 throw new ArgumentNullException(nameof(markLinkedDocRequest));
@@ -59,16 +59,29 @@ namespace DocumentsKM.Services
             if (foundMarkLinkedDoc == null)
                 throw new ArgumentNullException(nameof(foundMarkLinkedDoc));
 
-            var foundLinkedDoc = _linkedDocRepo.GetById(markLinkedDocRequest.LinkedDocId);
-            if (foundLinkedDoc == null)
-                throw new ArgumentNullException(nameof(foundLinkedDoc));
+            // var foundLinkedDoc = _linkedDocRepo.GetById(markLinkedDocRequest.LinkedDocId);
+            // if (foundLinkedDoc == null)
+            //     throw new ArgumentNullException(nameof(foundLinkedDoc));
                 
-            var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(
-                foundMarkLinkedDoc.Mark.Id, markLinkedDocRequest.LinkedDocId);
-            if (uniqueConstraintViolationCheck != null)
-                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+            // var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(
+            //     foundMarkLinkedDoc.Mark.Id, markLinkedDocRequest.LinkedDocId);
+            // if (uniqueConstraintViolationCheck != null)
+            //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
-            foundMarkLinkedDoc.LinkedDoc = foundLinkedDoc;
+            if (markLinkedDocRequest.LinkedDocId != null)
+            {
+                var linkedDoc = _linkedDocRepo.GetById(markLinkedDocRequest.LinkedDocId.GetValueOrDefault());
+                if (linkedDoc == null)
+                    throw new ArgumentNullException(nameof(linkedDoc));
+                var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(
+                    foundMarkLinkedDoc.Mark.Id, markLinkedDocRequest.LinkedDocId.GetValueOrDefault());
+                if (uniqueConstraintViolationCheck != null)
+                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+                foundMarkLinkedDoc.LinkedDoc = linkedDoc;
+            }
+
+            if (markLinkedDocRequest.Note != null)
+                foundMarkLinkedDoc.Note = markLinkedDocRequest.Note;
 
             _repository.Update(foundMarkLinkedDoc);
         }
