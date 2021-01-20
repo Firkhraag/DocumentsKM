@@ -1,16 +1,20 @@
 // Global
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 // Bootstrap
 import { PersonFill } from 'react-bootstrap-icons'
 // Util
 import { useMark } from '../../store/MarkStore'
 import Drawer from './Drawer/Drawer'
 import { makeMarkName } from '../../util/make-name'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 import './Header.css'
 
 const Header = () => {
 	const mark = useMark()
+	const history = useHistory()
+	const setPopup = useSetPopup()
 
 	const [isDrawerShown, setDrawerShown] = useState(false)
 
@@ -24,12 +28,17 @@ const Header = () => {
 		return () => document.body.removeEventListener('click', clickHandler)
 	}, [])
 
+	const onMainClick = () => {
+		setPopup(defaultPopup)
+		history.push('/')
+	}
+
 	return (
 		<div className="space-between-cent-v header bg-white">
-			<Link to="/" className="pointer bold header-link-pad">
+			<div onClick={onMainClick} className="pointer bold header-link-pad">
 				Главная
-			</Link>
-			<Link to="/marks" className="pointer bold header-link-pad">
+			</div>
+			<div onClick={onMainClick} className="pointer bold header-link-pad">
 				{mark == null
 					? '-'
 					: makeMarkName(
@@ -38,7 +47,7 @@ const Header = () => {
 							mark.subnode.code,
 							mark.code
 					  )}
-			</Link>
+			</div>
 			<div id="user-cnt" className="profile-icon-cnt relative">
 				<Drawer
 					isShown={isDrawerShown}

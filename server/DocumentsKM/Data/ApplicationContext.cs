@@ -81,6 +81,9 @@ namespace DocumentsKM.Data
         public DbSet<Doc> Docs { get; set; }
         public DbSet<Specification> Specifications { get; set; }
         public DbSet<Construction> Constructions { get; set; }
+        public DbSet<BoltDiameter> BoltDiameters { get; set; }
+        public DbSet<BoltLength> BoltLengths { get; set; }
+        public DbSet<ConstructionBolt> ConstructionBolts { get; set; }
 
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
         public DbSet<CorrProtVariant> CorrProtVariants { get; set; }

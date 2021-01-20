@@ -26,13 +26,13 @@ const OperatingConditions = () => {
 	const [
 		defaultSelectedObject,
 		setDefaultSelectedObject,
-    ] = useState<MarkOperatingConditions>(null)
-    
-    const [
+	] = useState<MarkOperatingConditions>(null)
+
+	const [
 		selectedObject,
 		setSelectedObject,
-    ] = useState<MarkOperatingConditions>(null)
-    
+	] = useState<MarkOperatingConditions>(null)
+
 	const [optionsObject, setOptionsObject] = useState({
 		envAggressiveness: [] as EnvAggressiveness[],
 		operatingAreas: [] as OperatingArea[],
@@ -51,16 +51,23 @@ const OperatingConditions = () => {
 				try {
 					const operatinConditionsDataResponse = await httpClient.get(
 						`/operating-conditions/data`
-                    )
+					)
 					setOptionsObject({
-						envAggressiveness: operatinConditionsDataResponse.data.envAggressiveness,
-						operatingAreas: operatinConditionsDataResponse.data.operatingAreas,
-						gasGroups: operatinConditionsDataResponse.data.gasGroups,
+						envAggressiveness:
+							operatinConditionsDataResponse.data
+								.envAggressiveness,
+						operatingAreas:
+							operatinConditionsDataResponse.data.operatingAreas,
+						gasGroups:
+							operatinConditionsDataResponse.data.gasGroups,
 						constructionMaterials:
-                            operatinConditionsDataResponse.data.constructionMaterials,
-						paintworkTypes: operatinConditionsDataResponse.data.paintworkTypes,
+							operatinConditionsDataResponse.data
+								.constructionMaterials,
+						paintworkTypes:
+							operatinConditionsDataResponse.data.paintworkTypes,
 						highTensileBoltsTypes:
-                            operatinConditionsDataResponse.data.highTensileBoltsTypes,
+							operatinConditionsDataResponse.data
+								.highTensileBoltsTypes,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')

@@ -5,7 +5,7 @@ namespace DocumentsKM.Data
 {
     public interface IDepartmentRepo
     {
-        // Получить все активные отделы
+        // Получить все отделы
         IEnumerable<Department> GetAll();
         // Получить отдел по id
         Department GetById(int id);

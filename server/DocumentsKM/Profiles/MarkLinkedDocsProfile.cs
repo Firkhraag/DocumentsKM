@@ -4,9 +4,9 @@ using DocumentsKM.Models;
 
 namespace DocumentsKM.Profiles
 {
-    public class MarkLinkedDocProfile : Profile
+    public class MarkLinkedDocsProfile : Profile
     {
-        public MarkLinkedDocProfile()
+        public MarkLinkedDocsProfile()
         {
             CreateMap<MarkLinkedDoc, MarkLinkedDocResponse>();
             CreateMap<MarkLinkedDocCreateRequest, MarkLinkedDoc>();

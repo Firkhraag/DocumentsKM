@@ -10,16 +10,16 @@ import { Trash } from 'react-bootstrap-icons'
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Doc from '../../model/Doc'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type SheetTableProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
 	setSheet: (s: Doc) => void
 }
 
-const SheetTable = ({ setPopupObj, setSheet }: SheetTableProps) => {
+const SheetTable = ({ setSheet }: SheetTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
+	const setPopup = useSetPopup()
 
 	const [sheets, setSheets] = useState([] as Doc[])
 
@@ -43,7 +43,7 @@ const SheetTable = ({ setPopupObj, setSheet }: SheetTableProps) => {
 		try {
 			await httpClient.delete(`/docs/${id}`)
 			sheets.splice(row, 1)
-			setPopupObj(defaultPopupObj)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -105,13 +105,13 @@ const SheetTable = ({ setPopupObj, setSheet }: SheetTableProps) => {
 								</td>
 								<td
 									onClick={() =>
-										setPopupObj({
+										setPopup({
 											isShown: true,
 											msg: `Вы действительно хотите удалить лист основного комплекта №${s.num}?`,
 											onAccept: () =>
 												onDeleteClick(index, s.id),
 											onCancel: () =>
-												setPopupObj(defaultPopupObj),
+												setPopup(defaultPopup),
 										})
 									}
 									className="pointer action-cell-width text-centered"

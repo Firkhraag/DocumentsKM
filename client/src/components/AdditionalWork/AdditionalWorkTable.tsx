@@ -10,25 +10,23 @@ import { Trash } from 'react-bootstrap-icons'
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import AdditionalWork from '../../model/AdditionalWork'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type AdditionalWorkTableProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
 	setAdditionalWork: (w: AdditionalWork) => void
 }
 
 const AdditionalWorkTable = ({
-	setPopupObj,
 	setAdditionalWork,
 }: AdditionalWorkTableProps) => {
 	const reviewCoeff = 0.4
 	const valuationCoeff = 0.05
 	const orderCoeff = 0.004
-
 	const valuationPagesCoeff = 8
 
 	const mark = useMark()
 	const history = useHistory()
+    const setPopup = useSetPopup()
 
 	const [additionalWorkArray, setAdditionalWorkArray] = useState(
 		[] as AdditionalWork[]
@@ -54,7 +52,7 @@ const AdditionalWorkTable = ({
 		try {
 			await httpClient.delete(`/additional-work/${id}`)
 			additionalWorkArray.splice(row, 1)
-			setPopupObj(defaultPopupObj)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -140,13 +138,13 @@ const AdditionalWorkTable = ({
 								</td>
 								<td
 									onClick={() =>
-										setPopupObj({
+										setPopup({
 											isShown: true,
 											msg: `Вы действительно хотите удалить исполнителя?`,
 											onAccept: () =>
 												onDeleteClick(index, v.id),
 											onCancel: () =>
-												setPopupObj(defaultPopupObj),
+												setPopup(defaultPopup),
 										})
 									}
 									className="pointer action-cell-width text-centered"

@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private IEnvAggressivenessRepo _repository;
 
-        public EnvAggressivenessService(IEnvAggressivenessRepo envAggressivenessRepoo)
+        public EnvAggressivenessService(IEnvAggressivenessRepo envAggressivenessRepo)
         {
-            _repository = envAggressivenessRepoo;
+            _repository = envAggressivenessRepo;
         }
 
         public IEnumerable<EnvAggressiveness> GetAll()

@@ -15,14 +15,11 @@ import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
 import { useUser } from '../../store/UserStore'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
-type UserGeneralDataProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
-}
-
-const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
+const UserGeneralData = () => {
 	const user = useUser()
+	const setPopup = useSetPopup()
 
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
 		section: null,
@@ -32,12 +29,17 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 	const [optionsObject, setOptionsObject] = useState({
 		sections: [] as GeneralDataSection[],
 		points: [] as GeneralDataPoint[],
-    })
-    
-    let createBtnDisabled = false
-    if (optionsObject.points.length > 0 && optionsObject.points.map(v => v.text).includes(selectedObject.pointText)) {
-        createBtnDisabled = true
-    }
+	})
+
+	let createBtnDisabled = false
+	if (
+		optionsObject.points.length > 0 &&
+		optionsObject.points
+			.map((v) => v.text)
+			.includes(selectedObject.pointText)
+	) {
+		createBtnDisabled = true
+	}
 
 	const [errMsg, setErrMsg] = useState('')
 
@@ -45,19 +47,19 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-            try {
-                const sectionsResponse = await httpClient.get(
-                    `/general-data-sections`
-                )
-                setOptionsObject({
-                    ...optionsObject,
-                    sections: sectionsResponse.data,
-                })
-            } catch (e) {
-                console.log('Failed to fetch the data')
-            }
-        }
-        fetchData()
+			try {
+				const sectionsResponse = await httpClient.get(
+					`/general-data-sections`
+				)
+				setOptionsObject({
+					...optionsObject,
+					sections: sectionsResponse.data,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
+			}
+		}
+		fetchData()
 	}, [])
 
 	const onSectionSelect = async (id: number) => {
@@ -69,8 +71,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 			setSelectedObject({
 				...selectedObject,
 				section: null,
-                point: null,
-                pointText: '',
+				point: null,
+				pointText: '',
 			})
 			return
 		}
@@ -88,8 +90,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 				setSelectedObject({
 					...selectedObject,
 					section: v,
-                    point: null,
-                    pointText: '',
+					point: null,
+					pointText: '',
 				})
 			} else {
 				try {
@@ -104,8 +106,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 					setSelectedObject({
 						...selectedObject,
 						section: v,
-                        point: null,
-                        pointText: '',
+						point: null,
+						pointText: '',
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -154,23 +156,24 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(
-                `/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${id}`)
-                
-            for (let p of optionsObject.points) {
-                if (p.orderNum > optionsObject.points[row].orderNum) {
-                    p.orderNum = p.orderNum - 1
-                }
-            }
-            
-            optionsObject.points.splice(row, 1)
+				`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${id}`
+			)
 
-            if (selectedObject.point != null && selectedObject.point.id == id) {
-                setSelectedObject({
-                    ...selectedObject,
-                    point: null,
-                })
-            }
-            setPopupObj(defaultPopupObj)
+			for (let p of optionsObject.points) {
+				if (p.orderNum > optionsObject.points[row].orderNum) {
+					p.orderNum = p.orderNum - 1
+				}
+			}
+
+			optionsObject.points.splice(row, 1)
+
+			if (selectedObject.point != null && selectedObject.point.id == id) {
+				setSelectedObject({
+					...selectedObject,
+					point: null,
+				})
+			}
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -190,7 +193,7 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 
 	const onUpdatePointButtonClick = async () => {
 		if (checkIfValid()) {
-            console.log(selectedObject.point.orderNum)
+			console.log(selectedObject.point.orderNum)
 			try {
 				await httpClient.patch(
 					`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${selectedObject.point.id}`,
@@ -200,44 +203,43 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 					}
 				)
 				const p = { ...selectedObject.point }
-                p.text = selectedObject.pointText
-                const foundPoint = optionsObject.points.find((v) => v.id === p.id)
+				p.text = selectedObject.pointText
+				const foundPoint = optionsObject.points.find(
+					(v) => v.id === p.id
+				)
 				foundPoint.text = selectedObject.pointText
-                foundPoint.orderNum = selectedObject.point.orderNum
+				foundPoint.orderNum = selectedObject.point.orderNum
 
-                var num = 1;
-                for (let p of optionsObject.points)
-                {
-                    if (p.id == selectedObject.point.id)
-                        continue;
-                    if (num == selectedObject.point.orderNum)
-                    {
-                        num = num + 1;
-                        p.orderNum = num;
-                        num = num + 1;
-                        continue;
-                    }
-                    p.orderNum = num;
-                    num = num + 1;
-                }
+				var num = 1
+				for (let p of optionsObject.points) {
+					if (p.id == selectedObject.point.id) continue
+					if (num == selectedObject.point.orderNum) {
+						num = num + 1
+						p.orderNum = num
+						num = num + 1
+						continue
+					}
+					p.orderNum = num
+					num = num + 1
+				}
 
-                const compareFunc = (a: any, b: any) => {
-                    if (a.orderNum < b.orderNum) {
-                        return -1;
-                    }
-                    if (a.orderNum > b.orderNum) {
-                        return 1;
-                    }
-                    return 0;
-                }
-                  
-                optionsObject.points.sort(compareFunc)
+				const compareFunc = (a: any, b: any) => {
+					if (a.orderNum < b.orderNum) {
+						return -1
+					}
+					if (a.orderNum > b.orderNum) {
+						return 1
+					}
+					return 0
+				}
+
+				optionsObject.points.sort(compareFunc)
 
 				setSelectedObject({
 					...selectedObject,
 					point: p,
-                })
-                window.scrollTo(0, 0)
+				})
+				window.scrollTo(0, 0)
 			} catch (e) {
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
@@ -262,7 +264,7 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 				setSelectedObject({
 					...selectedObject,
 					point: response.data,
-                })
+				})
 			} catch (e) {
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
@@ -395,7 +397,7 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 										</p>
 										<div
 											onClick={() =>
-												setPopupObj({
+												setPopup({
 													isShown: true,
 													msg: `Вы действительно хотите удалить ${truncateText(
 														p.text,
@@ -408,8 +410,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 															p.id
 														),
 													onCancel: () =>
-														setPopupObj(
-															defaultPopupObj
+														setPopup(
+															defaultPopup
 														),
 												})
 											}
@@ -460,8 +462,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 						isSearchable={true}
 						placeholder=""
 						noOptionsMessage={() => 'Номер не найден'}
-                        className="num-field-width"
-                        isDisabled={selectedObject.point == null ? true : false}
+						className="num-field-width"
+						isDisabled={selectedObject.point == null ? true : false}
 						onChange={(selectedOption) =>
 							onPointNumChange((selectedOption as any)?.value)
 						}
@@ -510,8 +512,8 @@ const UserGeneralData = ({ setPopupObj }: UserGeneralDataProps) => {
 					<Button
 						variant="secondary"
 						className="flex-grow mrg-left"
-                        onClick={onCreatePointButtonClick}
-                        disabled={createBtnDisabled ? true : false}
+						onClick={onCreatePointButtonClick}
+						disabled={createBtnDisabled ? true : false}
 					>
 						Добавить новый пункт
 					</Button>

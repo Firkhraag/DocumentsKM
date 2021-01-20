@@ -13,19 +13,19 @@ type DrawerProps = {
 }
 
 const Drawer = ({ isShown, hide }: DrawerProps) => {
-    const history = useHistory()
+	const history = useHistory()
 	const user = useUser()
 	const authMethods = useAuthMethods()
 
 	return !isShown ? null : (
 		<div className="side-drawer white-bg absolute border-radius shadow p-3 mb-5 bg-white rounded">
 			<h2 className="text-centered bold">{user.name}</h2>
-            <Button
+			<Button
 				variant="secondary"
 				onClick={() => {
-                    hide()
-                    history.push('/user/general-data')
-                }}
+					hide()
+					history.push('/user/general-data')
+				}}
 				className="full-width btn-mrg-top"
 			>
 				Общие данные

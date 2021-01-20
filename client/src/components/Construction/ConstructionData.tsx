@@ -11,22 +11,28 @@ import Construction from '../../model/Construction'
 import ConstructionType from '../../model/ConstructionType'
 import ConstructionSubtype from '../../model/ConstructionSubtype'
 import WeldingControl from '../../model/WeldingControl'
+import ConstructionBolt from '../../model/ConstructionBolt'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 import getNullableFieldValue from '../../util/get-field-value'
 
+import ConstructionBoltTable from '../ConstructionBolt/ConstructionBoltTable'
+import ConstructionElementTable from '../ConstructionElement/ConstructionElementTable'
+
 type ConstructionDataProps = {
 	construction: Construction
 	isCreateMode: boolean
-	specificationId: number
+    specificationId: number
+    setConstructionBolt: (b: ConstructionBolt) => void
 }
 
 const ConstructionData = ({
 	construction,
 	isCreateMode,
-	specificationId,
+    specificationId,
+    setConstructionBolt,
 }: ConstructionDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
@@ -56,12 +62,11 @@ const ConstructionData = ({
 	})
 
 	const [errMsg, setErrMsg] = useState('')
-
-	const cachedSubtypes = useState(new Map<number, ConstructionSubtype[]>())[0]
+    const cachedSubtypes = useState(new Map<number, ConstructionSubtype[]>())[0]
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (selectedObject == null) {
+			if (selectedObject == null || specificationId == -1) {
 				history.push('/specifications')
 				return
 			}
@@ -622,6 +627,9 @@ const ConstructionData = ({
 						: 'Сохранить изменения'}
 				</Button>
 			</div>
+
+            { isCreateMode ? null : <ConstructionBoltTable specificationId={specificationId} constructionId={selectedObject.id} setConstructionBolt={setConstructionBolt} />}
+            { isCreateMode ? null : <ConstructionElementTable />}
 		</div>
 	)
 }

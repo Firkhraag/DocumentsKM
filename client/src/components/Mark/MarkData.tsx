@@ -19,7 +19,7 @@ import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
 
 type MarkDataProps = {
-    subnodeForCreate: Subnode
+	subnodeForCreate: Subnode
 	isCreateMode: boolean
 }
 
@@ -45,37 +45,37 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 
 	useEffect(() => {
 		if (isCreateMode) {
-            if (subnodeForCreate == null) {
+			if (subnodeForCreate == null) {
 				history.push('/marks')
 				return
-            }
-            const fetchData = async () => {
-                try {
-                    const departmentsResponse = await httpClient.get(
-                        '/departments'
-                    )
-                    const newMarkCodeResponse = await httpClient.get(
-                        `/subnodes/${subnodeForCreate.id}/new-mark-code`
-                    )
-                    setOptionsObject({
-                        ...defaultOptionsObject,
-                        departments: departmentsResponse.data,
-                    })
-                    setSelectedObject({
-                        id: 0,
-                        code: newMarkCodeResponse.data,
-                        name: '',
-                        subnode: subnodeForCreate,
-                        department: null,
-                        chiefSpecialist: null,
-                        groupLeader: null,
-                        mainBuilder: null,
-                    })
-                } catch (e) {
-                    console.log('Failed to fetch departments')
-                }
-            }
-            fetchData()
+			}
+			const fetchData = async () => {
+				try {
+					const departmentsResponse = await httpClient.get(
+						'/departments'
+					)
+					const newMarkCodeResponse = await httpClient.get(
+						`/subnodes/${subnodeForCreate.id}/new-mark-code`
+					)
+					setOptionsObject({
+						...defaultOptionsObject,
+						departments: departmentsResponse.data,
+					})
+					setSelectedObject({
+						id: 0,
+						code: newMarkCodeResponse.data,
+						name: '',
+						subnode: subnodeForCreate,
+						department: null,
+						chiefSpecialist: null,
+						groupLeader: null,
+						mainBuilder: null,
+					})
+				} catch (e) {
+					console.log('Failed to fetch departments')
+				}
+			}
+			fetchData()
 		} else {
 			const selectedMarkId = localStorage.getItem('selectedMarkId')
 			if (selectedMarkId != null) {
@@ -164,8 +164,8 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 					chiefSpecialist: null,
 					groupLeader: null,
 					mainBuilder: null,
-                })
-                setDepartmentHead(cachedMainEmployees.get(v.id).departmentHead)
+				})
+				setDepartmentHead(cachedMainEmployees.get(v.id).departmentHead)
 			} else {
 				try {
 					const fetchedMainEmployeesResponse = await httpClient.get(
@@ -187,8 +187,8 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 						chiefSpecialist: null,
 						groupLeader: null,
 						mainBuilder: null,
-                    })
-                    setDepartmentHead(fetchedMainEmployees.departmentHead)
+					})
+					setDepartmentHead(fetchedMainEmployees.departmentHead)
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -196,7 +196,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 		}
 	}
 
-	const onGroupLeaderSelect = async (id: number) => {
+	const onGroupLeaderSelect = (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
@@ -216,7 +216,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 		}
 	}
 
-	const onChiefSpecialistSelect = async (id: number) => {
+	const onChiefSpecialistSelect = (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
@@ -236,7 +236,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 		}
 	}
 
-	const onMainBuilderSelect = async (id: number) => {
+	const onMainBuilderSelect = (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
@@ -516,7 +516,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 
 					<Form.Group className="flex-cent-v mrg-top-2">
 						<Form.Label
-                            className="no-bot-mrg"
+							className="no-bot-mrg"
 							htmlFor="department"
 							style={{ marginRight: '1em' }}
 						>
@@ -556,7 +556,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 
 					<Form.Group className="flex-cent-v mrg-top-2">
 						<Form.Label
-                            className="no-bot-mrg"
+							className="no-bot-mrg"
 							htmlFor="groupLeader"
 							style={{ marginRight: '1em' }}
 						>
@@ -597,7 +597,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 
 					<Form.Group className="flex-cent-v mrg-top-2">
 						<Form.Label
-                            className="no-bot-mrg"
+							className="no-bot-mrg"
 							htmlFor="chiefSpecialist"
 							style={{ marginRight: '1.15em' }}
 						>
@@ -640,7 +640,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 
 					<Form.Group className="flex-cent-v mrg-top-2 no-bot-mrg">
 						<Form.Label
-                            className="no-bot-mrg"
+							className="no-bot-mrg"
 							htmlFor="mainBuilder"
 							style={{ marginRight: '1.3em' }}
 						>

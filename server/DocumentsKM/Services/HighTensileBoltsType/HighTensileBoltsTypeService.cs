@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private IHighTensileBoltsTypeRepo _repository;
 
-        public HighTensileBoltsTypeService(IHighTensileBoltsTypeRepo highTensileBoltsTypeRepoo)
+        public HighTensileBoltsTypeService(IHighTensileBoltsTypeRepo highTensileBoltsTypeRepo)
         {
-            _repository = highTensileBoltsTypeRepoo;
+            _repository = highTensileBoltsTypeRepo;
         }
 
         public IEnumerable<HighTensileBoltsType> GetAll()

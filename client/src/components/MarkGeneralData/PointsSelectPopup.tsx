@@ -9,7 +9,6 @@ import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import { useMark } from '../../store/MarkStore'
 import { useUser } from '../../store/UserStore'
-// import './pointsSelectPopup.css'
 
 type IOptionsObject = {
 	sections: GeneralDataSection[]
@@ -27,7 +26,6 @@ type PopupProps = {
 	defaultSelectedPointTexts: string[]
 	close: () => void
 	optionsObject: IOptionsObject
-	setOptionsObject: (optionObject: IOptionsObject) => void
 	selectedObject: ISelectionObject
 	setSelectedObject: (selectedObject: ISelectionObject) => void
 }
@@ -37,7 +35,6 @@ const PointsSelectPopup = ({
 	defaultSelectedPointTexts,
 	close,
 	optionsObject,
-	setOptionsObject,
 	selectedObject,
 	setSelectedObject,
 }: PopupProps) => {
@@ -56,8 +53,8 @@ const PointsSelectPopup = ({
 					if (defaultSelectedPointTexts.includes(s.text)) {
 						const inputElement = refs[i].current as any
 						if (inputElement) {
-                            inputElement.checked = true
-                            selectedPoints.push(points[i])
+							inputElement.checked = true
+							selectedPoints.push(points[i])
 						}
 					}
 				}
@@ -102,21 +99,21 @@ const PointsSelectPopup = ({
 			setSelectedObject({
 				...selectedObject,
 				point: null,
-            })
+			})
 
-            optionsObject.points = addedPointsResponse.data
-            // for (let p of selectedPoints)
-            // {
-            //     var doesNotContain = optionsObject.points.filter(v => v.text == p.text).length === 0
-            //     if (doesNotContain) {
-            //         let orderNum = 1
-            //         if (optionsObject.points.length > 0) {
-            //             orderNum = Math.max.apply(null, optionsObject.points.map(v => v.orderNum)) + 1
-            //         }
-            //         p.orderNum = orderNum
-            //         optionsObject.points.push(p)
-            //     }
-            // }
+			optionsObject.points = addedPointsResponse.data
+			// for (let p of selectedPoints)
+			// {
+			//     var doesNotContain = optionsObject.points.filter(v => v.text == p.text).length === 0
+			//     if (doesNotContain) {
+			//         let orderNum = 1
+			//         if (optionsObject.points.length > 0) {
+			//             orderNum = Math.max.apply(null, optionsObject.points.map(v => v.orderNum)) + 1
+			//         }
+			//         p.orderNum = orderNum
+			//         optionsObject.points.push(p)
+			//     }
+			// }
 
 			// setOptionsObject({
 			// 	...optionsObject,

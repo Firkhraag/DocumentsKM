@@ -11,9 +11,9 @@ namespace DocumentsKM.Services
 
         private IDocTypeRepo _repository;
 
-        public DocTypeService(IDocTypeRepo docTypeRepoo)
+        public DocTypeService(IDocTypeRepo docTypeRepo)
         {
-            _repository = docTypeRepoo;
+            _repository = docTypeRepo;
         }
 
         public IEnumerable<DocType> GetAllAttached()

@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private IWeldingControlRepo _repository;
 
-        public WeldingControlService(IWeldingControlRepo weldingControlRepoo)
+        public WeldingControlService(IWeldingControlRepo weldingControlRepo)
         {
-            _repository = weldingControlRepoo;
+            _repository = weldingControlRepo;
         }
 
         public IEnumerable<WeldingControl> GetAll()

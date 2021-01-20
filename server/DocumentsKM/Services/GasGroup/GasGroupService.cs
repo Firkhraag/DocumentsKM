@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private IGasGroupRepo _repository;
 
-        public GasGroupService(IGasGroupRepo gasGroupRepoo)
+        public GasGroupService(IGasGroupRepo gasGroupRepo)
         {
-            _repository = gasGroupRepoo;
+            _repository = gasGroupRepo;
         }
 
         public IEnumerable<GasGroup> GetAll()

@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private IConstructionTypeRepo _repository;
 
-        public ConstructionTypeService(IConstructionTypeRepo constructionTypeRepoo)
+        public ConstructionTypeService(IConstructionTypeRepo constructionTypeRepo)
         {
-            _repository = constructionTypeRepoo;
+            _repository = constructionTypeRepo;
         }
 
         public IEnumerable<ConstructionType> GetAll()

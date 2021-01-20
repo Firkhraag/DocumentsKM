@@ -14,7 +14,6 @@ using System.Text;
 using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
-using Microsoft.Extensions.Options;
 
 namespace DocumentsKM
 {
@@ -135,6 +134,8 @@ namespace DocumentsKM
             services.AddScoped<IWeldingControlService, WeldingControlService>();
             services.AddScoped<ISpecificationService, SpecificationService>();
             services.AddScoped<IConstructionService, ConstructionService>();
+            services.AddScoped<IBoltDiameterService, BoltDiameterService>();
+            services.AddScoped<IConstructionBoltService, ConstructionBoltService>();
 
             services.AddScoped<IDocService, DocService>();
             services.AddScoped<ISheetNameService, SheetNameService>();
@@ -178,6 +179,9 @@ namespace DocumentsKM
             services.AddScoped<IWeldingControlRepo, SqlWeldingControlRepo>();
             services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
             services.AddScoped<IConstructionRepo, SqlConstructionRepo>();
+            services.AddScoped<IBoltDiameterRepo, SqlBoltDiameterRepo>();
+            services.AddScoped<IBoltLengthRepo, SqlBoltLengthRepo>();
+            services.AddScoped<IConstructionBoltRepo, SqlConstructionBoltRepo>();
 
             services.AddScoped<IDocRepo, SqlDocRepo>();
             services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();

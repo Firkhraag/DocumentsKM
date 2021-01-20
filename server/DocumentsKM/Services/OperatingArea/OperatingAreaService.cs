@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private IOperatingAreaRepo _repository;
 
-        public OperatingAreaService(IOperatingAreaRepo operatingAreaRepoo)
+        public OperatingAreaService(IOperatingAreaRepo operatingAreaRepo)
         {
-            _repository = operatingAreaRepoo;
+            _repository = operatingAreaRepo;
         }
 
         public IEnumerable<OperatingArea> GetAll()

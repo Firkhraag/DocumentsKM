@@ -17,14 +17,11 @@ import { reactSelectStyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
 import SectionsSelectPopup from './SectionsSelectPopup'
 import PointsSelectPopup from './PointsSelectPopup'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
-type MarkGeneralDataProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
-}
-
-const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
+const MarkGeneralData = () => {
 	const mark = useMark()
+	const setPopup = useSetPopup()
 
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
 		section: null,
@@ -40,12 +37,17 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 		false
 	)
 	const [isPointsSelectionShown, setPointsSelectionShown] = useState(false)
-    const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
-    
-    let createBtnDisabled = false
-    if (optionsObject.points.length > 0 && optionsObject.points.map(v => v.text).includes(selectedObject.pointText)) {
-        createBtnDisabled = true
-    }
+	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
+
+	let createBtnDisabled = false
+	if (
+		optionsObject.points.length > 0 &&
+		optionsObject.points
+			.map((v) => v.text)
+			.includes(selectedObject.pointText)
+	) {
+		createBtnDisabled = true
+	}
 
 	const [errMsg, setErrMsg] = useState('')
 
@@ -77,8 +79,8 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 			setSelectedObject({
 				...selectedObject,
 				section: null,
-                point: null,
-                pointText: '',
+				point: null,
+				pointText: '',
 			})
 			return
 		}
@@ -96,8 +98,8 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 				setSelectedObject({
 					...selectedObject,
 					section: v,
-                    point: null,
-                    pointText: '',
+					point: null,
+					pointText: '',
 				})
 			} else {
 				try {
@@ -112,8 +114,8 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					setSelectedObject({
 						...selectedObject,
 						section: v,
-                        point: null,
-                        pointText: '',
+						point: null,
+						pointText: '',
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -179,7 +181,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					point: null,
 				})
 			}
-			setPopupObj(defaultPopupObj)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error', e)
 		}
@@ -285,21 +287,21 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 	const onDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
-                `/marks/${mark.id}/general-data`,
-                {
-                    responseType: 'blob',
-                }
-            )
+				`/marks/${mark.id}/general-data`,
+				{
+					responseType: 'blob',
+				}
+			)
 
-            const url = window.URL.createObjectURL(new Blob([response.data]))
-            const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', 'Общие данные.docx')
-            document.body.appendChild(link)
-            link.click()
-            link.remove()
+			const url = window.URL.createObjectURL(new Blob([response.data]))
+			const link = document.createElement('a')
+			link.href = url
+			link.setAttribute('download', 'Общие данные.docx')
+			document.body.appendChild(link)
+			link.click()
+			link.remove()
 
-            // console.log(response)
+			// console.log(response)
 			// const blob = new Blob([response.data], {
 			// 	type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 			// })
@@ -335,8 +337,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					)}
 					close={() => setPointsSelectionShown(false)}
 					optionsObject={optionsObject}
-                    setOptionsObject={setOptionsObject}
-                    selectedObject={selectedObject}
+					selectedObject={selectedObject}
 					setSelectedObject={setSelectedObject}
 				/>
 			) : null}
@@ -467,7 +468,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 										</p>
 										<div
 											onClick={() =>
-												setPopupObj({
+												setPopup({
 													isShown: true,
 													msg: `Вы действительно хотите удалить ${truncateText(
 														p.text,
@@ -480,9 +481,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 															p.id
 														),
 													onCancel: () =>
-														setPopupObj(
-															defaultPopupObj
-														),
+														setPopup(defaultPopup),
 												})
 											}
 											className="trash-area"
@@ -594,8 +593,8 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					<Button
 						variant="secondary"
 						className="flex-grow mrg-left"
-                        onClick={onCreatePointButtonClick}
-                        disabled={createBtnDisabled ? true : false}
+						onClick={onCreatePointButtonClick}
+						disabled={createBtnDisabled ? true : false}
 					>
 						Добавить новый пункт
 					</Button>
@@ -608,23 +607,6 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 				>
 					Скачать документ
 				</Button>
-
-				{/* <div className="flex btn-mrg-top-2">
-                    <Button
-                        variant="secondary"
-                        className="flex-grow"
-                        onClick={onDownloadButtonClick}
-                    >
-                        Скачать документ
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        className="flex-grow mrg-left"
-                        onClick={onDownloadButtonClick}
-                    >
-                        Скачать документ
-                    </Button>
-				</div> */}
 			</div>
 		</div>
 	)

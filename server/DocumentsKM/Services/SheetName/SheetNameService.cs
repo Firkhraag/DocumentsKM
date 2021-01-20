@@ -8,9 +8,9 @@ namespace DocumentsKM.Services
     {
         private ISheetNameRepo _repository;
 
-        public SheetNameService(ISheetNameRepo sheetNameRepoo)
+        public SheetNameService(ISheetNameRepo sheetNameRepo)
         {
-            _repository = sheetNameRepoo;
+            _repository = sheetNameRepo;
         }
 
         public IEnumerable<SheetName> GetAll()

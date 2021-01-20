@@ -13,7 +13,7 @@ namespace DocumentsKM.Data
         MarkLinkedDoc GetByMarkIdAndLinkedDocId(int markId, int linkedDocId);
         // Добавить ссылочный документ к марке
         void Add(MarkLinkedDoc markLinkedDoc);
-        // Ссылочный документ у марки
+        // Обновить ссылочный документ у марки
         void Update(MarkLinkedDoc markLinkedDoc);
         // Удалить ссылочный документ у марки
         void Delete(MarkLinkedDoc markLinkedDoc);
