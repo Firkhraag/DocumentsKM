@@ -3,7 +3,6 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
-using Serilog;
 using System.Linq;
 
 namespace DocumentsKM.Services
@@ -51,8 +50,6 @@ namespace DocumentsKM.Services
             generalDataPoint.Section = foundSection;
             generalDataPoint.User = foundUser;
 
-            // generalDataPoint.OrderNum = _repository.GetAllByUserAndSectionId(
-            //     userId, sectionId).Max(v => v.OrderNum) + 1;
             var currentPoints = _repository.GetAllByUserAndSectionId(userId, sectionId);
             if (currentPoints.Count() == 0)
                 generalDataPoint.OrderNum = 1;
@@ -116,7 +113,6 @@ namespace DocumentsKM.Services
             {
                 if (p.OrderNum > foundGeneralDataPoint.OrderNum)
                 {
-                    // Log.Information(p.OrderNum.ToString());
                     p.OrderNum = p.OrderNum - 1;
                     _repository.Update(p);
                 }

@@ -20,7 +20,6 @@ namespace DocumentsKM.Controllers
             _service = userService;
         }
 
-        // Аутентификация
         [HttpPost("login")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -29,12 +28,12 @@ namespace DocumentsKM.Controllers
         {
             var res = await _service.Authenticate(user);
             if (res == null)
-                return BadRequest(new { message = "Неверный логин или пароль" });
+                return BadRequest(
+                    new { message = "Неверный логин или пароль" });
             setTokenCookie(res.RefreshToken, 7);
             return Ok(res);
         }
 
-        // Обновление access token
         [HttpPost("refresh-token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -49,18 +48,14 @@ namespace DocumentsKM.Controllers
             return Ok(res);
         }
 
-        // Выход из аккаунта
         [Authorize]
         [HttpPost("logout")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Logout()
         {
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             var token = Request.Cookies["refreshToken"];
-            // Токен отсутствует
             if (string.IsNullOrEmpty(token))
                 return NoContent();
-            // Отзываем токен
             var res = await _service.RevokeToken(token);
             if (!res)
                 return NoContent();
@@ -69,12 +64,10 @@ namespace DocumentsKM.Controllers
         }
 
         //------------------------HELPERS------------------------
-        // Добавляет refresh token в cookie
         private void setTokenCookie(string token, int ttl)
         {
             var cookieOptions = new CookieOptions
             {
-                // HttpOnly = true,
                 HttpOnly = false,
                 Secure = true,
                 Expires = DateTime.UtcNow.AddDays(ttl)

@@ -1,5 +1,5 @@
 // Global
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -10,6 +10,7 @@ import Specification from '../../model/Specification'
 import Construction from '../../model/Construction'
 import { useMark } from '../../store/MarkStore'
 import ConstructionTable from '../Construction/ConstructionTable'
+import StandardConstructionTable from '../StandardConstruction/StandardConstructionTable'
 
 type SpecificationDataProps = {
 	specification: Specification
@@ -24,6 +25,12 @@ const SpecificationData = ({
 	const mark = useMark()
 
 	const [selectedObject, setSelectedObject] = useState(specification)
+
+	useEffect(() => {
+		if (mark != null && mark.id != null && selectedObject == null) {
+			history.push('/specifications')
+		}
+	}, [mark])
 
 	const onNoteChange = async (
 		event: React.FormEvent<HTMLTextAreaElement>
@@ -89,6 +96,7 @@ const SpecificationData = ({
 				setConstruction={setConstruction}
 				specificationId={selectedObject.id}
 			/>
+			<StandardConstructionTable />
 		</div>
 	)
 }

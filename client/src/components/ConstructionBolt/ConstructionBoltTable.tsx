@@ -24,8 +24,8 @@ const ConstructionBoltTable = ({
 	constructionId,
 }: ConstructionBoltTableProps) => {
 	const mark = useMark()
-    const history = useHistory()
-    const setPopup = useSetPopup()
+	const history = useHistory()
+	const setPopup = useSetPopup()
 
 	const [constructionBolts, setConstructionBolts] = useState(
 		[] as ConstructionBolt[]
@@ -58,17 +58,17 @@ const ConstructionBoltTable = ({
 	}
 
 	return (
-		<div className="component-cnt">
-			<h1 className="text-centered">Высокопрочные болты</h1>
+        <div>
+			<h2 className="bold text-centered">Высокопрочные болты</h2>
 			<PlusCircle
 				color="#666"
 				size={28}
 				className="pointer"
 				onClick={() =>
-                    history.push(
-                        `/specifications/${specificationId}/constructions/${constructionId}/bolt-create`
-                    )
-                }
+					history.push(
+						`/specifications/${specificationId}/constructions/${constructionId}/bolt-create`
+					)
+				}
 			/>
 			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>

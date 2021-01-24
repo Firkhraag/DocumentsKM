@@ -1,13 +1,13 @@
 interface IUser {
-    id: number
-    login: string
-    name: string
+	id: number
+	login: string
+	name: string
 }
 
 class User {
-    id: number
-    login: string
-    name: string
+	id: number
+	login: string
+	name: string
 
 	constructor(obj?: IUser) {
 		this.id = (obj && obj.id) || 0

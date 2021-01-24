@@ -42,7 +42,8 @@ namespace DocumentsKM.Services
         }
 
         public string GetNewMarkCode(int subnodeId){
-            var codes = _repository.GetAllBySubnodeId(subnodeId).Select(v => v.Code.Substring(2));
+            var codes = _repository.GetAllBySubnodeId(subnodeId).Select(
+                v => v.Code.Substring(2));
             if (codes.Count() == 0)
                 return "КМ1";
             var newNum = 1;
@@ -78,7 +79,8 @@ namespace DocumentsKM.Services
             if (subnode == null)
                 throw new ArgumentNullException(nameof(subnode));
 
-            var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, mark.Code);
+            var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(
+                subnode.Id, mark.Code);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
@@ -95,7 +97,8 @@ namespace DocumentsKM.Services
             mark.MainBuilder = mainBuilder;
             if (chiefSpecialistId != null)
             {
-                var chiefSpecialist = _employeeRepo.GetById(chiefSpecialistId.GetValueOrDefault());
+                var chiefSpecialist = _employeeRepo.GetById(
+                    chiefSpecialistId.GetValueOrDefault());
                 if (chiefSpecialist == null)
                     throw new ArgumentNullException(nameof(chiefSpecialist));
                 if (chiefSpecialist.Department.Id != departmentId)
@@ -137,7 +140,8 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(subnode));
                 foundMark.Subnode = subnode;
 
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, mark.Code);
+                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(
+                    subnode.Id, mark.Code);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             }
@@ -145,7 +149,8 @@ namespace DocumentsKM.Services
             {
                 foundMark.Code = mark.Code;
 
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(foundMark.Subnode.Id, mark.Code);
+                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(
+                    foundMark.Subnode.Id, mark.Code);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             }
@@ -156,7 +161,8 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(subnode));
                 foundMark.Subnode = subnode;
 
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(subnode.Id, foundMark.Code);
+                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(
+                    subnode.Id, foundMark.Code);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             }

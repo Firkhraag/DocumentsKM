@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
-using System.Text.Json;
 using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
@@ -9,7 +8,6 @@ using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace DocumentsKM.Controllers
 {
@@ -44,9 +42,9 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkLinkedDoc> Add(int markId, MarkLinkedDocCreateRequest markLinkedDocRequest)
+        public ActionResult<MarkLinkedDoc> Add(
+            int markId, MarkLinkedDocCreateRequest markLinkedDocRequest)
         {
-            // Log.Information(JsonSerializer.Serialize(markLinkedDocRequest));
             try
             {
                 var markLinkedDocModel = _mapper.Map<MarkLinkedDoc>(markLinkedDocRequest);
@@ -68,10 +66,9 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int id, [FromBody] MarkLinkedDocUpdateRequest markLinkedDocRequest)
+        public ActionResult Update(
+            int id, [FromBody] MarkLinkedDocUpdateRequest markLinkedDocRequest)
         {
-            // DEBUG
-            // Log.Information(JsonSerializer.Serialize(markRequest));
             try
             {
                 _service.Update(id, markLinkedDocRequest);

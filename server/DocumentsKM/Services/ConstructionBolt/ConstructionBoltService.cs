@@ -22,7 +22,8 @@ namespace DocumentsKM.Services
             _boltDiameterRepo = boltDiameterRepo;
         }
 
-        public IEnumerable<ConstructionBolt> GetAllByConstructionId(int constructionId)
+        public IEnumerable<ConstructionBolt> GetAllByConstructionId(
+            int constructionId)
         {
             return _repository.GetAllByConstructionId(constructionId);
         }
@@ -44,7 +45,7 @@ namespace DocumentsKM.Services
             // var uniqueConstraintViolationCheck = _repository.GetByUniqueConstraint(markId, linkedDocId);
             // if (uniqueConstraintViolationCheck != null)
             //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            
+
             constructionBolt.Construction = foundConstruction;
             constructionBolt.Diameter = foundBoltDiameter;
 
@@ -62,7 +63,7 @@ namespace DocumentsKM.Services
             // var foundLinkedDoc = _linkedDocRepo.GetById(ConstructionBoltRequest.LinkedDocId);
             // if (foundLinkedDoc == null)
             //     throw new ArgumentNullException(nameof(foundLinkedDoc));
-                
+
             // var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(
             //     foundConstructionBolt.Mark.Id, ConstructionBoltRequest.LinkedDocId);
             // if (uniqueConstraintViolationCheck != null)

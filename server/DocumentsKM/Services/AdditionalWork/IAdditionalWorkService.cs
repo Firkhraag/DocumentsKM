@@ -13,7 +13,7 @@ namespace DocumentsKM.Services
             AdditionalWork additionalWork,
             int markId,
             int employeeId);
-        // Обновить дополнительные работы
+        // Изменить дополнительные работы
         void Update(int id, AdditionalWorkUpdateRequest additionalWork);
         // Удалить дополнительные работы
         void Delete(int id);

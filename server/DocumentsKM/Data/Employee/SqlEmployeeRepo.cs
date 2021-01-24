@@ -15,12 +15,8 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Employee> GetAllByDepartmentId(int departmentId)
         {
-            return _context.Employees.Where(v => v.Department.Id == departmentId).ToList();
-        }
-
-        public Employee GetById(int id)
-        {
-            return _context.Employees.SingleOrDefault(v => v.Id == id);
+            return _context.Employees.Where(
+                v => v.Department.Id == departmentId).ToList();
         }
 
         public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
@@ -35,8 +31,14 @@ namespace DocumentsKM.Data
             int departmentId,
             int posId)
         {
-            return _context.Employees.Where(v => (v.Department.Id == departmentId) &&
-                (v.Position.Id == posId)).ToList();
+            return _context.Employees.Where(
+                v => (v.Department.Id == departmentId) &&
+                    (v.Position.Id == posId)).ToList();
+        }
+
+        public Employee GetById(int id)
+        {
+            return _context.Employees.SingleOrDefault(v => v.Id == id);
         }
     }
 }

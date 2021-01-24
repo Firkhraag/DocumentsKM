@@ -20,9 +20,9 @@ namespace DocumentsKM.Services
             int? creatorId,
             int? inspectorId,
             int? normContrId);
-        // Обновить существующий документ
+        // Изменить документ
         void Update(int id, DocUpdateRequest doc);
-        // Удалить существующий документ
+        // Удалить документ
         void Delete(int id);
     }
 }

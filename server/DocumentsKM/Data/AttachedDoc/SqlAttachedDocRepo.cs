@@ -14,20 +14,21 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        public IEnumerable<AttachedDoc> GetAllByMarkId(int markId)
+        {
+            return _context.AttachedDocs.Where(
+                v => v.Mark.Id == markId).ToList();
+        }
+
         public AttachedDoc GetById(int id)
         {
             return _context.AttachedDocs.SingleOrDefault(v => v.Id == id);
         }
 
-        public AttachedDoc GetByUniqueKeyValues(int markId, string designation)
+        public AttachedDoc GetByUniqueKey(int markId, string designation)
         {
-            return _context.AttachedDocs.SingleOrDefault(v => (v.Mark.Id == markId) &&
-                (v.Designation == designation));
-        }
-
-        public IEnumerable<AttachedDoc> GetAllByMarkId(int markId)
-        {
-            return _context.AttachedDocs.Where(v => v.Mark.Id == markId).ToList();
+            return _context.AttachedDocs.SingleOrDefault(
+                v => (v.Mark.Id == markId) && (v.Designation == designation));
         }
 
         public void Add(AttachedDoc attachedDoc)

@@ -8,7 +8,8 @@ namespace DocumentsKM.Services
     {
         private IGeneralDataSectionRepo _repository;
 
-        public GeneralDataSectionService(IGeneralDataSectionRepo generalDataSectionRepo)
+        public GeneralDataSectionService(
+            IGeneralDataSectionRepo generalDataSectionRepo)
         {
             _repository = generalDataSectionRepo;
         }

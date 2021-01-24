@@ -12,9 +12,9 @@ namespace DocumentsKM.Services
         void Create(
             AttachedDoc attachedDoc,
             int markId);
-        // Обновить существующий прочий прилагаемый документ
+        // Изменить прочий прилагаемый документ
         void Update(int id, AttachedDocUpdateRequest attachedDoc);
-        // Удалить существующий прочий прилагаемый документ
+        // Удалить прочий прилагаемый документ
         void Delete(int id);
     }
 }

@@ -19,7 +19,7 @@ namespace DocumentsKM.Tests
 
             foreach (var project in TestData.projects)
             {
-                repository.Setup(mock=>
+                repository.Setup(mock =>
                     mock.GetAllByProjectId(project.Id)).Returns(
                         TestData.nodes.Where(v => v.Project.Id == project.Id));
             }

@@ -7,9 +7,6 @@ namespace DocumentsKM.Data
     {
         // Получить все подузлы по id узла
         IEnumerable<Subnode> GetAllByNodeId(int nodeId);
-
-        // IEnumerable<Subnode> GetUserRecentSubnodes();
-
         // Получить подузел по id
         Subnode GetById(int id);
     }

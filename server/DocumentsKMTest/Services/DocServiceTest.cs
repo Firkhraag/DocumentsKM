@@ -18,7 +18,7 @@ namespace DocumentsKM.Tests
         private readonly Mock<IDocTypeRepo> _mockDocTypeRepo = new Mock<IDocTypeRepo>();
         private readonly IDocService _service;
         private readonly Random _rnd = new Random();
-        private readonly List<Doc> _docs = new List<Doc>{};
+        private readonly List<Doc> _docs = new List<Doc> { };
         private readonly int _maxMarkId = 3;
 
         public DocServiceTest()
@@ -44,45 +44,47 @@ namespace DocumentsKM.Tests
             }
             foreach (var doc in _docs)
             {
-                _mockDocRepo.Setup(mock=>
+                _mockDocRepo.Setup(mock =>
                     mock.GetById(doc.Id)).Returns(
                         _docs.SingleOrDefault(v => v.Id == doc.Id));
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock=>
+                _mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
                 foreach (var docType in TestData.docTypes)
                 {
-                    _mockDocRepo.Setup(mock=>
+                    _mockDocRepo.Setup(mock =>
                         mock.GetAllByMarkIdAndDocType(mark.Id, docType.Id)).Returns(
-                            _docs.Where(v => v.Mark.Id == mark.Id && v.Type.Id == docType.Id));
+                            _docs.Where(
+                                v => v.Mark.Id == mark.Id && v.Type.Id == docType.Id));
 
-                    _mockDocRepo.Setup(mock=>
+                    _mockDocRepo.Setup(mock =>
                         mock.GetAllByMarkIdAndNotDocType(mark.Id, docType.Id)).Returns(
-                            _docs.Where(v => v.Mark.Id == mark.Id && v.Type.Id != docType.Id));
+                            _docs.Where(
+                                v => v.Mark.Id == mark.Id && v.Type.Id != docType.Id));
                 }
             }
             foreach (var employee in TestData.employees)
             {
-                _mockEmployeeRepo.Setup(mock=>
+                _mockEmployeeRepo.Setup(mock =>
                     mock.GetById(employee.Id)).Returns(
                         TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
             }
             foreach (var docType in TestData.docTypes)
             {
-                _mockDocTypeRepo.Setup(mock=>
+                _mockDocTypeRepo.Setup(mock =>
                     mock.GetById(docType.Id)).Returns(
                         TestData.docTypes.SingleOrDefault(v => v.Id == docType.Id));
             }
 
-            _mockDocRepo.Setup(mock=>
+            _mockDocRepo.Setup(mock =>
                 mock.Add(It.IsAny<Doc>())).Verifiable();
-            _mockDocRepo.Setup(mock=>
+            _mockDocRepo.Setup(mock =>
                 mock.Update(It.IsAny<Doc>())).Verifiable();
-            _mockDocRepo.Setup(mock=>
+            _mockDocRepo.Setup(mock =>
                 mock.Delete(It.IsAny<Doc>())).Verifiable();
 
             _service = new DocService(
@@ -112,7 +114,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int wrongMarkId = 999;
-            
+
             // Act
             var returnedSheets = _service.GetAllSheetsByMarkId(wrongMarkId);
 
@@ -140,7 +142,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int wrongMarkId = 999;
-            
+
             // Act
             var returnedAttachedDocs = _service.GetAllSheetsByMarkId(wrongMarkId);
 
@@ -160,13 +162,14 @@ namespace DocumentsKM.Tests
 
             var newDoc = new Doc
             {
-                Name="NewCreate",
-                NumOfPages=1,
-                Form=1.0f,
+                Name = "NewCreate",
+                NumOfPages = 1,
+                Form = 1.0f,
             };
-            
+
             // Act
-            _service.Create(newDoc, markId, docTypeId, creatorId, inspectorId, normContrId);
+            _service.Create(
+                newDoc, markId, docTypeId, creatorId, inspectorId, normContrId);
 
             // Assert
             _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Once);
@@ -194,11 +197,11 @@ namespace DocumentsKM.Tests
 
             var newDoc = new Doc
             {
-                Name="NewCreate",
-                NumOfPages=1,
-                Form=1.0f,
+                Name = "NewCreate",
+                NumOfPages = 1,
+                Form = 1.0f,
             };
-            
+
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 null, markId, docTypeId, creatorId, inspectorId, normContrId));
@@ -215,7 +218,7 @@ namespace DocumentsKM.Tests
 
             _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Never);
         }
-        
+
         [Fact]
         public void Update_ShouldUpdateDoc()
         {
@@ -226,10 +229,10 @@ namespace DocumentsKM.Tests
 
             var newDocRequest = new DocUpdateRequest
             {
-                Name=newName,
-                TypeId=newTypeId,
+                Name = newName,
+                TypeId = newTypeId,
             };
-            
+
             // Act
             _service.Update(id, newDocRequest);
 
@@ -247,12 +250,13 @@ namespace DocumentsKM.Tests
 
             var newDocRequest = new DocUpdateRequest
             {
-                Name="NewUpdate",
+                Name = "NewUpdate",
             };
-            
+
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
-            Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newDocRequest));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                wrongId, newDocRequest));
 
             _mockDocRepo.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Never);
         }
@@ -262,7 +266,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _docs.Count());
-            
+
             // Act
             _service.Delete(id);
 

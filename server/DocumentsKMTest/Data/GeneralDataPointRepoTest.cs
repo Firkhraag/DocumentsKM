@@ -22,7 +22,7 @@
 //             var context = new ApplicationContext(options);
 //             context.Database.EnsureDeleted();
 //             context.Database.EnsureCreated();
-            
+
 //             context.Users.AddRange(TestData.users);
 //             context.GeneralDataSections.AddRange(TestData.generalDataSections);
 //             context.GeneralDataPoints.AddRange(generalDataPoints);

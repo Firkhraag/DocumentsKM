@@ -14,21 +14,24 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        public IEnumerable<Construction> GetAllBySpecificationId(
+            int specificationId)
+        {
+            return _context.Constructions.Where(
+                v => v.Specification.Id == specificationId).ToList();
+        }
+
         public Construction GetById(int id)
         {
             return _context.Constructions.SingleOrDefault(v => v.Id == id);
         }
 
-        public Construction GetByUniqueKeyValues(int specificationId, string name, float paintworkCoeff)
+        public Construction GetByUniqueKey(
+            int specificationId, string name, float paintworkCoeff)
         {
-            return _context.Constructions.SingleOrDefault(v => (v.Specification.Id == specificationId) &&
-                (v.Name == name) && (v.PaintworkCoeff == paintworkCoeff));
-        }
-
-        public IEnumerable<Construction> GetAllBySpecificationId(int specificationId)
-        {
-            return _context.Constructions.Where(
-                v => v.Specification.Id == specificationId).ToList();
+            return _context.Constructions.SingleOrDefault(
+                v => (v.Specification.Id == specificationId) &&
+                    (v.Name == name) && (v.PaintworkCoeff == paintworkCoeff));
         }
 
         public void Add(Construction construction)

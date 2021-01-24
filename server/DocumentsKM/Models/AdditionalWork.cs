@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
 {
+    // Учет дополнительных работ
     public class AdditionalWork
     {
         [Key]

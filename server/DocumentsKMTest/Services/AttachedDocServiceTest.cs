@@ -16,7 +16,7 @@ namespace DocumentsKM.Tests
         private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly IAttachedDocService _service;
         private readonly Random _rnd = new Random();
-        private readonly List<AttachedDoc> _attachedDocs = new List<AttachedDoc>{};
+        private readonly List<AttachedDoc> _attachedDocs = new List<AttachedDoc> { };
         private readonly int _maxMarkId = 3;
 
         public AttachedDocServiceTest()
@@ -35,34 +35,34 @@ namespace DocumentsKM.Tests
             }
             foreach (var attachedDoc in _attachedDocs)
             {
-                _repository.Setup(mock=>
+                _repository.Setup(mock =>
                     mock.GetById(attachedDoc.Id)).Returns(
                         _attachedDocs.SingleOrDefault(v => v.Id == attachedDoc.Id));
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock=>
+                _mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
-                _repository.Setup(mock=>
+                _repository.Setup(mock =>
                     mock.GetAllByMarkId(mark.Id)).Returns(
                         _attachedDocs.Where(v => v.Mark.Id == mark.Id));
 
                 foreach (var attachedDoc in _attachedDocs)
                 {
-                    _repository.Setup(mock=>
-                        mock.GetByUniqueKeyValues(mark.Id, attachedDoc.Designation)).Returns(
+                    _repository.Setup(mock =>
+                        mock.GetByUniqueKey(mark.Id, attachedDoc.Designation)).Returns(
                             _attachedDocs.SingleOrDefault(
                                 v => v.Mark.Id == mark.Id && v.Designation == attachedDoc.Designation));
                 }
             }
 
-            _repository.Setup(mock=>
+            _repository.Setup(mock =>
                 mock.Add(It.IsAny<AttachedDoc>())).Verifiable();
-            _repository.Setup(mock=>
+            _repository.Setup(mock =>
                 mock.Update(It.IsAny<AttachedDoc>())).Verifiable();
-            _repository.Setup(mock=>
+            _repository.Setup(mock =>
                 mock.Delete(It.IsAny<AttachedDoc>())).Verifiable();
 
             _service = new AttachedDocService(
@@ -75,7 +75,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int markId = _rnd.Next(1, _maxMarkId);
-            
+
             // Act
             var returnedAttachedDocs = _service.GetAllByMarkId(markId);
 
@@ -89,7 +89,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int wrongMarkId = 999;
-            
+
             // Act
             var returnedAttachedDocs = _service.GetAllByMarkId(wrongMarkId);
 
@@ -105,10 +105,10 @@ namespace DocumentsKM.Tests
 
             var newAttachedDoc = new AttachedDoc
             {
-                Designation="NewCreate",
-                Name="NewCreate",
+                Designation = "NewCreate",
+                Name = "NewCreate",
             };
-            
+
             // Act
             _service.Create(newAttachedDoc, markId);
 
@@ -126,10 +126,10 @@ namespace DocumentsKM.Tests
 
             var newAttachedDoc = new AttachedDoc
             {
-                Designation="NewCreate",
-                Name="NewCreate",
+                Designation = "NewCreate",
+                Name = "NewCreate",
             };
-            
+
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(null, markId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(newAttachedDoc, wrongMarkId));
@@ -146,16 +146,16 @@ namespace DocumentsKM.Tests
 
             var newAttachedDoc = new AttachedDoc
             {
-                Designation=conflictDesignation,
-                Name="NewCreate",
+                Designation = conflictDesignation,
+                Name = "NewCreate",
             };
-            
+
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Create(newAttachedDoc, conflictMarkId));
 
             _repository.Verify(mock => mock.Add(It.IsAny<AttachedDoc>()), Times.Never);
         }
-        
+
         [Fact]
         public void Update_ShouldUpdateAttachedDoc()
         {
@@ -165,9 +165,9 @@ namespace DocumentsKM.Tests
 
             var newAttachedDocRequest = new AttachedDocUpdateRequest
             {
-                Designation=newDesignation,
+                Designation = newDesignation,
             };
-            
+
             // Act
             _service.Update(id, newAttachedDocRequest);
 
@@ -185,10 +185,10 @@ namespace DocumentsKM.Tests
 
             var newAttachedDocRequest = new AttachedDocUpdateRequest
             {
-                Designation="NewUpdate",
-                Name="NewUpdate",
+                Designation = "NewUpdate",
+                Name = "NewUpdate",
             };
-            
+
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
             Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newAttachedDocRequest));
@@ -205,10 +205,10 @@ namespace DocumentsKM.Tests
 
             var newAttachedDocRequest = new AttachedDocUpdateRequest
             {
-                Designation=conflictDesignation,
-                Name="NewUpdate",
+                Designation = conflictDesignation,
+                Name = "NewUpdate",
             };
-            
+
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Update(id, newAttachedDocRequest));
 
@@ -220,7 +220,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _attachedDocs.Count());
-            
+
             // Act
             _service.Delete(id);
 

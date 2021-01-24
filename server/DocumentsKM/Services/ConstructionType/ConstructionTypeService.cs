@@ -8,7 +8,8 @@ namespace DocumentsKM.Services
     {
         private IConstructionTypeRepo _repository;
 
-        public ConstructionTypeService(IConstructionTypeRepo constructionTypeRepo)
+        public ConstructionTypeService(
+            IConstructionTypeRepo constructionTypeRepo)
         {
             _repository = constructionTypeRepo;
         }

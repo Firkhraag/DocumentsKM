@@ -66,7 +66,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var context = GetContext(TestData.generalDataSections);
             var repo = new SqlGeneralDataSectionRepo(context);
-            
+
             int wrongId = 999;
 
             // Act

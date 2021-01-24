@@ -14,9 +14,9 @@ namespace DocumentsKM.Tests
             // Arrange
             var repository = new Mock<IGasGroupRepo>();
 
-            repository.Setup(mock=>
+            repository.Setup(mock =>
                 mock.GetAll()).Returns(TestData.gasGroups);
-            
+
             _service = new GasGroupService(repository.Object);
         }
 
@@ -32,4 +32,3 @@ namespace DocumentsKM.Tests
         }
     }
 }
-

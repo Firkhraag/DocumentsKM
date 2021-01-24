@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
-using System.Text.Json;
 using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
@@ -9,7 +8,6 @@ using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace DocumentsKM.Controllers
 {
@@ -32,7 +30,8 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("specifications/{specificationId}/constructions")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<ConstructionResponse>> GetAllBySpecificationId(int specificationId)
+        public ActionResult<IEnumerable<ConstructionResponse>> GetAllBySpecificationId(
+            int specificationId)
         {
             var docs = _service.GetAllBySpecificationId(specificationId);
             return Ok(_mapper.Map<IEnumerable<ConstructionResponse>>(docs));
@@ -44,7 +43,9 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<ConstructionResponse> Create(int specificationId, [FromBody] ConstructionCreateRequest constructionRequest)
+        public ActionResult<ConstructionResponse> Create(
+            int specificationId,
+            [FromBody] ConstructionCreateRequest constructionRequest)
         {
             var constructionModel = _mapper.Map<Construction>(constructionRequest);
             try
@@ -64,7 +65,8 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"constructions/{constructionModel.Id}", _mapper.Map<ConstructionResponse>(constructionModel));
+            return Created($"constructions/{constructionModel.Id}",
+                _mapper.Map<ConstructionResponse>(constructionModel));
         }
 
         [HttpPatch, Route("constructions/{id}")]
@@ -72,10 +74,9 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int id, [FromBody] ConstructionUpdateRequest constructionRequest)
+        public ActionResult Update(
+            int id, [FromBody] ConstructionUpdateRequest constructionRequest)
         {
-            // DEBUG
-            Log.Information(JsonSerializer.Serialize(constructionRequest));
             try
             {
                 _service.Update(id, constructionRequest);

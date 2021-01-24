@@ -5,11 +5,11 @@ namespace DocumentsKM.Services
 {
     public interface IUserService
     {
-        // Аутентификация
+        // Аутентифицировать пользователя
         Task<UserResponse> Authenticate(UserRequest user);
-        // Обновление токена
+        // Обновить токен
         Task<UserResponse> RefreshToken(string token);
-        // Отзыв токена
+        // Отозвать токен
         Task<bool> RevokeToken(string token);
     }
 }

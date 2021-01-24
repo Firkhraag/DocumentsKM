@@ -30,7 +30,8 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("subnodes/{subnodeId}/marks")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<MarkBaseResponse>> GetAllBySubnodeId(int subnodeId)
+        public ActionResult<IEnumerable<MarkBaseResponse>> GetAllBySubnodeId(
+            int subnodeId)
         {
             var marks = _service.GetAllBySubnodeId(subnodeId);
             return Ok(_mapper.Map<IEnumerable<MarkBaseResponse>>(marks));
@@ -72,7 +73,8 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkResponse> Create([FromBody] MarkCreateRequest markRequest)
+        public ActionResult<MarkResponse> Create(
+            [FromBody] MarkCreateRequest markRequest)
         {
             var markModel = _mapper.Map<Mark>(markRequest);
             try
@@ -95,7 +97,8 @@ namespace DocumentsKM.Controllers
             }
             
             var markResponse = _mapper.Map<MarkResponse>(markModel);
-            return CreatedAtAction(nameof(GetById), new {Id = markResponse.Id}, markResponse);
+            return CreatedAtAction(
+                nameof(GetById), new {Id = markResponse.Id}, markResponse);
         }
 
         [HttpPatch, Route("marks/{id}")]

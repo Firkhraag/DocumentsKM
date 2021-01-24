@@ -22,8 +22,6 @@ namespace DocumentsKM.Data
 
         public User GetByLogin(string login)
         {
-            // return _context.Users.Include(
-            //     v => v.Employee).SingleOrDefault(v => v.Login == login);
             return _context.Users.Include(
                 v => v.Employee).SingleOrDefault(v => v.Login == login);
         }

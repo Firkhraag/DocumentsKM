@@ -102,7 +102,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByUniqueKeyValues_ShouldReturnConstruction()
+        public void GetByUniqueKey_ShouldReturnConstruction()
         {
             // Arrange
             var context = GetContext(TestData.constructions);
@@ -113,7 +113,7 @@ namespace DocumentsKM.Tests
             var paintworkCoeff = TestData.constructions[0].PaintworkCoeff;
 
             // Act
-            var construction = repo.GetByUniqueKeyValues(
+            var construction = repo.GetByUniqueKey(
                 specificationId, name, paintworkCoeff);
 
             // Assert
@@ -125,7 +125,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByUniqueKeyValues_ShouldReturnNull_WhenWrongKey()
+        public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
         {
             // Arrange
             var context = GetContext(TestData.constructions);
@@ -139,9 +139,9 @@ namespace DocumentsKM.Tests
             var wrongPaintworkCoeff = -1;
 
             // Act
-            var additionalWork1 = repo.GetByUniqueKeyValues(wrongSpecificationId, name, paintworkCoeff);
-            var additionalWork2 = repo.GetByUniqueKeyValues(specificationId, wrongName, paintworkCoeff);
-            var additionalWork3 = repo.GetByUniqueKeyValues(specificationId, name, wrongPaintworkCoeff);
+            var additionalWork1 = repo.GetByUniqueKey(wrongSpecificationId, name, paintworkCoeff);
+            var additionalWork2 = repo.GetByUniqueKey(specificationId, wrongName, paintworkCoeff);
+            var additionalWork3 = repo.GetByUniqueKey(specificationId, name, wrongPaintworkCoeff);
 
             // Assert
             Assert.Null(additionalWork1);
@@ -193,7 +193,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateConstruction()
         {
             // Arrange
-            var constructions = new List<Construction>{};
+            var constructions = new List<Construction> { };
             foreach (var c in TestData.constructions)
             {
                 constructions.Add(new Construction

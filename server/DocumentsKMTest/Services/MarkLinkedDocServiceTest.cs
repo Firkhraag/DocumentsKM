@@ -17,7 +17,7 @@ namespace DocumentsKM.Tests
         private readonly Mock<ILinkedDocRepo> _mockLinkedDocRepo = new Mock<ILinkedDocRepo>();
         private readonly IMarkLinkedDocService _service;
         private readonly Random _rnd = new Random();
-        private readonly List<MarkLinkedDoc> _markLinkedDocs = new List<MarkLinkedDoc>{};
+        private readonly List<MarkLinkedDoc> _markLinkedDocs = new List<MarkLinkedDoc> { };
         private readonly int _maxMarkId = 3;
 
         public MarkLinkedDocServiceTest()
@@ -34,23 +34,23 @@ namespace DocumentsKM.Tests
             }
             foreach (var markLinkedDoc in _markLinkedDocs)
             {
-                _mockMarkLinkedDocRepo.Setup(mock=>
+                _mockMarkLinkedDocRepo.Setup(mock =>
                     mock.GetById(markLinkedDoc.Id)).Returns(
                         _markLinkedDocs.SingleOrDefault(v => v.Id == markLinkedDoc.Id));
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock=>
+                _mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
-                _mockMarkLinkedDocRepo.Setup(mock=>
+                _mockMarkLinkedDocRepo.Setup(mock =>
                     mock.GetAllByMarkId(mark.Id)).Returns(
                         _markLinkedDocs.Where(v => v.Mark.Id == mark.Id));
 
                 foreach (var linkedDoc in TestData.linkedDocs)
                 {
-                    _mockMarkLinkedDocRepo.Setup(mock=>
+                    _mockMarkLinkedDocRepo.Setup(mock =>
                         mock.GetByMarkIdAndLinkedDocId(mark.Id, linkedDoc.Id)).Returns(
                             _markLinkedDocs.SingleOrDefault(
                                 v => v.Mark.Id == mark.Id && v.LinkedDoc.Id == linkedDoc.Id));
@@ -58,16 +58,16 @@ namespace DocumentsKM.Tests
             }
             foreach (var ld in TestData.linkedDocs)
             {
-                _mockLinkedDocRepo.Setup(mock=>
+                _mockLinkedDocRepo.Setup(mock =>
                     mock.GetById(ld.Id)).Returns(
                         TestData.linkedDocs.SingleOrDefault(v => v.Id == ld.Id));
             }
 
-            _mockMarkLinkedDocRepo.Setup(mock=>
+            _mockMarkLinkedDocRepo.Setup(mock =>
                 mock.Add(It.IsAny<MarkLinkedDoc>())).Verifiable();
-            _mockMarkLinkedDocRepo.Setup(mock=>
+            _mockMarkLinkedDocRepo.Setup(mock =>
                 mock.Update(It.IsAny<MarkLinkedDoc>())).Verifiable();
-            _mockMarkLinkedDocRepo.Setup(mock=>
+            _mockMarkLinkedDocRepo.Setup(mock =>
                 mock.Delete(It.IsAny<MarkLinkedDoc>())).Verifiable();
 
             _service = new MarkLinkedDocService(
@@ -81,7 +81,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int markId = _rnd.Next(1, _maxMarkId);
-            
+
             // Act
             var returnedMarkLinkedDocs = _service.GetAllByMarkId(markId);
 
@@ -101,7 +101,7 @@ namespace DocumentsKM.Tests
             {
                 linkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
             }
-            var newMarkLinkedDoc = new MarkLinkedDoc{};
+            var newMarkLinkedDoc = new MarkLinkedDoc { };
 
             // Act
             _service.Create(newMarkLinkedDoc, markId, linkedDocId);
@@ -121,8 +121,8 @@ namespace DocumentsKM.Tests
             var linkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
             int wrongLinkedDocId = 999;
 
-            var newMarkLinkedDoc = new MarkLinkedDoc{};
-            
+            var newMarkLinkedDoc = new MarkLinkedDoc { };
+
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(null, markId, linkedDocId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkLinkedDoc, wrongMarkId, linkedDocId));
@@ -137,15 +137,15 @@ namespace DocumentsKM.Tests
             // Arrange
             var conflictMarkId = _markLinkedDocs[0].Mark.Id;
             var conflictLinkedDocId = _markLinkedDocs[0].LinkedDoc.Id;
-            var newMarkLinkedDoc = new MarkLinkedDoc{};
-            
+            var newMarkLinkedDoc = new MarkLinkedDoc { };
+
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Create(newMarkLinkedDoc,
                 conflictMarkId, conflictLinkedDocId));
 
             _mockMarkLinkedDocRepo.Verify(mock => mock.Add(It.IsAny<MarkLinkedDoc>()), Times.Never);
         }
-        
+
         [Fact]
         public void Update_ShouldUpdateMarkLinkedDoc()
         {
@@ -162,9 +162,9 @@ namespace DocumentsKM.Tests
 
             var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
-                LinkedDocId=newLinkedDocId,
+                LinkedDocId = newLinkedDocId,
             };
-            
+
             // Act
             _service.Update(id, newMarkLinkedDocRequest);
 
@@ -188,13 +188,13 @@ namespace DocumentsKM.Tests
 
             var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
-                LinkedDocId=newLinkedDocId,
+                LinkedDocId = newLinkedDocId,
             };
             var wrongMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
-                LinkedDocId=wrongLinkedDocId,
+                LinkedDocId = wrongLinkedDocId,
             };
-            
+
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
             Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newMarkLinkedDocRequest));
@@ -212,9 +212,9 @@ namespace DocumentsKM.Tests
 
             var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
-               LinkedDocId = conflictLinkedDocId,
+                LinkedDocId = conflictLinkedDocId,
             };
-            
+
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Update(id, newMarkLinkedDocRequest));
 
@@ -226,7 +226,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _markLinkedDocs.Count());
-            
+
             // Act
             _service.Delete(id);
 

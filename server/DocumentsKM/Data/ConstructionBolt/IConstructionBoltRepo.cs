@@ -5,13 +5,15 @@ namespace DocumentsKM.Data
 {
     public interface IConstructionBoltRepo
     {
-        // Получить все высокопрочные болты по id вида конструкции
+        // Получить все высокопрочные болты конструкции по id вида конструкции
         IEnumerable<ConstructionBolt> GetAllByConstructionId(int constructionId);
         // Получить высокопрочный болт конструкции по id
         ConstructionBolt GetById(int id);
+        // Получить высокопрочный болт конструкции по unique key
+        ConstructionBolt GetByUniqueKey(int construtionId, int diameterId);
         // Добавить высокопрочный болт к конструкции
         void Add(ConstructionBolt constructionBolt);
-        // Обновить высокопрочный болт у конструкции
+        // Изменить высокопрочный болт у конструкции
         void Update(ConstructionBolt constructionBolt);
         // Удалить высокопрочный болт у конструкции
         void Delete(ConstructionBolt constructionBolt);

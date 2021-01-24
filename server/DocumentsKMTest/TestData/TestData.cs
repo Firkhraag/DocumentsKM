@@ -756,6 +756,131 @@ namespace DocumentsKM.Tests
             },
         };
 
+        public static readonly List<BoltDiameter> boltDiameters = new List<BoltDiameter>
+        {
+            new BoltDiameter
+            {
+                Id = 1,
+                Diameter = 1,
+                NutWeight = 1,
+                WasherSteel = "WS1",
+                WasherWeight = 1,
+                WasherThickness = 1,
+                BoltTechSpec = "BTS1",
+                StrengthClass = "S1",
+                NutTechSpec = "NTS1",
+                WasherTechSpec = "WTS1",
+            },
+            new BoltDiameter
+            {
+                Id = 2,
+                Diameter = 2,
+                NutWeight = 2,
+                WasherSteel = "WS2",
+                WasherWeight = 2,
+                WasherThickness = 2,
+                BoltTechSpec = "BTS2",
+                StrengthClass = "S2",
+                NutTechSpec = "NTS2",
+                WasherTechSpec = "WTS2",
+            },
+            new BoltDiameter
+            {
+                Id = 3,
+                Diameter = 3,
+                NutWeight = 3,
+                WasherSteel = "WS3",
+                WasherWeight = 3,
+                WasherThickness = 3,
+                BoltTechSpec = "BTS3",
+                StrengthClass = "S3",
+                NutTechSpec = "NTS3",
+                WasherTechSpec = "WTS3",
+            },
+        };
+
+        public static readonly List<BoltLength> boltLengths = new List<BoltLength>
+        {
+            new BoltLength
+            {
+                Id = 1,
+                Diameter = boltDiameters[0],
+                BoltLen = 1,
+                ScrewLen = 1,
+                BoltWeight = 1,
+            },
+            new BoltLength
+            {
+                Id = 2,
+                Diameter = boltDiameters[1],
+                BoltLen = 2,
+                ScrewLen = 2,
+                BoltWeight = 2,
+            },
+            new BoltLength
+            {
+                Id = 3,
+                Diameter = boltDiameters[2],
+                BoltLen = 3,
+                ScrewLen = 3,
+                BoltWeight = 3,
+            },
+        };
+
+        public static readonly List<ConstructionBolt> constructionBolts = new List<ConstructionBolt>
+        {
+            new ConstructionBolt
+            {
+                Id = 1,
+                Construction = constructions[0],
+                Diameter = boltDiameters[0],
+                Packet = 1,
+                Num = 1,
+                NutNum = 1,
+                WasherNum = 1,
+            },
+            new ConstructionBolt
+            {
+                Id = 2,
+                Construction = constructions[0],
+                Diameter = boltDiameters[1],
+                Packet = 2,
+                Num = 2,
+                NutNum = 2,
+                WasherNum = 2,
+            },
+            new ConstructionBolt
+            {
+                Id = 3,
+                Construction = constructions[1],
+                Diameter = boltDiameters[0],
+                Packet = 3,
+                Num = 3,
+                NutNum = 3,
+                WasherNum = 3,
+            },
+            new ConstructionBolt
+            {
+                Id = 4,
+                Construction = constructions[1],
+                Diameter = boltDiameters[2],
+                Packet = 4,
+                Num = 4,
+                NutNum = 4,
+                WasherNum = 4,
+            },
+            new ConstructionBolt
+            {
+                Id = 5,
+                Construction = constructions[2],
+                Diameter = boltDiameters[1],
+                Packet = 5,
+                Num = 5,
+                NutNum = 5,
+                WasherNum = 5,
+            },
+        };
+
         public static readonly List<MarkOperatingConditions> markOperatingConditions = new List<MarkOperatingConditions>
         {
             new MarkOperatingConditions

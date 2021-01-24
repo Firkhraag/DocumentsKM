@@ -29,7 +29,8 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("marks/{markId}/approvals")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<EmployeeDepartmentResponse>> GetAllByMarkId(int markId)
+        public ActionResult<IEnumerable<EmployeeDepartmentResponse>> GetAllByMarkId(
+            int markId)
         {
             var employees = _service.GetAllEmployeesByMarkId(markId);
             return Ok(_mapper.Map<IEnumerable<EmployeeDepartmentResponse>>(employees));

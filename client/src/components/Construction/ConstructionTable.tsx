@@ -59,9 +59,7 @@ const ConstructionTable = ({
 
 	return (
 		<div>
-			<h2 className="mrg-top-2 bold text-centered">
-				Перечень видов конструкций
-			</h2>
+			<h2 className="bold text-centered">Перечень видов конструкций</h2>
 
 			<div className="full-width">
 				<PlusCircle
@@ -76,7 +74,7 @@ const ConstructionTable = ({
 				/>
 			</div>
 
-			<Table bordered striped className="mrg-top no-bot-mrg">
+			<Table bordered striped className="mrg-top no-bot-mrg shadow">
 				<thead>
 					<tr>
 						<th>№</th>

@@ -46,7 +46,7 @@ namespace DocumentsKM.Services
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
 
-            var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                 specificationId, construction.Name, construction.PaintworkCoeff);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
@@ -84,7 +84,7 @@ namespace DocumentsKM.Services
 
             if (construction.Name != null)
             {
-                // var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
+                // var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                 //     foundConstruction.Specification.Id, construction.Name, construction.PaintworkCoeff);
                 // if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                 //     throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());

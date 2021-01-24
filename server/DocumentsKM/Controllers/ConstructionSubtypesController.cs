@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using AutoMapper;
 using DocumentsKM.Dtos;
-using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,10 +27,12 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("construction-types/{typeId}/construction-subtypes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<ConstructionSubtypeResponse>> GetAllByTypeId(int typeId)
+        public ActionResult<IEnumerable<ConstructionSubtypeResponse>> GetAllByTypeId(
+            int typeId)
         {
             var constructionSubtype = _service.GetAllByTypeId(typeId);
-            return Ok(_mapper.Map<IEnumerable<ConstructionSubtypeResponse>>(constructionSubtype));
+            return Ok(_mapper.Map<IEnumerable<ConstructionSubtypeResponse>>(
+                constructionSubtype));
         }
     }
 }

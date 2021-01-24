@@ -29,25 +29,27 @@ namespace DocumentsKM.Services
         public IEnumerable<AdditionalWorkResponse> GetAllByMarkId(int markId)
         {
             var docs = _docRepo.GetAllByMarkId(markId);
-            var docsGroupedByCreator = docs.Where(v => v.Creator != null).GroupBy(d => d.Creator).Select(
-                g => new Doc
-                {
-                    Creator = g.First().Creator,
-                    Form = g.Sum(v => v.Form),
-                    // NumOfPages = g.Sum(v => v.NumOfPages),
-                });
-            var docsGroupedByNormContr = docs.Where(v => v.NormContr != null).GroupBy(d => d.NormContr).Select(
-                g => new Doc
-                {
-                    NormContr = g.First().NormContr,
-                    Form = g.Sum(v => v.Form),
-                    // NumOfPages = g.Sum(v => v.NumOfPages),
-                });
+            var docsGroupedByCreator = docs.Where
+                (v => v.Creator != null).GroupBy(d => d.Creator).Select(
+                    g => new Doc
+                    {
+                        Creator = g.First().Creator,
+                        Form = g.Sum(v => v.Form),
+                    });
+            var docsGroupedByNormContr = docs.Where(
+                v => v.NormContr != null).GroupBy(d => d.NormContr).Select(
+                    g => new Doc
+                    {
+                        NormContr = g.First().NormContr,
+                        Form = g.Sum(v => v.Form),
+                    });
 
-            var addWork = _repository.GetAllByMarkId(markId).Select(v => 
-                new AdditionalWorkResponse {
+            var addWork = _repository.GetAllByMarkId(markId).Select(v =>
+                new AdditionalWorkResponse
+                {
                     Id = v.Id,
-                    Employee = new EmployeeBaseResponse {
+                    Employee = new EmployeeBaseResponse
+                    {
                         Id = v.Employee.Id,
                         Name = v.Employee.Name,
                     },
@@ -76,10 +78,11 @@ namespace DocumentsKM.Services
             if (foundEmployee == null)
                 throw new ArgumentNullException(nameof(foundEmployee));
 
-            var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                 markId, employeeId);
             if (uniqueConstraintViolationCheck != null)
-                throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
+                throw new ConflictException(
+                    uniqueConstraintViolationCheck.Id.ToString());
 
             additionalWork.Mark = foundMark;
             additionalWork.Employee = foundEmployee;
@@ -103,7 +106,7 @@ namespace DocumentsKM.Services
                 if (employee == null)
                     throw new ArgumentNullException(nameof(employee));
 
-                var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                     foundAdditionalWork.Mark.Id, employeeId);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());

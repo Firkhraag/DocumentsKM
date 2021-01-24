@@ -8,7 +8,8 @@ namespace DocumentsKM.Services
     {
         private IEnvAggressivenessRepo _repository;
 
-        public EnvAggressivenessService(IEnvAggressivenessRepo envAggressivenessRepo)
+        public EnvAggressivenessService(
+            IEnvAggressivenessRepo envAggressivenessRepo)
         {
             _repository = envAggressivenessRepo;
         }

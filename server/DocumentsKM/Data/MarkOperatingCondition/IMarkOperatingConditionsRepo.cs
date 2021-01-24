@@ -4,11 +4,11 @@ namespace DocumentsKM.Data
 {
     public interface IMarkOperatingConditionsRepo
     {
-        // Получить технические условия марки
+        // Получить технические условия марки по id марки
         MarkOperatingConditions GetByMarkId(int markId);
         // Добавить технические условия марки
         void Add(MarkOperatingConditions markOperatingConditions);
-        // Обновить технические условия марки
+        // Изменить технические условия марки
         void Update(MarkOperatingConditions markOperatingConditions);
     }
 }

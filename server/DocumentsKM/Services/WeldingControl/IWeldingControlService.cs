@@ -5,7 +5,7 @@ namespace DocumentsKM.Services
 {
     public interface IWeldingControlService
     {
-        // Получить контроль сварки
+        // Получить весь контроль сварки
         IEnumerable<WeldingControl> GetAll();
     }
 }

@@ -26,7 +26,7 @@ const AdditionalWorkTable = ({
 
 	const mark = useMark()
 	const history = useHistory()
-    const setPopup = useSetPopup()
+	const setPopup = useSetPopup()
 
 	const [additionalWorkArray, setAdditionalWorkArray] = useState(
 		[] as AdditionalWork[]

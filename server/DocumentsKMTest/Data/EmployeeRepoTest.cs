@@ -68,7 +68,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var context = GetContext(TestData.employees);
             var repo = new SqlEmployeeRepo(context);
-            
+
             var departmentId = _rnd.Next(1, TestData.departments.Count());
             var positionId = _rnd.Next(1, TestData.positions.Count());
 
@@ -165,7 +165,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var context = GetContext(TestData.employees);
             var repo = new SqlEmployeeRepo(context);
-            
+
             // Act
             var employee = repo.GetById(999);
 

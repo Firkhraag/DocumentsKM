@@ -5,23 +5,23 @@ namespace DocumentsKM.Data
 {
     public interface IMarkGeneralDataPointRepo
     {
-        // Получить все пункты общих указаний по id раздела
+        // Получить все пункты общих указаний марки по id марки
         IEnumerable<MarkGeneralDataPoint> GetAllByMarkId(int markId);
-        // Получить все пункты общих указаний по id раздела
+        // Получить все пункты общих указаний марки по id марки и раздела
         IEnumerable<MarkGeneralDataPoint> GetAllByMarkAndSectionId(
             int markId, int sectionId);
-        // Получить пункт общих указаний по id
+        // Получить пункт общих указаний марки по id
         MarkGeneralDataPoint GetById(int id);
-        // Получить пункт общих указаний по id раздела и содержанию
+        // Получить пункт общих указаний марки по id раздела и содержанию
         MarkGeneralDataPoint GetByMarkAndSectionIdAndText(
             int markId, int sectionId, string text);
-        // Добавить пункт общих указаний
+        // Добавить пункт общих указаний к марке
         void Add(MarkGeneralDataPoint markGeneralDataPoint);
-        // Обновить пункт общих указаний
+        // Изменить пункт общих указаний у марки
         void Update(MarkGeneralDataPoint markGeneralDataPoint);
-        // Удалить пункт общих указаний
+        // Удалить пункт общих указаний у марки
         void Delete(MarkGeneralDataPoint markGeneralDataPoint);
-        // Получить разделы общих указаний по id марки
+        // Получить разделы общих указаний марки по id марки
         IEnumerable<GeneralDataSection> GetSectionsByMarkId(int markId);
     }
 }

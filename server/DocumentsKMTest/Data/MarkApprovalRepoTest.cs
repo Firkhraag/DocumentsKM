@@ -77,10 +77,10 @@ namespace DocumentsKM.Tests
             int employeeId = 3;
             var markApproval = new MarkApproval
             {
-                Mark=TestData.marks.SingleOrDefault(v => v.Id == markId),
-                MarkId=markId,
-                Employee=TestData.employees.SingleOrDefault(v => v.Id == employeeId),
-                EmployeeId=employeeId,
+                Mark = TestData.marks.SingleOrDefault(v => v.Id == markId),
+                MarkId = markId,
+                Employee = TestData.employees.SingleOrDefault(v => v.Id == employeeId),
+                EmployeeId = employeeId,
             };
 
             // Act

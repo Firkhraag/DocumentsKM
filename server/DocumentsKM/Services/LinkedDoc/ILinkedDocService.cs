@@ -5,7 +5,7 @@ namespace DocumentsKM.Services
 {
     public interface ILinkedDocService
     {
-        // Получить все ссылочные документы по типу
+        // Получить все ссылочные документы по id типа
         IEnumerable<LinkedDoc> GetAllByDocTypeId(int docTypeId);
     }
 }

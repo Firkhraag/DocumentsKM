@@ -8,7 +8,8 @@ namespace DocumentsKM.Services
     {
         private IConstructionMaterialRepo _repository;
 
-        public ConstructionMaterialService(IConstructionMaterialRepo constructionMaterialRepo)
+        public ConstructionMaterialService(
+            IConstructionMaterialRepo constructionMaterialRepo)
         {
             _repository = constructionMaterialRepo;
         }

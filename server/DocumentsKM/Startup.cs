@@ -105,7 +105,6 @@ namespace DocumentsKM
                     Configuration.GetConnectionString("PostgresConnection")
                 ));
 
-            // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IConnectionMultiplexer>(x =>
@@ -155,7 +154,7 @@ namespace DocumentsKM
 
             services.AddScoped<IAttachedDocService, AttachedDocService>();
             services.AddScoped<IAdditionalWorkService, AdditionalWorkService>();
-            
+
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
             services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
             services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
@@ -182,6 +181,8 @@ namespace DocumentsKM
             services.AddScoped<IBoltDiameterRepo, SqlBoltDiameterRepo>();
             services.AddScoped<IBoltLengthRepo, SqlBoltLengthRepo>();
             services.AddScoped<IConstructionBoltRepo, SqlConstructionBoltRepo>();
+
+            services.AddScoped<IElementProfileRepo, SqlElementProfileRepo>();
 
             services.AddScoped<IDocRepo, SqlDocRepo>();
             services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();

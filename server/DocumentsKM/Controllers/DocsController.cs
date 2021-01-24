@@ -28,19 +28,19 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        // Endpoint для получения листов основного комплекта
         [HttpGet, Route("marks/{markId}/docs/sheets")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<SheetResponse>> GetAllSheetsByMarkId(int markId)
+        public ActionResult<IEnumerable<SheetResponse>> GetAllSheetsByMarkId(
+            int markId)
         {
             var docs = _service.GetAllSheetsByMarkId(markId);
             return Ok(_mapper.Map<IEnumerable<SheetResponse>>(docs));
         }
 
-        // Endpoint для получения разрабатываемых прилагаемых документов
         [HttpGet, Route("marks/{markId}/docs/attached")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<DocResponse>> GetAllAttachedByMarkId(int markId)
+        public ActionResult<IEnumerable<DocResponse>> GetAllAttachedByMarkId(
+            int markId)
         {
             var docs = _service.GetAllAttachedByMarkId(markId);
             return Ok(_mapper.Map<IEnumerable<DocResponse>>(docs));
@@ -51,7 +51,8 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<DocResponse> Create(int markId, [FromBody] DocCreateRequest docRequest)
+        public ActionResult<DocResponse> Create(
+            int markId, [FromBody] DocCreateRequest docRequest)
         {
             var docModel = _mapper.Map<Doc>(docRequest);
             try
@@ -69,7 +70,8 @@ namespace DocumentsKM.Controllers
                 return NotFound();
             }
             
-            return Created($"docs/{docModel.Id}", _mapper.Map<DocResponse>(docModel));
+            return Created(
+                $"docs/{docModel.Id}", _mapper.Map<DocResponse>(docModel));
         }
 
         [HttpPatch, Route("docs/{id}")]
@@ -78,8 +80,6 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult Update(int id, [FromBody] DocUpdateRequest docRequest)
         {
-            // DEBUG
-            // Log.Information(JsonSerializer.Serialize(markRequest));
             try
             {
                 _service.Update(id, docRequest);

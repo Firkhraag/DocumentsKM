@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
@@ -56,7 +55,7 @@ namespace DocumentsKM.Services
             var uniqueConstraintViolationCheck = _repository.GetByMarkId(markId);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            
+
             var foundMark = _markRepository.GetById(markId);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
@@ -71,7 +70,7 @@ namespace DocumentsKM.Services
             if (operatingArea == null)
                 throw new ArgumentNullException(nameof(operatingArea));
             markOperatingConditions.OperatingArea = operatingArea;
-            
+
             var gasGroup = _gasGroupRepo.GetById(gasGroupId);
             if (gasGroup == null)
                 throw new ArgumentNullException(nameof(gasGroup));
@@ -104,7 +103,7 @@ namespace DocumentsKM.Services
             var foundMarkOperatingConditions = _repository.GetByMarkId(markId);
             if (foundMarkOperatingConditions == null)
                 throw new ArgumentNullException(nameof(foundMarkOperatingConditions));
-            
+
             if (markOperatingConditions.SafetyCoeff != null)
                 foundMarkOperatingConditions.SafetyCoeff = markOperatingConditions.SafetyCoeff.GetValueOrDefault();
             if (markOperatingConditions.Temperature != null)
@@ -112,42 +111,48 @@ namespace DocumentsKM.Services
 
             if (markOperatingConditions.EnvAggressivenessId != null)
             {
-                var envAggressiveness = _envAggressivenessRepo.GetById(markOperatingConditions.EnvAggressivenessId.GetValueOrDefault());
+                var envAggressiveness = _envAggressivenessRepo.GetById(
+                    markOperatingConditions.EnvAggressivenessId.GetValueOrDefault());
                 if (envAggressiveness == null)
                     throw new ArgumentNullException(nameof(envAggressiveness));
                 foundMarkOperatingConditions.EnvAggressiveness = envAggressiveness;
             }
             if (markOperatingConditions.OperatingAreaId != null)
             {
-                var operatingArea = _operatingAreaRepo.GetById(markOperatingConditions.OperatingAreaId.GetValueOrDefault());
+                var operatingArea = _operatingAreaRepo.GetById(
+                    markOperatingConditions.OperatingAreaId.GetValueOrDefault());
                 if (operatingArea == null)
                     throw new ArgumentNullException(nameof(operatingArea));
                 foundMarkOperatingConditions.OperatingArea = operatingArea;
             }
             if (markOperatingConditions.GasGroupId != null)
             {
-                var gasGroup = _gasGroupRepo.GetById(markOperatingConditions.GasGroupId.GetValueOrDefault());
+                var gasGroup = _gasGroupRepo.GetById(
+                    markOperatingConditions.GasGroupId.GetValueOrDefault());
                 if (gasGroup == null)
                     throw new ArgumentNullException(nameof(gasGroup));
                 foundMarkOperatingConditions.GasGroup = gasGroup;
             }
             if (markOperatingConditions.ConstructionMaterialId != null)
             {
-                var constructionMaterial = _constructionMaterialRepo.GetById(markOperatingConditions.ConstructionMaterialId.GetValueOrDefault());
+                var constructionMaterial = _constructionMaterialRepo.GetById(
+                    markOperatingConditions.ConstructionMaterialId.GetValueOrDefault());
                 if (constructionMaterial == null)
                     throw new ArgumentNullException(nameof(constructionMaterial));
                 foundMarkOperatingConditions.ConstructionMaterial = constructionMaterial;
             }
             if (markOperatingConditions.PaintworkTypeId != null)
             {
-                var paintworkType = _paintworkTypeRepo.GetById(markOperatingConditions.PaintworkTypeId.GetValueOrDefault());
+                var paintworkType = _paintworkTypeRepo.GetById
+                (markOperatingConditions.PaintworkTypeId.GetValueOrDefault());
                 if (paintworkType == null)
                     throw new ArgumentNullException(nameof(paintworkType));
                 foundMarkOperatingConditions.PaintworkType = paintworkType;
             }
             if (markOperatingConditions.HighTensileBoltsTypeId != null)
             {
-                var highTensileBoltsType = _highTensileBoltsTypeRepo.GetById(markOperatingConditions.HighTensileBoltsTypeId.GetValueOrDefault());
+                var highTensileBoltsType = _highTensileBoltsTypeRepo.GetById(
+                    markOperatingConditions.HighTensileBoltsTypeId.GetValueOrDefault());
                 if (highTensileBoltsType == null)
                     throw new ArgumentNullException(nameof(highTensileBoltsType));
                 foundMarkOperatingConditions.HighTensileBoltsType = highTensileBoltsType;

@@ -217,7 +217,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateDoc()
         {
             // Arrange
-            var docs = new List<Doc>{};
+            var docs = new List<Doc> { };
             foreach (var d in TestData.docs)
             {
                 docs.Add(new Doc

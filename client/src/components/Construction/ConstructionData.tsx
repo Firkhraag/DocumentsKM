@@ -24,15 +24,15 @@ import ConstructionElementTable from '../ConstructionElement/ConstructionElement
 type ConstructionDataProps = {
 	construction: Construction
 	isCreateMode: boolean
-    specificationId: number
-    setConstructionBolt: (b: ConstructionBolt) => void
+	specificationId: number
+	setConstructionBolt: (b: ConstructionBolt) => void
 }
 
 const ConstructionData = ({
 	construction,
 	isCreateMode,
-    specificationId,
-    setConstructionBolt,
+	specificationId,
+	setConstructionBolt,
 }: ConstructionDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
@@ -62,7 +62,7 @@ const ConstructionData = ({
 	})
 
 	const [errMsg, setErrMsg] = useState('')
-    const cachedSubtypes = useState(new Map<number, ConstructionSubtype[]>())[0]
+	const cachedSubtypes = useState(new Map<number, ConstructionSubtype[]>())[0]
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -628,8 +628,14 @@ const ConstructionData = ({
 				</Button>
 			</div>
 
-            { isCreateMode ? null : <ConstructionBoltTable specificationId={specificationId} constructionId={selectedObject.id} setConstructionBolt={setConstructionBolt} />}
-            { isCreateMode ? null : <ConstructionElementTable />}
+			{isCreateMode ? null : (
+				<ConstructionBoltTable
+					specificationId={specificationId}
+					constructionId={selectedObject.id}
+					setConstructionBolt={setConstructionBolt}
+				/>
+			)}
+			{isCreateMode ? null : <ConstructionElementTable />}
 		</div>
 	)
 }

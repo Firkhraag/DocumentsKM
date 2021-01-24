@@ -3,14 +3,14 @@ import GeneralDataPoint from './GeneralDataPoint'
 
 interface IGeneralDataModel {
 	section: GeneralDataSection
-    point: GeneralDataPoint
-    pointText: string
+	point: GeneralDataPoint
+	pointText: string
 }
 
 class GeneralDataModel {
 	section: GeneralDataSection
-    point: GeneralDataPoint
-    pointText: string
+	point: GeneralDataPoint
+	pointText: string
 
 	constructor(obj?: IGeneralDataModel) {
 		this.section = (obj && obj.section) || null

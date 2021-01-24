@@ -69,7 +69,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var context = GetContext(TestData.subnodes);
             var repo = new SqlSubnodeRepo(context);
-            
+
             int wrongId = 999;
 
             // Act

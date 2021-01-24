@@ -97,24 +97,28 @@ namespace DocumentsKM.Controllers
             return NoContent();
         }
 
-        [HttpPatch, Route("users/{userId}/marks/{markId}/general-data-sections/{sectionId}/general-data-points")]
+        [HttpPatch,
+            Route("users/{userId}/marks/{markId}/general-data-sections/{sectionId}/general-data-points")]
         [Consumes(MediaTypeNames.Application.Json)]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<MarkGeneralDataPointResponse>> UpdateAllByPointIds(
-            int userId, int markId, int sectionId, [FromBody] List<int> pointIds)
+            int userId,
+            int markId,
+            int sectionId,
+            [FromBody] List<int> pointIds)
         {
             try
             {
-                var addedPoints = _service.UpdateAllByPointIds(userId, markId, sectionId, pointIds);
-                return Ok(_mapper.Map<IEnumerable<MarkGeneralDataPointResponse>>(addedPoints));
+                var addedPoints = _service.UpdateAllByPointIds(
+                    userId, markId, sectionId, pointIds);
+                return Ok(_mapper.Map<IEnumerable<MarkGeneralDataPointResponse>>(
+                    addedPoints));
             }
             catch (ArgumentNullException)
             {
                 return NotFound();
             }
-            // return NoContent();
         }
 
         [HttpPatch,

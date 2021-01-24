@@ -66,7 +66,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var context = GetContext(TestData.operatingAreas);
             var repo = new SqlOperatingAreaRepo(context);
-            
+
             int wrongId = 999;
 
             // Act

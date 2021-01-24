@@ -44,7 +44,7 @@ namespace DocumentsKM.Services
             var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(markId, linkedDocId);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            
+
             markLinkedDoc.Mark = foundMark;
             markLinkedDoc.LinkedDoc = foundLinkedDoc;
 
@@ -58,15 +58,6 @@ namespace DocumentsKM.Services
             var foundMarkLinkedDoc = _repository.GetById(id);
             if (foundMarkLinkedDoc == null)
                 throw new ArgumentNullException(nameof(foundMarkLinkedDoc));
-
-            // var foundLinkedDoc = _linkedDocRepo.GetById(markLinkedDocRequest.LinkedDocId);
-            // if (foundLinkedDoc == null)
-            //     throw new ArgumentNullException(nameof(foundLinkedDoc));
-                
-            // var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(
-            //     foundMarkLinkedDoc.Mark.Id, markLinkedDocRequest.LinkedDocId);
-            // if (uniqueConstraintViolationCheck != null)
-            //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
             if (markLinkedDocRequest.LinkedDocId != null)
             {
@@ -85,16 +76,6 @@ namespace DocumentsKM.Services
 
             _repository.Update(foundMarkLinkedDoc);
         }
-
-        // public void Delete(
-        //     int markId,
-        //     int linkedDocId)
-        // {
-        //     var foundMarkLinkedDoc = _repository.GetByMarkIdAndLinkedDocId(markId, linkedDocId);
-        //     if (foundMarkLinkedDoc == null)
-        //         throw new ArgumentNullException(nameof(foundMarkLinkedDoc));
-        //     _repository.Delete(foundMarkLinkedDoc);
-        // }
 
         public void Delete(int id)
         {

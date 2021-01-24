@@ -21,12 +21,31 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            
+
             context.Marks.AddRange(TestData.marks);
             context.Employees.AddRange(TestData.employees);
             context.AdditionalWork.AddRange(additionalWork);
             context.SaveChanges();
             return context;
+        }
+
+        [Fact]
+        public void GetAllByMarkId_ShouldReturnAdditionalWork()
+        {
+            // Arrange
+            var context = GetContext(TestData.additionalWork);
+            var repo = new SqlAdditionalWorkRepo(context);
+
+            var markId = _rnd.Next(1, _maxMarkId);
+
+            // Act
+            var additionalWork = repo.GetAllByMarkId(markId);
+
+            // Assert
+            Assert.Equal(TestData.additionalWork.Where(
+                v => v.Mark.Id == markId), additionalWork);
+
+            context.Database.EnsureDeleted();
         }
 
         [Fact]
@@ -42,7 +61,8 @@ namespace DocumentsKM.Tests
             var additionalWork = repo.GetById(id);
 
             // Assert
-            Assert.Equal(TestData.additionalWork.SingleOrDefault(v => v.Id == id), additionalWork);
+            Assert.Equal(TestData.additionalWork.SingleOrDefault(
+                v => v.Id == id), additionalWork);
 
             context.Database.EnsureDeleted();
         }
@@ -64,7 +84,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByUniqueKeyValues_ShouldReturnDoc()
+        public void GetByUniqueKey_ShouldReturnDoc()
         {
             // Arrange
             var context = GetContext(TestData.additionalWork);
@@ -74,7 +94,7 @@ namespace DocumentsKM.Tests
             var employeeId = TestData.additionalWork[0].Employee.Id;
 
             // Act
-            var additionalWork = repo.GetByUniqueKeyValues(markId, employeeId);
+            var additionalWork = repo.GetByUniqueKey(markId, employeeId);
 
             // Assert
             Assert.Equal(TestData.additionalWork[0], additionalWork);
@@ -83,7 +103,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByUniqueKeyValues_ShouldReturnNull_WhenWrongKey()
+        public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
         {
             // Arrange
             var context = GetContext(TestData.additionalWork);
@@ -95,31 +115,12 @@ namespace DocumentsKM.Tests
             var wrongEmployeeId = 999;
 
             // Act
-            var additionalWork1 = repo.GetByUniqueKeyValues(wrongMarkId, employeeId);
-            var additionalWork2 = repo.GetByUniqueKeyValues(markId, wrongEmployeeId);
+            var additionalWork1 = repo.GetByUniqueKey(wrongMarkId, employeeId);
+            var additionalWork2 = repo.GetByUniqueKey(markId, wrongEmployeeId);
 
             // Assert
             Assert.Null(additionalWork1);
             Assert.Null(additionalWork2);
-
-            context.Database.EnsureDeleted();
-        }
-
-        [Fact]
-        public void GetAllByMarkId_ShouldReturnAdditionalWork()
-        {
-            // Arrange
-            var context = GetContext(TestData.additionalWork);
-            var repo = new SqlAdditionalWorkRepo(context);
-
-            var markId = _rnd.Next(1, _maxMarkId);
-
-            // Act
-            var additionalWork = repo.GetAllByMarkId(markId);
-
-            // Assert
-            Assert.Equal(TestData.additionalWork.Where(
-                v => v.Mark.Id == markId), additionalWork);
 
             context.Database.EnsureDeleted();
         }
@@ -157,7 +158,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateDoc()
         {
             // Arrange
-            var additionalWorkArr = new List<AdditionalWork>{};
+            var additionalWorkArr = new List<AdditionalWork> { };
             foreach (var w in TestData.additionalWork)
             {
                 additionalWorkArr.Add(new AdditionalWork
@@ -193,7 +194,8 @@ namespace DocumentsKM.Tests
             var repo = new SqlAdditionalWorkRepo(context);
 
             int id = _rnd.Next(1, TestData.additionalWork.Count());
-            var additionalWork = TestData.additionalWork.FirstOrDefault(v => v.Id == id);
+            var additionalWork = TestData.additionalWork.FirstOrDefault(
+                v => v.Id == id);
 
             // Act
             repo.Delete(additionalWork);

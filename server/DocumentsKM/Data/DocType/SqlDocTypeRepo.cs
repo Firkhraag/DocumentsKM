@@ -13,14 +13,15 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        public IEnumerable<DocType> GetAllExceptId(int idToExclude)
+        {
+            return _context.DocTypes.Where(
+                v => v.Id != idToExclude).ToList();
+        }
+
         public DocType GetById(int id)
         {
             return _context.DocTypes.SingleOrDefault(v => v.Id == id);
-        }
-
-        public IEnumerable<DocType> GetAllExceptId(int idToExclude)
-        {
-            return _context.DocTypes.Where(v => v.Id != idToExclude).ToList();
         }
     }
 }

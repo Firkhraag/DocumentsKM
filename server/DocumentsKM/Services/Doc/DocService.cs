@@ -35,12 +35,14 @@ namespace DocumentsKM.Services
 
         public IEnumerable<Doc> GetAllSheetsByMarkId(int markId)
         {
-            return _repository.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+            return _repository.GetAllByMarkIdAndDocType(
+                markId, _sheetDocTypeId);
         }
 
         public IEnumerable<Doc> GetAllAttachedByMarkId(int markId)
         {
-            return _repository.GetAllByMarkIdAndNotDocType(markId, _sheetDocTypeId);
+            return _repository.GetAllByMarkIdAndNotDocType(
+                markId, _sheetDocTypeId);
         }
 
         public void Create(
@@ -115,7 +117,8 @@ namespace DocumentsKM.Services
                 foundDoc.NumOfPages = doc.NumOfPages.GetValueOrDefault();
             if (doc.Note != null)
                 foundDoc.Note = doc.Note;
-            if (doc.TypeId != null) {
+            if (doc.TypeId != null)
+            {
 
                 var docs = _repository.GetAllByMarkIdAndDocType(
                     foundDoc.Mark.Id, doc.TypeId.GetValueOrDefault());
@@ -157,7 +160,7 @@ namespace DocumentsKM.Services
                         throw new ArgumentNullException(nameof(inspector));
                     foundDoc.Inspector = inspector;
                 }
-                
+
             }
             if (doc.NormContrId != null)
             {
@@ -171,7 +174,7 @@ namespace DocumentsKM.Services
                         throw new ArgumentNullException(nameof(normContr));
                     foundDoc.NormContr = normContr;
                 }
-                
+
             }
             _repository.Update(foundDoc);
         }

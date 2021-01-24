@@ -12,33 +12,33 @@ namespace DocumentsKM.Tests
         private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
         private readonly IEmployeeService _service;
         private readonly Random _rnd = new Random();
-        private readonly int[] _approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+        private readonly int[] _approvalPosIds = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
         public EmployeeServiceTest()
         {
             // Arrange
             foreach (var employee in TestData.employees)
             {
-                _mockEmployeeRepo.Setup(mock=>
+                _mockEmployeeRepo.Setup(mock =>
                     mock.GetById(employee.Id)).Returns(
                         TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
             }
             foreach (var department in TestData.departments)
             {
-                _mockEmployeeRepo.Setup(mock=>
+                _mockEmployeeRepo.Setup(mock =>
                     mock.GetAllByDepartmentId(department.Id)).Returns(
                         TestData.employees.Where(v => v.Department.Id == department.Id));
 
-                _mockEmployeeRepo.Setup(mock=>
+                _mockEmployeeRepo.Setup(mock =>
                     mock.GetAllByDepartmentIdAndPositions(
                         department.Id, _approvalPosIds)).Returns(
                             TestData.employees.Where(
                                 v => v.Department.Id == department.Id &&
                                 _approvalPosIds.Contains(v.Position.Id)));
-                
+
                 foreach (var position in TestData.positions)
                 {
-                    _mockEmployeeRepo.Setup(mock=>
+                    _mockEmployeeRepo.Setup(mock =>
                         mock.GetAllByDepartmentIdAndPosition(
                             department.Id, position.Id)).Returns(
                                 TestData.employees.Where(
@@ -55,7 +55,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int departmentId = _rnd.Next(1, TestData.departments.Count());
-            
+
             // Act
             var returnedEmployees = _service.GetAllByDepartmentId(departmentId);
 
@@ -69,7 +69,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int wrongDepartmentId = 999;
-            
+
             // Act
             var returnedEmployees = _service.GetAllByDepartmentId(wrongDepartmentId);
 
@@ -82,13 +82,14 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int departmentId = _rnd.Next(1, TestData.departments.Count());
-            
+
             // Act
             var returnedEmployees = _service.GetMarkApprovalEmployeesByDepartmentId(departmentId);
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId && _approvalPosIds.Contains(v.Position.Id)), returnedEmployees);
+                v => v.Department.Id == departmentId && _approvalPosIds.Contains(
+                    v.Position.Id)), returnedEmployees);
         }
 
         [Fact]
@@ -96,7 +97,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int wrongDepartmentId = 999;
-            
+
             // Act
             var returnedEmployees = _service.GetMarkApprovalEmployeesByDepartmentId(wrongDepartmentId);
 
@@ -113,7 +114,7 @@ namespace DocumentsKM.Tests
             var chiefSpecialistPosId = 9;
             var groupLeaderPosId = 10;
             var mainBuilderPosId = 4;
-            
+
             // Act
             (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) =
                 _service.GetMarkMainEmployeesByDepartmentId(departmentId);

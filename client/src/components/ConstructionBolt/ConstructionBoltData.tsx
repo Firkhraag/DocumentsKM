@@ -25,8 +25,8 @@ type ConstructionBoltDataProps = {
 
 const ConstructionBoltData = ({
 	constructionBolt,
-    isCreateMode,
-    specificationId,
+	isCreateMode,
+	specificationId,
 	constructionId,
 }: ConstructionBoltDataProps) => {
 	const history = useHistory()
@@ -49,7 +49,7 @@ const ConstructionBoltData = ({
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (selectedObject == null  || specificationId == -1) {
+			if (selectedObject == null || specificationId == -1) {
 				history.push('/specifications')
 				return
 			}
@@ -68,24 +68,20 @@ const ConstructionBoltData = ({
 	}, [mark])
 
 	const onDiameterSelect = (id: number) => {
-        if (id == null) {
+		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
 				diameter: null,
 			})
 		}
-		const v = getFromOptions(
-			id,
-			optionsObject,
-			selectedObject.diameter
-		)
+		const v = getFromOptions(id, optionsObject, selectedObject.diameter)
 		if (v != null) {
 			setSelectedObject({
 				...selectedObject,
 				diameter: v,
 			})
 		}
-    }
+	}
 
 	const onPacketChange = (event: React.FormEvent<HTMLInputElement>) => {
 		setSelectedObject({
@@ -148,7 +144,9 @@ const ConstructionBoltData = ({
 						washerNum: selectedObject.washerNum,
 					}
 				)
-				history.push(`/specifications/${specificationId}/constructions/${constructionId}`)
+				history.push(
+					`/specifications/${specificationId}/constructions/${constructionId}`
+				)
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
 				console.log('Error')
@@ -186,7 +184,9 @@ const ConstructionBoltData = ({
 								: selectedObject.washerNum,
 					}
 				)
-				history.push(`/specifications/${specificationId}/constructions/${constructionId}`)
+				history.push(
+					`/specifications/${specificationId}/constructions/${constructionId}`
+				)
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
 				console.log('Error')
@@ -202,7 +202,7 @@ const ConstructionBoltData = ({
 					: 'Данные высокопрочного болта'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-                <Form.Group className="flex-cent-v">
+				<Form.Group className="flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="diameter"
@@ -210,34 +210,34 @@ const ConstructionBoltData = ({
 					>
 						Диаметр болта, мм
 					</Form.Label>
-                    <Select
-                        inputId="diameter"
-                        maxMenuHeight={250}
-                        isClearable={true}
-                        isSearchable={true}
-                        placeholder="Выберите диаметр болта"
-                        noOptionsMessage={() => 'Диаметры болтов не найдены'}
-                        className="auto-width flex-grow"
-                        onChange={(selectedOption) =>
-                            onDiameterSelect((selectedOption as any)?.value)
-                        }
-                        value={
-                            selectedObject.diameter == null
-                                ? null
-                                : {
-                                        value: selectedObject.diameter.id,
-                                        label: selectedObject.diameter.diameter,
-                                }
-                        }
-                        options={optionsObject.map((d) => {
-                            return {
-                                value: d.id,
-                                label: d.diameter,
-                            }
-                        })}
-                        styles={reactSelectStyle}
-                    />
-                </Form.Group>
+					<Select
+						inputId="diameter"
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите диаметр болта"
+						noOptionsMessage={() => 'Диаметры болтов не найдены'}
+						className="auto-width flex-grow"
+						onChange={(selectedOption) =>
+							onDiameterSelect((selectedOption as any)?.value)
+						}
+						value={
+							selectedObject.diameter == null
+								? null
+								: {
+										value: selectedObject.diameter.id,
+										label: selectedObject.diameter.diameter,
+								  }
+						}
+						options={optionsObject.map((d) => {
+							return {
+								value: d.id,
+								label: d.diameter,
+							}
+						})}
+						styles={reactSelectStyle}
+					/>
+				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
 					<Form.Label
@@ -250,9 +250,9 @@ const ConstructionBoltData = ({
 					<Form.Control
 						id="packet"
 						type="text"
-                        placeholder="Введите толщину пакета"
-                        className="auto-width flex-grow"
-                        autoComplete="off"
+						placeholder="Введите толщину пакета"
+						className="auto-width flex-grow"
+						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.packet)
 								? ''
@@ -273,9 +273,9 @@ const ConstructionBoltData = ({
 					<Form.Control
 						id="num"
 						type="text"
-                        placeholder="Введите число болтов"
-                        className="auto-width flex-grow"
-                        autoComplete="off"
+						placeholder="Введите число болтов"
+						className="auto-width flex-grow"
+						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.num) ? '' : selectedObject.num
 						}
@@ -294,9 +294,9 @@ const ConstructionBoltData = ({
 					<Form.Control
 						id="nutNum"
 						type="text"
-                        placeholder="Введите число гаек на болт"
-                        className="auto-width flex-grow"
-                        autoComplete="off"
+						placeholder="Введите число гаек на болт"
+						className="auto-width flex-grow"
+						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.nutNum)
 								? ''
@@ -317,9 +317,9 @@ const ConstructionBoltData = ({
 					<Form.Control
 						id="washerNum"
 						type="text"
-                        placeholder="Введите число шайб на болт"
-                        className="auto-width flex-grow"
-                        autoComplete="off"
+						placeholder="Введите число шайб на болт"
+						className="auto-width flex-grow"
+						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.washerNum)
 								? ''

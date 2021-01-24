@@ -8,7 +8,8 @@ namespace DocumentsKM.Services
     {
         private IHighTensileBoltsTypeRepo _repository;
 
-        public HighTensileBoltsTypeService(IHighTensileBoltsTypeRepo highTensileBoltsTypeRepo)
+        public HighTensileBoltsTypeService(
+            IHighTensileBoltsTypeRepo highTensileBoltsTypeRepo)
         {
             _repository = highTensileBoltsTypeRepo;
         }

@@ -22,7 +22,7 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            
+
             context.Marks.AddRange(TestData.marks);
             context.GeneralDataSections.AddRange(TestData.generalDataSections);
             context.MarkGeneralDataPoints.AddRange(markGeneralDataPoints);
@@ -64,8 +64,10 @@ namespace DocumentsKM.Tests
             var wrongSectionId = 999;
 
             // Act
-            var markGeneralDataPoints1 = repo.GetAllByMarkAndSectionId(wrongMarkId, sectionId);
-            var markGeneralDataPoints2 = repo.GetAllByMarkAndSectionId(markId, wrongSectionId);
+            var markGeneralDataPoints1 = repo.GetAllByMarkAndSectionId(
+                wrongMarkId, sectionId);
+            var markGeneralDataPoints2 = repo.GetAllByMarkAndSectionId(
+                markId, wrongSectionId);
 
             // Assert
             Assert.Empty(markGeneralDataPoints1);
@@ -116,13 +118,15 @@ namespace DocumentsKM.Tests
             var repo = new SqlMarkGeneralDataPointRepo(context);
 
             int id = _rnd.Next(1, TestData.markGeneralDataPoints.Count());
-            var foundmarkGeneralDataPoint = TestData.markGeneralDataPoints.FirstOrDefault(v => v.Id == id);
+            var foundmarkGeneralDataPoint = TestData.markGeneralDataPoints.FirstOrDefault(
+                v => v.Id == id);
             var markId = foundmarkGeneralDataPoint.Mark.Id;
             var sectionId = foundmarkGeneralDataPoint.Section.Id;
             var text = foundmarkGeneralDataPoint.Text;
 
             // Act
-            var markGeneralDataPoint = repo.GetByMarkAndSectionIdAndText(markId, sectionId, text);
+            var markGeneralDataPoint = repo.GetByMarkAndSectionIdAndText(
+                markId, sectionId, text);
 
             // Assert
             Assert.Equal(id, markGeneralDataPoint.Id);
@@ -145,9 +149,12 @@ namespace DocumentsKM.Tests
             var wrongText = "NotFound";
 
             // Act
-            var markGeneralDataPoint1 = repo.GetByMarkAndSectionIdAndText(wrongMarkId, sectionId, text);
-            var markGeneralDataPoint2 = repo.GetByMarkAndSectionIdAndText(markId, wrongSectionId, text);
-            var markGeneralDataPoint3 = repo.GetByMarkAndSectionIdAndText(markId, sectionId, wrongText);
+            var markGeneralDataPoint1 = repo.GetByMarkAndSectionIdAndText(
+                wrongMarkId, sectionId, text);
+            var markGeneralDataPoint2 = repo.GetByMarkAndSectionIdAndText(
+                markId, wrongSectionId, text);
+            var markGeneralDataPoint3 = repo.GetByMarkAndSectionIdAndText(
+                markId, sectionId, wrongText);
 
             // Assert
             Assert.Null(markGeneralDataPoint1);
@@ -169,7 +176,8 @@ namespace DocumentsKM.Tests
             var markGeneralDataPoint = new MarkGeneralDataPoint
             {
                 Mark = TestData.marks.SingleOrDefault(v => v.Id == markId),
-                Section = TestData.generalDataSections.SingleOrDefault(v => v.Id == sectionId),
+                Section = TestData.generalDataSections.SingleOrDefault(
+                    v => v.Id == sectionId),
                 Text = "NewCreate",
                 OrderNum = 3,
             };
@@ -180,7 +188,8 @@ namespace DocumentsKM.Tests
             // Assert
             Assert.NotEqual(0, markGeneralDataPoint.Id);
             Assert.Equal(
-                TestData.markGeneralDataPoints.Where(v => v.Mark.Id == markId && v.Section.Id == sectionId).Count() + 1,
+                TestData.markGeneralDataPoints.Where(
+                    v => v.Mark.Id == markId && v.Section.Id == sectionId).Count() + 1,
                 repo.GetAllByMarkAndSectionId(markId, sectionId).Count());
 
             context.Database.EnsureDeleted();
@@ -190,7 +199,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateMarkGeneralDataPoint()
         {
             // Arrange
-            var markGeneralDataPoints = new List<MarkGeneralDataPoint>{};
+            var markGeneralDataPoints = new List<MarkGeneralDataPoint> { };
             foreach (var gdp in TestData.markGeneralDataPoints)
             {
                 markGeneralDataPoints.Add(new MarkGeneralDataPoint
@@ -206,7 +215,8 @@ namespace DocumentsKM.Tests
             var repo = new SqlMarkGeneralDataPointRepo(context);
 
             int id = _rnd.Next(1, markGeneralDataPoints.Count());
-            var markGeneralDataPoint = markGeneralDataPoints.FirstOrDefault(v => v.Id == id);
+            var markGeneralDataPoint = markGeneralDataPoints.FirstOrDefault(
+                v => v.Id == id);
             markGeneralDataPoint.Text = "NewUpdate";
 
             // Act
@@ -226,7 +236,8 @@ namespace DocumentsKM.Tests
             var repo = new SqlMarkGeneralDataPointRepo(context);
 
             int id = _rnd.Next(1, TestData.markGeneralDataPoints.Count());
-            var markGeneralDataPoint = TestData.markGeneralDataPoints.FirstOrDefault(v => v.Id == id);
+            var markGeneralDataPoint = TestData.markGeneralDataPoints.FirstOrDefault(
+                v => v.Id == id);
 
             // Act
             repo.Delete(markGeneralDataPoint);

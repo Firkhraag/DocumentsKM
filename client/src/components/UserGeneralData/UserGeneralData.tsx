@@ -410,9 +410,7 @@ const UserGeneralData = () => {
 															p.id
 														),
 													onCancel: () =>
-														setPopup(
-															defaultPopup
-														),
+														setPopup(defaultPopup),
 												})
 											}
 											className="trash-area"

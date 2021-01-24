@@ -59,8 +59,8 @@ namespace DocumentsKM.Services
 
             var g = Guid.NewGuid();
             string guidString = Convert.ToBase64String(g.ToByteArray());
-            guidString = guidString.Replace("=","");
-            guidString = guidString.Replace("+","");
+            guidString = guidString.Replace("=", "");
+            guidString = guidString.Replace("+", "");
             var outputPath = $"D:\\Dev\\Gipromez\\word\\{guidString}.docx";
 
             var memory = GetStreamFromTemplate(path);
@@ -73,7 +73,6 @@ namespace DocumentsKM.Services
                     project.Name, node.Name, subnode.Name, mark.Name);
                 AppendList(wordDoc, markGeneralDataPoints);
 
-                // AppendToTable(wordDoc, "Лист");
                 AppendToSheetTable(wordDoc, sheets.ToList());
                 AppendToLinkedAndAttachedDocsTable(
                     wordDoc,
@@ -129,7 +128,7 @@ namespace DocumentsKM.Services
             tc = trCells[secondPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
             p.Append(GetWordTextElement(objectName, 20));
-            
+
             trCells = trArr[6].Descendants<TableCell>().ToList();
 
             if (mark.ChiefSpecialist != null)
@@ -274,7 +273,7 @@ namespace DocumentsKM.Services
                 };
                 p.ParagraphProperties.Append(justification);
                 p.Append(GetWordTextElement("Ссылочные документы", 24, true));
-                
+
                 for (int i = 0; i < markLinkedDocs.Count(); i++)
                 {
                     var newTr = clonedFirstTr.CloneNode(true);
@@ -352,7 +351,7 @@ namespace DocumentsKM.Services
                     {
                         Ascii = "Calibri",
                         HighAnsi = "Calibri",
-                        ComplexScript  = "Calibri"
+                        ComplexScript = "Calibri"
                     },
                     Italic = new Italic()
                     {
@@ -385,7 +384,7 @@ namespace DocumentsKM.Services
                     {
                         Ascii = "Calibri",
                         HighAnsi = "Calibri",
-                        ComplexScript  = "Calibri"
+                        ComplexScript = "Calibri"
                     },
                     Italic = new Italic()
                     {
@@ -414,7 +413,7 @@ namespace DocumentsKM.Services
                     {
                         Ascii = "Calibri",
                         HighAnsi = "Calibri",
-                        ComplexScript  = "Calibri"
+                        ComplexScript = "Calibri"
                     },
                 })
             {
@@ -445,8 +444,8 @@ namespace DocumentsKM.Services
             }
 
             var numberId = numberingPart.Numbering.Elements<NumberingInstance>().Count() + 1;
-            NumberingInstance numberingInstance = new NumberingInstance() {NumberID = numberId};
-            AbstractNumId abstractNumId = new AbstractNumId() {Val = abstractNumberId};
+            NumberingInstance numberingInstance = new NumberingInstance() { NumberID = numberId };
+            AbstractNumId abstractNumId = new AbstractNumId() { Val = abstractNumberId };
             numberingInstance.Append(abstractNumId);
 
             if (numberId == 1)
@@ -464,27 +463,27 @@ namespace DocumentsKM.Services
             for (var i = 0; i < markGeneralDataPoints.Count(); i++)
             {
                 var item = markGeneralDataPointsList[i];
-                var spacingBetweenLines = new SpacingBetweenLines() { After = "120", Line="300" };
-                var indentation = new Indentation() { Left = "360", Right="360", FirstLine = "720" };
+                var spacingBetweenLines = new SpacingBetweenLines() { After = "120", Line = "300" };
+                var indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "720" };
 
                 NumberingProperties numberingProperties;
                 var pointText = item.Text;
                 if (item.OrderNum == 1)
                 {
                     numberingProperties = new NumberingProperties(
-                        new NumberingLevelReference() {Val = 0}, new NumberingId() {Val = numberId});
+                        new NumberingLevelReference() { Val = 0 }, new NumberingId() { Val = numberId });
                 }
                 else if (item.Text[0] == '#' && item.Text[1] == ' ')
                 {
                     numberingProperties = new NumberingProperties(
-                        new NumberingLevelReference() {Val = 1}, new NumberingId() {Val = numberId});
+                        new NumberingLevelReference() { Val = 1 }, new NumberingId() { Val = numberId });
 
                     pointText = pointText.Substring(2) + ".";
                 }
                 else if (item.Text[0] == '-' && item.Text[1] == ' ')
                 {
                     numberingProperties = new NumberingProperties(
-                        new NumberingLevelReference() {Val = 2}, new NumberingId() {Val = numberId});
+                        new NumberingLevelReference() { Val = 2 }, new NumberingId() { Val = numberId });
 
                     if (i == 0)
                     {
@@ -507,16 +506,16 @@ namespace DocumentsKM.Services
                 else
                 {
                     numberingProperties = new NumberingProperties(
-                        new NumberingLevelReference() {Val = 3}, new NumberingId() {Val = numberId});
+                        new NumberingLevelReference() { Val = 3 }, new NumberingId() { Val = numberId });
                     pointText = pointText + ".";
-                    indentation = new Indentation() { Left = "360", Right="360", FirstLine = "640" };
+                    indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "640" };
                 }
                 var paragraphProperties = new ParagraphProperties(
                     numberingProperties, spacingBetweenLines, indentation);
 
                 var newPara = new Paragraph(paragraphProperties);
                 newPara.AppendChild(GetWordTextElement(pointText, 24));
-                body.PrependChild(newPara);                
+                body.PrependChild(newPara);
             }
         }
 
@@ -533,7 +532,7 @@ namespace DocumentsKM.Services
             {
                 Ascii = "Calibri",
                 HighAnsi = "Calibri",
-                ComplexScript  = "Calibri"
+                ComplexScript = "Calibri"
             };
             runProperties.Append(font);
             if (isUnderlined)
@@ -578,22 +577,27 @@ namespace DocumentsKM.Services
         {
             var markName = new StringBuilder(projectBaseSeries, 255);
             var overhaul = "";
-            if (nodeCode != "-" && nodeCode != "") {
+            if (nodeCode != "-" && nodeCode != "")
+            {
                 var nodeCodeSplitted = nodeCode.Split('-');
                 var nodeValue = nodeCodeSplitted[0];
-                if (nodeCodeSplitted.Count() == 2) {
+                if (nodeCodeSplitted.Count() == 2)
+                {
                     overhaul = nodeCodeSplitted[1];
                 }
 
                 markName.Append($".{nodeValue}");
             }
-            if (subnodeCode != "-" && subnodeCode != "") {
+            if (subnodeCode != "-" && subnodeCode != "")
+            {
                 markName.Append($".{subnodeCode}");
-                if (overhaul != "") {
+                if (overhaul != "")
+                {
                     markName.Append($"-{overhaul}");
                 }
             }
-            if (markCode != "-" && markCode != "") {
+            if (markCode != "-" && markCode != "")
+            {
                 markName.Append($"-{markCode}");
             }
             return markName.ToString();

@@ -30,7 +30,8 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("marks/{markId}/attached-docs")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<AttachedDocResponse>> GetAllByMarkId(int markId)
+        public ActionResult<IEnumerable<AttachedDocResponse>> GetAllByMarkId(
+            int markId)
         {
             var docs = _service.GetAllByMarkId(markId);
             return Ok(_mapper.Map<IEnumerable<AttachedDocResponse>>(docs));
@@ -42,7 +43,8 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<AttachedDocResponse> Create(int markId, [FromBody] AttachedDocCreateRequest attachedDocRequest)
+        public ActionResult<AttachedDocResponse> Create(
+            int markId, [FromBody] AttachedDocCreateRequest attachedDocRequest)
         {
             var attachedDocModel = _mapper.Map<AttachedDoc>(attachedDocRequest);
             try
@@ -59,7 +61,8 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"docs/{attachedDocModel.Id}", _mapper.Map<AttachedDocResponse>(attachedDocModel));
+            return Created($"docs/{attachedDocModel.Id}",
+                _mapper.Map<AttachedDocResponse>(attachedDocModel));
         }
 
         [HttpPatch, Route("attached-docs/{id}")]
@@ -67,10 +70,9 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int id, [FromBody] AttachedDocUpdateRequest attachedDocRequest)
+        public ActionResult Update(
+            int id, [FromBody] AttachedDocUpdateRequest attachedDocRequest)
         {
-            // DEBUG
-            // Log.Information(JsonSerializer.Serialize(markRequest));
             try
             {
                 _service.Update(id, attachedDocRequest);

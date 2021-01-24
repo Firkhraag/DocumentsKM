@@ -7,11 +7,15 @@ namespace DocumentsKM.Data
     {
         // Получить сотрудников по id  отдела
         IEnumerable<Employee> GetAllByDepartmentId(int departmentId);
+        // Получить всех сотрудников по id отдела
+        // с кодом должности из заданного интервала
+        IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
+            int departmentId, int[] posIds);
+        // Получить всех сотрудников по id отдела
+        // с заданным кодом должности
+        IEnumerable<Employee> GetAllByDepartmentIdAndPosition(
+            int departmentNumber, int posId);
         // Получить сотрудника по id
         Employee GetById(int id);
-        // Получить всех сотрудников по id отдела с кодом должности из заданного интервала
-        IEnumerable<Employee> GetAllByDepartmentIdAndPositions(int departmentId, int[] posIds);
-        // Получить всех сотрудников по id отдела с заданным кодом должности
-        IEnumerable<Employee> GetAllByDepartmentIdAndPosition(int departmentNumber, int posId);
     }
 }

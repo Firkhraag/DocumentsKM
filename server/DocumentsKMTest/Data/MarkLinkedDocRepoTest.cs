@@ -76,8 +76,9 @@ namespace DocumentsKM.Tests
             var markLinkedDoc = repo.GetById(id);
 
             // Assert
-            Assert.Equal(TestData.markLinkedDocs.SingleOrDefault(v => v.Id == id), markLinkedDoc);
-            
+            Assert.Equal(TestData.markLinkedDocs.SingleOrDefault(
+                v => v.Id == id), markLinkedDoc);
+
             context.Database.EnsureDeleted();
         }
 
@@ -112,7 +113,7 @@ namespace DocumentsKM.Tests
             // Assert
             Assert.Equal(TestData.markLinkedDocs.SingleOrDefault(
                 v => v.Mark.Id == markId && v.LinkedDoc.Id == linkedDocId), markLinkedDoc);
-            
+
             context.Database.EnsureDeleted();
         }
 
@@ -143,7 +144,8 @@ namespace DocumentsKM.Tests
             var markLinkedDoc = new MarkLinkedDoc
             {
                 Mark = TestData.marks.SingleOrDefault(v => v.Id == markId),
-                LinkedDoc = TestData.linkedDocs.SingleOrDefault(v => v.Id == linkedDocId),
+                LinkedDoc = TestData.linkedDocs.SingleOrDefault(
+                    v => v.Id == linkedDocId),
             };
 
             // Act
@@ -162,7 +164,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateMarkLinkedDoc()
         {
             // Arrange
-            var markLinkedDocs = new List<MarkLinkedDoc>{};
+            var markLinkedDocs = new List<MarkLinkedDoc> { };
             foreach (var mld in TestData.markLinkedDocs)
             {
                 markLinkedDocs.Add(new MarkLinkedDoc
@@ -178,7 +180,8 @@ namespace DocumentsKM.Tests
             int id = _rnd.Next(1, markLinkedDocs.Count());
             var markLinkedDoc = markLinkedDocs.FirstOrDefault(v => v.Id == id);
             int linkedDocId = 1;
-            markLinkedDoc.LinkedDoc = TestData.linkedDocs.FirstOrDefault(v => v.Id == linkedDocId);
+            markLinkedDoc.LinkedDoc = TestData.linkedDocs.FirstOrDefault(
+                v => v.Id == linkedDocId);
 
             // Act
             repo.Update(markLinkedDoc);

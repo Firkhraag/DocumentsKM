@@ -21,7 +21,7 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            
+
             context.Marks.AddRange(TestData.marks);
             context.AttachedDocs.AddRange(attachedDocs);
             context.SaveChanges();
@@ -100,7 +100,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByUniqueKeyValues_ShouldReturnAttachedDoc()
+        public void GetByUniqueKey_ShouldReturnAttachedDoc()
         {
             // Arrange
             var context = GetContext(TestData.attachedDocs);
@@ -112,7 +112,7 @@ namespace DocumentsKM.Tests
             var designation = foundAttachedDoc.Designation;
 
             // Act
-            var attachedDoc = repo.GetByUniqueKeyValues(markId, designation);
+            var attachedDoc = repo.GetByUniqueKey(markId, designation);
 
             // Assert
             Assert.Equal(id, attachedDoc.Id);
@@ -121,7 +121,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByUniqueKeyValues_ShouldReturnNull()
+        public void GetByUniqueKey_ShouldReturnNull()
         {
             // Arrange
             var context = GetContext(TestData.attachedDocs);
@@ -133,8 +133,8 @@ namespace DocumentsKM.Tests
             var wrongDesignation = "NotFound";
 
             // Act
-            var attachedDoc1 = repo.GetByUniqueKeyValues(wrongMarkId, designation);
-            var attachedDoc2 = repo.GetByUniqueKeyValues(markId, wrongDesignation);
+            var attachedDoc1 = repo.GetByUniqueKey(wrongMarkId, designation);
+            var attachedDoc2 = repo.GetByUniqueKey(markId, wrongDesignation);
 
             // Assert
             Assert.Null(attachedDoc1);
@@ -153,9 +153,9 @@ namespace DocumentsKM.Tests
             int markId = _rnd.Next(1, TestData.marks.Count());
             var attachedDoc = new AttachedDoc
             {
-                Mark=TestData.marks.SingleOrDefault(v => v.Id == markId),
-                Designation="NewCreate",
-                Name="NewCreate",
+                Mark = TestData.marks.SingleOrDefault(v => v.Id == markId),
+                Designation = "NewCreate",
+                Name = "NewCreate",
             };
 
             // Act
@@ -174,7 +174,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateAttachedDoc()
         {
             // Arrange
-            var attachedDocs = new List<AttachedDoc>{};
+            var attachedDocs = new List<AttachedDoc> { };
             foreach (var ad in TestData.attachedDocs)
             {
                 attachedDocs.Add(new AttachedDoc

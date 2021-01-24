@@ -6,7 +6,8 @@ namespace DocumentsKM
 {
     public static class SystemExtension
     {
-        public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source)
+        public static IEnumerable<(T item, int index)> WithIndex<T>(
+            this IEnumerable<T> source)
         {
             return source.Select((item, index) => (item, index));
         }
@@ -15,7 +16,8 @@ namespace DocumentsKM
         {
             if (string.IsNullOrEmpty(input)) { return input; }
             var startUnderscores = Regex.Match(input, @"^_+");
-            return startUnderscores + Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
+            return startUnderscores + Regex.Replace(
+                input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
         }
     }
 }

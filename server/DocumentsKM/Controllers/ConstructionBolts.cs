@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
-using System.Text.Json;
 using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
@@ -9,7 +8,6 @@ using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace DocumentsKM.Controllers
 {
@@ -33,24 +31,31 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("constructions/{constructionId}/bolts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<ConstructionBoltResponse>> GetAllByConstructionId(int constructionId)
+        public ActionResult<IEnumerable<ConstructionBoltResponse>> GetAllByConstructionId(
+            int constructionId)
         {
             var constructionBolts = _service.GetAllByConstructionId(constructionId);
-            return Ok(_mapper.Map<IEnumerable<ConstructionBoltResponse>>(constructionBolts));
+            return Ok(
+                _mapper.Map<IEnumerable<ConstructionBoltResponse>>(constructionBolts));
         }
 
         [HttpPost, Route("constructions/{constructionId}/bolts")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<ConstructionBolt> Add(int constructionId, ConstructionBoltCreateRequest constructionBoltRequest)
+        public ActionResult<ConstructionBolt> Add(
+            int constructionId, ConstructionBoltCreateRequest constructionBoltRequest)
         {
-            // Log.Information(JsonSerializer.Serialize(ConstructionBoltRequest));
             try
             {
-                var constructionBoltModel = _mapper.Map<ConstructionBolt>(constructionBoltRequest);
-                _service.Create(constructionBoltModel, constructionId, constructionBoltRequest.DiameterId);
+                var constructionBoltModel = _mapper.Map<ConstructionBolt>(
+                    constructionBoltRequest);
+                _service.Create(
+                    constructionBoltModel,
+                    constructionId,
+                    constructionBoltRequest.DiameterId);
                 return Created($"construction-bolts/", constructionBoltModel);
             }
             catch (ArgumentNullException)
@@ -68,10 +73,9 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int id, [FromBody] ConstructionBoltUpdateRequest constructionBoltRequest)
+        public ActionResult Update(
+            int id, [FromBody] ConstructionBoltUpdateRequest constructionBoltRequest)
         {
-            // DEBUG
-            // Log.Information(JsonSerializer.Serialize(markRequest));
             try
             {
                 _service.Update(id, constructionBoltRequest);

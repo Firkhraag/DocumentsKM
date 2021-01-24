@@ -44,8 +44,8 @@ const ConstructionElementTable = () => {
 	}
 
 	return (
-		<div className="component-cnt">
-			<h1 className="text-centered">Перечень элементов вида конструкции</h1>
+        <div>
+			<h2 className="mrg-top-2 bold text-centered">Перечень элементов</h2>
 			<PlusCircle
 				color="#666"
 				size={28}

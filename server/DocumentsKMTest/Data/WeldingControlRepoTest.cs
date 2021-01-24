@@ -65,7 +65,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var context = GetContext(TestData.weldingControl);
             var repo = new SqlWeldingControlRepo(context);
-            
+
             int wrongId = 999;
 
             // Act

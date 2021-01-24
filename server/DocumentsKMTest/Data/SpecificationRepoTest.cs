@@ -128,15 +128,15 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateSpecification()
         {
             // Arrange
-            var specifications = new List<Specification>{};
+            var specifications = new List<Specification> { };
             foreach (var s in TestData.specifications)
             {
                 specifications.Add(new Specification
                 {
-                    Id=s.Id,
-                    Mark=s.Mark,
-                    Num=s.Num,
-                    IsCurrent=s.IsCurrent,
+                    Id = s.Id,
+                    Mark = s.Mark,
+                    Num = s.Num,
+                    IsCurrent = s.IsCurrent,
                 });
             }
             var context = GetContext(specifications);

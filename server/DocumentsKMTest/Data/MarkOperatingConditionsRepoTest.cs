@@ -20,7 +20,7 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            
+
             context.ConstructionMaterials.AddRange(TestData.constructionMaterials);
             context.EnvAggressiveness.AddRange(TestData.envAggressiveness);
             context.GasGroups.AddRange(TestData.gasGroups);
@@ -46,7 +46,8 @@ namespace DocumentsKM.Tests
             var markOperatingConditions = repo.GetByMarkId(markId);
 
             // Assert
-            Assert.Equal(TestData.markOperatingConditions.FirstOrDefault(v => v.Mark.Id == markId),
+            Assert.Equal(
+                TestData.markOperatingConditions.FirstOrDefault(v => v.Mark.Id == markId),
                 markOperatingConditions);
 
             context.Database.EnsureDeleted();
@@ -110,7 +111,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateMarkOperatingConditions()
         {
             // Arrange
-            var markOperatingConditionsList = new List<MarkOperatingConditions>{};
+            var markOperatingConditionsList = new List<MarkOperatingConditions> { };
             foreach (var moc in TestData.markOperatingConditions)
             {
                 markOperatingConditionsList.Add(new MarkOperatingConditions

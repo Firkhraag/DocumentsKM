@@ -86,7 +86,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var context = GetContext(TestData.users);
             var repo = new SqlUserRepo(context);
-            
+
             var wrongLogin = "wrongLogin";
 
             // Act

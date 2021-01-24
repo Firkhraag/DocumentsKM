@@ -15,7 +15,8 @@ namespace DocumentsKM.Data
 
         public IEnumerable<BoltLength> GetAllByDiameterId(int diameterId)
         {
-            return _context.BoltLengths.Where(v => v.Diameter.Id == diameterId).ToList();
+            return _context.BoltLengths.Where(
+                v => v.Diameter.Id == diameterId).ToList();
         }
 
         public BoltLength GetById(int id)

@@ -14,15 +14,24 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<ConstructionBolt> GetAllByConstructionId(int constructionId)
+        public IEnumerable<ConstructionBolt> GetAllByConstructionId(
+            int constructionId)
         {
             return _context.ConstructionBolts.Where(
                 v => v.Construction.Id == constructionId).ToList();
         }
-        
+
         public ConstructionBolt GetById(int id)
         {
             return _context.ConstructionBolts.SingleOrDefault(v => v.Id == id);
+        }
+
+        public ConstructionBolt GetByUniqueKey(
+            int construtionId, int diameterId)
+        {
+            return _context.ConstructionBolts.SingleOrDefault(
+                v => (v.Construction.Id == construtionId) &&
+                    (v.Diameter.Id == diameterId));
         }
 
         public void Add(ConstructionBolt constructionBolt)

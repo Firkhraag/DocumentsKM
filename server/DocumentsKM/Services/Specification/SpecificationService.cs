@@ -39,8 +39,9 @@ namespace DocumentsKM.Services
                     _repository.Update(s);
                 }
             }
-                
-            var newSpecification = new Specification{
+
+            var newSpecification = new Specification
+            {
                 Mark = foundMark,
                 Num = specifications.Count() == 0 ? 1 :
                     specifications.Max(v => v.Num) + 1,
@@ -60,8 +61,6 @@ namespace DocumentsKM.Services
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
 
-            // if (specification.IsCurrent != null)
-            //     foundSpecification.IsCurrent = specification.IsCurrent ?? false;
             if (specification.IsCurrent == true)
             {
                 var specs = _repository.GetAllByMarkId(foundSpecification.Mark.Id);

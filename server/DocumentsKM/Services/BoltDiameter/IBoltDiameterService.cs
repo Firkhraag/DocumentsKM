@@ -5,7 +5,7 @@ namespace DocumentsKM.Services
 {
     public interface IBoltDiameterService
     {
-        // Получить все типы конструкций
+        // Получить все диаметры болтов
         IEnumerable<BoltDiameter> GetAll();
     }
 }

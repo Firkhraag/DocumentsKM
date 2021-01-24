@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using AutoMapper;
 using DocumentsKM.Dtos;
-using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +28,8 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("nodes/{nodeId}/subnodes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<SubnodeResponse>> GetAllByNodeId(int nodeId)
+        public ActionResult<IEnumerable<SubnodeResponse>> GetAllByNodeId(
+            int nodeId)
         {
             var subnodes = _service.GetAllByNodeId(nodeId);
             return Ok(_mapper.Map<IEnumerable<SubnodeResponse>>(subnodes));

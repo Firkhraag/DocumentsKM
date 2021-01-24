@@ -44,49 +44,52 @@ const StandardConstructionTable = () => {
 	}
 
 	return (
-		<div className="component-cnt">
-			<h1 className="text-centered">Типовые конструкции</h1>
-			<PlusCircle
-				color="#666"
-				size={28}
-				className="pointer"
-				onClick={null}
-			/>
-			<Table bordered striped className="mrg-top no-bot-mrg">
-				<thead>
-					<tr>
-						<th>Наименование</th>
-						<th>толщина пакета, мм</th>
-						<th>болтов, шт.</th>
-						<th>гаек на болт, шт.</th>
-						<th>шайб на болт, шт.</th>
-						<th className="text-centered" colSpan={2}>
-							Действия
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>диаметр болта, мм</td>
-						<td>толщина пакета, мм</td>
-						<td>болтов, шт.</td>
-						<td>гаек на болт, шт.</td>
-						<td>шайб на болт, шт.</td>
-						<td
-							onClick={null}
-							className="pointer action-cell-width text-centered"
-						>
-							<PencilSquare color="#666" size={26} />
-						</td>
-						<td
-							onClick={null}
-							className="pointer action-cell-width text-centered"
-						>
-							<Trash color="#666" size={26} />
-						</td>
-					</tr>
-				</tbody>
-			</Table>
+		<div>
+			<h2 className="mrg-top-2 bold text-centered">
+				Типовые конструкции
+			</h2>
+
+			<div className="full-width">
+				<PlusCircle
+					color="#666"
+					size={28}
+					className="pointer"
+					onClick={null}
+				/>
+				<Table bordered striped className="mrg-top no-bot-mrg">
+					<thead>
+						<tr>
+							<th>Наименование</th>
+							<th>Количество, шт.</th>
+							<th>№ листа</th>
+							<th>Вес, т</th>
+							<th className="text-centered" colSpan={2}>
+								Действия
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+							<td
+								onClick={null}
+								className="pointer action-cell-width text-centered"
+							>
+								<PencilSquare color="#666" size={26} />
+							</td>
+							<td
+								onClick={null}
+								className="pointer action-cell-width text-centered"
+							>
+								<Trash color="#666" size={26} />
+							</td>
+						</tr>
+					</tbody>
+				</Table>
+			</div>
 		</div>
 	)
 }
