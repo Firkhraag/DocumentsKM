@@ -10,7 +10,6 @@ namespace DocumentsKM.Profiles
         {
             CreateMap<MarkGeneralDataPoint, MarkGeneralDataPointResponse>();
             CreateMap<MarkGeneralDataPointCreateRequest, MarkGeneralDataPoint>();
-            CreateMap<MarkGeneralDataPointUpdateRequest, MarkGeneralDataPoint>();
         }
     }
 }

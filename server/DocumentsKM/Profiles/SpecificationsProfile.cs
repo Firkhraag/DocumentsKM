@@ -9,7 +9,6 @@ namespace DocumentsKM.Profiles
         public SpecificationsProfile()
         {
             CreateMap<Specification, SpecificationResponse>();
-            CreateMap<SpecificationUpdateRequest, Specification>();
         }
     }
 }

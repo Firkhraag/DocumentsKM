@@ -7,5 +7,6 @@ CREATE TABLE bolt_lengths (
 	UNIQUE(
 		bolt_diameter_id, bolt_len,
 		screw_len, bolt_weight
-	)
+	),
+	CONSTRAINT bolt_diameter FOREIGN KEY(bolt_diameter_id) REFERENCES bolt_diameters(id)
 );

@@ -12,6 +12,7 @@ import MarkData from '../components/Mark/MarkData'
 import MarkApproval from '../components/MarkApproval/MarkApproval'
 import SpecificationTable from '../components/Specification/SpecificationTable'
 import SpecificationData from '../components/Specification/SpecificationData'
+import StandardConstructionData from '../components/StandardConstruction/StandardConstructionData'
 import ConstructionData from '../components/Construction/ConstructionData'
 import ConstructionBoltData from '../components/ConstructionBolt/ConstructionBoltData'
 import SheetTable from '../components/Sheet/SheetTable'
@@ -29,6 +30,7 @@ import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
 import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
+import StandardConstruction from '../model/StandardConstruction'
 import ConstructionBolt from '../model/ConstructionBolt'
 import Doc from '../model/Doc'
 import AttachedDoc from '../model/AttachedDoc'
@@ -39,7 +41,13 @@ const AuthApp = () => {
 	const [subnode, setSubnode] = useState(null)
 	const [specification, setSpecification] = useState<Specification>(null)
 	const [construction, setConstruction] = useState<Construction>(null)
-	const [constructionBolt, setConstructionBolt] = useState<ConstructionBolt>(null)
+	const [
+		standardConstruction,
+		setStandardConstruction,
+	] = useState<StandardConstruction>(null)
+	const [constructionBolt, setConstructionBolt] = useState<ConstructionBolt>(
+		null
+	)
 	const [sheet, setSheet] = useState<Doc>(null)
 	const [additionalWork, setAdditionalWork] = useState<AdditionalWork>(null)
 	const [developingAttachedDoc, setDevelopingAttachedDoc] = useState<Doc>(
@@ -102,6 +110,41 @@ const AuthApp = () => {
 									<SpecificationData
 										specification={specification}
 										setConstruction={setConstruction}
+										setStandardConstruction={
+											setStandardConstruction
+										}
+									/>
+								</div>
+							</Route>
+                            <Route
+								exact
+								path="/specifications/:specificationId/standard-constructions/:standardConstructionId"
+							>
+								<div className="full-width div-container">
+									<StandardConstructionData
+										standardConstruction={standardConstruction}
+										isCreateMode={false}
+										specificationId={
+											specification == null
+												? -1
+												: specification.id
+										}
+									/>
+								</div>
+							</Route>
+							<Route
+								exact
+								path="/specifications/:specificationId/standard-construction-create"
+							>
+								<div className="full-width div-container">
+									<StandardConstructionData
+										standardConstruction={standardConstruction}
+										isCreateMode={true}
+										specificationId={
+											specification == null
+												? -1
+												: specification.id
+										}
 									/>
 								</div>
 							</Route>
@@ -117,8 +160,10 @@ const AuthApp = () => {
 											specification == null
 												? -1
 												: specification.id
-                                        }
-                                        setConstructionBolt={setConstructionBolt}
+										}
+										setConstructionBolt={
+											setConstructionBolt
+										}
 									/>
 								</div>
 							</Route>
@@ -134,12 +179,14 @@ const AuthApp = () => {
 											specification == null
 												? -1
 												: specification.id
-                                        }
-                                        setConstructionBolt={setConstructionBolt}
+										}
+										setConstructionBolt={
+											setConstructionBolt
+										}
 									/>
 								</div>
 							</Route>
-                            <Route
+							<Route
 								exact
 								path="/specifications/:specificationId/constructions/:constructionId/bolts/:boltId"
 							>
@@ -151,8 +198,8 @@ const AuthApp = () => {
 											specification == null
 												? -1
 												: specification.id
-                                        }
-                                        constructionId={
+										}
+										constructionId={
 											construction == null
 												? -1
 												: construction.id
@@ -172,8 +219,8 @@ const AuthApp = () => {
 											specification == null
 												? -1
 												: specification.id
-                                        }
-                                        constructionId={
+										}
+										constructionId={
 											construction == null
 												? -1
 												: construction.id

@@ -29,10 +29,10 @@ const DevelopingAttachedDocTable = ({
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const docsFetchedResponse = await httpClient.get(
+					const docsResponse = await httpClient.get(
 						`/marks/${mark.id}/docs/attached`
 					)
-					setDocs(docsFetchedResponse.data)
+					setDocs(docsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}

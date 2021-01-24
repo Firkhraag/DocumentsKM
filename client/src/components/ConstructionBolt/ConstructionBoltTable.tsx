@@ -35,10 +35,10 @@ const ConstructionBoltTable = ({
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const constructionBoltsFetchedResponse = await httpClient.get(
+					const constructionBoltsResponse = await httpClient.get(
 						`/constructions/${constructionId}/bolts`
 					)
-					setConstructionBolts(constructionBoltsFetchedResponse.data)
+					setConstructionBolts(constructionBoltsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}

@@ -27,10 +27,10 @@ const LinkedDocTable = ({ setMarkLinkedDoc }: LinkedDocTableProps) => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const linkedDocsFetchedResponse = await httpClient.get(
+					const linkedDocsResponse = await httpClient.get(
 						`/marks/${mark.id}/mark-linked-docs`
 					)
-					setLinkedDocs(linkedDocsFetchedResponse.data)
+					setLinkedDocs(linkedDocsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}

@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button'
 import httpClient from '../../axios'
 import Specification from '../../model/Specification'
 import Construction from '../../model/Construction'
+import StandardConstruction from '../../model/StandardConstruction'
 import { useMark } from '../../store/MarkStore'
 import ConstructionTable from '../Construction/ConstructionTable'
 import StandardConstructionTable from '../StandardConstruction/StandardConstructionTable'
@@ -15,11 +16,13 @@ import StandardConstructionTable from '../StandardConstruction/StandardConstruct
 type SpecificationDataProps = {
 	specification: Specification
 	setConstruction: (c: Construction) => void
+	setStandardConstruction: (sc: StandardConstruction) => void
 }
 
 const SpecificationData = ({
 	specification,
 	setConstruction,
+	setStandardConstruction,
 }: SpecificationDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
@@ -96,7 +99,10 @@ const SpecificationData = ({
 				setConstruction={setConstruction}
 				specificationId={selectedObject.id}
 			/>
-			<StandardConstructionTable />
+			<StandardConstructionTable
+				setStandardConstruction={setStandardConstruction}
+				specificationId={selectedObject.id}
+			/>
 		</div>
 	)
 }

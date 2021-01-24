@@ -35,10 +35,10 @@ const ConstructionTable = ({
 			}
 			const fetchData = async () => {
 				try {
-					const constructionFetchedResponse = await httpClient.get(
+					const constructionResponse = await httpClient.get(
 						`/specifications/${specificationId}/constructions`
 					)
-					setConstructions(constructionFetchedResponse.data)
+					setConstructions(constructionResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}

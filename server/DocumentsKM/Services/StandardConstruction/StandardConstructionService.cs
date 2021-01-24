@@ -54,6 +54,15 @@ namespace DocumentsKM.Services
             if (foundStandardConstruction == null)
                 throw new ArgumentNullException(nameof(foundStandardConstruction));
 
+            if (standardConstruction.Name != null)
+                foundStandardConstruction.Name = standardConstruction.Name;
+            if (standardConstruction.Num != null)
+                foundStandardConstruction.Num = standardConstruction.Num.GetValueOrDefault();
+            if (standardConstruction.Sheet != null)
+                foundStandardConstruction.Sheet = standardConstruction.Sheet;
+            if (standardConstruction.Weight != null)
+                foundStandardConstruction.Weight = standardConstruction.Weight.GetValueOrDefault();
+
             _repository.Update(foundStandardConstruction);
         }
 

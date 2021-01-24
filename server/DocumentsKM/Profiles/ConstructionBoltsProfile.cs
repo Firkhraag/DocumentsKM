@@ -10,7 +10,6 @@ namespace DocumentsKM.Profiles
         {
             CreateMap<ConstructionBolt, ConstructionBoltResponse>();
             CreateMap<ConstructionBoltCreateRequest, ConstructionBolt>();
-            CreateMap<ConstructionBoltUpdateRequest, ConstructionBolt>();
         }
     }
 }

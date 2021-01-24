@@ -27,10 +27,10 @@ const SheetTable = ({ setSheet }: SheetTableProps) => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const sheetsFetchedResponse = await httpClient.get(
+					const sheetsResponse = await httpClient.get(
 						`/marks/${mark.id}/docs/sheets`
 					)
-					setSheets(sheetsFetchedResponse.data)
+					setSheets(sheetsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}

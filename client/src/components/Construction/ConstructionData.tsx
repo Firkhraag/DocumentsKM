@@ -372,7 +372,7 @@ const ConstructionData = ({
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">
 				{isCreateMode
-					? 'Добавление вида конструкции'
+					? 'Создание вида конструкции'
 					: 'Данные по виду конструкций'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">

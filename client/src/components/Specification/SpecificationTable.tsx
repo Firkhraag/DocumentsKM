@@ -49,16 +49,16 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 				const fetchData = async () => {
 					setInitialRender(false)
 					try {
-						const specificationsFetchedResponse = await httpClient.get(
+						const specificationsResponse = await httpClient.get(
 							`/marks/${mark.id}/specifications`
 						)
-						for (let s of specificationsFetchedResponse.data) {
+						for (let s of specificationsResponse.data) {
 							if (s.isCurrent) {
 								setCurrentSpecId(s.id)
 							}
 							refs.push(createRef())
 						}
-						setSpecifications(specificationsFetchedResponse.data)
+						setSpecifications(specificationsResponse.data)
 					} catch (e) {
 						console.log('Failed to fetch the data', e)
 					}
@@ -86,13 +86,13 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 
 	const onCreateClick = async () => {
 		try {
-			const newSpecificationFetched = await httpClient.post(
+			const newSpecificationResponse = await httpClient.post(
 				`/marks/${mark.id}/specifications`
 			)
-			specifications.push(newSpecificationFetched.data)
+			specifications.push(newSpecificationResponse.data)
 			setSpecifications(specifications)
 			refs.push(createRef())
-			setCurrentSpecId(newSpecificationFetched.data.id)
+			setCurrentSpecId(newSpecificationResponse.data.id)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')

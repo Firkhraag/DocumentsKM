@@ -36,10 +36,10 @@ const AdditionalWorkTable = ({
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const additionalWorkFetchedResponse = await httpClient.get(
+					const additionalWorkResponse = await httpClient.get(
 						`/marks/${mark.id}/additional-work`
 					)
-					setAdditionalWorkArray(additionalWorkFetchedResponse.data)
+					setAdditionalWorkArray(additionalWorkResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}

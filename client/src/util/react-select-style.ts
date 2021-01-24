@@ -1,6 +1,6 @@
 import { StylesConfig } from 'react-select'
 
-export const reactSelectStyle: StylesConfig = {
+export const reactSelectStyle: StylesConfig<any, any> = {
 	control: (provided, state) => ({
 		...provided,
 		border: state.isFocused

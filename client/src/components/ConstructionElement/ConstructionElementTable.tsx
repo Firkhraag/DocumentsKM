@@ -66,7 +66,7 @@ const ConstructionElementTable = () => {
 				</thead>
 				<tbody>
 					<tr>
-						<td>вид профия</td>
+						<td>вид профия1</td>
 						<td>имя профиля</td>
 						<td>марка стали</td>
 						<td>длина площадь</td>

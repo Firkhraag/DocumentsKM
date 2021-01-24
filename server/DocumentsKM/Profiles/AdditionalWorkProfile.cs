@@ -9,7 +9,6 @@ namespace DocumentsKM.Profiles
         public AdditionalWorkProfile()
         {
             CreateMap<AdditionalWorkCreateRequest, AdditionalWork>();
-            CreateMap<AdditionalWorkUpdateRequest, AdditionalWork>();
         }
     }
 }

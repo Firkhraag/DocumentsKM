@@ -10,7 +10,6 @@ namespace DocumentsKM.Profiles
         {
             CreateMap<MarkLinkedDoc, MarkLinkedDocResponse>();
             CreateMap<MarkLinkedDocCreateRequest, MarkLinkedDoc>();
-            CreateMap<MarkLinkedDocUpdateRequest, MarkLinkedDoc>();
         }
     }
 }

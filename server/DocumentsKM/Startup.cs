@@ -132,6 +132,7 @@ namespace DocumentsKM
             services.AddScoped<IConstructionSubtypeService, ConstructionSubtypeService>();
             services.AddScoped<IWeldingControlService, WeldingControlService>();
             services.AddScoped<ISpecificationService, SpecificationService>();
+            services.AddScoped<IStandardConstructionService, StandardConstructionService>();
             services.AddScoped<IConstructionService, ConstructionService>();
             services.AddScoped<IBoltDiameterService, BoltDiameterService>();
             services.AddScoped<IConstructionBoltService, ConstructionBoltService>();
@@ -177,6 +178,7 @@ namespace DocumentsKM
             services.AddScoped<IConstructionSubtypeRepo, SqlConstructionSubtypeRepo>();
             services.AddScoped<IWeldingControlRepo, SqlWeldingControlRepo>();
             services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
+            services.AddScoped<IStandardConstructionRepo, SqlStandardConstructionRepo>();
             services.AddScoped<IConstructionRepo, SqlConstructionRepo>();
             services.AddScoped<IBoltDiameterRepo, SqlBoltDiameterRepo>();
             services.AddScoped<IBoltLengthRepo, SqlBoltLengthRepo>();

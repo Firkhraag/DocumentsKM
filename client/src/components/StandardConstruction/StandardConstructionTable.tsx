@@ -9,25 +9,41 @@ import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
-import MarkLinkedDoc from '../../model/MarkLinkedDoc'
+import StandardConstruction from '../../model/StandardConstruction'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
-const StandardConstructionTable = () => {
+type StandardConstructionTableProps = {
+	setStandardConstruction: (sc: StandardConstruction) => void
+	specificationId: number
+}
+
+const StandardConstructionTable = ({
+	setStandardConstruction,
+	specificationId,
+}: StandardConstructionTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
+	const setPopup = useSetPopup()
+
+	const [standardConstructions, setStandardConstructions] = useState(
+		[] as StandardConstruction[]
+	)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
+			if (specificationId == -1) {
+				history.push('/specifications')
+				return
+			}
 			const fetchData = async () => {
-				// try {
-				// 	const linkedDocsFetchedResponse = await httpClient.get(
-				// 		`/marks/${mark.id}/mark-linked-docs`
-				//     )
-				//     console.log(linkedDocsFetchedResponse.data)
-				// 	setLinkedDocs(linkedDocsFetchedResponse.data)
-				// } catch (e) {
-				// 	console.log('Failed to fetch the data', e)
-				// }
+				try {
+					const standardConstructionResponse = await httpClient.get(
+						`/specifications/${specificationId}/standard-constructions`
+					)
+					setStandardConstructions(standardConstructionResponse.data)
+				} catch (e) {
+					console.log('Failed to fetch the data', e)
+				}
 			}
 			fetchData()
 		}
@@ -35,17 +51,17 @@ const StandardConstructionTable = () => {
 
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
-			// await httpClient.delete(`/mark-linked-docs/${id}`)
-			// linkedDocs.splice(row, 1)
-			// setPopupObj(defaultPopupObj)
+			await httpClient.delete(`/standard-constructions/${id}`)
+			standardConstructions.splice(row, 1)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
 	}
 
 	return (
-		<div>
-			<h2 className="mrg-top-2 bold text-centered">
+		<div className="mrg-bot">
+			<h2 className="mrg-top-3 bold text-centered">
 				Типовые конструкции
 			</h2>
 
@@ -54,11 +70,16 @@ const StandardConstructionTable = () => {
 					color="#666"
 					size={28}
 					className="pointer"
-					onClick={null}
+					onClick={() =>
+						history.push(
+							`/specifications/${specificationId}/standard-construction-create`
+						)
+					}
 				/>
 				<Table bordered striped className="mrg-top no-bot-mrg">
 					<thead>
 						<tr>
+							<th>№</th>
 							<th>Наименование</th>
 							<th>Количество, шт.</th>
 							<th>№ листа</th>
@@ -69,24 +90,45 @@ const StandardConstructionTable = () => {
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>1</td>
-							<td>2</td>
-							<td>3</td>
-							<td>4</td>
-							<td
-								onClick={null}
-								className="pointer action-cell-width text-centered"
-							>
-								<PencilSquare color="#666" size={26} />
-							</td>
-							<td
-								onClick={null}
-								className="pointer action-cell-width text-centered"
-							>
-								<Trash color="#666" size={26} />
-							</td>
-						</tr>
+						{standardConstructions.map((sc, index) => {
+							return (
+								<tr key={index}>
+									<td>{index + 1}</td>
+									<td className="construction-name-col-width">
+										{sc.name}
+									</td>
+									<td>{sc.num}</td>
+									<td>{sc.sheet}</td>
+									<td>{sc.weight}</td>
+									<td
+										onClick={() => {
+											setStandardConstruction(sc)
+											history.push(
+												`/specifications/${specificationId}/standard-constructions/${sc.id}`
+											)
+										}}
+										className="pointer action-cell-width text-centered"
+									>
+										<PencilSquare color="#666" size={26} />
+									</td>
+									<td
+										onClick={() =>
+											setPopup({
+												isShown: true,
+												msg: `Вы действительно хотите удалить типовую конструкцию?`,
+												onAccept: () =>
+													onDeleteClick(index, sc.id),
+												onCancel: () =>
+													setPopup(defaultPopup),
+											})
+										}
+										className="pointer action-cell-width text-centered"
+									>
+										<Trash color="#666" size={26} />
+									</td>
+								</tr>
+							)
+						})}
 					</tbody>
 				</Table>
 			</div>

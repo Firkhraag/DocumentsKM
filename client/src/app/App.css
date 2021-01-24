@@ -30,6 +30,14 @@
     margin-top: 1.25em;
 }
 
+.mrg-top-3 {
+    margin-top: 1.5em;
+}
+
+.mrg-bot {
+    margin-bottom: 1.5em;
+}
+
 .mrg-left {
     margin-left: 0.75em;
 }
