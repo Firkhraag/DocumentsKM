@@ -80,10 +80,10 @@ const StandardConstructionTable = ({
 					<thead>
 						<tr>
 							<th>№</th>
-							<th>Наименование</th>
+							<th className="st-construction-name-col-width">Наименование</th>
 							<th>Количество, шт.</th>
 							<th>№ листа</th>
-							<th>Вес, т</th>
+							<th className="st-construction-other-col-width">Вес, т</th>
 							<th className="text-centered" colSpan={2}>
 								Действия
 							</th>
@@ -94,12 +94,12 @@ const StandardConstructionTable = ({
 							return (
 								<tr key={index}>
 									<td>{index + 1}</td>
-									<td className="construction-name-col-width">
+									<td className="st-construction-name-col-width">
 										{sc.name}
 									</td>
 									<td>{sc.num}</td>
 									<td>{sc.sheet}</td>
-									<td>{sc.weight}</td>
+									<td className="st-construction-other-col-width">{sc.weight}</td>
 									<td
 										onClick={() => {
 											setStandardConstruction(sc)

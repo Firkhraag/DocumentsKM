@@ -56,10 +56,8 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.constructions);
             var repo = new SqlConstructionRepo(context);
 
-            var wrongSpecificationId = 999;
-
             // Act
-            var constructions = repo.GetAllBySpecificationId(wrongSpecificationId);
+            var constructions = repo.GetAllBySpecificationId(999);
 
             // Assert
             Assert.Empty(constructions);
@@ -86,7 +84,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.constructions);
@@ -132,16 +130,13 @@ namespace DocumentsKM.Tests
             var repo = new SqlConstructionRepo(context);
 
             var specificationId = TestData.constructions[0].Specification.Id;
-            var wrongSpecificationId = 999;
             var name = TestData.constructions[0].Name;
-            var wrongName = "wrong";
             var paintworkCoeff = TestData.constructions[0].PaintworkCoeff;
-            var wrongPaintworkCoeff = -1;
 
             // Act
-            var additionalWork1 = repo.GetByUniqueKey(wrongSpecificationId, name, paintworkCoeff);
-            var additionalWork2 = repo.GetByUniqueKey(specificationId, wrongName, paintworkCoeff);
-            var additionalWork3 = repo.GetByUniqueKey(specificationId, name, wrongPaintworkCoeff);
+            var additionalWork1 = repo.GetByUniqueKey(999, name, paintworkCoeff);
+            var additionalWork2 = repo.GetByUniqueKey(specificationId, "NotFound", paintworkCoeff);
+            var additionalWork3 = repo.GetByUniqueKey(specificationId, name, -1);
 
             // Assert
             Assert.Null(additionalWork1);
@@ -158,7 +153,7 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.constructions);
             var repo = new SqlConstructionRepo(context);
 
-            int specificationId = _rnd.Next(1, TestData.marks.Count());
+            int specificationId = _rnd.Next(1, TestData.specifications.Count());
             int typeId = _rnd.Next(1, TestData.constructionTypes.Count());
             int subtypeId = _rnd.Next(1, TestData.constructionSubtypes.Count());
             int weldingControlId = _rnd.Next(1, TestData.weldingControl.Count());
@@ -181,10 +176,7 @@ namespace DocumentsKM.Tests
             repo.Add(construction);
 
             // Assert
-            Assert.NotEqual(0, construction.Id);
-            Assert.Equal(
-                TestData.constructions.Where(v => v.Specification.Id == specificationId).Count() + 1,
-                repo.GetAllBySpecificationId(specificationId).Count());
+            Assert.NotNull(repo.GetById(construction.Id));
 
             context.Database.EnsureDeleted();
         }

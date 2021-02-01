@@ -106,6 +106,14 @@
     width: 30em;
 }
 
+.st-construction-name-col-width {
+    width: 25em;
+}
+
+.st-construction-other-col-width {
+    width: 5em;
+}
+
 /* Linked Doc */
 .linked-doc-name-col-width {
 	width: 35em;
@@ -154,6 +162,31 @@
 	left: 50%;
 	margin-left: -20vw;
 	z-index: 500;
+}
+
+.table-popup {
+    width: 40vw;
+    height: 50vh;
+    overflow-y: scroll;
+	position: fixed;
+	top: 33%;
+	left: 50%;
+	margin-left: -20vw;
+	z-index: 500;
+}
+
+.table-popup table {
+    height: 50vh;
+}
+
+.table-popup th {
+    position: sticky;
+    top: 0;
+    background: #fff;
+}
+
+.tr-hover:hover {
+    background: #ccc !important;
 }
 
 .general-data-selection .selection-text .check-area {

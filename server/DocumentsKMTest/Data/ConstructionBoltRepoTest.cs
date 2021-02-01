@@ -49,16 +49,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByConstructionId_ShouldReturnEmptyArray_WhenWrongconstructionId()
+        public void GetAllByConstructionId_ShouldReturnEmptyArray_WhenWrongConstructionId()
         {
             // Arrange
             var context = GetContext(TestData.constructionBolts);
             var repo = new SqlConstructionBoltRepo(context);
 
-            var wrongconstructionId = 999;
-
             // Act
-            var constructionBolts = repo.GetAllByConstructionId(wrongconstructionId);
+            var constructionBolts = repo.GetAllByConstructionId(999);
 
             // Assert
             Assert.Empty(constructionBolts);
@@ -73,7 +71,7 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.constructionBolts);
             var repo = new SqlConstructionBoltRepo(context);
 
-            int id = _rnd.Next(1, TestData.constructionBolts.Count());
+            var id = _rnd.Next(1, TestData.constructionBolts.Count());
 
             // Act
             var constructionBolt = repo.GetById(id);
@@ -85,7 +83,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.constructionBolts);
@@ -100,55 +98,48 @@ namespace DocumentsKM.Tests
             context.Database.EnsureDeleted();
         }
 
-        // [Fact]
-        // public void GetByUniqueKey_ShouldReturnConstructionBolt()
-        // {
-        //     // Arrange
-        //     var context = GetContext(TestData.constructionBolts);
-        //     var repo = new SqlConstructionBoltRepo(context);
+        [Fact]
+        public void GetByUniqueKey_ShouldReturnConstructionBolt()
+        {
+            // Arrange
+            var context = GetContext(TestData.constructionBolts);
+            var repo = new SqlConstructionBoltRepo(context);
 
-        //     var constructionId = TestData.constructionBolts[0].Construction.Id;
-        //     var name = TestData.constructionBolts[0].Name;
-        //     var paintworkCoeff = TestData.constructionBolts[0].PaintworkCoeff;
+            var constructionId = TestData.constructionBolts[0].Construction.Id;
+            var diameterId = TestData.constructionBolts[0].Diameter.Id;
 
-        //     // Act
-        //     var constructionBolt = repo.GetByUniqueKey(
-        //         constructionId, name, paintworkCoeff);
+            // Act
+            var constructionBolt = repo.GetByUniqueKey(
+                constructionId, diameterId);
 
-        //     // Assert
-        //     Assert.Equal(TestData.constructionBolts.SingleOrDefault(
-        //         v => v.Construction.Id == constructionId &&
-        //             v.Name == name && v.PaintworkCoeff == paintworkCoeff), constructionBolt);
+            // Assert
+            Assert.Equal(TestData.constructionBolts.SingleOrDefault(
+                v => v.Construction.Id == constructionId &&
+                    v.Diameter.Id == diameterId), constructionBolt);
 
-        //     context.Database.EnsureDeleted();
-        // }
+            context.Database.EnsureDeleted();
+        }
 
-        // [Fact]
-        // public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
-        // {
-        //     // Arrange
-        //     var context = GetContext(TestData.constructionBolts);
-        //     var repo = new SqlConstructionBoltRepo(context);
+        [Fact]
+        public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
+        {
+            // Arrange
+            var context = GetContext(TestData.constructionBolts);
+            var repo = new SqlConstructionBoltRepo(context);
 
-        //     var constructionId = TestData.constructionBolts[0].Construction.Id;
-        //     var wrongconstructionId = 999;
-        //     var name = TestData.constructionBolts[0].Name;
-        //     var wrongName = "wrong";
-        //     var paintworkCoeff = TestData.constructionBolts[0].PaintworkCoeff;
-        //     var wrongPaintworkCoeff = -1;
+            var constructionId = TestData.constructionBolts[0].Construction.Id;
+            var diameterId = TestData.constructionBolts[0].Diameter.Id;
 
-        //     // Act
-        //     var additionalWork1 = repo.GetByUniqueKey(wrongconstructionId, name, paintworkCoeff);
-        //     var additionalWork2 = repo.GetByUniqueKey(constructionId, wrongName, paintworkCoeff);
-        //     var additionalWork3 = repo.GetByUniqueKey(constructionId, name, wrongPaintworkCoeff);
+            // Act
+            var additionalWork1 = repo.GetByUniqueKey(999, diameterId);
+            var additionalWork2 = repo.GetByUniqueKey(constructionId, 999);
 
-        //     // Assert
-        //     Assert.Null(additionalWork1);
-        //     Assert.Null(additionalWork2);
-        //     Assert.Null(additionalWork3);
+            // Assert
+            Assert.Null(additionalWork1);
+            Assert.Null(additionalWork2);
 
-        //     context.Database.EnsureDeleted();
-        // }
+            context.Database.EnsureDeleted();
+        }
 
         [Fact]
         public void Add_ShouldAddConstructionBolt()
@@ -175,11 +166,7 @@ namespace DocumentsKM.Tests
             repo.Add(constructionBolt);
 
             // Assert
-            Assert.NotEqual(0, constructionBolt.Id);
-            Assert.Equal(
-                TestData.constructionBolts.Where(
-                    v => v.Construction.Id == constructionId).Count() + 1,
-                repo.GetAllByConstructionId(constructionId).Count());
+            Assert.NotNull(repo.GetById(constructionBolt.Id));
 
             context.Database.EnsureDeleted();
         }

@@ -46,6 +46,22 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
+        public void GetAllByProjectId_ShouldReturnEmptyArray_WhenWrongProjectId()
+        {
+            // Arrange
+            var context = GetContext(TestData.nodes);
+            var repo = new SqlNodeRepo(context);
+
+            // Act
+            var nodes = repo.GetAllByProjectId(999);
+
+            // Assert
+            Assert.Empty(nodes);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
         public void GetById_ShouldReturnNode()
         {
             // Arrange
@@ -64,16 +80,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.nodes);
             var repo = new SqlNodeRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var node = repo.GetById(wrongId);
+            var node = repo.GetById(999);
 
             // Assert
             Assert.Null(node);

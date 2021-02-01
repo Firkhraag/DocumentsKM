@@ -105,7 +105,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByspecificationId_ShouldReturnConstructions()
+        public void GetAllBySpecificationId_ShouldReturnConstructions()
         {
             // Arrange
             int specificationId = _rnd.Next(1, _maxSpecificationId);
@@ -120,14 +120,10 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByspecificationId_ShouldReturnEmptyArray_WhenWrongSpecificationId()
+        public void GetAllBySpecificationId_ShouldReturnEmptyArray_WhenWrongSpecificationId()
         {
-            // Arrange
-            int wrongSpecificationId = 999;
-
             // Act
-            var returnedConstructions = _service.GetAllBySpecificationId(
-                wrongSpecificationId);
+            var returnedConstructions = _service.GetAllBySpecificationId(999);
 
             // Assert
             Assert.Empty(returnedConstructions);
@@ -144,20 +140,12 @@ namespace DocumentsKM.Tests
 
             var newConstruction = new Construction
             {
-                Specification = TestData.specifications.SingleOrDefault(
-                    v => v.Id == specificationId),
                 Name = "NewCreate",
-                Type = TestData.constructionTypes.SingleOrDefault(
-                    v => v.Id == typeId),
-                Subtype = TestData.constructionSubtypes.SingleOrDefault(
-                    v => v.Id == subtypeId),
                 Valuation = "NewCreate",
                 NumOfStandardConstructions = 0,
                 HasEdgeBlunting = true,
                 HasDynamicLoad = false,
                 HasFlangedConnections = true,
-                WeldingControl = TestData.weldingControl.SingleOrDefault(
-                    v => v.Id == weldingControlId),
                 PaintworkCoeff = 2,
             };
 
@@ -175,34 +163,22 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Create_ShouldFailWithNull()
+        public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int specificationId = _rnd.Next(1, TestData.specifications.Count());
-            int wrongSpecificationId = 999;
             int typeId = _rnd.Next(1, TestData.constructionTypes.Count());
-            int wrongTypeId = 999;
             int subtypeId = _rnd.Next(1, TestData.constructionSubtypes.Count());
-            int wrongSubtypeId = 999;
             int weldingControlId = _rnd.Next(1, TestData.weldingControl.Count());
-            int wrongWeldingControlId = 999;
 
             var newConstruction = new Construction
             {
-                Specification = TestData.specifications.SingleOrDefault(
-                    v => v.Id == specificationId),
                 Name = "NewCreate",
-                Type = TestData.constructionTypes.SingleOrDefault(
-                    v => v.Id == typeId),
-                Subtype = TestData.constructionSubtypes.SingleOrDefault(
-                    v => v.Id == subtypeId),
                 Valuation = "NewCreate",
                 NumOfStandardConstructions = 0,
                 HasEdgeBlunting = true,
                 HasDynamicLoad = false,
                 HasFlangedConnections = true,
-                WeldingControl = TestData.weldingControl.SingleOrDefault(
-                    v => v.Id == weldingControlId),
                 PaintworkCoeff = 2,
             };
 
@@ -212,50 +188,73 @@ namespace DocumentsKM.Tests
                     null, specificationId, typeId, subtypeId, weldingControlId));
             Assert.Throws<ArgumentNullException>(
                 () => _service.Create(
-                    newConstruction, wrongSpecificationId, typeId, subtypeId, weldingControlId));
+                    newConstruction, 999, typeId, subtypeId, weldingControlId));
             Assert.Throws<ArgumentNullException>(
                 () => _service.Create(
-                    newConstruction, specificationId, wrongTypeId, subtypeId, weldingControlId));
+                    newConstruction, specificationId, 999, subtypeId, weldingControlId));
             Assert.Throws<ArgumentNullException>(
                 () => _service.Create(
-                    newConstruction, specificationId, typeId, wrongSubtypeId, weldingControlId));
+                    newConstruction, specificationId, typeId, 999, weldingControlId));
             Assert.Throws<ArgumentNullException>(
                 () => _service.Create(
-                    newConstruction, specificationId, typeId, subtypeId, wrongWeldingControlId));
+                    newConstruction, specificationId, typeId, subtypeId, 999));
 
             _repository.Verify(mock => mock.Add(It.IsAny<Construction>()), Times.Never);
         }
 
-        // [Fact]
-        // public void Create_ShouldFailWithConflict()
-        // {
-        //     // Arrange
-        //     var conflictspecificationId = _constructions[0].Mark.Id;
-        //     var conflictDesignation = _constructions[0].Designation;
+        [Fact]
+        public void Create_ShouldFailWithConflict_WhenConflictValue()
+        {
+            // Arrange
+            int typeId = _rnd.Next(1, TestData.constructionTypes.Count());
+            int subtypeId = _rnd.Next(1, TestData.constructionSubtypes.Count());
+            int weldingControlId = _rnd.Next(1, TestData.weldingControl.Count());
 
-        //     var newConstruction = new Construction
-        //     {
-        //         Designation = conflictDesignation,
-        //         Name = "NewCreate",
-        //     };
+            var conflictSpecificationId = _constructions[0].Specification.Id;
+            var conflictName = _constructions[0].Name;
+            var conflictPaintworkCoeff = _constructions[0].PaintworkCoeff;
 
-        //     // Act & Assert
-        //     Assert.Throws<ConflictException>(
-        //         () => _service.Create(newConstruction, conflictspecificationId));
+            var newConstruction = new Construction
+            {
+                Name = conflictName,
+                Valuation = "NewCreate",
+                NumOfStandardConstructions = 0,
+                HasEdgeBlunting = true,
+                HasDynamicLoad = false,
+                HasFlangedConnections = true,
+                PaintworkCoeff = conflictPaintworkCoeff,
+            };
 
-        //     _repository.Verify(mock => mock.Add(It.IsAny<Construction>()), Times.Never);
-        // }
+            // Act & Assert
+            Assert.Throws<ConflictException>(
+                () => _service.Create(
+                    newConstruction,
+                    conflictSpecificationId,
+                    typeId,
+                    subtypeId,
+                    weldingControlId));
+
+            _repository.Verify(mock => mock.Add(It.IsAny<Construction>()), Times.Never);
+        }
 
         [Fact]
         public void Update_ShouldUpdateConstruction()
         {
             // Arrange
             int id = _rnd.Next(1, _constructions.Count());
-            var newDesignation = "NewUpdate";
+            var newStringValue = "NewUpdate";
+            var newBoolValue = true;
+            var newIntValue = 99;
 
             var newConstructionRequest = new ConstructionUpdateRequest
             {
-                Valuation = "NewUpdate",
+                Name = newStringValue,
+                Valuation = newStringValue,
+                NumOfStandardConstructions = newIntValue,
+                HasEdgeBlunting = newBoolValue,
+                HasDynamicLoad = newBoolValue,
+                HasFlangedConnections = newBoolValue,
+                PaintworkCoeff = newIntValue,
             };
 
             // Act
@@ -264,15 +263,26 @@ namespace DocumentsKM.Tests
             // Assert
             _repository.Verify(mock => mock.Update(It.IsAny<Construction>()), Times.Once);
             Assert.Equal(
-                newDesignation, _constructions.SingleOrDefault(v => v.Id == id).Valuation);
+                newStringValue, _constructions.SingleOrDefault(v => v.Id == id).Name);
+            Assert.Equal(
+                newStringValue, _constructions.SingleOrDefault(v => v.Id == id).Valuation);
+            Assert.Equal(
+                newIntValue, _constructions.SingleOrDefault(v => v.Id == id).NumOfStandardConstructions);
+            Assert.Equal(
+                newBoolValue, _constructions.SingleOrDefault(v => v.Id == id).HasEdgeBlunting);
+            Assert.Equal(
+                newBoolValue, _constructions.SingleOrDefault(v => v.Id == id).HasDynamicLoad);
+            Assert.Equal(
+                newBoolValue, _constructions.SingleOrDefault(v => v.Id == id).HasFlangedConnections);
+            Assert.Equal(
+                newIntValue, _constructions.SingleOrDefault(v => v.Id == id).PaintworkCoeff);
         }
 
         [Fact]
-        public void Update_ShouldFailWithNull()
+        public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int id = _rnd.Next(1, _constructions.Count());
-            int wrongId = 999;
 
             var newConstructionRequest = new ConstructionUpdateRequest
             {
@@ -282,29 +292,31 @@ namespace DocumentsKM.Tests
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
             Assert.Throws<ArgumentNullException>(() => _service.Update(
-                wrongId, newConstructionRequest));
+                999, newConstructionRequest));
 
             _repository.Verify(mock => mock.Update(It.IsAny<Construction>()), Times.Never);
         }
 
-        // [Fact]
-        // public void Update_ShouldFailWithConflict()
-        // {
-        //     // Arrange
-        //     var conflictDesignation = _Constructions[0].Designation;
-        //     var id = _Constructions[3].Id;
+        [Fact]
+        public void Update_ShouldFailWithConflict()
+        {
+            // Arrange
+            var id = _constructions[1].Id;
+            var conflictName = _constructions[0].Name;
+            var conflictPaintworkCoeff = _constructions[0].PaintworkCoeff;
 
-        //     var newConstructionRequest = new ConstructionUpdateRequest
-        //     {
-        //         Designation = conflictDesignation,
-        //         Name = "NewUpdate",
-        //     };
+            var newConstructionRequest = new ConstructionUpdateRequest
+            {
+                Name = conflictName,
+                PaintworkCoeff = conflictPaintworkCoeff,
+                Valuation = "NewUpdate",
+            };
 
-        //     // Act & Assert
-        //     Assert.Throws<ConflictException>(() => _service.Update(id, newConstructionRequest));
+            // Act & Assert
+            Assert.Throws<ConflictException>(() => _service.Update(id, newConstructionRequest));
 
-        //     _repository.Verify(mock => mock.Update(It.IsAny<Construction>()), Times.Never);
-        // }
+            _repository.Verify(mock => mock.Update(It.IsAny<Construction>()), Times.Never);
+        }
 
         [Fact]
         public void Delete_ShouldDeleteConstruction()
@@ -316,19 +328,18 @@ namespace DocumentsKM.Tests
             _service.Delete(id);
 
             // Assert
-            _repository.Verify(mock => mock.Delete(It.IsAny<Construction>()), Times.Once);
+            _repository.Verify(mock => mock.Delete(
+                It.IsAny<Construction>()), Times.Once);
         }
 
         [Fact]
         public void Delete_ShouldFailWithNull_WhenWrongId()
         {
-            // Arrange
-            var wrongId = 999;
-
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(wrongId));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(999));
 
-            _repository.Verify(mock => mock.Delete(It.IsAny<Construction>()), Times.Never);
+            _repository.Verify(mock => mock.Delete(
+                It.IsAny<Construction>()), Times.Never);
         }
     }
 }

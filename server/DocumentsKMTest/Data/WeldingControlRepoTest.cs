@@ -60,16 +60,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.weldingControl);
             var repo = new SqlWeldingControlRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var weldingControl = repo.GetById(wrongId);
+            var weldingControl = repo.GetById(999);
 
             // Assert
             Assert.Null(weldingControl);

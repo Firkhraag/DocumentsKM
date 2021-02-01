@@ -9,18 +9,18 @@ namespace DocumentsKM.Services
 {
     public class AdditionalWorkService : IAdditionalWorkService
     {
-        private IAdditionalWorkRepo _repository;
+        private readonly IAdditionalWorkRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IDocRepo _docRepo;
 
         public AdditionalWorkService(
-            IAdditionalWorkRepo AdditionalWorkRepo,
+            IAdditionalWorkRepo additionalWorkRepo,
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
             IDocRepo docRepo)
         {
-            _repository = AdditionalWorkRepo;
+            _repository = additionalWorkRepo;
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
             _docRepo = docRepo;

@@ -15,6 +15,7 @@ import SpecificationData from '../components/Specification/SpecificationData'
 import StandardConstructionData from '../components/StandardConstruction/StandardConstructionData'
 import ConstructionData from '../components/Construction/ConstructionData'
 import ConstructionBoltData from '../components/ConstructionBolt/ConstructionBoltData'
+import ConstructionElementData from '../components/ConstructionElement/ConstructionElementData'
 import SheetTable from '../components/Sheet/SheetTable'
 import SheetData from '../components/Sheet/SheetData'
 import DevelopingAttachedDocTable from '../components/DevelopingAttachedDoc/DevelopingAttachedDocTable'
@@ -32,6 +33,7 @@ import Specification from '../model/Specification'
 import Construction from '../model/Construction'
 import StandardConstruction from '../model/StandardConstruction'
 import ConstructionBolt from '../model/ConstructionBolt'
+import ConstructionElement from '../model/ConstructionElement'
 import Doc from '../model/Doc'
 import AttachedDoc from '../model/AttachedDoc'
 import MarkLinkedDoc from '../model/MarkLinkedDoc'
@@ -48,6 +50,10 @@ const AuthApp = () => {
 	const [constructionBolt, setConstructionBolt] = useState<ConstructionBolt>(
 		null
 	)
+	const [
+		constructionElement,
+		setConstructionElement,
+	] = useState<ConstructionElement>(null)
 	const [sheet, setSheet] = useState<Doc>(null)
 	const [additionalWork, setAdditionalWork] = useState<AdditionalWork>(null)
 	const [developingAttachedDoc, setDevelopingAttachedDoc] = useState<Doc>(
@@ -116,13 +122,15 @@ const AuthApp = () => {
 									/>
 								</div>
 							</Route>
-                            <Route
+							<Route
 								exact
 								path="/specifications/:specificationId/standard-constructions/:standardConstructionId"
 							>
 								<div className="full-width div-container">
 									<StandardConstructionData
-										standardConstruction={standardConstruction}
+										standardConstruction={
+											standardConstruction
+										}
 										isCreateMode={false}
 										specificationId={
 											specification == null
@@ -138,7 +146,9 @@ const AuthApp = () => {
 							>
 								<div className="full-width div-container">
 									<StandardConstructionData
-										standardConstruction={standardConstruction}
+										standardConstruction={
+											standardConstruction
+										}
 										isCreateMode={true}
 										specificationId={
 											specification == null
@@ -164,6 +174,9 @@ const AuthApp = () => {
 										setConstructionBolt={
 											setConstructionBolt
 										}
+										setConstructionElement={
+											setConstructionElement
+										}
 									/>
 								</div>
 							</Route>
@@ -182,6 +195,9 @@ const AuthApp = () => {
 										}
 										setConstructionBolt={
 											setConstructionBolt
+										}
+										setConstructionElement={
+											setConstructionElement
 										}
 									/>
 								</div>
@@ -214,6 +230,52 @@ const AuthApp = () => {
 								<div className="full-width div-container">
 									<ConstructionBoltData
 										constructionBolt={constructionBolt}
+										isCreateMode={true}
+										specificationId={
+											specification == null
+												? -1
+												: specification.id
+										}
+										constructionId={
+											construction == null
+												? -1
+												: construction.id
+										}
+									/>
+								</div>
+							</Route>
+							<Route
+								exact
+								path="/specifications/:specificationId/constructions/:constructionId/elements/:elementId"
+							>
+								<div className="full-width div-container">
+									<ConstructionElementData
+										constructionElement={
+											constructionElement
+										}
+										isCreateMode={false}
+										specificationId={
+											specification == null
+												? -1
+												: specification.id
+										}
+										constructionId={
+											construction == null
+												? -1
+												: construction.id
+										}
+									/>
+								</div>
+							</Route>
+							<Route
+								exact
+								path="/specifications/:specificationId/constructions/:constructionId/element-create"
+							>
+								<div className="full-width div-container">
+									<ConstructionElementData
+										constructionElement={
+											constructionElement
+										}
 										isCreateMode={true}
 										specificationId={
 											specification == null

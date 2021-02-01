@@ -9,11 +9,10 @@ namespace DocumentsKM.Services
 {
     public class MarkService : IMarkService
     {
-        private IMarkRepo _repository;
+        private readonly IMarkRepo _repository;
         private readonly ISubnodeRepo _subnodeRepo;
         private readonly IDepartmentRepo _departmentRepo;
         private readonly IEmployeeRepo _employeeRepo;
-
         private readonly ISpecificationService _specificationService;
 
         public MarkService(

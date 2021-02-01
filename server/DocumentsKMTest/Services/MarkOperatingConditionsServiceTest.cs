@@ -160,23 +160,16 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Create_ShouldFailWithNull()
+        public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int markId = 3;
-            int wrongMarkId = 999;
             int envAggressivenessId = _rnd.Next(1, TestData.envAggressiveness.Count());
-            int wrongEnvAggressivenessId = 999;
             int operatingAreaId = _rnd.Next(1, TestData.operatingAreas.Count());
-            int wrongOperatingAreaId = 999;
             int gasGroupId = _rnd.Next(1, TestData.gasGroups.Count());
-            int wrongGasGroupId = 999;
             int constructionMaterialId = _rnd.Next(1, TestData.constructionMaterials.Count());
-            int wrongConstructionMaterialId = 999;
             int paintworkTypeId = _rnd.Next(1, TestData.paintworkTypes.Count());
-            int wrongPaintworkTypeId = 999;
             int highTensileBoltsTypeId = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
-            int wrongHighTensileBoltsTypeId = 999;
 
             var newMarkOperatingConditions = new MarkOperatingConditions
             {
@@ -185,7 +178,8 @@ namespace DocumentsKM.Tests
             };
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Create(null,
+            Assert.Throws<ArgumentNullException>(() => _service.Create(
+                null,
                 markId,
                 envAggressivenessId,
                 operatingAreaId,
@@ -195,7 +189,7 @@ namespace DocumentsKM.Tests
                 highTensileBoltsTypeId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMarkOperatingConditions,
-                wrongMarkId,
+                999,
                 envAggressivenessId,
                 operatingAreaId,
                 gasGroupId,
@@ -205,7 +199,7 @@ namespace DocumentsKM.Tests
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMarkOperatingConditions,
                 markId,
-                wrongEnvAggressivenessId,
+                999,
                 operatingAreaId,
                 gasGroupId,
                 constructionMaterialId,
@@ -215,7 +209,7 @@ namespace DocumentsKM.Tests
                 newMarkOperatingConditions,
                 markId,
                 envAggressivenessId,
-                wrongOperatingAreaId,
+                999,
                 gasGroupId,
                 constructionMaterialId,
                 paintworkTypeId,
@@ -225,7 +219,7 @@ namespace DocumentsKM.Tests
                 markId,
                 envAggressivenessId,
                 operatingAreaId,
-                wrongGasGroupId,
+                999,
                 constructionMaterialId,
                 paintworkTypeId,
                 highTensileBoltsTypeId));
@@ -235,7 +229,7 @@ namespace DocumentsKM.Tests
                 envAggressivenessId,
                 operatingAreaId,
                 gasGroupId,
-                wrongConstructionMaterialId,
+                999,
                 paintworkTypeId,
                 highTensileBoltsTypeId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
@@ -245,7 +239,7 @@ namespace DocumentsKM.Tests
                 operatingAreaId,
                 gasGroupId,
                 constructionMaterialId,
-                wrongPaintworkTypeId,
+                999,
                 highTensileBoltsTypeId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMarkOperatingConditions,
@@ -255,14 +249,14 @@ namespace DocumentsKM.Tests
                 gasGroupId,
                 constructionMaterialId,
                 paintworkTypeId,
-                wrongHighTensileBoltsTypeId));
+                999));
 
             _repository.Verify(mock => mock.Add(
                 It.IsAny<MarkOperatingConditions>()), Times.Never);
         }
 
         [Fact]
-        public void Create_ShouldFailWithConflict()
+        public void Create_ShouldFailWithConflict_WhenConflictValue()
         {
             // Arrange
             int markId = 1;
@@ -337,23 +331,10 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Update_ShouldFailWithNull()
+        public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int markId = 1;
-            int wrongMarkId = 999;
-            int envAggressivenessId = _rnd.Next(1, TestData.envAggressiveness.Count());
-            int wrongEnvAggressivenessId = 999;
-            int operatingAreaId = _rnd.Next(1, TestData.operatingAreas.Count());
-            int wrongOperatingAreaId = 999;
-            int gasGroupId = _rnd.Next(1, TestData.gasGroups.Count());
-            int wrongGasGroupId = 999;
-            int constructionMaterialId = _rnd.Next(1, TestData.constructionMaterials.Count());
-            int wrongConstructionMaterialId = 999;
-            int paintworkTypeId = _rnd.Next(1, TestData.paintworkTypes.Count());
-            int wrongPaintworkTypeId = 999;
-            int highTensileBoltsTypeId = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
-            int wrongHighTensileBoltsTypeId = 999;
 
             var markOperatingConditionsRequest = new MarkOperatingConditionsUpdateRequest
             {
@@ -361,33 +342,33 @@ namespace DocumentsKM.Tests
             };
             var wrongMarkOperatingConditionsRequest1 = new MarkOperatingConditionsUpdateRequest
             {
-                EnvAggressivenessId = wrongEnvAggressivenessId,
+                EnvAggressivenessId = 999,
             };
             var wrongMarkOperatingConditionsRequest2 = new MarkOperatingConditionsUpdateRequest
             {
-                OperatingAreaId = wrongOperatingAreaId,
+                OperatingAreaId = 999,
             };
             var wrongMarkOperatingConditionsRequest3 = new MarkOperatingConditionsUpdateRequest
             {
-                GasGroupId = wrongGasGroupId,
+                GasGroupId = 999,
             };
             var wrongMarkOperatingConditionsRequest4 = new MarkOperatingConditionsUpdateRequest
             {
-                ConstructionMaterialId = wrongConstructionMaterialId,
+                ConstructionMaterialId = 999,
             };
             var wrongMarkOperatingConditionsRequest5 = new MarkOperatingConditionsUpdateRequest
             {
-                PaintworkTypeId = wrongPaintworkTypeId,
+                PaintworkTypeId = 999,
             };
             var wrongMarkOperatingConditionsRequest6 = new MarkOperatingConditionsUpdateRequest
             {
-                HighTensileBoltsTypeId = wrongHighTensileBoltsTypeId,
+                HighTensileBoltsTypeId = 999,
             };
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(markId, null));
             Assert.Throws<ArgumentNullException>(() => _service.Update(
-                wrongMarkId,
+                999,
                 markOperatingConditionsRequest));
             Assert.Throws<ArgumentNullException>(() => _service.Update(
                 markId,

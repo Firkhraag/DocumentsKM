@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class EnvAggressivenessService : IEnvAggressivenessService
     {
-        private IEnvAggressivenessRepo _repository;
+        private readonly IEnvAggressivenessRepo _repository;
 
         public EnvAggressivenessService(
             IEnvAggressivenessRepo envAggressivenessRepo)

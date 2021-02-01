@@ -52,7 +52,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByMarkAndSectionId_ShouldReturnEmptyArray_WhenWrongMarkId()
+        public void GetAllByMarkAndSectionId_ShouldReturnEmptyArray_WhenWrongMarkOrSectionId()
         {
             // Arrange
             var context = GetContext(TestData.markGeneralDataPoints);
@@ -96,12 +96,13 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
-            // Act
+            // Arrange
             var context = GetContext(TestData.markGeneralDataPoints);
             var repo = new SqlMarkGeneralDataPointRepo(context);
 
+            // Act
             var markGeneralDataPoint = repo.GetById(999);
 
             // Assert
@@ -111,7 +112,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByMarkAndSectionIdAndText_ShouldReturnMarkGeneralDataPoint()
+        public void GetByUniqueKey_ShouldReturnMarkGeneralDataPoint()
         {
             // Arrange
             var context = GetContext(TestData.markGeneralDataPoints);
@@ -125,7 +126,7 @@ namespace DocumentsKM.Tests
             var text = foundmarkGeneralDataPoint.Text;
 
             // Act
-            var markGeneralDataPoint = repo.GetByMarkAndSectionIdAndText(
+            var markGeneralDataPoint = repo.GetByUniqueKey(
                 markId, sectionId, text);
 
             // Assert
@@ -135,26 +136,23 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByMarkAndSectionIdAndText_ShouldReturnNull()
+        public void GetByUniqueKey_ShouldReturnNull()
         {
             // Arrange
             var context = GetContext(TestData.markGeneralDataPoints);
             var repo = new SqlMarkGeneralDataPointRepo(context);
 
             var markId = TestData.marks[0].Id;
-            var wrongMarkId = 999;
             var sectionId = TestData.generalDataSections[0].Id;
-            var wrongSectionId = 999;
             var text = TestData.markGeneralDataPoints[0].Text;
-            var wrongText = "NotFound";
 
             // Act
-            var markGeneralDataPoint1 = repo.GetByMarkAndSectionIdAndText(
-                wrongMarkId, sectionId, text);
-            var markGeneralDataPoint2 = repo.GetByMarkAndSectionIdAndText(
-                markId, wrongSectionId, text);
-            var markGeneralDataPoint3 = repo.GetByMarkAndSectionIdAndText(
-                markId, sectionId, wrongText);
+            var markGeneralDataPoint1 = repo.GetByUniqueKey(
+                999, sectionId, text);
+            var markGeneralDataPoint2 = repo.GetByUniqueKey(
+                markId, 999, text);
+            var markGeneralDataPoint3 = repo.GetByUniqueKey(
+                markId, sectionId, "NotFound");
 
             // Assert
             Assert.Null(markGeneralDataPoint1);
@@ -186,11 +184,7 @@ namespace DocumentsKM.Tests
             repo.Add(markGeneralDataPoint);
 
             // Assert
-            Assert.NotEqual(0, markGeneralDataPoint.Id);
-            Assert.Equal(
-                TestData.markGeneralDataPoints.Where(
-                    v => v.Mark.Id == markId && v.Section.Id == sectionId).Count() + 1,
-                repo.GetAllByMarkAndSectionId(markId, sectionId).Count());
+            Assert.NotNull(repo.GetById(markGeneralDataPoint.Id));
 
             context.Database.EnsureDeleted();
         }

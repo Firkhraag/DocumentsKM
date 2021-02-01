@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class ConstructionSubtypeService : IConstructionSubtypeService
     {
-        private IConstructionSubtypeRepo _repository;
+        private readonly IConstructionSubtypeRepo _repository;
 
         public ConstructionSubtypeService(
             IConstructionSubtypeRepo constructionSubtypeRepo)

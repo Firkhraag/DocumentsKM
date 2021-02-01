@@ -61,16 +61,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.gasGroups);
             var repo = new SqlGasGroupRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var gasGroup = repo.GetById(wrongId);
+            var gasGroup = repo.GetById(999);
 
             // Assert
             Assert.Null(gasGroup);

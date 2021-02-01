@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class DepartmentService : IDepartmentService
     {
-        private IDepartmentRepo _repository;
+        private readonly IDepartmentRepo _repository;
 
         public DepartmentService(IDepartmentRepo departmentRepo)
         {

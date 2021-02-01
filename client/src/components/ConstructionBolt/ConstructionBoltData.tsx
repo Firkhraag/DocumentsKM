@@ -198,7 +198,7 @@ const ConstructionBoltData = ({
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">
 				{isCreateMode
-					? 'Добавление высокопрочного болта'
+					? 'Создание высокопрочного болта'
 					: 'Данные высокопрочного болта'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">

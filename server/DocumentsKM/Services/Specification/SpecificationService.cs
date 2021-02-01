@@ -9,7 +9,7 @@ namespace DocumentsKM.Services
 {
     public class SpecificationService : ISpecificationService
     {
-        private ISpecificationRepo _repository;
+        private readonly ISpecificationRepo _repository;
         private readonly IMarkRepo _markRepo;
 
         public SpecificationService(

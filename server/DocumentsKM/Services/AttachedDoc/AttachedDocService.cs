@@ -8,7 +8,7 @@ namespace DocumentsKM.Services
 {
     public class AttachedDocService : IAttachedDocService
     {
-        private IAttachedDocRepo _repository;
+        private readonly IAttachedDocRepo _repository;
         private readonly IMarkRepo _markRepo;
 
         public AttachedDocService(

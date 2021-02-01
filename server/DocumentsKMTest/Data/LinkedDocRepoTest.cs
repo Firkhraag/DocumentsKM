@@ -47,16 +47,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByDocTypeId_ShouldReturnEmptyArray_WhenWrongMarkId()
+        public void GetAllByDocTypeId_ShouldReturnEmptyArray_WhenWrongDocTypeId()
         {
             // Arrange
             var context = GetContext(TestData.linkedDocs);
             var repo = new SqlLinkedDocRepo(context);
 
-            var wrongDocTypeId = 999;
-
             // Act
-            var linkedDocs = repo.GetAllByDocTypeId(wrongDocTypeId);
+            var linkedDocs = repo.GetAllByDocTypeId(999);
 
             // Assert
             Assert.Empty(linkedDocs);
@@ -84,16 +82,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.linkedDocs);
             var repo = new SqlLinkedDocRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var linkedDoc = repo.GetById(wrongId);
+            var linkedDoc = repo.GetById(999);
 
             // Assert
             Assert.Null(linkedDoc);

@@ -99,13 +99,10 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Create_ShouldFailWithNull()
+        public void Create_ShouldFailWithNull_WhenWrongMarkId()
         {
-            // Arrange
-            int wrongMarkId = 999;
-
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Create(wrongMarkId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(999));
 
             _mockSpecificationRepo.Verify(
                 mock => mock.Add(It.IsAny<Specification>()), Times.Never);
@@ -115,7 +112,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateSpecification()
         {
             // Arrange
-            int id = 2;
+            var id = 2;
             var spec = _specifications.SingleOrDefault(v => v.Id == id);
             var newNote = "NewUpdate";
             var newSpecificationRequest = new SpecificationUpdateRequest
@@ -136,11 +133,10 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Update_ShouldFailWithNull()
+        public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int id = _rnd.Next(1, _specifications.Count());
-            int wrongId = 999;
 
             var newSpecificationRequest = new SpecificationUpdateRequest
             {
@@ -151,7 +147,7 @@ namespace DocumentsKM.Tests
             Assert.Throws<ArgumentNullException>(
                 () => _service.Update(id, null));
             Assert.Throws<ArgumentNullException>(
-                () => _service.Update(wrongId, newSpecificationRequest));
+                () => _service.Update(999, newSpecificationRequest));
 
             _mockSpecificationRepo.Verify(
                 mock => mock.Update(It.IsAny<Specification>()), Times.Never);
@@ -178,18 +174,15 @@ namespace DocumentsKM.Tests
         [Fact]
         public void Delete_ShouldFailWithNull()
         {
-            // Arrange
-            var wrongId = 999;
-
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(wrongId));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(999));
 
             _mockSpecificationRepo.Verify(
                 mock => mock.Delete(It.IsAny<Specification>()), Times.Never);
         }
 
         [Fact]
-        public void Delete_ShouldFailWithConflict()
+        public void Delete_ShouldFailWithConflict_WhenIsCurrent()
         {
             // Arrange
             int id = _rnd.Next(1, _specifications.Count());

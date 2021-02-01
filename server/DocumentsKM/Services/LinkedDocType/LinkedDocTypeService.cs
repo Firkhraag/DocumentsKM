@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class LinkedDocTypeService : ILinkedDocTypeService
     {
-        private ILinkedDocTypeRepo _repository;
+        private readonly ILinkedDocTypeRepo _repository;
 
         public LinkedDocTypeService(ILinkedDocTypeRepo linkedDocTypeRepo)
         {

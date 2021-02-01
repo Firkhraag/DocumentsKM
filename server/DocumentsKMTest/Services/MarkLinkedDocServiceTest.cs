@@ -113,20 +113,18 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Create_ShouldFailWithNull()
+        public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int markId = _rnd.Next(1, TestData.marks.Count());
-            int wrongMarkId = 999;
             var linkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
-            int wrongLinkedDocId = 999;
 
             var newMarkLinkedDoc = new MarkLinkedDoc { };
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(null, markId, linkedDocId));
-            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkLinkedDoc, wrongMarkId, linkedDocId));
-            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkLinkedDoc, markId, wrongLinkedDocId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkLinkedDoc, 999, linkedDocId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newMarkLinkedDoc, markId, 999));
 
             _mockMarkLinkedDocRepo.Verify(mock => mock.Add(It.IsAny<MarkLinkedDoc>()), Times.Never);
         }
@@ -174,7 +172,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Update_ShouldFailWithNull()
+        public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int id = _rnd.Next(1, _markLinkedDocs.Count());
@@ -183,8 +181,6 @@ namespace DocumentsKM.Tests
             {
                 newLinkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
             }
-            int wrongId = 999;
-            int wrongLinkedDocId = 999;
 
             var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
@@ -192,12 +188,12 @@ namespace DocumentsKM.Tests
             };
             var wrongMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
             {
-                LinkedDocId = wrongLinkedDocId,
+                LinkedDocId = 999,
             };
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
-            Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newMarkLinkedDocRequest));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(999, newMarkLinkedDocRequest));
             Assert.Throws<ArgumentNullException>(() => _service.Update(id, wrongMarkLinkedDocRequest));
             _mockMarkLinkedDocRepo.Verify(mock => mock.Update(It.IsAny<MarkLinkedDoc>()), Times.Never);
         }
@@ -237,11 +233,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void Delete_ShouldFailWithNull()
         {
-            // Arrange
-            var wrongId = 999;
-
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(wrongId));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(999));
 
             _mockMarkLinkedDocRepo.Verify(mock => mock.Delete(It.IsAny<MarkLinkedDoc>()), Times.Never);
         }

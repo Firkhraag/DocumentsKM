@@ -49,6 +49,22 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
+        public void GetAllByMarkId_ShouldReturnEmptyArray_WhenWrongMarkId()
+        {
+            // Arrange
+            var context = GetContext(TestData.additionalWork);
+            var repo = new SqlAdditionalWorkRepo(context);
+
+            // Act
+            var additionalWork = repo.GetAllByMarkId(999);
+
+            // Assert
+            Assert.Empty(additionalWork);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
         public void GetById_ShouldReturnDoc()
         {
             // Arrange
@@ -110,13 +126,11 @@ namespace DocumentsKM.Tests
             var repo = new SqlAdditionalWorkRepo(context);
 
             var markId = TestData.additionalWork[0].Mark.Id;
-            var wrongMarkId = 999;
             var employeeId = TestData.additionalWork[0].Employee.Id;
-            var wrongEmployeeId = 999;
 
             // Act
-            var additionalWork1 = repo.GetByUniqueKey(wrongMarkId, employeeId);
-            var additionalWork2 = repo.GetByUniqueKey(markId, wrongEmployeeId);
+            var additionalWork1 = repo.GetByUniqueKey(999, employeeId);
+            var additionalWork2 = repo.GetByUniqueKey(markId, 999);
 
             // Assert
             Assert.Null(additionalWork1);
@@ -146,10 +160,7 @@ namespace DocumentsKM.Tests
             repo.Add(additionalWork);
 
             // Assert
-            Assert.NotEqual(0, additionalWork.Id);
-            Assert.Equal(
-                TestData.docs.Where(v => v.Mark.Id == markId).Count() + 1,
-                repo.GetAllByMarkId(markId).Count());
+            Assert.NotNull(repo.GetById(additionalWork.Id));
 
             context.Database.EnsureDeleted();
         }

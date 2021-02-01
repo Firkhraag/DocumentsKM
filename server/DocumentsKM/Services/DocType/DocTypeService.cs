@@ -9,7 +9,7 @@ namespace DocumentsKM.Services
         // Id листа основного комплекта из справочника типов документов
         private readonly int _sheetDocTypeId = 1;
 
-        private IDocTypeRepo _repository;
+        private readonly IDocTypeRepo _repository;
 
         public DocTypeService(IDocTypeRepo docTypeRepo)
         {

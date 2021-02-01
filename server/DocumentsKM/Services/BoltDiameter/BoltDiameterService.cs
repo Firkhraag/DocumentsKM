@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class BoltDiameterService : IBoltDiameterService
     {
-        private IBoltDiameterRepo _repository;
+        private readonly IBoltDiameterRepo _repository;
 
         public BoltDiameterService(IBoltDiameterRepo boltDiameterRepo)
         {

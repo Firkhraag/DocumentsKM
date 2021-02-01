@@ -61,16 +61,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.highTensileBoltsTypes);
             var repo = new SqlHighTensileBoltsTypeRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var highTensileBoltsType = repo.GetById(wrongId);
+            var highTensileBoltsType = repo.GetById(999);
 
             // Assert
             Assert.Null(highTensileBoltsType);

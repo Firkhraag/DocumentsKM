@@ -55,10 +55,8 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.markApprovals);
             var repo = new SqlMarkApprovalRepo(context);
 
-            var wrongMarkId = 999;
-
             // Act
-            var markApprovals = repo.GetAllByMarkId(wrongMarkId);
+            var markApprovals = repo.GetAllByMarkId(999);
 
             // Assert
             Assert.Empty(markApprovals);

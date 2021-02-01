@@ -100,16 +100,19 @@ namespace DocumentsKM
                     .UseNpgsql(
                         Configuration.GetConnectionString("PostgresConnection")
                     ));
-            services.AddDbContext<ApplicationContext>(
-                opt => opt.UseNpgsql(
-                    Configuration.GetConnectionString("PostgresConnection")
-                ));
+            // services.AddDbContext<ApplicationContext>(
+            //     opt => opt.UseNpgsql(
+            //         Configuration.GetConnectionString("PostgresConnection")
+            //     ));
 
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IConnectionMultiplexer>(x =>
                 ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
             services.AddSingleton<ICacheService, RedisCacheService>();
+
+            // services.AddSingleton<IConnectionProvider>(
+            //     new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
 
             // DI for application services
             injectScopedServices(services);
@@ -136,6 +139,10 @@ namespace DocumentsKM
             services.AddScoped<IConstructionService, ConstructionService>();
             services.AddScoped<IBoltDiameterService, BoltDiameterService>();
             services.AddScoped<IConstructionBoltService, ConstructionBoltService>();
+
+            services.AddScoped<IProfileClassService, ProfileClassService>();
+            services.AddScoped<ISteelService, SteelService>();
+            services.AddScoped<IConstructionElementService, ConstructionElementService>();
 
             services.AddScoped<IDocService, DocService>();
             services.AddScoped<ISheetNameService, SheetNameService>();
@@ -184,7 +191,10 @@ namespace DocumentsKM
             services.AddScoped<IBoltLengthRepo, SqlBoltLengthRepo>();
             services.AddScoped<IConstructionBoltRepo, SqlConstructionBoltRepo>();
 
-            services.AddScoped<IElementProfileRepo, SqlElementProfileRepo>();
+            services.AddScoped<IProfileTypeRepo, SqlProfileTypeRepo>();
+            services.AddScoped<IProfileClassRepo, SqlProfileClassRepo>();
+            services.AddScoped<ISteelRepo, SqlSteelRepo>();
+            services.AddScoped<IConstructionElementRepo, SqlConstructionElementRepo>();
 
             services.AddScoped<IDocRepo, SqlDocRepo>();
             services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();

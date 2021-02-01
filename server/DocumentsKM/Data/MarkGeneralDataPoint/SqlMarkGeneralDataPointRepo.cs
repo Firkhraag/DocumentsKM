@@ -35,7 +35,7 @@ namespace DocumentsKM.Data
             return _context.MarkGeneralDataPoints.SingleOrDefault(v => v.Id == id);
         }
 
-        public MarkGeneralDataPoint GetByMarkAndSectionIdAndText(
+        public MarkGeneralDataPoint GetByUniqueKey(
             int markId, int sectionId, string text)
         {
             return _context.MarkGeneralDataPoints.SingleOrDefault(

@@ -10,8 +10,8 @@ namespace DocumentsKM.Data
             int userId, int sectionId);
         // Получить пункт общих указаний по id
         GeneralDataPoint GetById(int id);
-        // Получить пункт общих указаний по id раздела и содержанию
-        GeneralDataPoint GetByUserAndSectionIdAndText(
+        // Получить пункт общих указаний по unique key
+        GeneralDataPoint GetByUniqueKey(
             int userId, int sectionId, string text);
         // // Получить пункт общих указаний по id раздела и номеру
         // GeneralDataPoint GetByUserAndSectionIdAndOrderNum(

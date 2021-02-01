@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class GasGroupService : IGasGroupService
     {
-        private IGasGroupRepo _repository;
+        private readonly IGasGroupRepo _repository;
 
         public GasGroupService(IGasGroupRepo gasGroupRepo)
         {

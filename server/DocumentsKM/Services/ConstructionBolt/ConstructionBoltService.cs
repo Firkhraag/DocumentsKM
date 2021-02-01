@@ -8,7 +8,7 @@ namespace DocumentsKM.Services
 {
     public class ConstructionBoltService : IConstructionBoltService
     {
-        private IConstructionBoltRepo _repository;
+        private readonly IConstructionBoltRepo _repository;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IBoltDiameterRepo _boltDiameterRepo;
 

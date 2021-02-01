@@ -60,16 +60,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.departments);
             var repo = new SqlDepartmentRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var department = repo.GetById(wrongId);
+            var department = repo.GetById(999);
 
             // Assert
             Assert.Null(department);

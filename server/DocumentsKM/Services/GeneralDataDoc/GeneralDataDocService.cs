@@ -11,17 +11,19 @@ using System.Text;
 
 namespace DocumentsKM.Services
 {
+    // Uppercase symbols TBD
     public class GeneralDataDocService : IGeneralDataDocService
     {
-        private IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
-        private IMarkRepo _markRepo;
-        private IMarkApprovalRepo _markApprovalRepo;
-        private IEmployeeRepo _employeeRepo;
-        private IDocRepo _docRepo;
-        private IMarkLinkedDocRepo _markLinkedDocRepo;
-        private IAttachedDocRepo _attachedDocRepo;
         private readonly int _departmentHeadPosId = 7;
         private readonly int _sheetDocTypeId = 1;
+        
+        private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
+        private readonly IMarkRepo _markRepo;
+        private readonly IMarkApprovalRepo _markApprovalRepo;
+        private readonly IEmployeeRepo _employeeRepo;
+        private readonly IDocRepo _docRepo;
+        private readonly IMarkLinkedDocRepo _markLinkedDocRepo;
+        private readonly IAttachedDocRepo _attachedDocRepo;
 
         public GeneralDataDocService(
             IMarkGeneralDataPointRepo markGeneralDataPointRepo,

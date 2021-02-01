@@ -9,7 +9,7 @@ namespace DocumentsKM.Services
 {
     public class MarkApprovalService : IMarkApprovalService
     {
-        private IMarkApprovalRepo _repository;
+        private readonly IMarkApprovalRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
 

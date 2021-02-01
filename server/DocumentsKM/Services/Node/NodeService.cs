@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class NodeService : INodeService
     {
-        private INodeRepo _repository;
+        private readonly INodeRepo _repository;
 
         public NodeService(INodeRepo nodeRepo)
         {

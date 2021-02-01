@@ -61,16 +61,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.paintworkTypes);
             var repo = new SqlPaintworkTypeRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var paintworkType = repo.GetById(wrongId);
+            var paintworkType = repo.GetById(999);
 
             // Assert
             Assert.Null(paintworkType);

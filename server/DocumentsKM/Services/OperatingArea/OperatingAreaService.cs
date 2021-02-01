@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class OperatingAreaService : IOperatingAreaService
     {
-        private IOperatingAreaRepo _repository;
+        private readonly IOperatingAreaRepo _repository;
 
         public OperatingAreaService(IOperatingAreaRepo operatingAreaRepo)
         {

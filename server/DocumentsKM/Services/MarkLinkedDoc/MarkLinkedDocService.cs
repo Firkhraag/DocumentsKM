@@ -8,7 +8,7 @@ namespace DocumentsKM.Services
 {
     public class MarkLinkedDocService : IMarkLinkedDocService
     {
-        private IMarkLinkedDocRepo _repository;
+        private readonly IMarkLinkedDocRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly ILinkedDocRepo _linkedDocRepo;
 

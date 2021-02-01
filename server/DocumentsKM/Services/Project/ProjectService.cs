@@ -6,11 +6,11 @@ namespace DocumentsKM.Services
 {
     public class ProjectService : IProjectService
     {
-        private IProjectRepo _repository;
+        private readonly IProjectRepo _repository;
 
-        public ProjectService(IProjectRepo ProjectRepo)
+        public ProjectService(IProjectRepo projectRepo)
         {
-            _repository = ProjectRepo;
+            _repository = projectRepo;
         }
 
         public IEnumerable<Project> GetAll()

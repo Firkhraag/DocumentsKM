@@ -21,6 +21,8 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+            context.Marks.AddRange(TestData.marks);
+            context.LinkedDocs.AddRange(TestData.linkedDocs);
             context.MarkLinkedDocs.AddRange(markLinkedDocs);
             context.SaveChanges();
             return context;
@@ -52,10 +54,8 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.markLinkedDocs);
             var repo = new SqlMarkLinkedDocRepo(context);
 
-            var wrongMarkId = 999;
-
             // Act
-            var markLinkedDocs = repo.GetAllByMarkId(wrongMarkId);
+            var markLinkedDocs = repo.GetAllByMarkId(999);
 
             // Assert
             Assert.Empty(markLinkedDocs);
@@ -83,7 +83,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Act
             var context = GetContext(TestData.markLinkedDocs);
@@ -152,10 +152,7 @@ namespace DocumentsKM.Tests
             repo.Add(markLinkedDoc);
 
             // Assert
-            Assert.NotEqual(0, markLinkedDoc.Id);
-            Assert.Equal(
-                TestData.markLinkedDocs.Where(v => v.Mark.Id == markId).Count() + 1,
-                repo.GetAllByMarkId(markId).Count());
+            Assert.NotNull(repo.GetById(markLinkedDoc.Id));
 
             context.Database.EnsureDeleted();
         }

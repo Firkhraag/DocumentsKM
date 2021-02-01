@@ -60,10 +60,8 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.markOperatingConditions);
             var repo = new SqlMarkOperatingConditionsRepo(context);
 
-            var wrongMarkId = 999;
-
             // Act
-            var markOperatingConditions = repo.GetByMarkId(wrongMarkId);
+            var markOperatingConditions = repo.GetByMarkId(999);
 
             // Assert
             Assert.Null(markOperatingConditions);

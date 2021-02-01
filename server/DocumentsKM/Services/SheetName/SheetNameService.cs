@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class SheetNameService : ISheetNameService
     {
-        private ISheetNameRepo _repository;
+        private readonly ISheetNameRepo _repository;
 
         public SheetNameService(ISheetNameRepo sheetNameRepo)
         {

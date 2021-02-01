@@ -12,6 +12,7 @@ import ConstructionType from '../../model/ConstructionType'
 import ConstructionSubtype from '../../model/ConstructionSubtype'
 import WeldingControl from '../../model/WeldingControl'
 import ConstructionBolt from '../../model/ConstructionBolt'
+import ConstructionElement from '../../model/ConstructionElement'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
@@ -26,6 +27,7 @@ type ConstructionDataProps = {
 	isCreateMode: boolean
 	specificationId: number
 	setConstructionBolt: (b: ConstructionBolt) => void
+	setConstructionElement: (ce: ConstructionElement) => void
 }
 
 const ConstructionData = ({
@@ -33,6 +35,7 @@ const ConstructionData = ({
 	isCreateMode,
 	specificationId,
 	setConstructionBolt,
+	setConstructionElement,
 }: ConstructionDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
@@ -635,7 +638,13 @@ const ConstructionData = ({
 					setConstructionBolt={setConstructionBolt}
 				/>
 			)}
-			{isCreateMode ? null : <ConstructionElementTable />}
+			{isCreateMode ? null : (
+				<ConstructionElementTable
+					specificationId={specificationId}
+					constructionId={selectedObject.id}
+					setConstructionElement={setConstructionElement}
+				/>
+			)}
 		</div>
 	)
 }

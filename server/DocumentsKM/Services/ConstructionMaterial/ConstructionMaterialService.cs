@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class ConstructionMaterialService : IConstructionMaterialService
     {
-        private IConstructionMaterialRepo _repository;
+        private readonly IConstructionMaterialRepo _repository;
 
         public ConstructionMaterialService(
             IConstructionMaterialRepo constructionMaterialRepo)

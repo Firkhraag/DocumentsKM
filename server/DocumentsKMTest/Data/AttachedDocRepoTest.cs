@@ -54,10 +54,8 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.attachedDocs);
             var repo = new SqlAttachedDocRepo(context);
 
-            var wrongMarkId = 999;
-
             // Act
-            var attachedDocs = repo.GetAllByMarkId(wrongMarkId);
+            var attachedDocs = repo.GetAllByMarkId(999);
 
             // Assert
             Assert.Empty(attachedDocs);
@@ -85,7 +83,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Act
             var context = GetContext(TestData.attachedDocs);
@@ -121,20 +119,18 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByUniqueKey_ShouldReturnNull()
+        public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
         {
             // Arrange
             var context = GetContext(TestData.attachedDocs);
             var repo = new SqlAttachedDocRepo(context);
 
             var markId = TestData.marks[0].Id;
-            var wrongMarkId = 999;
             var designation = TestData.attachedDocs[0].Designation;
-            var wrongDesignation = "NotFound";
 
             // Act
-            var attachedDoc1 = repo.GetByUniqueKey(wrongMarkId, designation);
-            var attachedDoc2 = repo.GetByUniqueKey(markId, wrongDesignation);
+            var attachedDoc1 = repo.GetByUniqueKey(999, designation);
+            var attachedDoc2 = repo.GetByUniqueKey(markId, "NotFound");
 
             // Assert
             Assert.Null(attachedDoc1);
@@ -162,10 +158,7 @@ namespace DocumentsKM.Tests
             repo.Add(attachedDoc);
 
             // Assert
-            Assert.NotEqual(0, attachedDoc.Id);
-            Assert.Equal(
-                TestData.attachedDocs.Where(v => v.Mark.Id == markId).Count() + 1,
-                repo.GetAllByMarkId(markId).Count());
+            Assert.NotNull(repo.GetById(attachedDoc.Id));
 
             context.Database.EnsureDeleted();
         }

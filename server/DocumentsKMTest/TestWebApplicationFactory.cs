@@ -81,6 +81,10 @@ public class TestWebApplicationFactory<TStartup>
 
         context.MarkApprovals.AddRange(TestData.markApprovals);
         context.Specifications.AddRange(TestData.specifications);
+        context.BoltDiameters.AddRange(TestData.boltDiameters);
+        context.ProfileClasses.AddRange(TestData.profileClasses);
+        context.ProfileTypes.AddRange(TestData.profileTypes);
+        context.Steel.AddRange(TestData.steel);
         
         context.Docs.AddRange(TestData.docs);
         context.AttachedDocs.AddRange(TestData.attachedDocs);

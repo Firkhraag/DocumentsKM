@@ -8,7 +8,7 @@ namespace DocumentsKM.Services
 {
     public class ConstructionService : IConstructionService
     {
-        private IConstructionRepo _repository;
+        private readonly IConstructionRepo _repository;
         private readonly ISpecificationRepo _specificationRepo;
         private readonly IConstructionTypeRepo _constructionTypeRepo;
         private readonly IConstructionSubtypeRepo _constructionSubtypeRepo;
@@ -82,6 +82,7 @@ namespace DocumentsKM.Services
             if (foundConstruction == null)
                 throw new ArgumentNullException(nameof(foundConstruction));
 
+            var isUniqueKeyChanged = false;
             if (construction.Name != null)
             {
                 // var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
@@ -89,6 +90,7 @@ namespace DocumentsKM.Services
                 // if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                 //     throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
                 foundConstruction.Name = construction.Name;
+                isUniqueKeyChanged = true;
             }
             if (construction.TypeId != null)
             {
@@ -147,6 +149,15 @@ namespace DocumentsKM.Services
             {
                 foundConstruction.PaintworkCoeff =
                     construction.PaintworkCoeff.GetValueOrDefault();
+                isUniqueKeyChanged = true;
+            }
+
+            if (isUniqueKeyChanged)
+            {
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
+                    foundConstruction.Specification.Id, foundConstruction.Name, foundConstruction.PaintworkCoeff);
+                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
+                    throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
             }
 
             _repository.Update(foundConstruction);

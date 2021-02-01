@@ -8,7 +8,7 @@ namespace DocumentsKM.Services
 {
     public class StandardConstructionService : IStandardConstructionService
     {
-        private IStandardConstructionRepo _repository;
+        private readonly IStandardConstructionRepo _repository;
         private readonly ISpecificationRepo _specificationRepo;
 
         public StandardConstructionService(

@@ -61,16 +61,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.constructionTypes);
             var repo = new SqlConstructionTypeRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var constructionType = repo.GetById(wrongId);
+            var constructionType = repo.GetById(999);
 
             // Assert
             Assert.Null(constructionType);

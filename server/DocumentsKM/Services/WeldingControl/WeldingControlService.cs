@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class WeldingControlService : IWeldingControlService
     {
-        private IWeldingControlRepo _repository;
+        private readonly IWeldingControlRepo _repository;
 
         public WeldingControlService(IWeldingControlRepo weldingControlRepo)
         {

@@ -99,12 +99,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void GetAllByConstructionId_ShouldReturnEmptyArray_WhenWrongConstructionId()
         {
-            // Arrange
-            int wrongConstructionId = 999;
-
             // Act
-            var returnedConstructionBolts = _service.GetAllByConstructionId(
-                wrongConstructionId);
+            var returnedConstructionBolts = _service.GetAllByConstructionId(999);
 
             // Assert
             Assert.Empty(returnedConstructionBolts);
@@ -119,10 +115,6 @@ namespace DocumentsKM.Tests
 
             var newConstructionBolt = new ConstructionBolt
             {
-                Construction = TestData.constructions.SingleOrDefault(
-                    v => v.Id == constructionId),
-                Diameter = TestData.boltDiameters.SingleOrDefault(
-                    v => v.Id == diameterId),
                 Packet = 5,
                 Num = 5,
                 NutNum = 5,
@@ -139,20 +131,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Create_ShouldFailWithNull()
+        public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int constructionId = _rnd.Next(1, TestData.marks.Count());
-            int wrongConstructionId = 999;
             int diameterId = _rnd.Next(1, TestData.boltDiameters.Count());
-            int wrongDiameterId = 999;
 
             var newConstructionBolt = new ConstructionBolt
             {
-                Construction = TestData.constructions.SingleOrDefault(
-                    v => v.Id == constructionId),
-                Diameter = TestData.boltDiameters.SingleOrDefault(
-                    v => v.Id == diameterId),
                 Packet = 5,
                 Num = 5,
                 NutNum = 5,
@@ -163,9 +149,9 @@ namespace DocumentsKM.Tests
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 null, constructionId, diameterId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
-                newConstructionBolt, wrongConstructionId, diameterId));
+                newConstructionBolt, 999, diameterId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
-                newConstructionBolt, constructionId, wrongDiameterId));
+                newConstructionBolt, constructionId, 999));
 
             _repository.Verify(mock => mock.Add(It.IsAny<ConstructionBolt>()), Times.Never);
         }
@@ -220,7 +206,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Update_ShouldFailWithNull()
+        public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int id = _rnd.Next(1, _constructionBolts.Count());
@@ -281,12 +267,9 @@ namespace DocumentsKM.Tests
         [Fact]
         public void Delete_ShouldFailWithNull_WhenWrongId()
         {
-            // Arrange
-            var wrongId = 999;
-
             // Act & Assert
             Assert.Throws<ArgumentNullException>(
-                () => _service.Delete(wrongId));
+                () => _service.Delete(999));
 
             _repository.Verify(mock => mock.Delete(
                 It.IsAny<ConstructionBolt>()), Times.Never);

@@ -7,14 +7,14 @@ namespace DocumentsKM.Services
 {
     public class MarkOperatingConditionsService : IMarkOperatingConditionsService
     {
-        private IMarkOperatingConditionsRepo _repository;
-        private IMarkRepo _markRepository;
-        private IOperatingAreaRepo _operatingAreaRepo;
-        private IGasGroupRepo _gasGroupRepo;
-        private IEnvAggressivenessRepo _envAggressivenessRepo;
-        private IConstructionMaterialRepo _constructionMaterialRepo;
-        private IPaintworkTypeRepo _paintworkTypeRepo;
-        private IHighTensileBoltsTypeRepo _highTensileBoltsTypeRepo;
+        private readonly IMarkOperatingConditionsRepo _repository;
+        private readonly IMarkRepo _markRepository;
+        private readonly IOperatingAreaRepo _operatingAreaRepo;
+        private readonly IGasGroupRepo _gasGroupRepo;
+        private readonly IEnvAggressivenessRepo _envAggressivenessRepo;
+        private readonly IConstructionMaterialRepo _constructionMaterialRepo;
+        private readonly IPaintworkTypeRepo _paintworkTypeRepo;
+        private readonly IHighTensileBoltsTypeRepo _highTensileBoltsTypeRepo;
 
         public MarkOperatingConditionsService(
             IMarkOperatingConditionsRepo markOperatingConditionsRepo,

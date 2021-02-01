@@ -34,7 +34,7 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.boltLengths);
             var repo = new SqlBoltLengthRepo(context);
 
-            int diameterId = _rnd.Next(1, TestData.constructionTypes.Count());
+            var diameterId = _rnd.Next(1, TestData.constructionTypes.Count());
 
             // Act
             var boltLengths = repo.GetAllByDiameterId(diameterId);
@@ -53,7 +53,7 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.boltLengths);
             var repo = new SqlBoltLengthRepo(context);
 
-            int id = _rnd.Next(1, TestData.boltLengths.Count());
+            var id = _rnd.Next(1, TestData.boltLengths.Count());
 
             // Act
             var boltLength = repo.GetById(id);
@@ -66,16 +66,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.boltLengths);
             var repo = new SqlBoltLengthRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var boltLength = repo.GetById(wrongId);
+            var boltLength = repo.GetById(999);
 
             // Assert
             Assert.Null(boltLength);

@@ -67,11 +67,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void GetAllByDepartmentId_ShouldReturnEmptyArray_WhenWrongDepartmentId()
         {
-            // Arrange
-            int wrongDepartmentId = 999;
-
             // Act
-            var returnedEmployees = _service.GetAllByDepartmentId(wrongDepartmentId);
+            var returnedEmployees = _service.GetAllByDepartmentId(999);
 
             // Assert
             Assert.Empty(returnedEmployees);

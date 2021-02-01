@@ -75,11 +75,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void GetAllEmployeesByMarkId_ShouldReturnEmptyArray_WhenWrongMarkId()
         {
-            // Arrange
-            int wrongMarkId = 999;
-
             // Act
-            var employees = _service.GetAllEmployeesByMarkId(wrongMarkId);
+            var employees = _service.GetAllEmployeesByMarkId(999);
 
             // Assert
             Assert.Empty(employees);
@@ -101,18 +98,16 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Update_ShouldFailWithNull()
+        public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int markId = _rnd.Next(1, _maxMarkId);
-            int wrongMarkId = 999;
             List<int> employeeIds = new List<int> { _rnd.Next(1, TestData.employees.Count()) };
-            List<int> wrongEmployeeIds = new List<int> { 999 };
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(markId, null));
-            Assert.Throws<ArgumentNullException>(() => _service.Update(wrongMarkId, employeeIds));
-            Assert.Throws<ArgumentNullException>(() => _service.Update(markId, wrongEmployeeIds));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(999, employeeIds));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(markId, new List<int> { 999 }));
 
             _repository.Verify(mock => mock.Add(It.IsAny<MarkApproval>()), Times.Never);
             _repository.Verify(mock => mock.Delete(It.IsAny<MarkApproval>()), Times.Never);

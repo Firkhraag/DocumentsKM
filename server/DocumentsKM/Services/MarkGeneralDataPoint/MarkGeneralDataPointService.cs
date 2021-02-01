@@ -9,20 +9,21 @@ namespace DocumentsKM.Services
 {
     public class MarkGeneralDataPointService : IMarkGeneralDataPointService
     {
-        private IMarkGeneralDataPointRepo _repository;
+        private readonly IMarkGeneralDataPointRepo _repository;
+        private readonly IMarkRepo _markRepo;
         private readonly IGeneralDataSectionRepo _generalDataSectionRepo;
         private readonly IGeneralDataPointRepo _generalDataPointRepo;
-        private readonly IMarkRepo _markRepo;
 
-        public MarkGeneralDataPointService(IMarkGeneralDataPointRepo markGeneralDataPointRepo,
+        public MarkGeneralDataPointService(
+            IMarkGeneralDataPointRepo markGeneralDataPointRepo,
+            IMarkRepo markRepo,
             IGeneralDataSectionRepo generalDataSectionRepo,
-            IGeneralDataPointRepo generalDataPointRepo,
-            IMarkRepo markRepo)
+            IGeneralDataPointRepo generalDataPointRepo)
         {
             _repository = markGeneralDataPointRepo;
+            _markRepo = markRepo;
             _generalDataSectionRepo = generalDataSectionRepo;
             _generalDataPointRepo = generalDataPointRepo;
-            _markRepo = markRepo;
         }
 
         public IEnumerable<MarkGeneralDataPoint> GetAllByMarkAndSectionId(
@@ -45,7 +46,7 @@ namespace DocumentsKM.Services
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
 
-            var uniqueConstraintViolationCheck = _repository.GetByMarkAndSectionIdAndText(
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                 markId, sectionId, markGeneralDataPoint.Text);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
@@ -124,7 +125,7 @@ namespace DocumentsKM.Services
 
             foreach (var p in generalDataPoints.OrderBy(v => v.OrderNum))
             {
-                var uniqueConstraintCheck = _repository.GetByMarkAndSectionIdAndText(
+                var uniqueConstraintCheck = _repository.GetByUniqueKey(
                     markId, sectionId, p.Text);
                 if (uniqueConstraintCheck == null)
                 {
@@ -161,10 +162,16 @@ namespace DocumentsKM.Services
             var foundMarkGeneralDataPoint = _repository.GetById(id);
             if (foundMarkGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundMarkGeneralDataPoint));
+            var foundMark = _markRepo.GetById(markId);
+            if (foundMark == null)
+                throw new ArgumentNullException(nameof(foundMark));
+            var foundSection = _generalDataSectionRepo.GetById(sectionId);
+            if (foundSection == null)
+                throw new ArgumentNullException(nameof(foundSection));
 
             if (markGeneralDataPoint.Text != null)
             {
-                var uniqueConstraintViolationCheck = _repository.GetByMarkAndSectionIdAndText(
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                     foundMarkGeneralDataPoint.Mark.Id,
                     foundMarkGeneralDataPoint.Section.Id,
                     markGeneralDataPoint.Text);
@@ -203,6 +210,12 @@ namespace DocumentsKM.Services
             var foundMarkGeneralDataPoint = _repository.GetById(id);
             if (foundMarkGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundMarkGeneralDataPoint));
+            var foundMark = _markRepo.GetById(markId);
+            if (foundMark == null)
+                throw new ArgumentNullException(nameof(foundMark));
+            var foundSection = _generalDataSectionRepo.GetById(sectionId);
+            if (foundSection == null)
+                throw new ArgumentNullException(nameof(foundSection));
             foreach (var p in _repository.GetAllByMarkAndSectionId(markId, sectionId))
             {
                 if (p.OrderNum > foundMarkGeneralDataPoint.OrderNum)

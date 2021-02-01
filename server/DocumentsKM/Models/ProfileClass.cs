@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
 {
-    public class ElementProfile
+    public class ProfileClass
     {
         [Key]
         public int Id { get; set; }

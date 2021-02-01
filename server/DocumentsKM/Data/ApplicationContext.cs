@@ -78,6 +78,10 @@ namespace DocumentsKM.Data
         public DbSet<ConstructionSubtype> ConstructionSubtypes { get; set; }
         public DbSet<WeldingControl> WeldingControl { get; set; }
 
+        public DbSet<ProfileType> ProfileTypes { get; set; }
+        public DbSet<ProfileClass> ProfileClasses { get; set; }
+        public DbSet<Steel> Steel { get; set; }
+
         public DbSet<Doc> Docs { get; set; }
         public DbSet<Specification> Specifications { get; set; }
         public DbSet<Construction> Constructions { get; set; }
@@ -85,8 +89,7 @@ namespace DocumentsKM.Data
         public DbSet<BoltDiameter> BoltDiameters { get; set; }
         public DbSet<BoltLength> BoltLengths { get; set; }
         public DbSet<ConstructionBolt> ConstructionBolts { get; set; }
-
-        public DbSet<ElementProfile> ElementProfiles { get; set; }
+        public DbSet<ConstructionElement> ConstructionElements { get; set; }
 
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
         public DbSet<CorrProtVariant> CorrProtVariants { get; set; }

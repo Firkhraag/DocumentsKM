@@ -47,6 +47,21 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
+        public void GetAllByTypeId_ShouldReturnEmptyArray_WhenWrongMarkId()
+        {
+            var context = GetContext(TestData.constructionSubtypes);
+            var repo = new SqlConstructionSubtypeRepo(context);
+
+            // Act
+            var constructionSubtypes = repo.GetAllByTypeId(999);
+
+            // Assert
+            Assert.Empty(constructionSubtypes);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
         public void GetById_ShouldReturnConstructionSubtype()
         {
             // Arrange
@@ -66,19 +81,17 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.constructionSubtypes);
             var repo = new SqlConstructionSubtypeRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var ConstructionSubtype = repo.GetById(wrongId);
+            var constructionSubtype = repo.GetById(999);
 
             // Assert
-            Assert.Null(ConstructionSubtype);
+            Assert.Null(constructionSubtype);
 
             context.Database.EnsureDeleted();
         }

@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class PaintworkTypeService : IPaintworkTypeService
     {
-        private IPaintworkTypeRepo _repository;
+        private readonly IPaintworkTypeRepo _repository;
 
         public PaintworkTypeService(IPaintworkTypeRepo paintworkTypeRepo)
         {

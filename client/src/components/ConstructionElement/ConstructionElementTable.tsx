@@ -9,25 +9,39 @@ import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
-import MarkLinkedDoc from '../../model/MarkLinkedDoc'
+import ConstructionElement from '../../model/ConstructionElement'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
-const ConstructionElementTable = () => {
+type ConstructionElementTableProps = {
+	setConstructionElement: (cb: ConstructionElement) => void
+	specificationId: number
+	constructionId: number
+}
+
+const ConstructionElementTable = ({
+	setConstructionElement,
+	specificationId,
+	constructionId,
+}: ConstructionElementTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
+	const setPopup = useSetPopup()
+
+	const [constructionElements, setConstructionElements] = useState(
+		[] as ConstructionElement[]
+	)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
-				// try {
-				// 	const linkedDocsFetchedResponse = await httpClient.get(
-				// 		`/marks/${mark.id}/mark-linked-docs`
-				//     )
-				//     console.log(linkedDocsFetchedResponse.data)
-				// 	setLinkedDocs(linkedDocsFetchedResponse.data)
-				// } catch (e) {
-				// 	console.log('Failed to fetch the data', e)
-				// }
+				try {
+					const constructionElementsResponse = await httpClient.get(
+						`/constructions/${constructionId}/elements`
+					)
+					setConstructionElements(constructionElementsResponse.data)
+				} catch (e) {
+					console.log('Failed to fetch the data', e)
+				}
 			}
 			fetchData()
 		}
@@ -35,22 +49,26 @@ const ConstructionElementTable = () => {
 
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
-			// await httpClient.delete(`/mark-linked-docs/${id}`)
-			// linkedDocs.splice(row, 1)
-			// setPopupObj(defaultPopupObj)
+			await httpClient.delete(`/construction-elements/${id}`)
+			constructionElements.splice(row, 1)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
 	}
 
 	return (
-        <div>
-			<h2 className="mrg-top-2 bold text-centered">Перечень элементов</h2>
+		<div className="mrg-bot">
+			<h2 className="mrg-top-3 bold text-centered">Перечень элементов</h2>
 			<PlusCircle
 				color="#666"
 				size={28}
 				className="pointer"
-				onClick={null}
+				onClick={() =>
+					history.push(
+						`/specifications/${specificationId}/constructions/${constructionId}/element-create`
+					)
+				}
 			/>
 			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
@@ -65,24 +83,42 @@ const ConstructionElementTable = () => {
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>вид профия1</td>
-						<td>имя профиля</td>
-						<td>марка стали</td>
-						<td>длина площадь</td>
-						<td
-							onClick={null}
-							className="pointer action-cell-width text-centered"
-						>
-							<PencilSquare color="#666" size={26} />
-						</td>
-						<td
-							onClick={null}
-							className="pointer action-cell-width text-centered"
-						>
-							<Trash color="#666" size={26} />
-						</td>
-					</tr>
+					{constructionElements.map((ce, index) => {
+						return (
+							<tr key={index}>
+								<td>{ce.profileClass.id}</td>
+								<td>{ce.profileName}</td>
+								<td>{ce.steel.id}</td>
+								<td>{ce.surfaceArea}</td>
+								<td
+									onClick={() => {
+										setConstructionElement(ce)
+										history.push(
+											`/specifications/${specificationId}/constructions/${constructionId}/elements/${ce.id}`
+										)
+									}}
+									className="pointer action-cell-width text-centered"
+								>
+									<PencilSquare color="#666" size={26} />
+								</td>
+								<td
+									onClick={() =>
+										setPopup({
+											isShown: true,
+											msg: `Вы действительно хотите удалить элемент конструкции?`,
+											onAccept: () =>
+												onDeleteClick(index, ce.id),
+											onCancel: () =>
+												setPopup(defaultPopup),
+										})
+									}
+									className="pointer action-cell-width text-centered"
+								>
+									<Trash color="#666" size={26} />
+								</td>
+							</tr>
+						)
+					})}
 				</tbody>
 			</Table>
 		</div>

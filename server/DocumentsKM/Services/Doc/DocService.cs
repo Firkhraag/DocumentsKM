@@ -11,7 +11,7 @@ namespace DocumentsKM.Services
         // Id листа основного комплекта из справочника типов документов
         private readonly int _sheetDocTypeId = 1;
 
-        private IDocRepo _repository;
+        private readonly IDocRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IDocTypeRepo _docTypeRepo;

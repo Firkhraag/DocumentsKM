@@ -87,11 +87,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void GetAllByMarkId_ShouldReturnEmptyArray_WhenWrongMarkId()
         {
-            // Arrange
-            int wrongMarkId = 999;
-
             // Act
-            var returnedAttachedDocs = _service.GetAllByMarkId(wrongMarkId);
+            var returnedAttachedDocs = _service.GetAllByMarkId(999);
 
             // Assert
             Assert.Empty(returnedAttachedDocs);
@@ -118,11 +115,10 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Create_ShouldFailWithNull()
+        public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int markId = _rnd.Next(1, TestData.marks.Count());
-            int wrongMarkId = 999;
 
             var newAttachedDoc = new AttachedDoc
             {
@@ -132,13 +128,13 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(null, markId));
-            Assert.Throws<ArgumentNullException>(() => _service.Create(newAttachedDoc, wrongMarkId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newAttachedDoc, 999));
 
             _repository.Verify(mock => mock.Add(It.IsAny<AttachedDoc>()), Times.Never);
         }
 
         [Fact]
-        public void Create_ShouldFailWithConflict()
+        public void Create_ShouldFailWithConflict_WhenConflictValues()
         {
             // Arrange
             var conflictMarkId = _attachedDocs[0].Mark.Id;
@@ -161,11 +157,13 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _attachedDocs.Count());
-            var newDesignation = "NewUpdate";
+            var newStringValue = "NewUpdate";
 
             var newAttachedDocRequest = new AttachedDocUpdateRequest
             {
-                Designation = newDesignation,
+                Designation = newStringValue,
+                Name = newStringValue,
+                Note = newStringValue,
             };
 
             // Act
@@ -173,31 +171,32 @@ namespace DocumentsKM.Tests
 
             // Assert
             _repository.Verify(mock => mock.Update(It.IsAny<AttachedDoc>()), Times.Once);
-            Assert.Equal(newDesignation, _attachedDocs.SingleOrDefault(v => v.Id == id).Designation);
+            var v = _attachedDocs.SingleOrDefault(v => v.Id == id);
+            Assert.Equal(newStringValue, v.Designation);
+            Assert.Equal(newStringValue, v.Name);
+            Assert.Equal(newStringValue, v.Note);
         }
 
         [Fact]
-        public void Update_ShouldFailWithNull()
+        public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int id = _rnd.Next(1, _attachedDocs.Count());
-            int wrongId = 999;
 
             var newAttachedDocRequest = new AttachedDocUpdateRequest
             {
                 Designation = "NewUpdate",
-                Name = "NewUpdate",
             };
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
-            Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newAttachedDocRequest));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(999, newAttachedDocRequest));
 
             _repository.Verify(mock => mock.Update(It.IsAny<AttachedDoc>()), Times.Never);
         }
 
         [Fact]
-        public void Update_ShouldFailWithConflict()
+        public void Update_ShouldFailWithConflict_WhenConflictValues()
         {
             // Arrange
             var conflictDesignation = _attachedDocs[0].Designation;
@@ -231,11 +230,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void Delete_ShouldFailWithNull_WhenWrongId()
         {
-            // Arrange
-            var wrongId = 999;
-
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(wrongId));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(999));
 
             _repository.Verify(mock => mock.Delete(It.IsAny<AttachedDoc>()), Times.Never);
         }
