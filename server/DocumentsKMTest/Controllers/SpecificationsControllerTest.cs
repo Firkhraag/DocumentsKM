@@ -14,6 +14,7 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
+    // TBD: Create, Update, Delete
     public class SpecificationsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;

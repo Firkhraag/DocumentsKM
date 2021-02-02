@@ -15,16 +15,13 @@ using Xunit;
 namespace DocumentsKM.Tests
 {
     // TBD: Create, Update, Delete
-    public class GeneralDataPointsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    public class ConstructionElementsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
         private readonly Random _rnd = new Random();
 
-        private readonly int _maxUserId = 3;
-        private readonly int _maxSectionId = 3;
-
-        public GeneralDataPointsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        public ConstructionElementsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
@@ -38,12 +35,11 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByConstructionId_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
             // Arrange
-            int userId = _rnd.Next(1, _maxUserId);
-            int sectionId = _rnd.Next(1, _maxSectionId);
-            var endpoint = $"/api/users/{userId}/general-data-sections/{sectionId}/general-data-points";
+            int constructionId = _rnd.Next(1, TestData.constructions.Count());
+            var endpoint = $"/api/constructions/{constructionId}/elements";
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
@@ -52,29 +48,35 @@ namespace DocumentsKM.Tests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             string responseBody = await response.Content.ReadAsStringAsync();
 
-            var GeneralDataPoints = TestData.generalDataPoints.Where(
-                v => v.User.Id == userId && v.Section.Id == sectionId)
-                .Select(v => new GeneralDataPointResponse
+            var constructionElements = TestData.constructionElements.Where(
+                v => v.Construction.Id == constructionId)
+                .Select(v => new ConstructionElementResponse
                 {
                     Id = v.Id,
-                    Text = v.Text,
-                    OrderNum = v.OrderNum,
+                    ProfileClass = v.ProfileClass,
+                    ProfileName = v.ProfileName,
+                    Symbol = v.Symbol,
+                    Weight = v.Weight,
+                    SurfaceArea = v.SurfaceArea,
+                    ProfileType = v.ProfileType,
+                    Steel = v.Steel,
+                    Length = v.Length,
+                    Status = v.Status,
                 }).ToArray();
             var options = new JsonSerializerOptions()
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            JsonSerializer.Deserialize<IEnumerable<GeneralDataPointResponse>>(
-                responseBody, options).Should().BeEquivalentTo(GeneralDataPoints);
+            JsonSerializer.Deserialize<IEnumerable<ConstructionElementResponse>>(
+                responseBody, options).Should().BeEquivalentTo(constructionElements);
         }
 
         [Fact]
-        public async Task GetAllByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        public async Task GetAllByConstructionId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            int userId = _rnd.Next(1, _maxUserId);
-            int sectionId = _rnd.Next(1, _maxSectionId);
-            var endpoint = $"/api/users/{userId}/general-data-sections/{sectionId}/general-data-points";
+            int constructionId = _rnd.Next(1, TestData.constructions.Count());
+            var endpoint = $"/api/constructions/{constructionId}/elements";
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);

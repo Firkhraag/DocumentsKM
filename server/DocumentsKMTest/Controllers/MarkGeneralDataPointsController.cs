@@ -1,119 +1,86 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Mime;
-using AutoMapper;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using DocumentsKM.Dtos;
-using DocumentsKM.Models;
-using DocumentsKM.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-namespace DocumentsKM.Controllers
+namespace DocumentsKM.Tests
 {
-    [Route("api")]
-    [Authorize]
-    [ApiController]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public class MarkGeneralDataPointsController : ControllerBase
+    // TBD: Create, Update, Delete
+    public class MarkGeneralDataPointsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
-        private readonly IMarkGeneralDataPointService _service;
-        private readonly IMapper _mapper;
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-        public MarkGeneralDataPointsController(
-            IMarkGeneralDataPointService markGeneralDataPointService,
-            IMapper mapper)
+        private readonly int _maxMarkId = 3;
+        private readonly int _maxSectionId = 3;
+
+        public MarkGeneralDataPointsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
-            _service = markGeneralDataPointService;
-            _mapper = mapper;
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+            
+            _authHttpClient = factory.CreateClient();
         }
 
-        [HttpGet, Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<MarkGeneralDataPointResponse>> GetAllByMarkAndSectionId(
-            int markId, int sectionId)
+        [Fact]
+        public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
-            var points = _service.GetAllByMarkAndSectionId(markId, sectionId);
-            return Ok(_mapper.Map<IEnumerable<MarkGeneralDataPointResponse>>(points));
+            // Arrange
+            int markId = _rnd.Next(1, _maxMarkId);
+            int sectionId = _rnd.Next(1, _maxSectionId);
+            var endpoint = $"/api/marks/{markId}/general-data-sections/{sectionId}/general-data-points";
+
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var markGeneralDataPoints = TestData.markGeneralDataPoints.Where(
+                v => v.Mark.Id == markId && v.Section.Id == sectionId)
+                .Select(v => new MarkGeneralDataPointResponse
+                {
+                    Id = v.Id,
+                    Text = v.Text,
+                    OrderNum = v.OrderNum,
+                }).ToArray();
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            JsonSerializer.Deserialize<IEnumerable<MarkGeneralDataPointResponse>>(
+                responseBody, options).Should().BeEquivalentTo(markGeneralDataPoints);
         }
 
-        [HttpGet, Route("marks/{markId}/general-data-sections")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<GeneralDataSection>> GetSectionsByMarkId(int markId)
+        [Fact]
+        public async Task GetAllByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
-            var sections = _service.GetSectionsByMarkId(markId);
-            return Ok(_mapper.Map<IEnumerable<GeneralDataSection>>(sections));
-        }
+            // Arrange
+            int markId = _rnd.Next(1, _maxMarkId);
+            int sectionId = _rnd.Next(1, _maxSectionId);
+            var endpoint = $"/api/marks/{markId}/general-data-sections/{sectionId}/general-data-points";
 
-        [HttpPost, Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkGeneralDataPoint> Create(int markId, int sectionId,
-            [FromBody] MarkGeneralDataPointCreateRequest markGeneralDataPointRequest)
-        {
-            var markGeneralDataPointModel = _mapper.Map<MarkGeneralDataPoint>(
-                markGeneralDataPointRequest);
-            try
-            {
-                _service.Create(
-                    markGeneralDataPointModel,
-                    markId,
-                    sectionId);
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            catch (ConflictException)
-            {
-                return Conflict();
-            }
-            return Created($"mark-general-data-points/{markGeneralDataPointModel.Id}",
-                _mapper.Map<MarkGeneralDataPointResponse>(markGeneralDataPointModel));
-        }
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
 
-        [HttpPatch,
-            Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points/{id}")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int markId, int sectionId, int id,
-            [FromBody] MarkGeneralDataPointUpdateRequest markGeneralDataPointRequest)
-        {
-            try
-            {
-                _service.Update(id, markId, sectionId, markGeneralDataPointRequest);
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            catch (ConflictException)
-            {
-                return Conflict();
-            }
-            return NoContent();
-        }
-
-        [HttpDelete,
-            Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points/{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Delete(int markId, int sectionId, int id)
-        {
-            try
-            {
-                _service.Delete(id, markId, sectionId);
-                return NoContent();
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
 }
