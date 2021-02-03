@@ -16,7 +16,8 @@ namespace DocumentsKM.Data
         public IEnumerable<Employee> GetAllByDepartmentId(int departmentId)
         {
             return _context.Employees.Where(
-                v => v.Department.Id == departmentId).ToList();
+                v => v.Department.Id == departmentId).OrderBy(
+                    v => v.Position.Id).ToList();
         }
 
         public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
@@ -24,7 +25,8 @@ namespace DocumentsKM.Data
             int[] posIds)
         {
             return _context.Employees.Where(v => (v.Department.Id == departmentId) &&
-                (posIds.Contains(v.Position.Id))).ToList();
+                (posIds.Contains(v.Position.Id))).OrderBy(
+                    v => v.Position.Id).ToList();
         }
 
         public IEnumerable<Employee> GetAllByDepartmentIdAndPosition(
@@ -33,7 +35,8 @@ namespace DocumentsKM.Data
         {
             return _context.Employees.Where(
                 v => (v.Department.Id == departmentId) &&
-                    (v.Position.Id == posId)).ToList();
+                    (v.Position.Id == posId)).OrderBy(
+                        v => v.Position.Id).ToList();
         }
 
         public Employee GetById(int id)

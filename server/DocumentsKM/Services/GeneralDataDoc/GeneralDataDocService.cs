@@ -11,7 +11,6 @@ using System.Text;
 
 namespace DocumentsKM.Services
 {
-    // Uppercase symbols TBD
     public class GeneralDataDocService : IGeneralDataDocService
     {
         private readonly int _departmentHeadPosId = 7;
