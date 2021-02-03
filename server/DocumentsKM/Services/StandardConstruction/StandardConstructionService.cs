@@ -9,13 +9,16 @@ namespace DocumentsKM.Services
     public class StandardConstructionService : IStandardConstructionService
     {
         private readonly IStandardConstructionRepo _repository;
+        private readonly IMarkRepo _markRepo;
         private readonly ISpecificationRepo _specificationRepo;
 
         public StandardConstructionService(
             IStandardConstructionRepo standardConstructionRepo,
+            IMarkRepo markRepo,
             ISpecificationRepo specificationRepo)
         {
             _repository = standardConstructionRepo;
+            _markRepo = markRepo;
             _specificationRepo = specificationRepo;
         }
 
@@ -42,6 +45,10 @@ namespace DocumentsKM.Services
             standardConstruction.Specification = foundSpecification;
 
             _repository.Add(standardConstruction);
+
+            var foundMark = _markRepo.GetById(foundSpecification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(
@@ -64,6 +71,10 @@ namespace DocumentsKM.Services
                 foundStandardConstruction.Weight = standardConstruction.Weight.GetValueOrDefault();
 
             _repository.Update(foundStandardConstruction);
+
+            var foundMark = _markRepo.GetById(foundStandardConstruction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -72,6 +83,10 @@ namespace DocumentsKM.Services
             if (foundStandardConstruction == null)
                 throw new ArgumentNullException(nameof(foundStandardConstruction));
             _repository.Delete(foundStandardConstruction);
+
+            var foundMark = _markRepo.GetById(foundStandardConstruction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

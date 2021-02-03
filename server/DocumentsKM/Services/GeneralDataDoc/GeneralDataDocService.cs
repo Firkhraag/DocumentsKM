@@ -512,16 +512,83 @@ namespace DocumentsKM.Services
                     pointText = pointText + ".";
                     indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "640" };
                 }
+
                 var paragraphProperties = new ParagraphProperties(
                     numberingProperties, spacingBetweenLines, indentation);
-
                 var newPara = new Paragraph(paragraphProperties);
-                newPara.AppendChild(GetWordTextElement(pointText, 24));
+
+                if (pointText.Contains('^'))
+                {
+                    var split = pointText.Split('^');
+                    if (split.Count() > 1)
+                    {
+                        for (int k = 0; k < split.Count(); k++)
+                        {
+                            if (k > 0)
+                                newPara.AppendChild(GetWordTextElement(split[k][0].ToString(), 24, false, true));
+                            if (k == 0)
+                                newPara.AppendChild(GetWordTextElement(split[k], 24));
+                            else
+                                if (split[k].Length > 1)
+                                    newPara.AppendChild(GetWordTextElement(split[k].Substring(1), 24));
+                        }
+                    }
+                    else
+                        newPara.AppendChild(GetWordTextElement(pointText, 24));
+                }
+                else
+                    newPara.AppendChild(GetWordTextElement(pointText, 24));
+
+                // if (pointText.Contains('^'))
+                // {
+                //     var split = pointText.Split("^2");
+                //     if (split.Count() > 1)
+                //     {
+                //         for (int k = 0; k < split.Count(); k++)
+                //         {
+                //             if (k > 0)
+                //             {
+                //                 newPara.AppendChild(GetWordTextElement("2", 24, false, true));
+                //             }
+                //             newPara.AppendChild(GetWordTextElement(split[k], 24));
+                //         }
+                //         // var split2 = s.Split("^3");
+                //         // if (s.Count() > 1)
+                //         // {
+                            
+                //         // }
+                //     }
+                //     else
+                //     {
+                //         split = pointText.Split("^3");
+                //         if (split.Count() > 1)
+                //         {
+                //             for (int k = 0; k < split.Count(); k++)
+                //             {
+                //                 if (k > 0)
+                //                 {
+                //                     newPara.AppendChild(GetWordTextElement("3", 24, false, true));
+                //                 }
+                //                 newPara.AppendChild(GetWordTextElement(split[k], 24));
+                //             }
+                //         }
+                //         else
+                //             newPara.AppendChild(GetWordTextElement(pointText, 24));
+                //     }
+                // }
+                // else
+                //     newPara.AppendChild(GetWordTextElement(pointText, 24));
+                
+
                 body.PrependChild(newPara);
             }
         }
 
-        private Run GetWordTextElement(string text, int fSize, bool isUnderlined = false)
+        private Run GetWordTextElement(
+            string text,
+            int fSize,
+            bool isUnderlined = false,
+            bool isSuperscript = false)
         {
             Run run = new Run();
             RunProperties runProperties = run.AppendChild(new RunProperties());
@@ -545,7 +612,19 @@ namespace DocumentsKM.Services
                 };
                 runProperties.Append(underline);
             }
-            run.AppendChild(new Text(text));
+            if (isSuperscript)
+            {
+                VerticalTextAlignment vertAlign = new VerticalTextAlignment()
+                {
+                    Val = VerticalPositionValues.Superscript,
+                };
+                runProperties.Append(vertAlign);
+            }
+            run.AppendChild(new Text()
+            {
+                Text = text,
+                Space = SpaceProcessingModeValues.Preserve,
+            });
             return run;
         }
 

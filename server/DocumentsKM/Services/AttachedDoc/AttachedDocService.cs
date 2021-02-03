@@ -42,6 +42,9 @@ namespace DocumentsKM.Services
 
             attachedDoc.Mark = foundMark;
             _repository.Add(attachedDoc);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(
@@ -68,6 +71,10 @@ namespace DocumentsKM.Services
                 foundAttachedDoc.Note = attachedDoc.Note;
 
             _repository.Update(foundAttachedDoc);
+
+            var foundMark = _markRepo.GetById(foundAttachedDoc.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -76,6 +83,10 @@ namespace DocumentsKM.Services
             if (foundAttachedDoc == null)
                 throw new ArgumentNullException(nameof(foundAttachedDoc));
             _repository.Delete(foundAttachedDoc);
+
+            var foundMark = _markRepo.GetById(foundAttachedDoc.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

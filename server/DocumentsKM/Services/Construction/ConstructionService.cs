@@ -9,6 +9,7 @@ namespace DocumentsKM.Services
     public class ConstructionService : IConstructionService
     {
         private readonly IConstructionRepo _repository;
+        private readonly IMarkRepo _markRepo;
         private readonly ISpecificationRepo _specificationRepo;
         private readonly IConstructionTypeRepo _constructionTypeRepo;
         private readonly IConstructionSubtypeRepo _constructionSubtypeRepo;
@@ -16,12 +17,14 @@ namespace DocumentsKM.Services
 
         public ConstructionService(
             IConstructionRepo constructionRepo,
+            IMarkRepo markRepo,
             ISpecificationRepo specificationRepo,
             IConstructionTypeRepo constructionTypeRepo,
             IConstructionSubtypeRepo constructionSubtypeRepo,
             IWeldingControlRepo weldingControlRepo)
         {
             _repository = constructionRepo;
+            _markRepo = markRepo;
             _specificationRepo = specificationRepo;
             _constructionTypeRepo = constructionTypeRepo;
             _constructionSubtypeRepo = constructionSubtypeRepo;
@@ -70,6 +73,10 @@ namespace DocumentsKM.Services
             construction.WeldingControl = foundWeldingControl;
 
             _repository.Add(construction);
+
+            var foundMark = _markRepo.GetById(foundSpecification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(
@@ -161,6 +168,10 @@ namespace DocumentsKM.Services
             }
 
             _repository.Update(foundConstruction);
+
+            var foundMark = _markRepo.GetById(foundConstruction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -169,6 +180,10 @@ namespace DocumentsKM.Services
             if (foundConstruction == null)
                 throw new ArgumentNullException(nameof(foundConstruction));
             _repository.Delete(foundConstruction);
+
+            var foundMark = _markRepo.GetById(foundConstruction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

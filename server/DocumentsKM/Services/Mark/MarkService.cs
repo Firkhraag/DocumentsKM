@@ -214,7 +214,9 @@ namespace DocumentsKM.Services
                     foundMark.GroupLeader = groupLeader;
                 }
             }
+            foundMark.EditedDate = DateTime.Now;
             _repository.Update(foundMark);
+
         }
     }
 }

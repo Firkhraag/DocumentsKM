@@ -300,16 +300,6 @@ const MarkGeneralData = () => {
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
-
-			// console.log(response)
-			// const blob = new Blob([response.data], {
-			// 	type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-			// })
-			// const link = document.createElement('a')
-			// link.href = window.URL.createObjectURL(blob)
-			// link.download = 'Общие данные.docx'
-			// link.click()
-			// link.remove()
 		} catch (e) {
 			console.log('Failed to download the file')
 		}
@@ -380,7 +370,7 @@ const MarkGeneralData = () => {
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Разделы</label>
 						<div className="flex-v general-data-selection mrg-top">
-							{optionsObject.sections.map((s) => {
+							{optionsObject.sections.map((s, index) => {
 								return (
 									<div
 										className={
@@ -394,7 +384,7 @@ const MarkGeneralData = () => {
 										onClick={() => onSectionSelect(s.id)}
 										key={s.id}
 									>
-										<p className="no-bot-mrg">{s.name}</p>
+										<p className="no-bot-mrg">{(index + 1).toString() + '. ' +s.name}</p>
 									</div>
 								)
 							})}

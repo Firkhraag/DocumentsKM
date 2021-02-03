@@ -13,6 +13,7 @@ namespace DocumentsKM.Tests
     public class StandardConstructionServiceTest
     {
         private readonly Mock<IStandardConstructionRepo> _repository = new Mock<IStandardConstructionRepo>();
+        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly Mock<ISpecificationRepo> _mockSpecificationRepo = new Mock<ISpecificationRepo>();
         private readonly IStandardConstructionService _service;
         private readonly Random _rnd = new Random();
@@ -61,6 +62,12 @@ namespace DocumentsKM.Tests
                 //                             v.PaintworkCoeff == standardConstruction.PaintworkCoeff));
                 // }
             }
+            foreach (var mark in TestData.marks)
+            {
+                _mockMarkRepo.Setup(mock =>
+                    mock.GetById(mark.Id)).Returns(
+                        TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
+            }
 
             _repository.Setup(mock =>
                 mock.Add(It.IsAny<StandardConstruction>())).Verifiable();
@@ -71,6 +78,7 @@ namespace DocumentsKM.Tests
 
             _service = new StandardConstructionService(
                 _repository.Object,
+                _mockMarkRepo.Object,
                 _mockSpecificationRepo.Object);
         }
 

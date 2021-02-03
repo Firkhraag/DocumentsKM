@@ -13,6 +13,7 @@ namespace DocumentsKM.Tests
     public class ConstructionBoltServiceTest
     {
         private readonly Mock<IConstructionBoltRepo> _repository = new Mock<IConstructionBoltRepo>();
+        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly Mock<IConstructionRepo> _mockConstructionRepo = new Mock<IConstructionRepo>();
         private readonly Mock<IBoltDiameterRepo> _mockBoltDiameterRepo = new Mock<IBoltDiameterRepo>();
         private readonly IConstructionBoltService _service;
@@ -67,6 +68,12 @@ namespace DocumentsKM.Tests
                         TestData.boltDiameters.SingleOrDefault(
                             v => v.Id == diameter.Id));
             }
+            foreach (var mark in TestData.marks)
+            {
+                _mockMarkRepo.Setup(mock =>
+                    mock.GetById(mark.Id)).Returns(
+                        TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
+            }
 
             _repository.Setup(mock =>
                 mock.Add(It.IsAny<ConstructionBolt>())).Verifiable();
@@ -77,6 +84,7 @@ namespace DocumentsKM.Tests
 
             _service = new ConstructionBoltService(
                 _repository.Object,
+                _mockMarkRepo.Object,
                 _mockConstructionRepo.Object,
                 _mockBoltDiameterRepo.Object);
         }

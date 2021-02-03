@@ -87,6 +87,9 @@ namespace DocumentsKM.Services
             additionalWork.Mark = foundMark;
             additionalWork.Employee = foundEmployee;
             _repository.Add(additionalWork);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(
@@ -118,6 +121,10 @@ namespace DocumentsKM.Services
                 foundAdditionalWork.MetalOrder = additionalWork.MetalOrder.GetValueOrDefault();
 
             _repository.Update(foundAdditionalWork);
+
+            var foundMark = _markRepo.GetById(foundAdditionalWork.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -126,6 +133,10 @@ namespace DocumentsKM.Services
             if (foundAdditionalWork == null)
                 throw new ArgumentNullException(nameof(foundAdditionalWork));
             _repository.Delete(foundAdditionalWork);
+
+            var foundMark = _markRepo.GetById(foundAdditionalWork.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

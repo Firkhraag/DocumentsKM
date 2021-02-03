@@ -13,6 +13,7 @@ namespace DocumentsKM.Tests
     public class ConstructionElementServiceTest
     {
         private readonly Mock<IConstructionElementRepo> _repository = new Mock<IConstructionElementRepo>();
+        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly Mock<IConstructionRepo> _mockConstructionRepo = new Mock<IConstructionRepo>();
         private readonly Mock<IProfileClassRepo> _mockProfileClassRepo = new Mock<IProfileClassRepo>();
         private readonly Mock<IProfileTypeRepo> _mockProfileTypeRepo = new Mock<IProfileTypeRepo>();
@@ -87,6 +88,12 @@ namespace DocumentsKM.Tests
                         TestData.steel.SingleOrDefault(
                             v => v.Id == steel.Id));
             }
+            foreach (var mark in TestData.marks)
+            {
+                _mockMarkRepo.Setup(mock =>
+                    mock.GetById(mark.Id)).Returns(
+                        TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
+            }
 
             _repository.Setup(mock =>
                 mock.Add(It.IsAny<ConstructionElement>())).Verifiable();
@@ -97,6 +104,7 @@ namespace DocumentsKM.Tests
 
             _service = new ConstructionElementService(
                 _repository.Object,
+                _mockMarkRepo.Object,
                 _mockConstructionRepo.Object,
                 _mockProfileClassRepo.Object,
                 _mockProfileTypeRepo.Object,

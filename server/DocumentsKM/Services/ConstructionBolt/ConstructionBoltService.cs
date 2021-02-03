@@ -9,15 +9,18 @@ namespace DocumentsKM.Services
     public class ConstructionBoltService : IConstructionBoltService
     {
         private readonly IConstructionBoltRepo _repository;
+        private readonly IMarkRepo _markRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IBoltDiameterRepo _boltDiameterRepo;
 
         public ConstructionBoltService(
             IConstructionBoltRepo constructionBoltRepo,
+            IMarkRepo markRepo,
             IConstructionRepo constructionRepo,
             IBoltDiameterRepo boltDiameterRepo)
         {
             _repository = constructionBoltRepo;
+            _markRepo = markRepo;
             _constructionRepo = constructionRepo;
             _boltDiameterRepo = boltDiameterRepo;
         }
@@ -50,6 +53,10 @@ namespace DocumentsKM.Services
             constructionBolt.Diameter = foundBoltDiameter;
 
             _repository.Add(constructionBolt);
+
+            var foundMark = _markRepo.GetById(foundConstruction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(int id, ConstructionBoltUpdateRequest constructionBoltRequest)
@@ -92,6 +99,10 @@ namespace DocumentsKM.Services
                 foundConstructionBolt.WasherNum = constructionBoltRequest.WasherNum.GetValueOrDefault();
 
             _repository.Update(foundConstructionBolt);
+
+            var foundMark = _markRepo.GetById(foundConstructionBolt.Construction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -100,6 +111,10 @@ namespace DocumentsKM.Services
             if (foundConstructionBolt == null)
                 throw new ArgumentNullException(nameof(foundConstructionBolt));
             _repository.Delete(foundConstructionBolt);
+
+            var foundMark = _markRepo.GetById(foundConstructionBolt.Construction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

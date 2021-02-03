@@ -9,6 +9,7 @@ namespace DocumentsKM.Services
     public class ConstructionElementService : IConstructionElementService
     {
         private readonly IConstructionElementRepo _repository;
+        private readonly IMarkRepo _markRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IProfileClassRepo _profileClassRepo;
         private readonly IProfileTypeRepo _profileTypeRepo;
@@ -16,12 +17,14 @@ namespace DocumentsKM.Services
 
         public ConstructionElementService(
             IConstructionElementRepo constructionElementRepo,
+            IMarkRepo markRepo,
             IConstructionRepo constructionRepo,
             IProfileClassRepo profileClassRepo,
             IProfileTypeRepo profileTypeRepo,
             ISteelRepo steelRepo)
         {
             _repository = constructionElementRepo;
+            _markRepo = markRepo;
             _constructionRepo = constructionRepo;
             _profileClassRepo = profileClassRepo;
             _profileTypeRepo = profileTypeRepo;
@@ -66,6 +69,10 @@ namespace DocumentsKM.Services
             constructionElement.Steel = foundSteel;
 
             _repository.Add(constructionElement);
+
+            var foundMark = _markRepo.GetById(foundConstruction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(int id, ConstructionElementUpdateRequest constructionElementRequest)
@@ -124,6 +131,10 @@ namespace DocumentsKM.Services
                 foundConstructionElement.Status = constructionElementRequest.Status.GetValueOrDefault();
 
             _repository.Update(foundConstructionElement);
+
+            var foundMark = _markRepo.GetById(foundConstructionElement.Construction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -132,6 +143,10 @@ namespace DocumentsKM.Services
             if (foundConstructionElement == null)
                 throw new ArgumentNullException(nameof(foundConstructionElement));
             _repository.Delete(foundConstructionElement);
+
+            var foundMark = _markRepo.GetById(foundConstructionElement.Construction.Specification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

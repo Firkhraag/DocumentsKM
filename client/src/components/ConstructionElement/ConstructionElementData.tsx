@@ -358,7 +358,7 @@ const ConstructionElementData = ({
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="profileName"
-						style={{ marginRight: '3.85em' }}
+						style={{ marginRight: '3.9em' }}
 					>
 						Имя профиля
 					</Form.Label>

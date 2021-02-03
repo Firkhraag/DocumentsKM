@@ -48,6 +48,10 @@ namespace DocumentsKM.Services
                 IsCurrent = true,
             };
             _repository.Add(newSpecification);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
+
             return newSpecification;
         }
 
@@ -77,6 +81,10 @@ namespace DocumentsKM.Services
             if (specification.Note != null)
                 foundSpecification.Note = specification.Note;
             _repository.Update(foundSpecification);
+
+            var foundMark = _markRepo.GetById(foundSpecification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -88,6 +96,10 @@ namespace DocumentsKM.Services
                 throw new ConflictException(nameof(foundSpecification.IsCurrent));
 
             _repository.Delete(foundSpecification);
+
+            var foundMark = _markRepo.GetById(foundSpecification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

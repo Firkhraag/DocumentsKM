@@ -61,6 +61,9 @@ namespace DocumentsKM.Services
                 markGeneralDataPoint.OrderNum = currentPoints.Max(v => v.OrderNum) + 1;
 
             _repository.Add(markGeneralDataPoint);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void UpdateAllBySectionIds(int markId, List<int> sectionIds)
@@ -86,6 +89,9 @@ namespace DocumentsKM.Services
                     _repository.Delete(p);
                 currentPointIds.Add(p.Section.Id);
             }
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public IEnumerable<MarkGeneralDataPoint> UpdateAllByPointIds(
@@ -150,6 +156,10 @@ namespace DocumentsKM.Services
                 _repository.Update(p);
                 num += 1;
             }
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
+            
             return currentPoints;
         }
 
@@ -203,6 +213,9 @@ namespace DocumentsKM.Services
             }
 
             _repository.Update(foundMarkGeneralDataPoint);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id, int markId, int sectionId)
@@ -225,6 +238,9 @@ namespace DocumentsKM.Services
                 }
             }
             _repository.Delete(foundMarkGeneralDataPoint);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public IEnumerable<GeneralDataSection> GetSectionsByMarkId(int markId)
