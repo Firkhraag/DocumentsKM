@@ -1,10 +1,9 @@
-using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Profiles
 {
-    public class MarkLinkedDocsProfile : Profile
+    public class MarkLinkedDocsProfile : AutoMapper.Profile
     {
         public MarkLinkedDocsProfile()
         {

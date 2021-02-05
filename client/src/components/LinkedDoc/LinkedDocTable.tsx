@@ -98,7 +98,7 @@ const LinkedDocTable = ({ setMarkLinkedDoc }: LinkedDocTableProps) => {
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить ссылочный документ ${ld.code}?`,
+											msg: `Вы действительно хотите удалить ссылочный документ № ${index + 1}?`,
 											onAccept: () =>
 												onDeleteClick(index, mld.id),
 											onCancel: () =>

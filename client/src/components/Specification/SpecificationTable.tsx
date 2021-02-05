@@ -162,7 +162,7 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 											? null
 											: setPopup({
 													isShown: true,
-													msg: `Вы действительно хотите сделать выпуск спецификации №${s.num} текущим?`,
+													msg: `Вы действительно хотите сделать выпуск спецификации № ${s.num} текущим?`,
 													onAccept: () =>
 														onSelectCurrentClick(
 															index,
@@ -197,7 +197,7 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 											? null
 											: setPopup({
 													isShown: true,
-													msg: `Вы действительно хотите удалить выпуск спецификации №${s.num}?`,
+													msg: `Вы действительно хотите удалить выпуск спецификации № ${s.num}?`,
 													onAccept: () =>
 														onDeleteClick(
 															index,

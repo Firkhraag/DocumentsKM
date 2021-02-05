@@ -98,7 +98,7 @@ const OtherAttachedDocTable = ({
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить прилагаемый документ ${d.designation}?`,
+											msg: `Вы действительно хотите удалить прилагаемый документ № ${index + 1}?`,
 											onAccept: () =>
 												onDeleteClick(index, d.id),
 											onCancel: () =>

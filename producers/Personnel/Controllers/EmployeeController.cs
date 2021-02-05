@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Personnel.Dtos;
@@ -53,6 +52,8 @@ namespace DocumentsKM.Controllers
             {
                 return NotFound();
             }
+
+            // _publisherService.Publish(JsonSerializer.Serialize(employee), "reporty.employee.add", null);
             
             return Created(
                 $"employees/{employee.Id}", employee);

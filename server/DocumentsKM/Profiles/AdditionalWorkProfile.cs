@@ -1,10 +1,9 @@
-using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Profiles
 {
-    public class AdditionalWorkProfile : Profile
+    public class AdditionalWorkProfile : AutoMapper.Profile
     {
         public AdditionalWorkProfile()
         {

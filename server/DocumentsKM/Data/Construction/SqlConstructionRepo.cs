@@ -18,7 +18,8 @@ namespace DocumentsKM.Data
             int specificationId)
         {
             return _context.Constructions.Where(
-                v => v.Specification.Id == specificationId).ToList();
+                v => v.Specification.Id == specificationId).OrderBy(
+                    v => v.Type.Id).ToList();
         }
 
         public Construction GetById(int id)

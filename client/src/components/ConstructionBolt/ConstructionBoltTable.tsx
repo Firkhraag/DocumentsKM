@@ -73,6 +73,7 @@ const ConstructionBoltTable = ({
 			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
 					<tr>
+                        <th>№</th>
 						<th>диаметр болта, мм</th>
 						<th>толщина пакета, мм</th>
 						<th>болтов, шт.</th>
@@ -87,6 +88,7 @@ const ConstructionBoltTable = ({
 					{constructionBolts.map((cb, index) => {
 						return (
 							<tr key={index}>
+                                <td>{index + 1}</td>
 								<td>{cb.diameter.diameter}</td>
 								<td>{cb.packet}</td>
 								<td>{cb.num}</td>
@@ -107,7 +109,7 @@ const ConstructionBoltTable = ({
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить выскопрочный болт?`,
+											msg: `Вы действительно хотите удалить выскопрочный болт № ${index + 1}?`,
 											onAccept: () =>
 												onDeleteClick(index, cb.id),
 											onCancel: () =>

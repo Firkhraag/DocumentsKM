@@ -49,14 +49,16 @@ namespace Personnel
 
             services.AddAutoMapper(typeof(Startup));
 
-            // services.AddSingleton<IConnectionProvider>(
-            //     new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
+            services.AddSingleton<IConnectionProvider>(
+                new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
 
-            // services.AddScoped<IPublisherService>(
-            //     x => new PublisherService(x.GetService<IConnectionProvider>(),
-            //         "personnel_exchange", ExchangeType.Topic));
+            services.AddScoped<IPublisherService>(
+                x => new PublisherService(x.GetService<IConnectionProvider>(),
+                    "personnel_exchange", ExchangeType.Topic));
 
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IPositionService, PositionService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
 
             services.AddScoped<IDepartmentRepo, SqlDepartmentRepo>();
             services.AddScoped<IPositionRepo, SqlPositionRepo>();

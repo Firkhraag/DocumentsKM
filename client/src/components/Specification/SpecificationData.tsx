@@ -59,21 +59,34 @@ const SpecificationData = ({
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Данные выпуска спецификации</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
-				<Form.Group className="flex-cent-v">
-					<Form.Label
-						className="no-bot-mrg"
-						style={{ marginRight: '1em' }}
-					>
-						Номер
-					</Form.Label>
-					<Form.Control
-						type="text"
-						value={selectedObject.num}
-						readOnly={true}
-						className="text-centered"
-						style={{ width: '50px' }}
-					/>
-				</Form.Group>
+                <div className="space-between">
+                    <Form.Group className="flex-cent-v">
+                        <Form.Label
+                            className="no-bot-mrg"
+                            style={{ marginRight: '.75em' }}
+                        >
+                            Номер
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={selectedObject.num}
+                            readOnly={true}
+                            className="text-centered"
+                            style={{ width: '50px' }}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        
+                        <Form.Check
+                            // ref={refs[index]}
+                            // id={`is${s.id}`}
+                            name="currentRelease"
+                            type="radio"
+                            style={{ pointerEvents: 'none' }}
+                            checked={selectedObject.isCurrent}
+                        />
+                    </Form.Group>
+                </div>
 				<Form.Group className="no-bot-mrg">
 					<Form.Label htmlFor="note">Примечание</Form.Label>
 					<Form.Control

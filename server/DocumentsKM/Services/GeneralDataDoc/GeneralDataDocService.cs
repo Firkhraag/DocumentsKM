@@ -213,7 +213,7 @@ namespace DocumentsKM.Services
             var firstTrCells = firstTr.Descendants<TableCell>().ToList();
             var tc = firstTrCells[columnIndexToFill];
             var p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetWordTextElement(markName, 24));
+            p.Append(GetWordTextElement(markName, 26));
         }
 
         private void AppendToSheetTable(WordprocessingDocument document, List<Doc> docs)
@@ -229,11 +229,11 @@ namespace DocumentsKM.Services
 
                 var firstTrCells = firstTr.Descendants<TableCell>().ToList();
                 firstTrCells[0].GetFirstChild<Paragraph>().Append(
-                    GetWordTextElement("1", 24));
+                    GetWordTextElement("1", 26));
                 firstTrCells[1].GetFirstChild<Paragraph>().Append(
-                    GetWordTextElement(docs[0].Name, 24));
+                    GetWordTextElement(docs[0].Name, 26));
                 firstTrCells[2].GetFirstChild<Paragraph>().Append(
-                    GetWordTextElement(docs[0].Note, 24));
+                    GetWordTextElement(docs[0].Note, 26));
 
                 for (int i = 1; i < docs.Count(); i++)
                 {
@@ -241,11 +241,11 @@ namespace DocumentsKM.Services
                     firstTrCells = newTr.Descendants<TableCell>().ToList();
 
                     firstTrCells[0].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement((i + 1).ToString(), 24));
+                        GetWordTextElement((i + 1).ToString(), 26));
                     firstTrCells[1].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(docs[i].Name, 24));
+                        GetWordTextElement(docs[i].Name, 26));
                     firstTrCells[2].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(docs[i].Note, 24));
+                        GetWordTextElement(docs[i].Note, 26));
 
                     t.Append(newTr);
                 }
@@ -273,7 +273,7 @@ namespace DocumentsKM.Services
                     Val = JustificationValues.Center,
                 };
                 p.ParagraphProperties.Append(justification);
-                p.Append(GetWordTextElement("Ссылочные документы", 24, true));
+                p.Append(GetWordTextElement("Ссылочные документы", 26, true));
 
                 for (int i = 0; i < markLinkedDocs.Count(); i++)
                 {
@@ -281,11 +281,11 @@ namespace DocumentsKM.Services
                     firstTrCells = newTr.Descendants<TableCell>().ToList();
 
                     firstTrCells[0].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(markLinkedDocs[i].LinkedDoc.Designation, 24));
+                        GetWordTextElement(markLinkedDocs[i].LinkedDoc.Designation, 26));
                     firstTrCells[1].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(markLinkedDocs[i].LinkedDoc.Designation, 24));
+                        GetWordTextElement(markLinkedDocs[i].LinkedDoc.Name, 26));
                     firstTrCells[2].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(markLinkedDocs[i].Note, 24));
+                        GetWordTextElement(markLinkedDocs[i].Note, 26));
                     t.Append(newTr);
                 }
             }
@@ -300,7 +300,7 @@ namespace DocumentsKM.Services
                 };
                 p.ParagraphProperties.Append(justification);
 
-                p.Append(GetWordTextElement("Прилагаемые документы", 24, true));
+                p.Append(GetWordTextElement("Прилагаемые документы", 26, true));
                 t.Append(newTr);
 
                 for (int i = 0; i < attachedDocs.Count(); i++)
@@ -309,11 +309,11 @@ namespace DocumentsKM.Services
                     firstTrCells = newTr.Descendants<TableCell>().ToList();
 
                     firstTrCells[0].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(attachedDocs[i].Designation, 24));
+                        GetWordTextElement(attachedDocs[i].Designation, 26));
                     firstTrCells[1].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(attachedDocs[i].Name, 24));
+                        GetWordTextElement(attachedDocs[i].Name, 26));
                     firstTrCells[2].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(attachedDocs[i].Note, 24));
+                        GetWordTextElement(attachedDocs[i].Note, 26));
 
                     t.Append(newTr);
                 }
@@ -350,9 +350,9 @@ namespace DocumentsKM.Services
                 {
                     RunFonts = new RunFonts()
                     {
-                        Ascii = "Calibri",
-                        HighAnsi = "Calibri",
-                        ComplexScript = "Calibri"
+                        Ascii = "GOST type B",
+                        HighAnsi = "GOST type B",
+                        ComplexScript = "GOST type B"
                     },
                     Italic = new Italic()
                     {
@@ -360,7 +360,7 @@ namespace DocumentsKM.Services
                     },
                     FontSize = new FontSize()
                     {
-                        Val = 24.ToString(),
+                        Val = 26.ToString(),
                     }
                 })
             {
@@ -383,9 +383,9 @@ namespace DocumentsKM.Services
                 {
                     RunFonts = new RunFonts()
                     {
-                        Ascii = "Calibri",
-                        HighAnsi = "Calibri",
-                        ComplexScript = "Calibri"
+                        Ascii = "GOST type B",
+                        HighAnsi = "GOST type B",
+                        ComplexScript = "GOST type B"
                     },
                     Italic = new Italic()
                     {
@@ -393,7 +393,7 @@ namespace DocumentsKM.Services
                     },
                     FontSize = new FontSize()
                     {
-                        Val = 24.ToString(),
+                        Val = 26.ToString(),
                     }
                 })
             {
@@ -464,7 +464,7 @@ namespace DocumentsKM.Services
             for (var i = 0; i < markGeneralDataPoints.Count(); i++)
             {
                 var item = markGeneralDataPointsList[i];
-                var spacingBetweenLines = new SpacingBetweenLines() { After = "120", Line = "300" };
+                var spacingBetweenLines = new SpacingBetweenLines() { After = "120", Line = "240" };
                 var indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "720" };
 
                 NumberingProperties numberingProperties;
@@ -524,19 +524,19 @@ namespace DocumentsKM.Services
                         for (int k = 0; k < split.Count(); k++)
                         {
                             if (k > 0)
-                                newPara.AppendChild(GetWordTextElement(split[k][0].ToString(), 24, false, true));
+                                newPara.AppendChild(GetWordTextElement(split[k][0].ToString(), 26, false, true));
                             if (k == 0)
-                                newPara.AppendChild(GetWordTextElement(split[k], 24));
+                                newPara.AppendChild(GetWordTextElement(split[k], 26));
                             else
                                 if (split[k].Length > 1)
-                                    newPara.AppendChild(GetWordTextElement(split[k].Substring(1), 24));
+                                    newPara.AppendChild(GetWordTextElement(split[k].Substring(1), 26));
                         }
                     }
                     else
-                        newPara.AppendChild(GetWordTextElement(pointText, 24));
+                        newPara.AppendChild(GetWordTextElement(pointText, 26));
                 }
                 else
-                    newPara.AppendChild(GetWordTextElement(pointText, 24));
+                    newPara.AppendChild(GetWordTextElement(pointText, 26));
 
                 // if (pointText.Contains('^'))
                 // {
@@ -547,9 +547,9 @@ namespace DocumentsKM.Services
                 //         {
                 //             if (k > 0)
                 //             {
-                //                 newPara.AppendChild(GetWordTextElement("2", 24, false, true));
+                //                 newPara.AppendChild(GetWordTextElement("2", 26, false, true));
                 //             }
-                //             newPara.AppendChild(GetWordTextElement(split[k], 24));
+                //             newPara.AppendChild(GetWordTextElement(split[k], 26));
                 //         }
                 //         // var split2 = s.Split("^3");
                 //         // if (s.Count() > 1)
@@ -566,17 +566,17 @@ namespace DocumentsKM.Services
                 //             {
                 //                 if (k > 0)
                 //                 {
-                //                     newPara.AppendChild(GetWordTextElement("3", 24, false, true));
+                //                     newPara.AppendChild(GetWordTextElement("3", 26, false, true));
                 //                 }
-                //                 newPara.AppendChild(GetWordTextElement(split[k], 24));
+                //                 newPara.AppendChild(GetWordTextElement(split[k], 26));
                 //             }
                 //         }
                 //         else
-                //             newPara.AppendChild(GetWordTextElement(pointText, 24));
+                //             newPara.AppendChild(GetWordTextElement(pointText, 26));
                 //     }
                 // }
                 // else
-                //     newPara.AppendChild(GetWordTextElement(pointText, 24));
+                //     newPara.AppendChild(GetWordTextElement(pointText, 26));
                 
 
                 body.PrependChild(newPara);
@@ -598,9 +598,9 @@ namespace DocumentsKM.Services
             runProperties.AppendChild(fontSize);
             RunFonts font = new RunFonts()
             {
-                Ascii = "Calibri",
-                HighAnsi = "Calibri",
-                ComplexScript = "Calibri"
+                Ascii = "GOST type B",
+                HighAnsi = "GOST type B",
+                ComplexScript = "GOST type B"
             };
             runProperties.Append(font);
             if (isUnderlined)

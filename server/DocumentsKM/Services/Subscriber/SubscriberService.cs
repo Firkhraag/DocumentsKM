@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DocumentsKM.Services
 {
-    public class Subscriber : ISubscriber
+    public class SubscriberService : ISubscriberService
     {
         private readonly IConnectionProvider _connectionProvider;
         private readonly string _exchange;
@@ -15,7 +15,7 @@ namespace DocumentsKM.Services
         private readonly IModel _model;
         private bool _disposed;
 
-        public Subscriber(
+        public SubscriberService(
             IConnectionProvider connectionProvider,
             string exchange,
             string queue,

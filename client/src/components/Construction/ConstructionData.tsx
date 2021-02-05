@@ -178,6 +178,15 @@ const ConstructionData = ({
 				valuation: v.valuation,
 			})
 		}
+    }
+    
+    const onNameChange = (
+		event: React.ChangeEvent<HTMLTextAreaElement>
+	) => {
+		setSelectedObject({
+			...selectedObject,
+			name: event.currentTarget.value,
+		})
 	}
 
 	const onValuationChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -454,8 +463,8 @@ const ConstructionData = ({
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}
-						value={selectedObject.name}
-						readOnly={true}
+                        value={selectedObject.name}
+                        onChange={onNameChange}
 					/>
 				</Form.Group>
 

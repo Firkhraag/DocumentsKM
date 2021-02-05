@@ -104,6 +104,14 @@ const Home = () => {
 						Общие данные
 					</Button>
 				</Link>
+                <Link to={mark != null ? `/bolts-doc` : '/'}>
+					<Button
+						variant="outline-secondary"
+						disabled={mark == null ? true : false}
+					>
+						Ведомость болтов
+					</Button>
+				</Link>
 			</div>
 		</div>
 	)

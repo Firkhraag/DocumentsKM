@@ -81,6 +81,7 @@ namespace DocumentsKM.Data
         public DbSet<ProfileType> ProfileTypes { get; set; }
         public DbSet<ProfileClass> ProfileClasses { get; set; }
         public DbSet<Steel> Steel { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
 
         public DbSet<Doc> Docs { get; set; }
         public DbSet<Specification> Specifications { get; set; }

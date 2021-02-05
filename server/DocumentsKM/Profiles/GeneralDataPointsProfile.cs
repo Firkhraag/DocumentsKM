@@ -1,10 +1,9 @@
-using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Profiles
 {
-    public class GeneralDataPointsProfile : Profile
+    public class GeneralDataPointsProfile : AutoMapper.Profile
     {
         public GeneralDataPointsProfile()
         {

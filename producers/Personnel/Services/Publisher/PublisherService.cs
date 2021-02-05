@@ -29,7 +29,11 @@ namespace Personnel.Services
             _model.ExchangeDeclare(_exchange, exchangeType, arguments: ttl);
         }
 
-        public void Publish(string message, string routingKey, IDictionary<string, object> messageAttributes, string timeToLive = "30000")
+        public void Publish(
+            string message,
+            string routingKey,
+            IDictionary<string, object> messageAttributes,
+            string timeToLive = "30000")
         {
             var body = Encoding.UTF8.GetBytes(message);
             var properties = _model.CreateBasicProperties();

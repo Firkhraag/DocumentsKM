@@ -1,10 +1,9 @@
-using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Profiles
 {
-    public class ConstructionBoltsProfile : Profile
+    public class ConstructionBoltsProfile : AutoMapper.Profile
     {
         public ConstructionBoltsProfile()
         {

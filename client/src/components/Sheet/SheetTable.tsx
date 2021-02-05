@@ -107,7 +107,7 @@ const SheetTable = ({ setSheet }: SheetTableProps) => {
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить лист основного комплекта №${s.num}?`,
+											msg: `Вы действительно хотите удалить лист основного комплекта № ${s.num}?`,
 											onAccept: () =>
 												onDeleteClick(index, s.id),
 											onCancel: () =>

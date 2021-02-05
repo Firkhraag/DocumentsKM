@@ -14,6 +14,7 @@ using System.Text;
 using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
+using RabbitMQ.Client;
 
 namespace DocumentsKM
 {
@@ -111,8 +112,14 @@ namespace DocumentsKM
                 ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
             services.AddSingleton<ICacheService, RedisCacheService>();
 
-            // services.AddSingleton<IConnectionProvider>(
-            //     new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
+            services.AddSingleton<IConnectionProvider>(
+                new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
+            services.AddSingleton<ISubscriberService>(x => new SubscriberService(x.GetService<IConnectionProvider>(),
+                "personnel_exchange",
+                "personnel_queue",
+                "personnel.*",
+                ExchangeType.Topic));
+            services.AddHostedService<DataCollectorService>();
 
             // DI for application services
             injectScopedServices(services);
@@ -142,6 +149,7 @@ namespace DocumentsKM
 
             services.AddScoped<IProfileClassService, ProfileClassService>();
             services.AddScoped<ISteelService, SteelService>();
+            services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IConstructionElementService, ConstructionElementService>();
 
             services.AddScoped<IDocService, DocService>();
@@ -194,6 +202,7 @@ namespace DocumentsKM
             services.AddScoped<IProfileTypeRepo, SqlProfileTypeRepo>();
             services.AddScoped<IProfileClassRepo, SqlProfileClassRepo>();
             services.AddScoped<ISteelRepo, SqlSteelRepo>();
+            services.AddScoped<IProfileRepo, SqlProfileRepo>();
             services.AddScoped<IConstructionElementRepo, SqlConstructionElementRepo>();
 
             services.AddScoped<IDocRepo, SqlDocRepo>();

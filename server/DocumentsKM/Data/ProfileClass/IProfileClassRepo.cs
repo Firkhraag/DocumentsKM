@@ -3,11 +3,11 @@ using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
-    public interface IProfileTypeRepo
+    public interface IProfileClassRepo
     {
-        // Получить все типы профилей
-        IEnumerable<ProfileType> GetAll();
-        // Получить тип профиля по id
-        ProfileType GetById(int id);
+        // Получить все виды профилей
+        IEnumerable<ProfileClass> GetAll();
+        // Получить вид профиля по id
+        ProfileClass GetById(int id);
     }
 }

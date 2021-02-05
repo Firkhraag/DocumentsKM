@@ -2,6 +2,8 @@ import ProfileClass from './ProfileClass'
 import ProfileType from './ProfileType'
 import Steel from './Steel'
 
+import Profile from './Profile'
+
 interface IConstructionElement {
     id: number
 	profileClass: ProfileClass
@@ -13,6 +15,8 @@ interface IConstructionElement {
 	steel: Steel
 	length: number
 	status: number
+
+    profile: Profile
 }
 
 class ConstructionElement {
@@ -27,6 +31,8 @@ class ConstructionElement {
 	length: number
 	status: number
 
+    profile: Profile
+
 	constructor(obj?: IConstructionElement) {
 		this.id = (obj && obj.id) || 0
 		this.profileClass = (obj && obj.profileClass) || null
@@ -38,6 +44,8 @@ class ConstructionElement {
 		this.steel = (obj && obj.steel) || null
 		this.length = (obj && obj.length) || 0
 		this.status = (obj && obj.status) || 0
+
+        this.profile = (obj && obj.profile) || null
 	}
 }
 

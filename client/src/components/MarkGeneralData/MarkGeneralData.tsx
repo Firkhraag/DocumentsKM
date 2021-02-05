@@ -460,11 +460,11 @@ const MarkGeneralData = () => {
 											onClick={() =>
 												setPopup({
 													isShown: true,
-													msg: `Вы действительно хотите удалить ${truncateText(
+													msg: `Вы действительно хотите удалить пункт "${truncateText(
 														p.text,
-														100,
+														33,
 														null
-													)}?`,
+													)}"?`,
 													onAccept: () =>
 														onDeleteClick(
 															index,

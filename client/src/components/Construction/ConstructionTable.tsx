@@ -6,6 +6,8 @@ import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
 import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
+import { ClipboardPlus } from 'react-bootstrap-icons'
+import { Files } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
@@ -26,6 +28,8 @@ const ConstructionTable = ({
 	const setPopup = useSetPopup()
 
 	const [constructions, setConstructions] = useState([] as Construction[])
+
+    const [copiedConstructionId, setCopiedConstructionId] = useState<number>(null)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -72,6 +76,12 @@ const ConstructionTable = ({
 					size={28}
 					className="pointer mrg-top"
 				/>
+                <ClipboardPlus
+					color={copiedConstructionId == null ? "#ccc" : "#666"}
+					size={28}
+					className={copiedConstructionId == null ? "mrg-top" : "pointer mrg-top"}
+                    style={{marginLeft: 10}}
+				/>
 			</div>
 
 			<Table bordered striped className="mrg-top no-bot-mrg shadow">
@@ -81,7 +91,8 @@ const ConstructionTable = ({
 						<th className="construction-name-col-width">
 							Вид конструкции
 						</th>
-						<th className="text-centered" colSpan={2}>
+                        <th>Шифр</th>
+						<th className="text-centered" colSpan={3}>
 							Действия
 						</th>
 					</tr>
@@ -94,6 +105,7 @@ const ConstructionTable = ({
 								<td className="construction-name-col-width">
 									{c.name}
 								</td>
+                                <td>{c.type.id}</td>
 								<td
 									onClick={() => {
 										setConstruction(c)
@@ -109,7 +121,7 @@ const ConstructionTable = ({
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить вид конструкции?`,
+											msg: `Вы действительно хотите удалить вид конструкции № ${index + 1}?`,
 											onAccept: () =>
 												onDeleteClick(index, c.id),
 											onCancel: () =>
@@ -119,6 +131,12 @@ const ConstructionTable = ({
 									className="pointer action-cell-width text-centered"
 								>
 									<Trash color="#666" size={26} />
+								</td>
+                                <td
+                                    onClick = {() => setCopiedConstructionId(c.id)}
+									className="pointer action-cell-width text-centered"
+								>
+									<Files color="#666" size={26} />
 								</td>
 							</tr>
 						)

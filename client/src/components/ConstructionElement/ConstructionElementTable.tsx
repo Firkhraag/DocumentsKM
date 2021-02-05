@@ -73,6 +73,7 @@ const ConstructionElementTable = ({
 			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
 					<tr>
+                        <th>№</th>
 						<th>вид профиля</th>
 						<th>имя профиля</th>
 						<th>марка стали</th>
@@ -86,6 +87,7 @@ const ConstructionElementTable = ({
 					{constructionElements.map((ce, index) => {
 						return (
 							<tr key={index}>
+                                <td>{index + 1}</td>
 								<td>{ce.profileClass.id}</td>
 								<td>{ce.profileName}</td>
 								<td>{ce.steel.id}</td>
@@ -105,7 +107,7 @@ const ConstructionElementTable = ({
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить элемент конструкции?`,
+											msg: `Вы действительно хотите удалить элемент конструкции № ${index + 1}?`,
 											onAccept: () =>
 												onDeleteClick(index, ce.id),
 											onCancel: () =>

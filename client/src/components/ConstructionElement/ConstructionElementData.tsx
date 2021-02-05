@@ -12,6 +12,7 @@ import ConstructionElement from '../../model/ConstructionElement'
 import ProfileClass from '../../model/ProfileClass'
 import ProfileType from '../../model/ProfileType'
 import Steel from '../../model/Steel'
+import Profile from '../../model/Profile'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
@@ -46,6 +47,8 @@ const ConstructionElementData = ({
 					steel: null,
 					length: NaN,
 					status: NaN,
+
+					profile: null,
 			  }
 			: constructionElement
 	)
@@ -53,8 +56,16 @@ const ConstructionElementData = ({
 		profileClasses: [] as ProfileClass[],
 		profileTypes: [] as ProfileType[],
 		steel: [] as Steel[],
+		profiles: [] as Profile[],
 	})
+
+	// const [profiles, setProfiles] = useState<Profile[]>([])
+
 	const [errMsg, setErrMsg] = useState('')
+
+    // TBD
+    let width = 1
+    let thickness = 1
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -64,17 +75,40 @@ const ConstructionElementData = ({
 			}
 			const fetchData = async () => {
 				try {
-					const profileClassResponse = await httpClient.get(
+					const profileClassesResponse = await httpClient.get(
 						`/profile-classes`
 					)
-					const profileTypeResponse = await httpClient.get(
-						`/profile-types`
-					)
-                    const steelResponse = await httpClient.get(`/steel`)
-                    console.log(profileClassResponse.data)
+					// const profileTypeResponse = await httpClient.get(
+					// 	`/profile-types`
+					// )
+					// const profiles = await httpClient.get(
+					// 	`/profiles`
+					// )
+					const steelResponse = await httpClient.get(`/steel`)
+
 					setOptionsObject({
-						profileClasses: profileClassResponse.data,
-						profileTypes: profileTypeResponse.data,
+						...optionsObject,
+						profileClasses: profileClassesResponse.data,
+						// profileTypes: profileTypeResponse.data,
+						steel: steelResponse.data,
+					})
+
+					if (!isCreateMode) {
+						const profilesResponse = await httpClient.get(
+							`/profile-classes/${selectedObject.profileClass.id}/profiles`
+						)
+						setOptionsObject({
+							...optionsObject,
+							profileClasses: profileClassesResponse.data,
+							// profileTypes: profileTypeResponse.data,
+							steel: steelResponse.data,
+							profiles: profilesResponse.data,
+						})
+						return
+					}
+					setOptionsObject({
+						...optionsObject,
+						profileClasses: profileClassesResponse.data,
 						steel: steelResponse.data,
 					})
 				} catch (e) {
@@ -85,11 +119,12 @@ const ConstructionElementData = ({
 		}
 	}, [mark])
 
-	const onProfileClassSelect = (id: number) => {
+	const onProfileClassSelect = async (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
 				profileClass: null,
+				profile: null,
 			})
 		}
 		const v = getFromOptions(
@@ -98,25 +133,41 @@ const ConstructionElementData = ({
 			selectedObject.profileClass
 		)
 		if (v != null) {
+			const profilesResponse = await httpClient.get(
+				`/profile-classes/${selectedObject.profileClass.id}/profiles`
+			)
+			// cachedProfiles.set(v.id, profileResponse.data)
+			setOptionsObject({
+				...optionsObject,
+				profiles: profilesResponse.data,
+			})
+
 			setSelectedObject({
 				...selectedObject,
 				profileClass: v,
+				profile: null,
 			})
 		}
 	}
 
-	const onProfileNameChange = (event: React.FormEvent<HTMLInputElement>) => {
-		setSelectedObject({
-			...selectedObject,
-			profileName: event.currentTarget.value,
-		})
-	}
-
-	const onSymbolChange = (event: React.FormEvent<HTMLInputElement>) => {
-		setSelectedObject({
-			...selectedObject,
-			symbol: event.currentTarget.value,
-		})
+	const onProfileNameSelect = (id: number) => {
+		if (id == null) {
+			setSelectedObject({
+				...selectedObject,
+				profile: null,
+			})
+		}
+		const v = getFromOptions(
+			id,
+			optionsObject.profiles,
+			selectedObject.profile
+		)
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				profile: v,
+			})
+		}
 	}
 
 	const onWeightChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -314,17 +365,11 @@ const ConstructionElementData = ({
 			<h1 className="text-centered">
 				{isCreateMode
 					? 'Создание элемента конструкции'
-					: 'Данные элемента конструкцииа'}
+					: 'Данные элемента конструкции'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-				<Form.Group className="flex-cent-v">
-					<Form.Label
-						className="no-bot-mrg"
-						htmlFor="profileClass"
-						style={{ marginRight: '4.3em' }}
-					>
-						Вид профиля
-					</Form.Label>
+				<Form.Group>
+					<Form.Label htmlFor="profileClass">Вид профиля</Form.Label>
 					<Select
 						inputId="profileClass"
 						maxMenuHeight={250}
@@ -332,7 +377,6 @@ const ConstructionElementData = ({
 						isSearchable={true}
 						placeholder="Выберите вид профиля"
 						noOptionsMessage={() => 'Вид профиля не найден'}
-						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
 							onProfileClassSelect((selectedOption as any)?.value)
 						}
@@ -354,80 +398,120 @@ const ConstructionElementData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
-						htmlFor="profileName"
-						style={{ marginRight: '3.9em' }}
+						htmlFor="name"
+						style={{ marginRight: '4.3em' }}
 					>
 						Имя профиля
 					</Form.Label>
-					<Form.Control
-						id="profileName"
-						type="text"
-						placeholder="Введите имя профиля"
+					<Select
+						inputId="name"
+						maxMenuHeight={250}
+						isClearable={true}
+						isSearchable={true}
+						placeholder="Выберите имя профиля"
+						noOptionsMessage={() => 'Имя профиля не найдено'}
 						className="auto-width flex-grow"
-						autoComplete="off"
-						defaultValue={selectedObject.profileName}
-						onBlur={onProfileNameChange}
+						onChange={(selectedOption) =>
+							onProfileNameSelect((selectedOption as any)?.value)
+						}
+						value={
+							selectedObject.profile == null
+								? null
+								: {
+										value: selectedObject.profile.id,
+										label: selectedObject.profile.name,
+								  }
+						}
+						options={optionsObject.profiles.map((p) => {
+							return {
+								value: p.id,
+								label: p.name,
+							}
+						})}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
-						htmlFor="symbol"
 						style={{ marginRight: '4.05em' }}
 					>
 						Символ профиля
 					</Form.Label>
 					<Form.Control
-						id="symbol"
 						type="text"
-						placeholder="Введите символ профиля"
 						className="auto-width flex-grow"
-						autoComplete="off"
-						defaultValue={selectedObject.symbol}
-						onBlur={onSymbolChange}
+						value={
+							selectedObject.profile == null
+								? ''
+								: selectedObject.profileClass.id == 16 ||
+								  selectedObject.profileClass.id == 17
+								? '-'
+								: selectedObject.profile.symbol
+						}
+						readOnly={true}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
-						htmlFor="weight"
 						style={{ marginRight: '1.6em' }}
 					>
 						Вес 1 м профиля, кг
 					</Form.Label>
 					<Form.Control
-						id="weight"
 						type="text"
-						placeholder="Введите вес профиля"
 						className="auto-width flex-grow"
-						autoComplete="off"
-						defaultValue={
-							isNaN(selectedObject.weight)
+						value={
+							selectedObject.profile == null
 								? ''
-								: selectedObject.weight
+								: selectedObject.profileClass.id == 16 ||
+								  selectedObject.profileClass.id == 17
+								? 0.00785 * width * thickness
+								: selectedObject.profile.weight
 						}
-						onBlur={onWeightChange}
+						readOnly={true}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				{/* <Form.Group className="mrg-top-2 flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="surfaceArea"
 						style={{ marginRight: '1em' }}
 					>
-						Площадь поверхности
+						Площадь развернутой поверхности 1 м профиля, 100 м<sup>2</sup>
 					</Form.Label>
 					<Form.Control
 						id="surfaceArea"
 						type="text"
 						placeholder="Введите площадь поверхности"
 						className="auto-width flex-grow"
+						autoComplete="off"
+						defaultValue={
+							isNaN(selectedObject.surfaceArea)
+								? ''
+								: selectedObject.surfaceArea
+						}
+						onBlur={onSurfaceAreaChange}
+					/>
+				</Form.Group> */}
+
+                <Form.Group>
+					<Form.Label
+						htmlFor="surfaceArea"
+					>
+						Площадь развернутой поверхности 1 м профиля, 100 м<sup>2</sup>
+					</Form.Label>
+					<Form.Control
+						id="surfaceArea"
+						type="text"
+						placeholder="Введите площадь поверхности"
 						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.surfaceArea)

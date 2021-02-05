@@ -115,7 +115,7 @@ const StandardConstructionTable = ({
 										onClick={() =>
 											setPopup({
 												isShown: true,
-												msg: `Вы действительно хотите удалить типовую конструкцию?`,
+												msg: `Вы действительно хотите удалить типовую конструкцию № ${index + 1}?`,
 												onAccept: () =>
 													onDeleteClick(index, sc.id),
 												onCancel: () =>

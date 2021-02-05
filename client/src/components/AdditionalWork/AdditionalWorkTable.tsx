@@ -140,7 +140,7 @@ const AdditionalWorkTable = ({
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить исполнителя?`,
+											msg: `Вы действительно хотите удалить исполнителя ${v.employee.name}?`,
 											onAccept: () =>
 												onDeleteClick(index, v.id),
 											onCancel: () =>
