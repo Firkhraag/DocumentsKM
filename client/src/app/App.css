@@ -114,6 +114,10 @@
     width: 5em;
 }
 
+.profile-class-name-col-width {
+    width: 40em;
+}
+
 /* Linked Doc */
 .linked-doc-name-col-width {
 	width: 35em;

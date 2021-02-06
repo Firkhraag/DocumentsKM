@@ -58,8 +58,8 @@ const ConstructionBoltTable = ({
 	}
 
 	return (
-        <div>
-			<h2 className="bold text-centered">Высокопрочные болты</h2>
+        <div className="mrg-bot">
+			<h2 className="mrg-top-3  bold text-centered">Высокопрочные болты</h2>
 			<PlusCircle
 				color="#666"
 				size={28}
@@ -70,15 +70,15 @@ const ConstructionBoltTable = ({
 					)
 				}
 			/>
-			<Table bordered striped className="mrg-top no-bot-mrg">
+			<Table bordered striped className="mrg-top">
 				<thead>
 					<tr>
                         <th>№</th>
-						<th>диаметр болта, мм</th>
-						<th>толщина пакета, мм</th>
-						<th>болтов, шт.</th>
-						<th>гаек на болт, шт.</th>
-						<th>шайб на болт, шт.</th>
+						<th>Диаметр болта, мм</th>
+						<th>Толщина пакета, мм</th>
+						<th>Болтов, шт.</th>
+						<th>Гаек на болт, шт.</th>
+						<th>Шайб на болт, шт.</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>

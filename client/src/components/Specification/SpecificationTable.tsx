@@ -78,6 +78,10 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 				inputElement.checked = true
 			}
 			setCurrentSpecId(id)
+            for (const s of specifications) {
+                s.isCurrent = false
+            }
+            specifications[row].isCurrent = true
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')

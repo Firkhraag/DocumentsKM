@@ -640,6 +640,13 @@ const ConstructionData = ({
 				</Button>
 			</div>
 
+            {isCreateMode ? null : (
+				<ConstructionElementTable
+					specificationId={specificationId}
+					constructionId={selectedObject.id}
+					setConstructionElement={setConstructionElement}
+				/>
+			)}
 			{isCreateMode ? null : (
 				<ConstructionBoltTable
 					specificationId={specificationId}
@@ -647,13 +654,7 @@ const ConstructionData = ({
 					setConstructionBolt={setConstructionBolt}
 				/>
 			)}
-			{isCreateMode ? null : (
-				<ConstructionElementTable
-					specificationId={specificationId}
-					constructionId={selectedObject.id}
-					setConstructionElement={setConstructionElement}
-				/>
-			)}
+			
 		</div>
 	)
 }

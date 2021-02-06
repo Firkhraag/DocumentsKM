@@ -58,8 +58,8 @@ const ConstructionElementTable = ({
 	}
 
 	return (
-		<div className="mrg-bot">
-			<h2 className="mrg-top-3 bold text-centered">Перечень элементов</h2>
+		<div>
+			<h2 className="bold text-centered">Перечень элементов</h2>
 			<PlusCircle
 				color="#666"
 				size={28}
@@ -74,10 +74,10 @@ const ConstructionElementTable = ({
 				<thead>
 					<tr>
                         <th>№</th>
-						<th>вид профиля</th>
-						<th>имя профиля</th>
-						<th>марка стали</th>
-						<th>длина площадь</th>
+						<th className="profile-class-name-col-width">Вид профиля</th>
+						<th>Имя профиля</th>
+						<th>Марка стали</th>
+						<th>Длина площадь</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
@@ -88,7 +88,7 @@ const ConstructionElementTable = ({
 						return (
 							<tr key={index}>
                                 <td>{index + 1}</td>
-								<td>{ce.profileClass.id}</td>
+								<td className="profile-class-name-col-width">{ce.profileClass.name}</td>
 								<td>{ce.profileName}</td>
 								<td>{ce.steel.id}</td>
 								<td>{ce.surfaceArea}</td>

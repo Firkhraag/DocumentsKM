@@ -63,9 +63,12 @@ const ConstructionElementData = ({
 
 	const [errMsg, setErrMsg] = useState('')
 
+    const [width, setWidth] = useState<number>(null)
+    const [thickness, setThickness] = useState<number>(null)
+
     // TBD
-    let width = 1
-    let thickness = 1
+    // let width = 1
+    // let thickness = 1
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -150,7 +153,7 @@ const ConstructionElementData = ({
 		}
 	}
 
-	const onProfileNameSelect = (id: number) => {
+	const onProfileSelect = (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
@@ -167,6 +170,13 @@ const ConstructionElementData = ({
 				...selectedObject,
 				profile: v,
 			})
+            if (selectedObject.profileClass.id == 16 || selectedObject.profileClass.id == 17) {
+                var splitted = v.name.split("*", 2);
+                if (splitted.length > 1) {
+                    setWidth(splitted[0])
+                    setThickness(splitted[1])
+                }
+            }
 		}
 	}
 
@@ -233,6 +243,11 @@ const ConstructionElementData = ({
 			})
 		}
 	}
+
+    const getWidthAndThickness = (name: string) => {
+        var splitted = name.split("*", 2);
+        return (parseFloat(splitted[0]), parseFloat(splitted[1]))
+    }
 
 	const checkIfValid = () => {
 		if (selectedObject.profileClass == null) {
@@ -367,7 +382,235 @@ const ConstructionElementData = ({
 					? 'Создание элемента конструкции'
 					: 'Данные элемента конструкции'}
 			</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
+
+
+
+
+
+
+
+            <div className="flex">
+				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
+                <Form.Group>
+                        <Form.Label
+                        >
+                            Символ профиля
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={
+                                selectedObject.profile == null
+                                    ? ''
+                                    : selectedObject.profileClass.id == 16 ||
+                                    selectedObject.profileClass.id == 17
+                                    ? '-'
+                                    : selectedObject.profile.symbol
+                            }
+                            readOnly={true}
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label
+                        >
+                            Вес 1 м профиля, кг
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={
+                                selectedObject.profile == null
+                                    ? ''
+                                    : selectedObject.profileClass.id == 16 ||
+                                    selectedObject.profileClass.id == 17
+                                    ? Math.round(0.00785 * width * thickness * 1000000000) / 1000000000
+                                    : selectedObject.profile.weight
+                            }
+                            readOnly={true}
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label
+                        >
+                            Площадь развернутой поверхности 1 м профиля, 100 м<sup>2</sup>
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            autoComplete="off"
+                            value={
+                                selectedObject.profile == null
+                                    ? ''
+                                    : selectedObject.profileClass.id == 16 ||
+                                    selectedObject.profileClass.id == 17
+                                    ? Math.round(0.00002 * (width + thickness) * 1000000000) / 1000000000
+                                    : Math.round(selectedObject.profile.area * 0.01 * 1000000000) / 1000000000
+                            }
+                            readOnly={true}
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label
+                        >
+                            Тип профиля
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={
+                                selectedObject.profile == null
+                                    ? ''
+                                    : selectedObject.profileClass.id == 16 ||
+                                    selectedObject.profileClass.id == 17
+                                    ? Math.round(0.00785 * width * thickness * 1000000000) / 1000000000
+                                    : selectedObject.profile.type.name
+                            }
+                            readOnly={true}
+                        />
+                    </Form.Group>
+				</div>
+
+				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
+                    <Form.Group>
+                        <Form.Label htmlFor="profileClass">Вид профиля</Form.Label>
+                        <Select
+                            inputId="profileClass"
+                            maxMenuHeight={250}
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder="Выберите вид профиля"
+                            noOptionsMessage={() => 'Вид профиля не найден'}
+                            onChange={(selectedOption) =>
+                                onProfileClassSelect((selectedOption as any)?.value)
+                            }
+                            value={
+                                selectedObject.profileClass == null
+                                    ? null
+                                    : {
+                                            value: selectedObject.profileClass.id,
+                                            label: selectedObject.profileClass.name,
+                                    }
+                            }
+                            options={optionsObject.profileClasses.map((pc) => {
+                                return {
+                                    value: pc.id,
+                                    label: pc.name,
+                                }
+                            })}
+                            styles={reactSelectStyle}
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label
+                            htmlFor="name"
+                        >
+                            Имя профиля
+                        </Form.Label>
+                        <Select
+                            inputId="name"
+                            maxMenuHeight={250}
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder="Выберите имя профиля"
+                            noOptionsMessage={() => 'Имя профиля не найдено'}
+                            onChange={(selectedOption) =>
+                                onProfileSelect((selectedOption as any)?.value)
+                            }
+                            value={
+                                selectedObject.profile == null
+                                    ? null
+                                    : {
+                                            value: selectedObject.profile.id,
+                                            label: selectedObject.profile.name,
+                                    }
+                            }
+                            options={optionsObject.profiles.map((p) => {
+                                return {
+                                    value: p.id,
+                                    label: p.name,
+                                }
+                            })}
+                            styles={reactSelectStyle}
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label
+                            htmlFor="steel"
+                        >
+                            Марка стали
+                        </Form.Label>
+                        <Select
+                            inputId="steel"
+                            maxMenuHeight={250}
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder="Выберите марку стали"
+                            noOptionsMessage={() => 'Марки стали не найдены'}
+                            onChange={(selectedOption) =>
+                                onSteelSelect((selectedOption as any)?.value)
+                            }
+                            value={
+                                selectedObject.steel == null
+                                    ? null
+                                    : {
+                                            value: selectedObject.steel.id,
+                                            label: selectedObject.steel.name + " (" + selectedObject.steel.standard + ")",
+                                    }
+                            }
+                            options={optionsObject.steel.map((s) => {
+                                return {
+                                    value: s.id,
+                                    label: s.name + " (" + s.standard + ")",
+                                }
+                            })}
+                            styles={reactSelectStyle}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="no-bot-mrg">
+                        <Form.Label
+                            htmlFor="length"
+                        >
+                            Длина (м) или площадь (м<sup>2</sup>)
+                        </Form.Label>
+                        <Form.Control
+                            id="length"
+                            type="text"
+                            placeholder="Введите длину или площадь элемента"
+                            autoComplete="off"
+                            defaultValue={
+                                isNaN(selectedObject.length)
+                                    ? ''
+                                    : selectedObject.length
+                            }
+                            onBlur={onLengthChange}
+                        />
+                    </Form.Group>
+
+                    <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+
+                    <Button
+                        variant="secondary"
+                        className="btn-mrg-top-2 full-width"
+                        onClick={
+                            isCreateMode ? onCreateButtonClick : onChangeButtonClick
+                        }
+                    >
+                        {isCreateMode
+                            ? 'Добавить элемент конструкции'
+                            : 'Сохранить изменения'}
+                    </Button>
+				</div>
+			</div>
+
+
+
+
+
+
+
+			{/* <div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
 				<Form.Group>
 					<Form.Label htmlFor="profileClass">Вид профиля</Form.Label>
 					<Select
@@ -415,7 +658,7 @@ const ConstructionElementData = ({
 						noOptionsMessage={() => 'Имя профиля не найдено'}
 						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
-							onProfileNameSelect((selectedOption as any)?.value)
+							onProfileSelect((selectedOption as any)?.value)
 						}
 						value={
 							selectedObject.profile == null
@@ -472,98 +715,58 @@ const ConstructionElementData = ({
 								? ''
 								: selectedObject.profileClass.id == 16 ||
 								  selectedObject.profileClass.id == 17
-								? 0.00785 * width * thickness
+								? Math.round(0.00785 * width * thickness * 1000000000) / 1000000000
 								: selectedObject.profile.weight
 						}
 						readOnly={true}
 					/>
 				</Form.Group>
 
-				{/* <Form.Group className="mrg-top-2 flex-cent-v">
-					<Form.Label
-						className="no-bot-mrg"
-						htmlFor="surfaceArea"
-						style={{ marginRight: '1em' }}
-					>
-						Площадь развернутой поверхности 1 м профиля, 100 м<sup>2</sup>
-					</Form.Label>
-					<Form.Control
-						id="surfaceArea"
-						type="text"
-						placeholder="Введите площадь поверхности"
-						className="auto-width flex-grow"
-						autoComplete="off"
-						defaultValue={
-							isNaN(selectedObject.surfaceArea)
-								? ''
-								: selectedObject.surfaceArea
-						}
-						onBlur={onSurfaceAreaChange}
-					/>
-				</Form.Group> */}
-
                 <Form.Group>
 					<Form.Label
-						htmlFor="surfaceArea"
 					>
 						Площадь развернутой поверхности 1 м профиля, 100 м<sup>2</sup>
 					</Form.Label>
 					<Form.Control
-						id="surfaceArea"
 						type="text"
-						placeholder="Введите площадь поверхности"
 						autoComplete="off"
-						defaultValue={
-							isNaN(selectedObject.surfaceArea)
+						value={
+							selectedObject.profile == null
 								? ''
-								: selectedObject.surfaceArea
+								: selectedObject.profileClass.id == 16 ||
+								  selectedObject.profileClass.id == 17
+								? Math.round(0.00002 * (width + thickness) * 1000000000) / 1000000000
+								: Math.round(selectedObject.profile.area * 0.01 * 1000000000) / 1000000000
 						}
-						onBlur={onSurfaceAreaChange}
+						readOnly={true}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v">
+                <Form.Group className="mrg-top-2 flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
-						htmlFor="profileType"
-						style={{ marginRight: '4.3em' }}
+						style={{ marginRight: '1.6em' }}
 					>
 						Тип профиля
 					</Form.Label>
-					<Select
-						inputId="profileType"
-						maxMenuHeight={250}
-						isClearable={true}
-						isSearchable={true}
-						placeholder="Выберите тип профиля"
-						noOptionsMessage={() => 'Тип профиля не найден'}
+					<Form.Control
+						type="text"
 						className="auto-width flex-grow"
-						onChange={(selectedOption) =>
-							onProfileTypeSelect((selectedOption as any)?.value)
-						}
 						value={
-							selectedObject.profileType == null
-								? null
-								: {
-										value: selectedObject.profileType.id,
-										label: selectedObject.profileType.name,
-								  }
+							selectedObject.profile == null
+								? ''
+								: selectedObject.profileClass.id == 16 ||
+								  selectedObject.profileClass.id == 17
+								? Math.round(0.00785 * width * thickness * 1000000000) / 1000000000
+								: selectedObject.profile.type.name
 						}
-						options={optionsObject.profileTypes.map((pt) => {
-							return {
-								value: pt.id,
-								label: pt.name,
-							}
-						})}
-						styles={reactSelectStyle}
+						readOnly={true}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v">
+				<Form.Group>
 					<Form.Label
-						className="no-bot-mrg"
 						htmlFor="steel"
-						style={{ marginRight: '4.3em' }}
 					>
 						Марка стали
 					</Form.Label>
@@ -574,7 +777,6 @@ const ConstructionElementData = ({
 						isSearchable={true}
 						placeholder="Выберите марку стали"
 						noOptionsMessage={() => 'Марки стали не найдены'}
-						className="auto-width flex-grow"
 						onChange={(selectedOption) =>
 							onSteelSelect((selectedOption as any)?.value)
 						}
@@ -583,26 +785,26 @@ const ConstructionElementData = ({
 								? null
 								: {
 										value: selectedObject.steel.id,
-										label: selectedObject.steel.name,
+										label: selectedObject.steel.name + " (" + selectedObject.steel.standard + ")",
 								  }
 						}
 						options={optionsObject.steel.map((s) => {
 							return {
 								value: s.id,
-								label: s.name,
+								label: s.name + " (" + s.standard + ")",
 							}
 						})}
 						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 flex-cent-v no-bot-mrg">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="length"
 						style={{ marginRight: '1.6em' }}
 					>
-						Длина поверхности
+						Длина (м) или площадь (м<sup>2</sup>)
 					</Form.Label>
 					<Form.Control
 						id="length"
@@ -619,29 +821,6 @@ const ConstructionElementData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v no-bot-mrg">
-					<Form.Label
-						className="no-bot-mrg"
-						htmlFor="status"
-						style={{ marginRight: '1em' }}
-					>
-						Статус
-					</Form.Label>
-					<Form.Control
-						id="status"
-						type="text"
-						placeholder="Введите статус"
-						className="auto-width flex-grow"
-						autoComplete="off"
-						defaultValue={
-							isNaN(selectedObject.status)
-								? ''
-								: selectedObject.status
-						}
-						onBlur={onStatusChange}
-					/>
-				</Form.Group>
-
 				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
 				<Button
@@ -655,7 +834,7 @@ const ConstructionElementData = ({
 						? 'Добавить элемент конструкции'
 						: 'Сохранить изменения'}
 				</Button>
-			</div>
+			</div> */}
 		</div>
 	)
 }
