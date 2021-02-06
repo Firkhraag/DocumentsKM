@@ -43,6 +43,9 @@ const AuthApp = () => {
 	const [subnode, setSubnode] = useState(null)
 	const [specification, setSpecification] = useState<Specification>(null)
 	const [construction, setConstruction] = useState<Construction>(null)
+	const [copiedConstruction, setCopiedConstruction] = useState<Construction>(
+		null
+	)
 	const [
 		standardConstruction,
 		setStandardConstruction,
@@ -116,6 +119,12 @@ const AuthApp = () => {
 									<SpecificationData
 										specification={specification}
 										setConstruction={setConstruction}
+										copiedConstruction={
+											copiedConstruction
+										}
+										setCopiedConstruction={
+											setCopiedConstruction
+										}
 										setStandardConstruction={
 											setStandardConstruction
 										}

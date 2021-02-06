@@ -151,6 +151,7 @@ namespace DocumentsKM
             services.AddScoped<ISteelService, SteelService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IConstructionElementService, ConstructionElementService>();
+            services.AddScoped<IConstructionCopyService, ConstructionCopyService>();
 
             services.AddScoped<IDocService, DocService>();
             services.AddScoped<ISheetNameService, SheetNameService>();

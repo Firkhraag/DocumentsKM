@@ -16,11 +16,15 @@ import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type ConstructionTableProps = {
 	setConstruction: (c: Construction) => void
+	copiedConstruction: Construction
+	setCopiedConstruction: (c: Construction) => void
 	specificationId: number
 }
 
 const ConstructionTable = ({
 	setConstruction,
+	copiedConstruction,
+	setCopiedConstruction,
 	specificationId,
 }: ConstructionTableProps) => {
 	const mark = useMark()
@@ -28,8 +32,6 @@ const ConstructionTable = ({
 	const setPopup = useSetPopup()
 
 	const [constructions, setConstructions] = useState([] as Construction[])
-
-    const [copiedConstructionId, setCopiedConstructionId] = useState<number>(null)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -55,10 +57,29 @@ const ConstructionTable = ({
 		try {
 			await httpClient.delete(`/constructions/${id}`)
 			constructions.splice(row, 1)
+            if (id == copiedConstruction.id) {
+                setCopiedConstruction(null)
+            }
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
+	}
+
+	const onPasteClick = async () => {
+		try {
+            await httpClient.post(
+                `/specifications/${specificationId}/construction-copy`,
+                {
+                    id: copiedConstruction.id,
+                }
+            )
+            var arr = [...constructions, copiedConstruction]
+            arr.sort(v => v.type.id)
+            setConstructions(arr)
+        } catch (e) {
+            console.log('Error', e)
+        }
 	}
 
 	return (
@@ -76,11 +97,23 @@ const ConstructionTable = ({
 					size={28}
 					className="pointer mrg-top"
 				/>
-                <ClipboardPlus
-					color={copiedConstructionId == null ? "#ccc" : "#666"}
+				<ClipboardPlus
+					onClick={
+						copiedConstruction == null ||
+						constructions
+							.map((v) => v.id)
+							.includes(copiedConstruction.id)
+							? null
+							: onPasteClick
+					}
+					color={copiedConstruction == null ? '#ccc' : '#666'}
 					size={28}
-					className={copiedConstructionId == null ? "mrg-top" : "pointer mrg-top"}
-                    style={{marginLeft: 10}}
+					className={
+						copiedConstruction == null
+							? 'mrg-top'
+							: 'pointer mrg-top'
+					}
+					style={{ marginLeft: 10 }}
 				/>
 			</div>
 
@@ -91,7 +124,7 @@ const ConstructionTable = ({
 						<th className="construction-name-col-width">
 							Вид конструкции
 						</th>
-                        <th>Шифр</th>
+						<th>Шифр</th>
 						<th className="text-centered" colSpan={3}>
 							Действия
 						</th>
@@ -105,7 +138,7 @@ const ConstructionTable = ({
 								<td className="construction-name-col-width">
 									{c.name}
 								</td>
-                                <td>{c.type.id}</td>
+								<td>{c.type.id}</td>
 								<td
 									onClick={() => {
 										setConstruction(c)
@@ -121,7 +154,9 @@ const ConstructionTable = ({
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить вид конструкции № ${index + 1}?`,
+											msg: `Вы действительно хотите удалить вид конструкции № ${
+												index + 1
+											}?`,
 											onAccept: () =>
 												onDeleteClick(index, c.id),
 											onCancel: () =>
@@ -132,8 +167,10 @@ const ConstructionTable = ({
 								>
 									<Trash color="#666" size={26} />
 								</td>
-                                <td
-                                    onClick = {() => setCopiedConstructionId(c.id)}
+								<td
+									onClick={() =>
+										setCopiedConstruction(c)
+									}
 									className="pointer action-cell-width text-centered"
 								>
 									<Files color="#666" size={26} />

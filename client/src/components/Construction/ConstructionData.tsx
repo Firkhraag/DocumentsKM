@@ -178,11 +178,9 @@ const ConstructionData = ({
 				valuation: v.valuation,
 			})
 		}
-    }
-    
-    const onNameChange = (
-		event: React.ChangeEvent<HTMLTextAreaElement>
-	) => {
+	}
+
+	const onNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			name: event.currentTarget.value,
@@ -463,8 +461,8 @@ const ConstructionData = ({
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}
-                        value={selectedObject.name}
-                        onChange={onNameChange}
+						value={selectedObject.name}
+						onChange={onNameChange}
 					/>
 				</Form.Group>
 
@@ -640,7 +638,7 @@ const ConstructionData = ({
 				</Button>
 			</div>
 
-            {isCreateMode ? null : (
+			{isCreateMode ? null : (
 				<ConstructionElementTable
 					specificationId={specificationId}
 					constructionId={selectedObject.id}
@@ -654,7 +652,6 @@ const ConstructionData = ({
 					setConstructionBolt={setConstructionBolt}
 				/>
 			)}
-			
 		</div>
 	)
 }

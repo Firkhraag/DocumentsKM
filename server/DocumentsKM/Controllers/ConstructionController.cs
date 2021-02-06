@@ -18,13 +18,16 @@ namespace DocumentsKM.Controllers
     public class ConstructionsController : ControllerBase
     {
         private readonly IConstructionService _service;
+        private readonly IConstructionCopyService _constructionCopyService;
         private readonly IMapper _mapper;
 
         public ConstructionsController(
             IConstructionService constructionService,
+            IConstructionCopyService constructionCopyService,
             IMapper mapper)
         {
             _service = constructionService;
+            _constructionCopyService = constructionCopyService;
             _mapper = mapper;
         }
 
@@ -106,6 +109,33 @@ namespace DocumentsKM.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpPost, Route("specifications/{specificationId}/construction-copy")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public ActionResult<ConstructionResponse> Copy(
+            int specificationId,
+            [FromBody] IdRequest idRequest)
+        {
+            try
+            {
+                _constructionCopyService.Copy(
+                    idRequest.Id,
+                    specificationId);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (ConflictException)
+            {
+                return Conflict();
+            }
+            return NoContent();
         }
     }
 }
