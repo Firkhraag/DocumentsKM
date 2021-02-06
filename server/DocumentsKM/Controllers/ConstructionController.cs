@@ -18,16 +18,16 @@ namespace DocumentsKM.Controllers
     public class ConstructionsController : ControllerBase
     {
         private readonly IConstructionService _service;
-        private readonly IConstructionCopyService _constructionCopyService;
+        // private readonly IConstructionCopyService _constructionCopyService;
         private readonly IMapper _mapper;
 
         public ConstructionsController(
             IConstructionService constructionService,
-            IConstructionCopyService constructionCopyService,
+            // IConstructionCopyService constructionCopyService,
             IMapper mapper)
         {
             _service = constructionService;
-            _constructionCopyService = constructionCopyService;
+            // _constructionCopyService = constructionCopyService;
             _mapper = mapper;
         }
 
@@ -123,7 +123,7 @@ namespace DocumentsKM.Controllers
         {
             try
             {
-                _constructionCopyService.Copy(
+                _service.Copy(
                     idRequest.Id,
                     specificationId);
             }

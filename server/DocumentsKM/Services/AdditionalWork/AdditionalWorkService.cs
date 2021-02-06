@@ -132,9 +132,10 @@ namespace DocumentsKM.Services
             var foundAdditionalWork = _repository.GetById(id);
             if (foundAdditionalWork == null)
                 throw new ArgumentNullException(nameof(foundAdditionalWork));
+            var markId = foundAdditionalWork.Mark.Id;
             _repository.Delete(foundAdditionalWork);
 
-            var foundMark = _markRepo.GetById(foundAdditionalWork.Mark.Id);
+            var foundMark = _markRepo.GetById(markId);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }

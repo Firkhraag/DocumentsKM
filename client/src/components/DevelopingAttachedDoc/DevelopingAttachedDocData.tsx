@@ -337,6 +337,7 @@ const DevelopingAttachedDocData = ({
 						id="numOfPages"
 						type="text"
 						placeholder="Введите число листов"
+						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.numOfPages)
 								? ''
@@ -359,6 +360,7 @@ const DevelopingAttachedDocData = ({
 						id="format"
 						type="text"
 						placeholder="Введите формат"
+						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.form)
 								? ''

@@ -20,8 +20,18 @@ namespace DocumentsKM.Data
                 v => v.Mark.Id == markId).ToList();
         }
 
-        public Specification GetById(int id)
+        public Specification GetById(int id, bool withEagerLoading = false)
         {
+            if (withEagerLoading)
+            {
+                return _context.Specifications.AsSingleQuery().Include(
+                    v => v.Constructions).ThenInclude(
+                        v => v.ConstructionElements).Include(
+                            v => v.Constructions).ThenInclude(
+                                v => v.ConstructionBolts).Include(
+                                    v => v.StandardConstructions).SingleOrDefault(
+                                        v => v.Id == id);
+            }
             return _context.Specifications.SingleOrDefault(v => v.Id == id);
         }
 

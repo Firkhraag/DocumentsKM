@@ -210,6 +210,7 @@ const AdditionalWorkData = ({
 						id="numOfPages"
 						type="text"
 						placeholder="Введите число листов"
+						autoComplete="off"
 						className="auto-width flex-grow"
 						defaultValue={
 							isNaN(selectedObject.valuation)
@@ -232,6 +233,7 @@ const AdditionalWorkData = ({
 						id="format"
 						type="text"
 						placeholder="Введите число строк"
+						autoComplete="off"
 						className="auto-width flex-grow"
 						defaultValue={
 							isNaN(selectedObject.metalOrder)

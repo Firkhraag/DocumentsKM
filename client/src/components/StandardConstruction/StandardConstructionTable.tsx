@@ -80,10 +80,14 @@ const StandardConstructionTable = ({
 					<thead>
 						<tr>
 							<th>№</th>
-							<th className="st-construction-name-col-width">Наименование</th>
+							<th className="st-construction-name-col-width">
+								Наименование
+							</th>
 							<th>Количество, шт.</th>
 							<th>№ листа</th>
-							<th className="st-construction-other-col-width">Вес, т</th>
+							<th className="st-construction-other-col-width">
+								Вес, т
+							</th>
 							<th className="text-centered" colSpan={2}>
 								Действия
 							</th>
@@ -99,7 +103,9 @@ const StandardConstructionTable = ({
 									</td>
 									<td>{sc.num}</td>
 									<td>{sc.sheet}</td>
-									<td className="st-construction-other-col-width">{sc.weight}</td>
+									<td className="st-construction-other-col-width">
+										{sc.weight}
+									</td>
 									<td
 										onClick={() => {
 											setStandardConstruction(sc)
@@ -115,7 +121,9 @@ const StandardConstructionTable = ({
 										onClick={() =>
 											setPopup({
 												isShown: true,
-												msg: `Вы действительно хотите удалить типовую конструкцию № ${index + 1}?`,
+												msg: `Вы действительно хотите удалить типовую конструкцию № ${
+													index + 1
+												}?`,
 												onAccept: () =>
 													onDeleteClick(index, sc.id),
 												onCancel: () =>

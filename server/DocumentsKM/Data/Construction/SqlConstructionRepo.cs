@@ -22,8 +22,15 @@ namespace DocumentsKM.Data
                     v => v.Type.Id).ToList();
         }
 
-        public Construction GetById(int id)
+        public Construction GetById(int id, bool withEagerLoading = false)
         {
+            if (withEagerLoading)
+            {
+                return _context.Constructions.AsSingleQuery().Include(
+                    v => v.ConstructionElements).Include(
+                        v => v.ConstructionBolts).SingleOrDefault(
+                            v => v.Id == id);
+            }
             return _context.Constructions.SingleOrDefault(v => v.Id == id);
         }
 

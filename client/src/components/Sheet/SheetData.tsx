@@ -298,6 +298,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						id="format"
 						type="text"
 						placeholder="Введите формат"
+						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.form)
 								? ''

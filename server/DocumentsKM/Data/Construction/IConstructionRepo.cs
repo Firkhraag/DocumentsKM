@@ -8,7 +8,7 @@ namespace DocumentsKM.Data
         // Получить все виды конструкций по id выпуска спецификации
         IEnumerable<Construction> GetAllBySpecificationId(int specificationId);
         // Получить вид конструкции по id
-        Construction GetById(int id);
+        Construction GetById(int id, bool withEagerLoading = false);
         // Получить вид конструкции по unique key
         Construction GetByUniqueKey(int specificationId, string name, float paintWorkCoeff);
         // Добавить новый вид конструкции

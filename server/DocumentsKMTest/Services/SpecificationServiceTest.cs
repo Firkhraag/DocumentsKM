@@ -35,7 +35,7 @@ namespace DocumentsKM.Tests
             foreach (var specification in _specifications)
             {
                 _mockSpecificationRepo.Setup(mock =>
-                    mock.GetById(specification.Id)).Returns(
+                    mock.GetById(specification.Id, false)).Returns(
                         _specifications.SingleOrDefault(v => v.Id == specification.Id));
             }
             foreach (var mark in TestData.marks)

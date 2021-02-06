@@ -142,9 +142,10 @@ namespace DocumentsKM.Services
             var foundConstructionElement = _repository.GetById(id);
             if (foundConstructionElement == null)
                 throw new ArgumentNullException(nameof(foundConstructionElement));
+            var markId = foundConstructionElement.Construction.Specification.Mark.Id;
             _repository.Delete(foundConstructionElement);
 
-            var foundMark = _markRepo.GetById(foundConstructionElement.Construction.Specification.Mark.Id);
+            var foundMark = _markRepo.GetById(markId);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }

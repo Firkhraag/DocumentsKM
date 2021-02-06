@@ -82,9 +82,10 @@ namespace DocumentsKM.Services
             var foundAttachedDoc = _repository.GetById(id);
             if (foundAttachedDoc == null)
                 throw new ArgumentNullException(nameof(foundAttachedDoc));
+            var markId = foundAttachedDoc.Mark.Id;
             _repository.Delete(foundAttachedDoc);
 
-            var foundMark = _markRepo.GetById(foundAttachedDoc.Mark.Id);
+            var foundMark = _markRepo.GetById(markId);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }

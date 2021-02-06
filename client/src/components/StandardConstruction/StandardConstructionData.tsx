@@ -152,6 +152,7 @@ const standardConstructionData = ({
 						rows={4}
 						style={{ resize: 'none' }}
 						placeholder="Введите наименование"
+						autoComplete="off"
 						defaultValue={selectedObject.name}
 						onBlur={onNameChange}
 					/>
@@ -169,8 +170,11 @@ const standardConstructionData = ({
 						id="num"
 						type="text"
 						placeholder="Не введено"
+						autoComplete="off"
 						className="auto-width flex-grow"
-						defaultValue={isNaN(selectedObject.num) ? '' : selectedObject.num}
+						defaultValue={
+							isNaN(selectedObject.num) ? '' : selectedObject.num
+						}
 						onBlur={onNumChange}
 					/>
 				</Form.Group>
@@ -187,6 +191,7 @@ const standardConstructionData = ({
 						id="sheet"
 						type="text"
 						placeholder="Не введено"
+						autoComplete="off"
 						className="auto-width flex-grow"
 						defaultValue={selectedObject.sheet}
 						onBlur={onSheetChange}
@@ -205,8 +210,13 @@ const standardConstructionData = ({
 						id="weight"
 						type="text"
 						placeholder="Не введено"
+						autoComplete="off"
 						className="auto-width flex-grow"
-						defaultValue={isNaN(selectedObject.weight) ? '' : selectedObject.weight}
+						defaultValue={
+							isNaN(selectedObject.weight)
+								? ''
+								: selectedObject.weight
+						}
 						onBlur={onWeightChange}
 					/>
 				</Form.Group>

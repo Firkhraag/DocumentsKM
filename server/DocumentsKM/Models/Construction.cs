@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -47,5 +48,9 @@ namespace DocumentsKM.Models
 
         [Required]
         public float PaintworkCoeff { get; set; }
+
+        public virtual IList<ConstructionElement> ConstructionElements { get; set; } = new List<ConstructionElement>();
+
+        public virtual IList<ConstructionBolt> ConstructionBolts { get; set; } = new List<ConstructionBolt>();
     }
 }

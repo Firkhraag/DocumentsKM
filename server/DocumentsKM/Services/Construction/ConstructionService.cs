@@ -3,6 +3,7 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -176,12 +177,71 @@ namespace DocumentsKM.Services
 
         public void Delete(int id)
         {
-            var foundConstruction = _repository.GetById(id);
+            var foundConstruction = _repository.GetById(id, true);
             if (foundConstruction == null)
                 throw new ArgumentNullException(nameof(foundConstruction));
+
+            var markId = foundConstruction.Specification.Mark.Id;
             _repository.Delete(foundConstruction);
 
-            var foundMark = _markRepo.GetById(foundConstruction.Specification.Mark.Id);
+            var foundMark = _markRepo.GetById(markId);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
+        }
+
+        public void Copy(
+            int constructionId,
+            int specificationId)
+        {
+            var foundConstruction = _repository.GetById(constructionId);
+            if (foundConstruction == null)
+                throw new ArgumentNullException(nameof(foundConstruction));
+            var foundSpecification = _specificationRepo.GetById(specificationId);
+            if (foundSpecification == null)
+                throw new ArgumentNullException(nameof(foundSpecification));
+
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
+                specificationId, foundConstruction.Name, foundConstruction.PaintworkCoeff);
+            if (uniqueConstraintViolationCheck != null)
+                throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
+
+            var construction = new Construction
+            {
+                Specification = foundSpecification,
+                Name = foundConstruction.Name,
+                Type = foundConstruction.Type,
+                Subtype = foundConstruction.Subtype,
+                Valuation = foundConstruction.Valuation,
+                NumOfStandardConstructions = foundConstruction.NumOfStandardConstructions,
+                HasEdgeBlunting = foundConstruction.HasEdgeBlunting,
+                HasDynamicLoad = foundConstruction.HasDynamicLoad,
+                HasFlangedConnections = foundConstruction.HasFlangedConnections,
+                WeldingControl = foundConstruction.WeldingControl,
+                PaintworkCoeff = foundConstruction.PaintworkCoeff,
+                ConstructionElements = foundConstruction.ConstructionElements.Select(ce => new ConstructionElement
+                {
+                    ProfileClass = ce.ProfileClass,
+                    ProfileName = ce.ProfileName,
+                    Symbol = ce.Symbol,
+                    Weight = ce.Weight,
+                    SurfaceArea = ce.SurfaceArea,
+                    ProfileType = ce.ProfileType,
+                    Steel = ce.Steel,
+                    Length = ce.Length,
+                    Status = ce.Status,
+                }).ToList(),
+                ConstructionBolts = foundConstruction.ConstructionBolts.Select(cb => new ConstructionBolt
+                {
+                    Diameter = cb.Diameter,
+                    Packet = cb.Packet,
+                    Num = cb.Num,
+                    NutNum = cb.NutNum,
+                    WasherNum = cb.WasherNum,
+                }).ToList(),
+            };
+            _repository.Add(construction);
+
+            var foundMark = _markRepo.GetById(foundSpecification.Mark.Id);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }

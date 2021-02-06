@@ -496,6 +496,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							type="text"
 							className="auto-width flex-grow"
 							placeholder="Введите шифр марки"
+							autoComplete="off"
 							defaultValue={selectedObject.code}
 							onBlur={onMarkCodeChange}
 						/>

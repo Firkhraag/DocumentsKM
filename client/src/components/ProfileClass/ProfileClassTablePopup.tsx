@@ -7,6 +7,8 @@ import httpClient from '../../axios'
 import ProfileClass from '../../model/ProfileClass'
 import { useMark } from '../../store/MarkStore'
 
+// Not used
+
 type ProfileClassTablePopupProps = {
     setProfileClass: (s: ProfileClass) => void
     close: () => void

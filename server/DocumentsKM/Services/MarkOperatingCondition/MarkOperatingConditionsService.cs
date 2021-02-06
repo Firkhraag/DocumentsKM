@@ -8,7 +8,7 @@ namespace DocumentsKM.Services
     public class MarkOperatingConditionsService : IMarkOperatingConditionsService
     {
         private readonly IMarkOperatingConditionsRepo _repository;
-        private readonly IMarkRepo _markRepository;
+        private readonly IMarkRepo _markRepo;
         private readonly IOperatingAreaRepo _operatingAreaRepo;
         private readonly IGasGroupRepo _gasGroupRepo;
         private readonly IEnvAggressivenessRepo _envAggressivenessRepo;
@@ -18,7 +18,7 @@ namespace DocumentsKM.Services
 
         public MarkOperatingConditionsService(
             IMarkOperatingConditionsRepo markOperatingConditionsRepo,
-            IMarkRepo markRepository,
+            IMarkRepo markRepo,
             IOperatingAreaRepo operatingAreaRepo,
             IGasGroupRepo gasGroupRepo,
             IEnvAggressivenessRepo envAggressivenessRepo,
@@ -27,7 +27,7 @@ namespace DocumentsKM.Services
             IHighTensileBoltsTypeRepo highTensileBoltsTypeRepo)
         {
             _repository = markOperatingConditionsRepo;
-            _markRepository = markRepository;
+            _markRepo = markRepo;
             _operatingAreaRepo = operatingAreaRepo;
             _gasGroupRepo = gasGroupRepo;
             _envAggressivenessRepo = envAggressivenessRepo;
@@ -56,7 +56,7 @@ namespace DocumentsKM.Services
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
-            var foundMark = _markRepository.GetById(markId);
+            var foundMark = _markRepo.GetById(markId);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
             markOperatingConditions.Mark = foundMark;
@@ -92,6 +92,9 @@ namespace DocumentsKM.Services
             markOperatingConditions.HighTensileBoltsType = highTensileBoltsType;
 
             _repository.Add(markOperatingConditions);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(
@@ -158,6 +161,10 @@ namespace DocumentsKM.Services
                 foundMarkOperatingConditions.HighTensileBoltsType = highTensileBoltsType;
             }
             _repository.Update(foundMarkOperatingConditions);
+
+            var foundMark = _markRepo.GetById(markId);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

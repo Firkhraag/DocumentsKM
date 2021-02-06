@@ -56,30 +56,32 @@ const ConstructionTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/constructions/${id}`)
-			constructions.splice(row, 1)
-            if (id == copiedConstruction.id) {
-                setCopiedConstruction(null)
-            }
+			var arr = [...constructions]
+			arr.splice(row, 1)
+			setConstructions(arr)
+			if (copiedConstruction != null && id == copiedConstruction.id) {
+				setCopiedConstruction(null)
+			}
 			setPopup(defaultPopup)
 		} catch (e) {
-			console.log('Error')
+			console.log('Error', e)
 		}
 	}
 
 	const onPasteClick = async () => {
 		try {
-            await httpClient.post(
-                `/specifications/${specificationId}/construction-copy`,
-                {
-                    id: copiedConstruction.id,
-                }
-            )
-            var arr = [...constructions, copiedConstruction]
-            arr.sort(v => v.type.id)
-            setConstructions(arr)
-        } catch (e) {
-            console.log('Error', e)
-        }
+			await httpClient.post(
+				`/specifications/${specificationId}/construction-copy`,
+				{
+					id: copiedConstruction.id,
+				}
+			)
+			var arr = [...constructions, copiedConstruction]
+			arr.sort((v) => v.type.id)
+			setConstructions(arr)
+		} catch (e) {
+			console.log('Error', e)
+		}
 	}
 
 	return (
@@ -168,9 +170,7 @@ const ConstructionTable = ({
 									<Trash color="#666" size={26} />
 								</td>
 								<td
-									onClick={() =>
-										setCopiedConstruction(c)
-									}
+									onClick={() => setCopiedConstruction(c)}
 									className="pointer action-cell-width text-centered"
 								>
 									<Files color="#666" size={26} />

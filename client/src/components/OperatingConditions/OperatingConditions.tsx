@@ -368,6 +368,7 @@ const OperatingConditions = () => {
 						id="coeff"
 						type="text"
 						placeholder="Введите коэффициент надежности"
+						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.safetyCoeff)
 								? ''
@@ -434,6 +435,7 @@ const OperatingConditions = () => {
 						id="temp"
 						type="text"
 						placeholder="Введите наименование"
+						autoComplete="off"
 						className="auto-width flex-grow"
 						defaultValue={
 							isNaN(selectedObject.temperature)

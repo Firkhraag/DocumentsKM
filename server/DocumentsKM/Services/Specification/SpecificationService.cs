@@ -89,15 +89,15 @@ namespace DocumentsKM.Services
 
         public void Delete(int id)
         {
-            var foundSpecification = _repository.GetById(id);
+            var foundSpecification = _repository.GetById(id, true);
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
             if (foundSpecification.IsCurrent)
                 throw new ConflictException(nameof(foundSpecification.IsCurrent));
-
+            var markId = foundSpecification.Mark.Id;
             _repository.Delete(foundSpecification);
 
-            var foundMark = _markRepo.GetById(foundSpecification.Mark.Id);
+            var foundMark = _markRepo.GetById(markId);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }

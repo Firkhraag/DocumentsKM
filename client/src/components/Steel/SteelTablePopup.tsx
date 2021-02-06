@@ -7,6 +7,8 @@ import httpClient from '../../axios'
 import Steel from '../../model/Steel'
 import { useMark } from '../../store/MarkStore'
 
+// Not used
+
 type SteelTablePopupProps = {
     setSteel: (s: Steel) => void
     close: () => void

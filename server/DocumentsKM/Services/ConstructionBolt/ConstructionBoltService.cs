@@ -110,9 +110,10 @@ namespace DocumentsKM.Services
             var foundConstructionBolt = _repository.GetById(id);
             if (foundConstructionBolt == null)
                 throw new ArgumentNullException(nameof(foundConstructionBolt));
+            var markId = foundConstructionBolt.Construction.Specification.Mark.Id;
             _repository.Delete(foundConstructionBolt);
 
-            var foundMark = _markRepo.GetById(foundConstructionBolt.Construction.Specification.Mark.Id);
+            var foundMark = _markRepo.GetById(markId);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }

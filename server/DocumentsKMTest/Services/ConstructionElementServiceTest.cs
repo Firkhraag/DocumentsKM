@@ -52,7 +52,7 @@ namespace DocumentsKM.Tests
             foreach (var construction in TestData.constructions)
             {
                 _mockConstructionRepo.Setup(mock =>
-                    mock.GetById(construction.Id)).Returns(
+                    mock.GetById(construction.Id, false)).Returns(
                         TestData.constructions.SingleOrDefault(v => v.Id == construction.Id));
 
                 _repository.Setup(mock =>

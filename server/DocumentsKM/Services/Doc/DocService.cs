@@ -191,9 +191,10 @@ namespace DocumentsKM.Services
             var foundDoc = _repository.GetById(id);
             if (foundDoc == null)
                 throw new ArgumentNullException(nameof(foundDoc));
+            var markId = foundDoc.Mark.Id;
             _repository.Delete(foundDoc);
 
-            var foundMark = _markRepo.GetById(foundDoc.Mark.Id);
+            var foundMark = _markRepo.GetById(markId);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }

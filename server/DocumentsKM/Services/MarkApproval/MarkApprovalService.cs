@@ -71,6 +71,9 @@ namespace DocumentsKM.Services
                             Mark=foundMark,
                             Employee=employees[i],
                         });
+            
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

@@ -82,9 +82,10 @@ namespace DocumentsKM.Services
             var foundStandardConstruction = _repository.GetById(id);
             if (foundStandardConstruction == null)
                 throw new ArgumentNullException(nameof(foundStandardConstruction));
+            var markId = foundStandardConstruction.Specification.Mark.Id;
             _repository.Delete(foundStandardConstruction);
 
-            var foundMark = _markRepo.GetById(foundStandardConstruction.Specification.Mark.Id);
+            var foundMark = _markRepo.GetById(markId);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }
