@@ -16,15 +16,22 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Specification> GetAllByMarkId(int markId)
         {
-            // return _context.Specifications.Include(
-            //     v => v.Mark).Where(v => v.Mark.Id == markId).ToList();
-            return _context.Specifications.Where(v => v.Mark.Id == markId).ToList();
+            return _context.Specifications.Where(
+                v => v.Mark.Id == markId).ToList();
         }
 
-        public Specification GetById(int id)
+        public Specification GetById(int id, bool withEagerLoading = false)
         {
-            // return _context.Specifications.Include(
-            //     v => v.Mark).SingleOrDefault(v => v.Id == id);
+            if (withEagerLoading)
+            {
+                return _context.Specifications.AsSingleQuery().Include(
+                    v => v.Constructions).ThenInclude(
+                        v => v.ConstructionElements).Include(
+                            v => v.Constructions).ThenInclude(
+                                v => v.ConstructionBolts).Include(
+                                    v => v.StandardConstructions).SingleOrDefault(
+                                        v => v.Id == id);
+            }
             return _context.Specifications.SingleOrDefault(v => v.Id == id);
         }
 

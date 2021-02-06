@@ -14,9 +14,9 @@ namespace DocumentsKM.Tests
             // Arrange
             var repository = new Mock<IConstructionMaterialRepo>();
 
-            repository.Setup(mock=>
+            repository.Setup(mock =>
                 mock.GetAll()).Returns(TestData.constructionMaterials);
-            
+
             _service = new ConstructionMaterialService(repository.Object);
         }
 
@@ -32,4 +32,3 @@ namespace DocumentsKM.Tests
         }
     }
 }
-

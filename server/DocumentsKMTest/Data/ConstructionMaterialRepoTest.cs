@@ -48,7 +48,7 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.constructionMaterials);
             var repo = new SqlConstructionMaterialRepo(context);
 
-            int id = _rnd.Next(1, TestData.constructionMaterials.Count());
+            var id = _rnd.Next(1, TestData.constructionMaterials.Count());
 
             // Act
             var constructionMaterial = repo.GetById(id);
@@ -61,16 +61,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.constructionMaterials);
             var repo = new SqlConstructionMaterialRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var constructionMaterial = repo.GetById(wrongId);
+            var constructionMaterial = repo.GetById(999);
 
             // Assert
             Assert.Null(constructionMaterial);

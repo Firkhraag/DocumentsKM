@@ -1,240 +1,235 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-// using DocumentsKM.Data;
-// using DocumentsKM.Models;
-// using Microsoft.EntityFrameworkCore;
-// using Xunit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using DocumentsKM.Data;
+using DocumentsKM.Models;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
 
-// namespace DocumentsKM.Tests
-// {
-//     public class GeneralDataPointRepoTest
-//     {
-//         private readonly Random _rnd = new Random();
-//         private readonly int _maxUserId = 3;
-//         private readonly int _maxSectionId = 3;
+namespace DocumentsKM.Tests
+{
+    public class GeneralDataPointRepoTest
+    {
+        private readonly Random _rnd = new Random();
+        private readonly int _maxUserId = 3;
+        private readonly int _maxSectionId = 3;
 
-//         private ApplicationContext GetContext(List<GeneralDataPoint> generalDataPoints)
-//         {
-//             var builder = new DbContextOptionsBuilder<ApplicationContext>();
-//             builder.UseInMemoryDatabase(databaseName: "GeneralDataPointTestDb");
-//             var options = builder.Options;
-//             var context = new ApplicationContext(options);
-//             context.Database.EnsureDeleted();
-//             context.Database.EnsureCreated();
-            
-//             context.Users.AddRange(TestData.users);
-//             context.GeneralDataSections.AddRange(TestData.generalDataSections);
-//             context.GeneralDataPoints.AddRange(generalDataPoints);
-//             context.SaveChanges();
-//             return context;
-//         }
+        private ApplicationContext GetContext(List<GeneralDataPoint> generalDataPoints)
+        {
+            var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            builder.UseInMemoryDatabase(databaseName: "GeneralDataPointTestDb");
+            var options = builder.Options;
+            var context = new ApplicationContext(options);
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
 
-//         [Fact]
-//         public void GetAllByUserAndSectionId_ShouldReturnGeneralDataPoints()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Users.AddRange(TestData.users);
+            context.GeneralDataSections.AddRange(TestData.generalDataSections);
+            context.GeneralDataPoints.AddRange(generalDataPoints);
+            context.SaveChanges();
+            return context;
+        }
 
-//             var userId = _rnd.Next(1, _maxUserId);
-//             var sectionId = _rnd.Next(1, _maxSectionId);
+        [Fact]
+        public void GetAllByUserAndSectionId_ShouldReturnGeneralDataPoints()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Act
-//             var generalDataPoints = repo.GetAllByUserAndSectionId(userId, sectionId);
+            var userId = _rnd.Next(1, _maxUserId);
+            var sectionId = _rnd.Next(1, _maxSectionId);
 
-//             // Assert
-//             Assert.Equal(TestData.generalDataPoints.Where(
-//                 v => v.User.Id == userId && v.Section.Id == sectionId),
-//                 generalDataPoints);
+            // Act
+            var generalDataPoints = repo.GetAllByUserAndSectionId(userId, sectionId);
 
-//             context.Database.EnsureDeleted();
-//         }
+            // Assert
+            Assert.Equal(TestData.generalDataPoints.Where(
+                v => v.User.Id == userId && v.Section.Id == sectionId),
+                generalDataPoints);
 
-//         [Fact]
-//         public void GetAllByUserAndSectionId_ShouldReturnEmptyArray_WhenWrongMarkId()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Database.EnsureDeleted();
+        }
 
-//             var userId = _rnd.Next(1, _maxUserId);
-//             var wrongUserId = 999;
-//             var sectionId = _rnd.Next(1, _maxSectionId);
-//             var wrongSectionId = 999;
+        [Fact]
+        public void GetAllByUserAndSectionId_ShouldReturnEmptyArray_WhenWrongUserOrSectionId()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Act
-//             var generalDataPoints1 = repo.GetAllByUserAndSectionId(wrongUserId, sectionId);
-//             var generalDataPoints2 = repo.GetAllByUserAndSectionId(userId, wrongSectionId);
+            var userId = _rnd.Next(1, _maxUserId);
+            var wrongUserId = 999;
+            var sectionId = _rnd.Next(1, _maxSectionId);
+            var wrongSectionId = 999;
 
-//             // Assert
-//             Assert.Empty(generalDataPoints1);
-//             Assert.Empty(generalDataPoints2);
+            // Act
+            var generalDataPoints1 = repo.GetAllByUserAndSectionId(wrongUserId, sectionId);
+            var generalDataPoints2 = repo.GetAllByUserAndSectionId(userId, wrongSectionId);
 
-//             context.Database.EnsureDeleted();
-//         }
+            // Assert
+            Assert.Empty(generalDataPoints1);
+            Assert.Empty(generalDataPoints2);
 
-//         [Fact]
-//         public void GetById_ShouldReturnGeneralDataPoint()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Database.EnsureDeleted();
+        }
 
-//             int id = _rnd.Next(1, TestData.generalDataPoints.Count());
+        [Fact]
+        public void GetById_ShouldReturnGeneralDataPoint()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Act
-//             var generalDataPoint = repo.GetById(id);
+            int id = _rnd.Next(1, TestData.generalDataPoints.Count());
 
-//             // Assert
-//             Assert.Equal(TestData.generalDataPoints.SingleOrDefault(v => v.Id == id),
-//                 generalDataPoint);
+            // Act
+            var generalDataPoint = repo.GetById(id);
 
-//             context.Database.EnsureDeleted();
-//         }
+            // Assert
+            Assert.Equal(TestData.generalDataPoints.SingleOrDefault(v => v.Id == id),
+                generalDataPoint);
 
-//         [Fact]
-//         public void GetById_ShouldReturnNull()
-//         {
-//             // Act
-//             var context = GetContext(TestData.generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Database.EnsureDeleted();
+        }
 
-//             var generalDataPoint = repo.GetById(999);
+        [Fact]
+        public void GetById_ShouldReturnNull_WhenWrongId()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Assert
-//             Assert.Null(generalDataPoint);
+            // Act
+            var generalDataPoint = repo.GetById(999);
 
-//             context.Database.EnsureDeleted();
-//         }
+            // Assert
+            Assert.Null(generalDataPoint);
 
-//         [Fact]
-//         public void GetByUserAndSectionIdAndText_ShouldReturnGeneralDataPoint()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Database.EnsureDeleted();
+        }
 
-//             int id = _rnd.Next(1, TestData.generalDataPoints.Count());
-//             var foundGeneralDataPoint = TestData.generalDataPoints.FirstOrDefault(v => v.Id == id);
-//             var userId = foundGeneralDataPoint.User.Id;
-//             var sectionId = foundGeneralDataPoint.Section.Id;
-//             var text = foundGeneralDataPoint.Text;
+        [Fact]
+        public void GetByUniqueKey_ShouldReturnGeneralDataPoint()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Act
-//             var generalDataPoint = repo.GetByUserAndSectionIdAndText(userId, sectionId, text);
+            int id = _rnd.Next(1, TestData.generalDataPoints.Count());
+            var foundGeneralDataPoint = TestData.generalDataPoints.FirstOrDefault(v => v.Id == id);
+            var userId = foundGeneralDataPoint.User.Id;
+            var sectionId = foundGeneralDataPoint.Section.Id;
+            var text = foundGeneralDataPoint.Text;
 
-//             // Assert
-//             Assert.Equal(id, generalDataPoint.Id);
+            // Act
+            var generalDataPoint = repo.GetByUniqueKey(userId, sectionId, text);
 
-//             context.Database.EnsureDeleted();
-//         }
+            // Assert
+            Assert.Equal(id, generalDataPoint.Id);
 
-//         [Fact]
-//         public void GetByUserAndSectionIdAndText_ShouldReturnNull()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Database.EnsureDeleted();
+        }
 
-//             var userId = TestData.users[0].Id;
-//             var wrongUserId = 999;
-//             var sectionId = TestData.generalDataSections[0].Id;
-//             var wrongSectionId = 999;
-//             var text = TestData.generalDataPoints[0].Text;
-//             var wrongText = "NotFound";
+        [Fact]
+        public void GetByUniqueKey_ShouldReturnNull_WhenWrongValues()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Act
-//             var generalDataPoint1 = repo.GetByUserAndSectionIdAndText(wrongUserId, sectionId, text);
-//             var generalDataPoint2 = repo.GetByUserAndSectionIdAndText(userId, wrongSectionId, text);
-//             var generalDataPoint3 = repo.GetByUserAndSectionIdAndText(userId, sectionId, wrongText);
+            var userId = TestData.users[0].Id;
+            var sectionId = TestData.generalDataSections[0].Id;
+            var text = TestData.generalDataPoints[0].Text;
 
-//             // Assert
-//             Assert.Null(generalDataPoint1);
-//             Assert.Null(generalDataPoint2);
-//             Assert.Null(generalDataPoint3);
+            // Act
+            var generalDataPoint1 = repo.GetByUniqueKey(999, sectionId, text);
+            var generalDataPoint2 = repo.GetByUniqueKey(userId, 999, text);
+            var generalDataPoint3 = repo.GetByUniqueKey(userId, sectionId, "NotFound");
 
-//             context.Database.EnsureDeleted();
-//         }
+            // Assert
+            Assert.Null(generalDataPoint1);
+            Assert.Null(generalDataPoint2);
+            Assert.Null(generalDataPoint3);
 
-//         [Fact]
-//         public void Add_ShouldAddGeneralDataPoint()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Database.EnsureDeleted();
+        }
 
-//             int userId = _rnd.Next(1, TestData.users.Count());
-//             int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
-//             var generalDataPoint = new GeneralDataPoint
-//             {
-//                 User = TestData.users.SingleOrDefault(v => v.Id == userId),
-//                 Section = TestData.generalDataSections.SingleOrDefault(v => v.Id == sectionId),
-//                 Text = "NewCreate",
-//                 OrderNum = 3,
-//             };
+        [Fact]
+        public void Add_ShouldAddGeneralDataPoint()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Act
-//             repo.Add(generalDataPoint);
+            int userId = _rnd.Next(1, TestData.users.Count());
+            int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
+            var generalDataPoint = new GeneralDataPoint
+            {
+                User = TestData.users.SingleOrDefault(v => v.Id == userId),
+                Section = TestData.generalDataSections.SingleOrDefault(v => v.Id == sectionId),
+                Text = "NewCreate",
+                OrderNum = 3,
+            };
 
-//             // Assert
-//             Assert.NotEqual(0, generalDataPoint.Id);
-//             Assert.Equal(
-//                 TestData.generalDataPoints.Where(v => v.User.Id == userId && v.Section.Id == sectionId).Count() + 1,
-//                 repo.GetAllByUserAndSectionId(userId, sectionId).Count());
+            // Act
+            repo.Add(generalDataPoint);
 
-//             context.Database.EnsureDeleted();
-//         }
+            // Assert
+            Assert.NotNull(repo.GetById(generalDataPoint.Id));
 
-//         [Fact]
-//         public void Update_ShouldUpdateGeneralDataPoint()
-//         {
-//             // Arrange
-//             var generalDataPoints = new List<GeneralDataPoint>{};
-//             foreach (var gdp in TestData.generalDataPoints)
-//             {
-//                 generalDataPoints.Add(new GeneralDataPoint
-//                 {
-//                     Id = gdp.Id,
-//                     User = gdp.User,
-//                     Section = gdp.Section,
-//                     Text = gdp.Text,
-//                     OrderNum = gdp.OrderNum,
-//                 });
-//             }
-//             var context = GetContext(generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Database.EnsureDeleted();
+        }
 
-//             int id = _rnd.Next(1, generalDataPoints.Count());
-//             var generalDataPoint = generalDataPoints.FirstOrDefault(v => v.Id == id);
-//             generalDataPoint.Text = "NewUpdate";
+        [Fact]
+        public void Update_ShouldUpdateGeneralDataPoint()
+        {
+            // Arrange
+            var generalDataPoints = new List<GeneralDataPoint>{};
+            foreach (var gdp in TestData.generalDataPoints)
+            {
+                generalDataPoints.Add(new GeneralDataPoint
+                {
+                    Id = gdp.Id,
+                    User = gdp.User,
+                    Section = gdp.Section,
+                    Text = gdp.Text,
+                    OrderNum = gdp.OrderNum,
+                });
+            }
+            var context = GetContext(generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Act
-//             repo.Update(generalDataPoint);
+            int id = _rnd.Next(1, generalDataPoints.Count());
+            var generalDataPoint = generalDataPoints.FirstOrDefault(v => v.Id == id);
+            generalDataPoint.Text = "NewUpdate";
 
-//             // Assert
-//             Assert.Equal(generalDataPoint.Text, repo.GetById(id).Text);
+            // Act
+            repo.Update(generalDataPoint);
 
-//             context.Database.EnsureDeleted();
-//         }
+            // Assert
+            Assert.Equal(generalDataPoint.Text, repo.GetById(id).Text);
 
-//         [Fact]
-//         public void Delete_ShouldDeleteGeneralDataPoint()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.generalDataPoints);
-//             var repo = new SqlGeneralDataPointRepo(context);
+            context.Database.EnsureDeleted();
+        }
 
-//             int id = _rnd.Next(1, TestData.generalDataPoints.Count());
-//             var GeneralDataPoint = TestData.generalDataPoints.FirstOrDefault(v => v.Id == id);
+        [Fact]
+        public void Delete_ShouldDeleteGeneralDataPoint()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataPoints);
+            var repo = new SqlGeneralDataPointRepo(context);
 
-//             // Act
-//             repo.Delete(GeneralDataPoint);
+            int id = _rnd.Next(1, TestData.generalDataPoints.Count());
+            var generalDataPoint = TestData.generalDataPoints.FirstOrDefault(v => v.Id == id);
 
-//             // Assert
-//             Assert.Null(repo.GetById(id));
+            // Act
+            repo.Delete(generalDataPoint);
 
-//             context.Database.EnsureDeleted();
-//         }
-//     }
-// }
+            // Assert
+            Assert.Null(repo.GetById(id));
+
+            context.Database.EnsureDeleted();
+        }
+    }
+}

@@ -8,8 +8,6 @@ namespace DocumentsKM.Services
     {
         // Получить все документы по id марки
         IEnumerable<Doc> GetAllByMarkId(int markId);
-        // Получить все документы по id марки
-        (IEnumerable<Doc>, IEnumerable<Doc>) GetAddWorkByMarkId(int markId);
         // Получить все прилагаемые документы по id марки
         IEnumerable<Doc> GetAllAttachedByMarkId(int markId);
         // Получить все листы по id марки
@@ -22,9 +20,9 @@ namespace DocumentsKM.Services
             int? creatorId,
             int? inspectorId,
             int? normContrId);
-        // Обновить существующий документ
+        // Изменить документ
         void Update(int id, DocUpdateRequest doc);
-        // Удалить существующий документ
+        // Удалить документ
         void Delete(int id);
     }
 }

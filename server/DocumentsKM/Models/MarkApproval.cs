@@ -5,6 +5,9 @@ namespace DocumentsKM.Models
 {
     public class MarkApproval
     {
+        [Key]
+        public int Id { get; set; }
+
         // Марка
         [Required]
         [ForeignKey("MarkId")]

@@ -61,16 +61,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.envAggressiveness);
             var repo = new SqlEnvAggressivenessRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var envAggressiveness = repo.GetById(wrongId);
+            var envAggressiveness = repo.GetById(999);
 
             // Assert
             Assert.Null(envAggressiveness);

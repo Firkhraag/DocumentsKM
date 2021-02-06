@@ -15,7 +15,8 @@ namespace DocumentsKM.Data
 
         public IEnumerable<ConstructionSubtype> GetAllByTypeId(int typeId)
         {
-            return _context.ConstructionSubtypes.Where(v => v.Type.Id == typeId).ToList();
+            return _context.ConstructionSubtypes.Where(
+                v => v.Type.Id == typeId).ToList();
         }
 
         public ConstructionSubtype GetById(int id)

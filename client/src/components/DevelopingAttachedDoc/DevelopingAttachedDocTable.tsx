@@ -10,19 +10,18 @@ import { Trash } from 'react-bootstrap-icons'
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Doc from '../../model/Doc'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type DevelopingAttachedDocTableProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
 	setDevelopingAttachedDoc: (d: Doc) => void
 }
 
 const DevelopingAttachedDocTable = ({
-	setPopupObj,
 	setDevelopingAttachedDoc,
 }: DevelopingAttachedDocTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
+	const setPopup = useSetPopup()
 
 	const [docs, setDocs] = useState([] as Doc[])
 
@@ -30,10 +29,10 @@ const DevelopingAttachedDocTable = ({
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const docsFetchedResponse = await httpClient.get(
+					const docsResponse = await httpClient.get(
 						`/marks/${mark.id}/docs/attached`
 					)
-					setDocs(docsFetchedResponse.data)
+					setDocs(docsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
@@ -46,7 +45,7 @@ const DevelopingAttachedDocTable = ({
 		try {
 			await httpClient.delete(`/docs/${id}`)
 			docs.splice(row, 1)
-			setPopupObj(defaultPopupObj)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -67,7 +66,7 @@ const DevelopingAttachedDocTable = ({
 				<thead>
 					<tr>
 						<th>№</th>
-                        <th>Шифр</th>
+						<th>Шифр</th>
 						<th>Наименование</th>
 						<th>Листов</th>
 						<th>Формат</th>
@@ -85,9 +84,9 @@ const DevelopingAttachedDocTable = ({
 						return (
 							<tr key={d.id}>
 								<td>{index + 1}</td>
-                                <td>{d.type.code}</td>
+								<td>{d.type.code}</td>
 								<td>{d.name}</td>
-                                <td>{d.numOfPages}</td>
+								<td>{d.numOfPages}</td>
 								<td>{d.form}</td>
 								<td>
 									{d.creator == null ? '' : d.creator.name}
@@ -116,13 +115,15 @@ const DevelopingAttachedDocTable = ({
 								</td>
 								<td
 									onClick={() =>
-										setPopupObj({
+										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить прилагаемый документ?`,
+											msg: `Вы действительно хотите удалить прилагаемый документ № ${
+												index + 1
+											}?`,
 											onAccept: () =>
 												onDeleteClick(index, d.id),
 											onCancel: () =>
-												setPopupObj(defaultPopupObj),
+												setPopup(defaultPopup),
 										})
 									}
 									className="pointer action-cell-width text-centered"

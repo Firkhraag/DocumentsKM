@@ -34,10 +34,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 	const logout = async () => {
 		await httpClient.post('/users/logout')
 		setUser({
-            id: -1,
-            login: '',
-            name: ''
-        })
+			id: -1,
+			login: '',
+			name: '',
+		})
 		localStorage.removeItem('selectedMarkId')
 		// localStorage.removeItem('recentMarkIds')
 	}
@@ -49,10 +49,10 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 				setUser(response.data)
 			} catch (e) {
 				setUser({
-                    id: -1,
-                    login: '',
-                    name: ''
-                })
+					id: -1,
+					login: '',
+					name: '',
+				})
 				localStorage.removeItem('selectedMarkId')
 				// localStorage.removeItem('recentMarkIds')
 			}

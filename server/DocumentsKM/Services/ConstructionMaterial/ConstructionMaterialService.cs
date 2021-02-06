@@ -6,11 +6,12 @@ namespace DocumentsKM.Services
 {
     public class ConstructionMaterialService : IConstructionMaterialService
     {
-        private IConstructionMaterialRepo _repository;
+        private readonly IConstructionMaterialRepo _repository;
 
-        public ConstructionMaterialService(IConstructionMaterialRepo constructionMaterialRepoo)
+        public ConstructionMaterialService(
+            IConstructionMaterialRepo constructionMaterialRepo)
         {
-            _repository = constructionMaterialRepoo;
+            _repository = constructionMaterialRepo;
         }
 
         public IEnumerable<ConstructionMaterial> GetAll()

@@ -6,11 +6,11 @@ namespace DocumentsKM.Services
 {
     public class WeldingControlService : IWeldingControlService
     {
-        private IWeldingControlRepo _repository;
+        private readonly IWeldingControlRepo _repository;
 
-        public WeldingControlService(IWeldingControlRepo weldingControlRepoo)
+        public WeldingControlService(IWeldingControlRepo weldingControlRepo)
         {
-            _repository = weldingControlRepoo;
+            _repository = weldingControlRepo;
         }
 
         public IEnumerable<WeldingControl> GetAll()

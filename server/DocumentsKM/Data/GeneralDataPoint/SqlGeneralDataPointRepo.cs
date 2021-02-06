@@ -27,7 +27,7 @@ namespace DocumentsKM.Data
             return _context.GeneralDataPoints.SingleOrDefault(v => v.Id == id);
         }
 
-        public GeneralDataPoint GetByUserAndSectionIdAndText(
+        public GeneralDataPoint GetByUniqueKey(
             int userId, int sectionId, string text)
         {
             return _context.GeneralDataPoints.SingleOrDefault(

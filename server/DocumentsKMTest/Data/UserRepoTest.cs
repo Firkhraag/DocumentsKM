@@ -45,16 +45,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.users);
             var repo = new SqlUserRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var user = repo.GetById(wrongId);
+            var user = repo.GetById(999);
 
             // Assert
             Assert.Null(user);
@@ -81,16 +79,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetByLogin_ShouldReturnNull()
+        public void GetByLogin_ShouldReturnNull_WhenWrongLogin()
         {
             // Arrange
             var context = GetContext(TestData.users);
             var repo = new SqlUserRepo(context);
-            
-            var wrongLogin = "wrongLogin";
 
             // Act
-            var user = repo.GetByLogin(wrongLogin);
+            var user = repo.GetByLogin("wrongLogin");
 
             // Assert
             Assert.Null(user);

@@ -43,7 +43,7 @@ const Login = () => {
 					<Form.Group>
 						<Form.Label htmlFor="login">Логин</Form.Label>
 						<Form.Control
-                            id="login"
+							id="login"
 							type="text"
 							placeholder="Введите ваш логин"
 							onBlur={onLoginChange}
@@ -52,7 +52,7 @@ const Login = () => {
 					<Form.Group>
 						<Form.Label htmlFor="password">Пароль</Form.Label>
 						<Form.Control
-                            id="password"
+							id="password"
 							type="password"
 							placeholder="Введите ваш пароль"
 							onBlur={onPasswordChange}

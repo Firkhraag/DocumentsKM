@@ -45,16 +45,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByMarkId_ShouldReturnEmptyArray_WhenWrongMarkId()
+        public void GetAllByMarkId_ShouldReturnEmptyArray_WhenWrongDepartmentId()
         {
             // Arrange
             var context = GetContext(TestData.employees);
             var repo = new SqlEmployeeRepo(context);
 
-            var wrongDepartmentId = 999;
-
             // Act
-            var employees = repo.GetAllByDepartmentId(wrongDepartmentId);
+            var employees = repo.GetAllByDepartmentId(999);
 
             // Assert
             Assert.Empty(employees);
@@ -68,7 +66,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var context = GetContext(TestData.employees);
             var repo = new SqlEmployeeRepo(context);
-            
+
             var departmentId = _rnd.Next(1, TestData.departments.Count());
             var positionId = _rnd.Next(1, TestData.positions.Count());
 
@@ -83,17 +81,16 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByDepartmentIdAndPosition_ShouldReturnEmptyArray_WhenWrongMarkId()
+        public void GetAllByDepartmentIdAndPosition_ShouldReturnEmptyArray_WhenWrongDepartmentId()
         {
             // Arrange
             var context = GetContext(TestData.employees);
             var repo = new SqlEmployeeRepo(context);
 
-            var wrongDepartmentId = 999;
             var positionId = _rnd.Next(1, TestData.positions.Count());
 
             // Act
-            var employees = repo.GetAllByDepartmentIdAndPosition(wrongDepartmentId, positionId);
+            var employees = repo.GetAllByDepartmentIdAndPosition(999, positionId);
 
             // Assert
             Assert.Empty(employees);
@@ -122,17 +119,16 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByDepartmentIdAndPositions_ShouldReturnEmptyArray_WhenWrongMarkId()
+        public void GetAllByDepartmentIdAndPositions_ShouldReturnEmptyArray_WhenWrongDepartmentId()
         {
             // Arrange
             var context = GetContext(TestData.employees);
             var repo = new SqlEmployeeRepo(context);
 
-            var wrongDepartmentId = 999;
             var positionIds = new int[] { 1, 2 };
 
             // Act
-            var employees = repo.GetAllByDepartmentIdAndPositions(wrongDepartmentId, positionIds);
+            var employees = repo.GetAllByDepartmentIdAndPositions(999, positionIds);
 
             // Assert
             Assert.Empty(employees);
@@ -160,12 +156,12 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.employees);
             var repo = new SqlEmployeeRepo(context);
-            
+
             // Act
             var employee = repo.GetById(999);
 

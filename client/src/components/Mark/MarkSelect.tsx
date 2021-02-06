@@ -15,7 +15,7 @@ import Mark from '../../model/Mark'
 import httpClient from '../../axios'
 import { makeMarkName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 import { useSetMark } from '../../store/MarkStore'
 
 type MarkSelectProps = {
@@ -371,8 +371,8 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		}
 		const subnode = selectedObject.subnode
 		subnode.node = selectedObject.node
-        subnode.node.project = selectedObject.project
-        setSubnode(subnode)
+		subnode.node.project = selectedObject.project
+		setSubnode(subnode)
 		history.push('/mark-create')
 	}
 
@@ -380,14 +380,12 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		<div className="component-cnt">
 			<h1 className="text-centered">Выбор / создание марки</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
-                <Form.Group>
-                    <Form.Label
-						htmlFor="recentMarks"
-					>
+				<Form.Group>
+					<Form.Label htmlFor="recentMarks">
 						Последние марки
 					</Form.Label>
 					<Select
-                        inputId="recentMarks"
+						inputId="recentMarks"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -423,19 +421,15 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 								),
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
 				<div className="flex mrg-top-2">
-                    <Form.Group className="no-bot-mrg">
-                        <Form.Label
-                            htmlFor="project"
-                        >
-                            Базовая серия
-                        </Form.Label>
+					<Form.Group className="no-bot-mrg">
+						<Form.Label htmlFor="project">Базовая серия</Form.Label>
 						<Select
-                            inputId="project"
+							inputId="project"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -467,17 +461,13 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 											: p.baseSeries,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 					<Form.Group className="mrg-left no-bot-mrg">
-                        <Form.Label
-                            htmlFor="node"
-                        >
-                            Узел
-                        </Form.Label>
+						<Form.Label htmlFor="node">Узел</Form.Label>
 						<Select
-                            inputId="node"
+							inputId="node"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -504,17 +494,13 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 									label: n.code === '' ? '-' : n.code,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 					<Form.Group className="mrg-left no-bot-mrg">
-                        <Form.Label
-                            htmlFor="subnode"
-                        >
-                            Подузел
-                        </Form.Label>
+						<Form.Label htmlFor="subnode">Подузел</Form.Label>
 						<Select
-                            inputId="subnode"
+							inputId="subnode"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -543,17 +529,13 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 									label: s.code === '' ? '-' : s.code,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 					<Form.Group className="mrg-left no-bot-mrg">
-                        <Form.Label
-                            htmlFor="mark"
-                        >
-                            Марка
-                        </Form.Label>
+						<Form.Label htmlFor="mark">Марка</Form.Label>
 						<Select
-                            inputId="mark"
+							inputId="mark"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
@@ -580,11 +562,11 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 									label: m.code === '' ? '-' : m.code,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 				</div>
-                <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 				<div className="flex btn-mrg-top-2">
 					<Button
 						variant="secondary"

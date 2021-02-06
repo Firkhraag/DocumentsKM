@@ -1,10 +1,9 @@
-using AutoMapper;
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Profiles
 {
-    public class MarkOperatingConditionsProfile : Profile
+    public class MarkOperatingConditionsProfile : AutoMapper.Profile
     {
         public MarkOperatingConditionsProfile()
         {

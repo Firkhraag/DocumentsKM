@@ -6,8 +6,8 @@ interface IConstructionSubtype {
 
 class ConstructionSubtype {
 	id: number
-    name: string
-    valuation: string
+	name: string
+	valuation: string
 
 	constructor(obj?: IConstructionSubtype) {
 		this.id = (obj && obj.id) || 0

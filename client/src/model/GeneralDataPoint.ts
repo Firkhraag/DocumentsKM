@@ -1,17 +1,17 @@
 import GeneralDataSection from './GeneralDataSection'
 
 interface IGeneralDataPoint {
-    id: number
-    section: GeneralDataSection
-    text: string
-    orderNum: number
+	id: number
+	section: GeneralDataSection
+	text: string
+	orderNum: number
 }
 
 class GeneralDataPoint {
 	id: number
-    section: GeneralDataSection
-    text: string
-    orderNum: number
+	section: GeneralDataSection
+	text: string
+	orderNum: number
 
 	constructor(obj?: IGeneralDataPoint) {
 		this.id = (obj && obj.id) || 0

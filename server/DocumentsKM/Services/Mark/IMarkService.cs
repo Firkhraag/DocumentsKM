@@ -19,7 +19,7 @@ namespace DocumentsKM.Services
             int mainBuilderId,
             int? chiefSpecialistId,
             int? groupLeaderId);
-        // Обновить существующую марку
+        // Изменить марку
         void Update(int id, MarkUpdateRequest mark);
     }
 }

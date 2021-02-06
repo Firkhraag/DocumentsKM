@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,55 +14,43 @@ namespace DocumentsKM.Models
         public virtual Specification Specification { get; set; }
 
         [Required]
-        [ForeignKey("ConstructionTypeId")]
-        public virtual ConstructionType ConstructionType { get; set; }
+        [MaxLength(255)]
+        public string Name { get; set; }
 
         [Required]
-        [ForeignKey("SpecificationId")]
-        public virtual ConstructionSubtype ConstructionSubtype { get; set; }
+        [ForeignKey("TypeId")]
+        public virtual ConstructionType Type { get; set; }
 
-        // Код_отд
+        [ForeignKey("SubtypeId")]
+        public virtual ConstructionSubtype Subtype { get; set; }
+
+        [MaxLength(10)]
+        public string Valuation { get; set; }
+
+        [MaxLength(20)]
+        public string StandardAlbumCode { get; set; }
+
         [Required]
-        [ForeignKey("DepartmentId")]
-        public virtual Department Department { get; set; }
+        public int NumOfStandardConstructions { get; set; }
 
-        // Гл_спец
-        [ForeignKey("ChiefSpecialistId")]
-        public virtual Employee ChiefSpecialist { get; set; }
+        [Required]
+        public bool HasEdgeBlunting { get; set; }
 
-        // Рук_гр 
-        [ForeignKey("GroupLeaderId")]
-        public virtual Employee GroupLeader { get; set; }
+        [Required]
+        public bool HasDynamicLoad { get; set; }
 
-        // Гл_стр 
-        [ForeignKey("MainBuilderId")]
-        public virtual Employee MainBuilder { get; set; }
+        [Required]
+        public bool HasFlangedConnections { get; set; }
 
-        // Дата_ред
-        public DateTime? EditedDate { get; set; }
+        [Required]
+        [ForeignKey("WeldingControlId")]
+        public virtual WeldingControl WeldingControl { get; set; }
 
-        public int? Signed1Id { get; set; }
-        public int? Signed2Id { get; set; }
+        [Required]
+        public float PaintworkCoeff { get; set; }
 
-        public DateTime? IssuedDate { get; set; }
+        public virtual IList<ConstructionElement> ConstructionElements { get; set; } = new List<ConstructionElement>();
 
-        public int? NumOfVolumes { get; set; }
-        public float? SafetyCoeff { get; set; }
-        public float? OperatingTemp { get; set; }
-        public int? OperatingZone { get; set; }
-        public int? GasGroup { get; set; }
-        public int? Aggressiveness { get; set; }
-        public int? Material { get; set; }
-        public string PaintworkType { get; set; }
-        public string Note { get; set; }
-        public int? FireHazardCategoryId { get; set; }
-        public int? HighTensileBolts { get; set; }
-        public Boolean? P_transport { get; set; }
-        public Boolean? P_site { get; set; }
-        public Boolean? Xcnd { get; set; }
-        public string Text_3d_estimate { get; set; }
-        public string AddVolumes { get; set; }
-        public float? VmpWeight { get; set; }
-        public int? Impl_3d_estimate { get; set; }
+        public virtual IList<ConstructionBolt> ConstructionBolts { get; set; } = new List<ConstructionBolt>();
     }
 }

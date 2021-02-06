@@ -17,7 +17,7 @@ namespace DocumentsKM.Tests
 
             foreach (var docType in TestData.docTypes)
             {
-                repository.Setup(mock=>
+                repository.Setup(mock =>
                     mock.GetAllExceptId(docType.Id)).Returns(
                         TestData.docTypes.Where(v => v.Id != docType.Id));
             }
@@ -35,8 +35,8 @@ namespace DocumentsKM.Tests
             var returnedDocTypes = _service.GetAllAttached();
 
             // Assert
-            Assert.Equal(TestData.docTypes.Where(v => v.Id != sheetDocTypeId), returnedDocTypes);
+            Assert.Equal(TestData.docTypes.Where(
+                v => v.Id != sheetDocTypeId), returnedDocTypes);
         }
     }
 }
-

@@ -12,7 +12,7 @@ import MarkLinkedDoc from '../../model/MarkLinkedDoc'
 import LinkedDoc from '../../model/LinkedDoc'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 import LinkedDocType from '../../model/LinkedDocType'
 
 type LinkedDocDataProps = {
@@ -41,6 +41,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 			? {
 					id: -1,
 					linkedDoc: defaultLinkedDoc,
+					note: '',
 			  }
 			: markLinkedDoc
 	)
@@ -103,14 +104,13 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		)
 		if (v != null) {
 			if (cachedDocs.has(v.id)) {
-                // selectedObject.linkedDoc.type = v
-                setSelectedObject({
-                    ...selectedObject,
-                    linkedDoc: {
-                        ...defaultLinkedDoc,
-                        type: v,
-                    },
-                })
+				setSelectedObject({
+					...selectedObject,
+					linkedDoc: {
+						...defaultLinkedDoc,
+						type: v,
+					},
+				})
 				setOptionsObject({
 					...optionsObject,
 					docs: cachedDocs.get(v.id),
@@ -121,13 +121,13 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 						`/linked-docs-types/${id}/docs`
 					)
 					cachedDocs.set(v.id, linkedDocsResponse.data)
-                    setSelectedObject({
-                        ...selectedObject,
-                        linkedDoc: {
-                            ...defaultLinkedDoc,
-                            type: v,
-                        },
-                    })
+					setSelectedObject({
+						...selectedObject,
+						linkedDoc: {
+							...defaultLinkedDoc,
+							type: v,
+						},
+					})
 					setOptionsObject({
 						...optionsObject,
 						docs: linkedDocsResponse.data,
@@ -158,6 +158,13 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		}
 	}
 
+	const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+		setSelectedObject({
+			...selectedObject,
+			note: event.currentTarget.value,
+		})
+	}
+
 	const checkIfValid = () => {
 		if (selectedObject.linkedDoc.type == null) {
 			setErrMsg('Пожалуйста, выберите тип ссылочного документа')
@@ -175,6 +182,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 			try {
 				await httpClient.post(`/marks/${mark.id}/mark-linked-docs`, {
 					linkedDocId: selectedObject.linkedDoc.id,
+					note: selectedObject.note,
 				})
 				history.push('/linked-docs')
 			} catch (e) {
@@ -194,7 +202,15 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				await httpClient.patch(
 					`/mark-linked-docs/${selectedObject.id}`,
 					{
-						linkedDocId: selectedObject.linkedDoc.id,
+						linkedDocId:
+							selectedObject.linkedDoc.id ===
+							markLinkedDoc.linkedDoc.id
+								? undefined
+								: selectedObject.linkedDoc.id,
+						note:
+							selectedObject.note === markLinkedDoc.note
+								? undefined
+								: selectedObject.note,
 					}
 				)
 				history.push('/linked-docs')
@@ -239,80 +255,94 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				</div>
 
 				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
-                    <Form.Group>
-                        <Form.Label
-                            className="no-bot-mrg"
-                            htmlFor="type"
-                        >
-                            Вид
-                        </Form.Label>
-                        <Select
-                            inputId="type"
-                            maxMenuHeight={250}
-                            isClearable={true}
-                            isSearchable={true}
-                            placeholder="Выберите вид ссылочного документа"
-                            noOptionsMessage={() => 'Виды не найдены'}
-                            className="mrg-top"
-                            onChange={(selectedOption) =>
-                                onTypeSelect((selectedOption as any)?.value)
-                            }
-                            value={
-                                selectedObject.linkedDoc.type == null
-                                    ? null
-                                    : {
-                                            value: selectedObject.linkedDoc.type.id,
-                                            label:
-                                                selectedObject.linkedDoc.type.name,
-                                    }
-                            }
-                            options={optionsObject.types.map((t) => {
-                                return {
-                                    value: t.id,
-                                    label: t.name,
-                                }
-                            })}
-                            styles={reactSelectstyle}
-                        />
-                    </Form.Group>
+					<Form.Group>
+						<Form.Label className="no-bot-mrg" htmlFor="type">
+							Вид
+						</Form.Label>
+						<Select
+							inputId="type"
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите вид ссылочного документа"
+							noOptionsMessage={() => 'Виды не найдены'}
+							className="mrg-top"
+							onChange={(selectedOption) =>
+								onTypeSelect((selectedOption as any)?.value)
+							}
+							value={
+								selectedObject.linkedDoc.type == null
+									? null
+									: {
+											value:
+												selectedObject.linkedDoc.type
+													.id,
+											label:
+												selectedObject.linkedDoc.type
+													.name,
+									  }
+							}
+							options={optionsObject.types.map((t) => {
+								return {
+									value: t.id,
+									label: t.name,
+								}
+							})}
+							styles={reactSelectStyle}
+						/>
+					</Form.Group>
 
-                    <Form.Group className="mrg-top-2 no-bot-mrg">
-                        <Form.Label
-                            className="no-bot-mrg"
-                            htmlFor="code"
-                        >
-                            Шифр
-                        </Form.Label>
-                        <Select
-                            inputId="code"
-                            maxMenuHeight={250}
-                            isClearable={true}
-                            isSearchable={true}
-                            placeholder="Выберите шифр ссылочного документа"
-                            noOptionsMessage={() =>
-                                'Ссылочные документы не найдены'
-                            }
-                            className="mrg-top"
-                            onChange={(selectedOption) =>
-                                onDocSelect((selectedOption as any)?.value)
-                            }
-                            value={
-                                selectedObject.linkedDoc.id === -1
-                                    ? null
-                                    : {
-                                            value: selectedObject.id,
-                                            label: selectedObject.linkedDoc.code,
-                                    }
-                            }
-                            options={optionsObject.docs.map((d) => {
-                                return {
-                                    value: d.id,
-                                    label: d.code,
-                                }
-                            })}
-                            styles={reactSelectstyle}
-                        />
-                    </Form.Group>
+					<Form.Group className="mrg-top-2 no-bot-mrg">
+						<Form.Label className="no-bot-mrg" htmlFor="code">
+							Шифр
+						</Form.Label>
+						<Select
+							inputId="code"
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите шифр ссылочного документа"
+							noOptionsMessage={() =>
+								'Ссылочные документы не найдены'
+							}
+							className="mrg-top"
+							onChange={(selectedOption) =>
+								onDocSelect((selectedOption as any)?.value)
+							}
+							value={
+								selectedObject.linkedDoc.id === -1
+									? null
+									: {
+											value: selectedObject.id,
+											label:
+												selectedObject.linkedDoc.code,
+									  }
+							}
+							options={optionsObject.docs.map((d) => {
+								return {
+									value: d.id,
+									label: d.code,
+								}
+							})}
+							styles={reactSelectStyle}
+						/>
+					</Form.Group>
+
+					<Form.Group
+						className="mrg-top-2"
+						style={{ marginBottom: 0 }}
+					>
+						<Form.Label htmlFor="note">Примечание</Form.Label>
+						<Form.Control
+							id="note"
+							as="textarea"
+							rows={4}
+							style={{ resize: 'none' }}
+							placeholder="Не введено"
+							defaultValue={selectedObject.note}
+							onBlur={onNoteChange}
+						/>
+					</Form.Group>
 
 					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 

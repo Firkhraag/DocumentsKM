@@ -6,11 +6,12 @@ namespace DocumentsKM.Services
 {
     public class HighTensileBoltsTypeService : IHighTensileBoltsTypeService
     {
-        private IHighTensileBoltsTypeRepo _repository;
+        private readonly IHighTensileBoltsTypeRepo _repository;
 
-        public HighTensileBoltsTypeService(IHighTensileBoltsTypeRepo highTensileBoltsTypeRepoo)
+        public HighTensileBoltsTypeService(
+            IHighTensileBoltsTypeRepo highTensileBoltsTypeRepo)
         {
-            _repository = highTensileBoltsTypeRepoo;
+            _repository = highTensileBoltsTypeRepo;
         }
 
         public IEnumerable<HighTensileBoltsType> GetAll()

@@ -61,16 +61,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.operatingAreas);
             var repo = new SqlOperatingAreaRepo(context);
-            
-            int wrongId = 999;
 
             // Act
-            var operatingArea = repo.GetById(wrongId);
+            var operatingArea = repo.GetById(999);
 
             // Assert
             Assert.Null(operatingArea);

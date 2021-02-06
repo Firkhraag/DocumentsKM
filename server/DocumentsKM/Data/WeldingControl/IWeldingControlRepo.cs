@@ -5,7 +5,7 @@ namespace DocumentsKM.Data
 {
     public interface IWeldingControlRepo
     {
-        // Получить контроль сварки
+        // Получить весь контроль сварки
         IEnumerable<WeldingControl> GetAll();
         // Получить контроль сварки по id
         WeldingControl GetById(int id);

@@ -15,7 +15,8 @@ namespace DocumentsKM.Controllers
     {
         private readonly IWeldingControlService _service;
 
-        public WeldingControlController(IWeldingControlService weldingControlService)
+        public WeldingControlController(
+            IWeldingControlService weldingControlService)
         {
             _service = weldingControlService;
         }

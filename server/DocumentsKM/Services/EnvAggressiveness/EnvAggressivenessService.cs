@@ -6,11 +6,12 @@ namespace DocumentsKM.Services
 {
     public class EnvAggressivenessService : IEnvAggressivenessService
     {
-        private IEnvAggressivenessRepo _repository;
+        private readonly IEnvAggressivenessRepo _repository;
 
-        public EnvAggressivenessService(IEnvAggressivenessRepo envAggressivenessRepoo)
+        public EnvAggressivenessService(
+            IEnvAggressivenessRepo envAggressivenessRepo)
         {
-            _repository = envAggressivenessRepoo;
+            _repository = envAggressivenessRepo;
         }
 
         public IEnumerable<EnvAggressiveness> GetAll()

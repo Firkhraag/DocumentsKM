@@ -7,11 +7,11 @@ namespace DocumentsKM.Services
 {
     public class EmployeeService : IEmployeeService
     {
-        private IEmployeeRepo _repository;
+        private readonly IEmployeeRepo _repository;
 
-        public EmployeeService(IEmployeeRepo EmployeeRepo)
+        public EmployeeService(IEmployeeRepo employeeRepo)
         {
-            _repository = EmployeeRepo;
+            _repository = employeeRepo;
         }
 
         public IEnumerable<Employee> GetAllByDepartmentId(int departmentId)
@@ -40,7 +40,6 @@ namespace DocumentsKM.Services
             var departmentHeadArr = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
                 departmentHeadPosId);
-            // У каждого отдела должен быть один руководитель
             if (departmentHeadArr.Count() != 1)
                 throw new ConflictException();
             var departmentHead = departmentHeadArr.ToList()[0];

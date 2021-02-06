@@ -6,8 +6,5 @@ namespace DocumentsKM.Dtos
     {
         [Required]
         public string Text { get; set; }
-
-        // [Required]
-        // public int OrderNum { get; set; }
     }
 }

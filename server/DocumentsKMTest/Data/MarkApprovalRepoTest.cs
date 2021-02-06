@@ -55,10 +55,8 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.markApprovals);
             var repo = new SqlMarkApprovalRepo(context);
 
-            var wrongMarkId = 999;
-
             // Act
-            var markApprovals = repo.GetAllByMarkId(wrongMarkId);
+            var markApprovals = repo.GetAllByMarkId(999);
 
             // Assert
             Assert.Empty(markApprovals);
@@ -77,10 +75,10 @@ namespace DocumentsKM.Tests
             int employeeId = 3;
             var markApproval = new MarkApproval
             {
-                Mark=TestData.marks.SingleOrDefault(v => v.Id == markId),
-                MarkId=markId,
-                Employee=TestData.employees.SingleOrDefault(v => v.Id == employeeId),
-                EmployeeId=employeeId,
+                Mark = TestData.marks.SingleOrDefault(v => v.Id == markId),
+                MarkId = markId,
+                Employee = TestData.employees.SingleOrDefault(v => v.Id == employeeId),
+                EmployeeId = employeeId,
             };
 
             // Act

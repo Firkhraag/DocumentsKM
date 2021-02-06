@@ -14,7 +14,7 @@ import DocType from '../../model/DocType'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 type DevelopingAttachedDocDataProps = {
 	developingAttachedDoc: Doc
@@ -37,8 +37,8 @@ const DevelopingAttachedDocData = ({
 		isCreateMode
 			? {
 					id: -1,
-                    num: 1,
-                    numOfPages: 1,
+					num: 1,
+					numOfPages: 1,
 					form: 1.0,
 					name: '',
 					type: null,
@@ -62,15 +62,15 @@ const DevelopingAttachedDocData = ({
 			}
 			const fetchData = async () => {
 				try {
-                    const docTypesResponse = await httpClient.get(
+					const docTypesResponse = await httpClient.get(
 						`/doc-types/attached`
 					)
 					const employeesResponse = await httpClient.get(
 						`/departments/${mark.department.id}/employees`
 					)
 					setOptionsObject({
-                        employees: employeesResponse.data,
-                        types: docTypesResponse.data,
+						employees: employeesResponse.data,
+						types: docTypesResponse.data,
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -78,20 +78,16 @@ const DevelopingAttachedDocData = ({
 			}
 			fetchData()
 		}
-    }, [mark])
-    
-    const onCodeSelect = async (id: number) => {
+	}, [mark])
+
+	const onCodeSelect = async (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
 				type: null,
 			})
 		}
-		const v = getFromOptions(
-			id,
-			optionsObject.types,
-			selectedObject.type
-		)
+		const v = getFromOptions(id, optionsObject.types, selectedObject.type)
 		if (v != null) {
 			setSelectedObject({
 				...selectedObject,
@@ -105,17 +101,17 @@ const DevelopingAttachedDocData = ({
 			...selectedObject,
 			name: event.currentTarget.value,
 		})
-    }
-    
-    const onNumOfPagesChange = (event: React.FormEvent<HTMLInputElement>) => {
-        setSelectedObject({
+	}
+
+	const onNumOfPagesChange = (event: React.FormEvent<HTMLInputElement>) => {
+		setSelectedObject({
 			...selectedObject,
 			numOfPages: parseInt(event.currentTarget.value),
 		})
 	}
 
 	const onFormatChange = (event: React.FormEvent<HTMLInputElement>) => {
-        setSelectedObject({
+		setSelectedObject({
 			...selectedObject,
 			form: parseFloat(event.currentTarget.value),
 		})
@@ -189,7 +185,7 @@ const DevelopingAttachedDocData = ({
 	}
 
 	const checkIfValid = () => {
-        if (selectedObject.type == null) {
+		if (selectedObject.type == null) {
 			setErrMsg('Пожалуйста, выберите шифр прилагаемого документа')
 			return false
 		}
@@ -208,9 +204,9 @@ const DevelopingAttachedDocData = ({
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/docs`, {
-                    typeId: selectedObject.type.id,
-                    name: selectedObject.name,
-                    numOfPages: selectedObject.numOfPages,
+					typeId: selectedObject.type.id,
+					name: selectedObject.name,
+					numOfPages: selectedObject.numOfPages,
 					form: selectedObject.form,
 					creatorId: selectedObject.creator?.id,
 					inspectorId: selectedObject.inspector?.id,
@@ -229,17 +225,19 @@ const DevelopingAttachedDocData = ({
 		if (checkIfValid()) {
 			try {
 				await httpClient.patch(`/docs/${selectedObject.id}`, {
-                    typeId:
+					typeId:
 						selectedObject.type.id === developingAttachedDoc.type.id
 							? undefined
-                            : selectedObject.type.id,
+							: selectedObject.type.id,
 					name:
 						selectedObject.name === developingAttachedDoc.name
 							? undefined
-                            : selectedObject.name,
-                    numOfPages: selectedObject.numOfPages === developingAttachedDoc.numOfPages
-                        ? undefined
-                        : selectedObject.numOfPages,
+							: selectedObject.name,
+					numOfPages:
+						selectedObject.numOfPages ===
+						developingAttachedDoc.numOfPages
+							? undefined
+							: selectedObject.numOfPages,
 					form:
 						selectedObject.form === developingAttachedDoc.form
 							? undefined
@@ -277,8 +275,8 @@ const DevelopingAttachedDocData = ({
 					: 'Данные прилагаемого документа'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-                <Form.Group className="flex-cent-v">
-                    <Form.Label
+				<Form.Group className="flex-cent-v">
+					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="code"
 						style={{ marginRight: '1em' }}
@@ -286,7 +284,7 @@ const DevelopingAttachedDocData = ({
 						Шифр документа
 					</Form.Label>
 					<Select
-                        inputId="code"
+						inputId="code"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -310,7 +308,7 @@ const DevelopingAttachedDocData = ({
 								label: t.code,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
@@ -327,7 +325,7 @@ const DevelopingAttachedDocData = ({
 					/>
 				</Form.Group>
 
-                <Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="numOfPages"
@@ -339,8 +337,13 @@ const DevelopingAttachedDocData = ({
 						id="numOfPages"
 						type="text"
 						placeholder="Введите число листов"
-                        defaultValue={isNaN(selectedObject.numOfPages) ? '' : selectedObject.numOfPages}
-                        className="auto-width flex-grow"
+						autoComplete="off"
+						defaultValue={
+							isNaN(selectedObject.numOfPages)
+								? ''
+								: selectedObject.numOfPages
+						}
+						className="auto-width flex-grow"
 						onBlur={onNumOfPagesChange}
 					/>
 				</Form.Group>
@@ -357,13 +360,18 @@ const DevelopingAttachedDocData = ({
 						id="format"
 						type="text"
 						placeholder="Введите формат"
-						defaultValue={isNaN(selectedObject.form) ? '' : selectedObject.form}
+						autoComplete="off"
+						defaultValue={
+							isNaN(selectedObject.form)
+								? ''
+								: selectedObject.form
+						}
 						onBlur={onFormatChange}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-                    <Form.Label
+					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="creator"
 						style={{ marginRight: '3.9em' }}
@@ -371,7 +379,7 @@ const DevelopingAttachedDocData = ({
 						Разработал
 					</Form.Label>
 					<Select
-                        inputId="creator"
+						inputId="creator"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -395,12 +403,12 @@ const DevelopingAttachedDocData = ({
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-                    <Form.Label
+					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="inspector"
 						style={{ marginRight: '4.5em' }}
@@ -408,7 +416,7 @@ const DevelopingAttachedDocData = ({
 						Проверил
 					</Form.Label>
 					<Select
-                        inputId="inspector"
+						inputId="inspector"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -432,12 +440,12 @@ const DevelopingAttachedDocData = ({
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-                    <Form.Label
+					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="normContr"
 						style={{ marginRight: '1em' }}
@@ -445,7 +453,7 @@ const DevelopingAttachedDocData = ({
 						Нормоконтролер
 					</Form.Label>
 					<Select
-                        inputId="normContr"
+						inputId="normContr"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -471,14 +479,14 @@ const DevelopingAttachedDocData = ({
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2" style={{ marginBottom: 0 }}>
 					<Form.Label htmlFor="note">Примечание</Form.Label>
 					<Form.Control
-                        id="note"
+						id="note"
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}

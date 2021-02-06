@@ -141,8 +141,8 @@ const OtherAttachedDocData = ({
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">
 				{isCreateMode
-					? 'Добавление прилагаемого документа'
-					: 'Данные прилагаемого документа'}
+					? 'Создание прочего прилагаемого документа'
+					: 'Данные прочего прилагаемого документа'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
 				<Form.Group>
@@ -151,6 +151,7 @@ const OtherAttachedDocData = ({
 						id="designation"
 						type="text"
 						placeholder="Введите обозначение"
+						autoComplete="off"
 						defaultValue={selectedObject.designation}
 						onBlur={onDesignationChange}
 					/>

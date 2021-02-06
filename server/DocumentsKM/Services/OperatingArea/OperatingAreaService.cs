@@ -6,11 +6,11 @@ namespace DocumentsKM.Services
 {
     public class OperatingAreaService : IOperatingAreaService
     {
-        private IOperatingAreaRepo _repository;
+        private readonly IOperatingAreaRepo _repository;
 
-        public OperatingAreaService(IOperatingAreaRepo operatingAreaRepoo)
+        public OperatingAreaService(IOperatingAreaRepo operatingAreaRepo)
         {
-            _repository = operatingAreaRepoo;
+            _repository = operatingAreaRepo;
         }
 
         public IEnumerable<OperatingArea> GetAll()

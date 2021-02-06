@@ -11,19 +11,16 @@ import { Trash } from 'react-bootstrap-icons'
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import Specification from '../../model/Specification'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type SpecificationTableProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
 	setSpecification: (spec: Specification) => void
 }
 
-const SpecificationTable = ({
-	setPopupObj,
-	setSpecification,
-}: SpecificationTableProps) => {
+const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
+	const setPopup = useSetPopup()
 
 	const [specifications, setSpecifications] = useState([] as Specification[])
 
@@ -52,16 +49,16 @@ const SpecificationTable = ({
 				const fetchData = async () => {
 					setInitialRender(false)
 					try {
-						const specificationsFetchedResponse = await httpClient.get(
+						const specificationsResponse = await httpClient.get(
 							`/marks/${mark.id}/specifications`
-                        )
-						for (let s of specificationsFetchedResponse.data) {
+						)
+						for (let s of specificationsResponse.data) {
 							if (s.isCurrent) {
 								setCurrentSpecId(s.id)
 							}
 							refs.push(createRef())
 						}
-						setSpecifications(specificationsFetchedResponse.data)
+						setSpecifications(specificationsResponse.data)
 					} catch (e) {
 						console.log('Failed to fetch the data', e)
 					}
@@ -81,7 +78,11 @@ const SpecificationTable = ({
 				inputElement.checked = true
 			}
 			setCurrentSpecId(id)
-			setPopupObj(defaultPopupObj)
+			for (const s of specifications) {
+				s.isCurrent = false
+			}
+			specifications[row].isCurrent = true
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -89,14 +90,14 @@ const SpecificationTable = ({
 
 	const onCreateClick = async () => {
 		try {
-			const newSpecificationFetched = await httpClient.post(
+			const newSpecificationResponse = await httpClient.post(
 				`/marks/${mark.id}/specifications`
 			)
-			specifications.push(newSpecificationFetched.data)
+			specifications.push(newSpecificationResponse.data)
 			setSpecifications(specifications)
 			refs.push(createRef())
-			setCurrentSpecId(newSpecificationFetched.data.id)
-			setPopupObj(defaultPopupObj)
+			setCurrentSpecId(newSpecificationResponse.data.id)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -109,7 +110,7 @@ const SpecificationTable = ({
 			const newSpecArr = [...specifications]
 			newSpecArr.splice(row, 1)
 			setSpecifications(newSpecArr)
-			setPopupObj(defaultPopupObj)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -123,12 +124,12 @@ const SpecificationTable = ({
 				size={28}
 				className="pointer"
 				onClick={() =>
-					setPopupObj({
+					setPopup({
 						isShown: true,
 						msg:
 							'Вы действительно хотите добавить новый выпуск спецификации?',
 						onAccept: onCreateClick,
-						onCancel: () => setPopupObj(defaultPopupObj),
+						onCancel: () => setPopup(defaultPopup),
 					})
 				}
 			/>
@@ -156,28 +157,34 @@ const SpecificationTable = ({
 												s.createdDate
 										  ).toLocaleDateString()}
 								</td>
-								<td className="spec-note-col-width">{s.note}</td>
+								<td className="spec-note-col-width">
+									{s.note}
+								</td>
 								<td
 									onClick={() =>
 										currentSpecId === s.id
 											? null
-											: setPopupObj({
+											: setPopup({
 													isShown: true,
-													msg: `Вы действительно хотите сделать выпуск спецификации №${s.num} текущим?`,
+													msg: `Вы действительно хотите сделать выпуск спецификации № ${s.num} текущим?`,
 													onAccept: () =>
 														onSelectCurrentClick(
 															index,
 															s.id
 														),
 													onCancel: () =>
-														setPopupObj(
-															defaultPopupObj
-														),
+														setPopup(defaultPopup),
 											  })
 									}
 									className="pointer text-centered"
 								>
-                                    <Form.Check ref={refs[index]} id={`is${s.id}`} name="currentRelease" type="radio" style={{pointerEvents: 'none'}} />
+									<Form.Check
+										ref={refs[index]}
+										id={`is${s.id}`}
+										name="currentRelease"
+										type="radio"
+										style={{ pointerEvents: 'none' }}
+									/>
 								</td>
 								<td
 									onClick={() => {
@@ -192,18 +199,16 @@ const SpecificationTable = ({
 									onClick={() =>
 										currentSpecId === s.id
 											? null
-											: setPopupObj({
+											: setPopup({
 													isShown: true,
-													msg: `Вы действительно хотите удалить выпуск спецификации №${s.num}?`,
+													msg: `Вы действительно хотите удалить выпуск спецификации № ${s.num}?`,
 													onAccept: () =>
 														onDeleteClick(
 															index,
 															s.id
 														),
 													onCancel: () =>
-														setPopupObj(
-															defaultPopupObj
-														),
+														setPopup(defaultPopup),
 											  })
 									}
 									className="pointer action-cell-width text-centered"

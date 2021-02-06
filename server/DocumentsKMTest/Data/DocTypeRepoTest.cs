@@ -64,16 +64,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.docTypes);
             var repo = new SqlDocTypeRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var docType = repo.GetById(wrongId);
+            var docType = repo.GetById(999);
 
             // Assert
             Assert.Null(docType);

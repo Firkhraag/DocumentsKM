@@ -14,24 +14,32 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        public IEnumerable<Doc> GetAllByMarkId(int markId)
+        {
+            return _context.Docs.Where(
+                v => v.Mark.Id == markId).OrderBy(
+                    v => v.Type.Name).ThenBy(v => v.Num).ToList();
+        }
+
+        public IEnumerable<Doc> GetAllByMarkIdAndDocType(
+            int markId, int docTypeId)
+        {
+            return _context.Docs.Where(
+                v => (v.Mark.Id == markId) &&
+                    (v.Type.Id == docTypeId)).ToList();
+        }
+
+        public IEnumerable<Doc> GetAllByMarkIdAndNotDocType(
+            int markId, int docTypeId)
+        {
+            return _context.Docs.Where(
+                v => (v.Mark.Id == markId) &&
+                    (v.Type.Id != docTypeId)).ToList();
+        }
+
         public Doc GetById(int id)
         {
             return _context.Docs.SingleOrDefault(d => d.Id == id);
-        }
-
-        public IEnumerable<Doc> GetAllByMarkId(int markId)
-        {
-            return _context.Docs.Where(v => v.Mark.Id == markId).OrderBy(v => v.Type.Name).ThenBy(v => v.Num).ToList();
-        }
-
-        public IEnumerable<Doc> GetAllByMarkIdAndDocType(int markId, int docTypeId)
-        {
-            return _context.Docs.Where(v => (v.Mark.Id == markId) && (v.Type.Id == docTypeId)).ToList();
-        }
-
-        public IEnumerable<Doc> GetAllByMarkIdAndNotDocType(int markId, int docTypeId)
-        {
-            return _context.Docs.Where(v => (v.Mark.Id == markId) && (v.Type.Id != docTypeId)).ToList();
         }
 
         public void Add(Doc doc)

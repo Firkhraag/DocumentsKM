@@ -14,7 +14,7 @@ import SheetName from '../../model/SheetName'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 type SheetDataProps = {
 	sheet: Doc
@@ -104,7 +104,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	}
 
 	const onFormatChange = (event: React.FormEvent<HTMLInputElement>) => {
-        setSelectedObject({
+		setSelectedObject({
 			...selectedObject,
 			form: parseInt(event.currentTarget.value),
 		})
@@ -283,7 +283,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 							label: s.name,
 						}
 					})}
-					styles={reactSelectstyle}
+					styles={reactSelectStyle}
 				/>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
@@ -298,13 +298,18 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						id="format"
 						type="text"
 						placeholder="Введите формат"
-						defaultValue={isNaN(selectedObject.form) ? '' : selectedObject.form}
+						autoComplete="off"
+						defaultValue={
+							isNaN(selectedObject.form)
+								? ''
+								: selectedObject.form
+						}
 						onBlur={onFormatChange}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-                    <Form.Label
+					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="creator"
 						style={{ marginRight: '3.9em' }}
@@ -312,7 +317,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						Разработал
 					</Form.Label>
 					<Select
-                        inputId="creator"
+						inputId="creator"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -336,12 +341,12 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-                    <Form.Label
+					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="inspector"
 						style={{ marginRight: '4.5em' }}
@@ -349,7 +354,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						Проверил
 					</Form.Label>
 					<Select
-                        inputId="inspector"
+						inputId="inspector"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -373,12 +378,12 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2 flex-cent-v">
-                    <Form.Label
+					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="normContr"
 						style={{ marginRight: '1em' }}
@@ -386,7 +391,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						Нормоконтролер
 					</Form.Label>
 					<Select
-                        inputId="normContr"
+						inputId="normContr"
 						maxMenuHeight={250}
 						isClearable={true}
 						isSearchable={true}
@@ -412,14 +417,14 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								label: e.name,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
 				<Form.Group className="mrg-top-2" style={{ marginBottom: 0 }}>
 					<Form.Label htmlFor="note">Примечание</Form.Label>
 					<Form.Control
-                        id="note"
+						id="note"
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}

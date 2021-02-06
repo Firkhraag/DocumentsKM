@@ -14,7 +14,7 @@ using System.Text;
 using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
-using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 
 namespace DocumentsKM
 {
@@ -101,17 +101,25 @@ namespace DocumentsKM
                     .UseNpgsql(
                         Configuration.GetConnectionString("PostgresConnection")
                     ));
-            services.AddDbContext<ApplicationContext>(
-                opt => opt.UseNpgsql(
-                    Configuration.GetConnectionString("PostgresConnection")
-                ));
+            // services.AddDbContext<ApplicationContext>(
+            //     opt => opt.UseNpgsql(
+            //         Configuration.GetConnectionString("PostgresConnection")
+            //     ));
 
-            // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IConnectionMultiplexer>(x =>
                 ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
             services.AddSingleton<ICacheService, RedisCacheService>();
+
+            services.AddSingleton<IConnectionProvider>(
+                new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
+            services.AddSingleton<ISubscriberService>(x => new SubscriberService(x.GetService<IConnectionProvider>(),
+                "personnel_exchange",
+                "personnel_queue",
+                "personnel.*",
+                ExchangeType.Topic));
+            services.AddHostedService<DataCollectorService>();
 
             // DI for application services
             injectScopedServices(services);
@@ -130,10 +138,19 @@ namespace DocumentsKM
             services.AddScoped<IMarkService, MarkService>();
             services.AddScoped<IMarkApprovalService, MarkApprovalService>();
 
-            services.AddScoped<ISpecificationService, SpecificationService>();
             services.AddScoped<IConstructionTypeService, ConstructionTypeService>();
             services.AddScoped<IConstructionSubtypeService, ConstructionSubtypeService>();
             services.AddScoped<IWeldingControlService, WeldingControlService>();
+            services.AddScoped<ISpecificationService, SpecificationService>();
+            services.AddScoped<IStandardConstructionService, StandardConstructionService>();
+            services.AddScoped<IConstructionService, ConstructionService>();
+            services.AddScoped<IBoltDiameterService, BoltDiameterService>();
+            services.AddScoped<IConstructionBoltService, ConstructionBoltService>();
+
+            services.AddScoped<IProfileClassService, ProfileClassService>();
+            services.AddScoped<ISteelService, SteelService>();
+            services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IConstructionElementService, ConstructionElementService>();
 
             services.AddScoped<IDocService, DocService>();
             services.AddScoped<ISheetNameService, SheetNameService>();
@@ -153,7 +170,7 @@ namespace DocumentsKM
 
             services.AddScoped<IAttachedDocService, AttachedDocService>();
             services.AddScoped<IAdditionalWorkService, AdditionalWorkService>();
-            
+
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
             services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
             services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
@@ -172,10 +189,21 @@ namespace DocumentsKM
             services.AddScoped<IMarkRepo, SqlMarkRepo>();
             services.AddScoped<IMarkApprovalRepo, SqlMarkApprovalRepo>();
 
-            services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
             services.AddScoped<IConstructionTypeRepo, SqlConstructionTypeRepo>();
             services.AddScoped<IConstructionSubtypeRepo, SqlConstructionSubtypeRepo>();
             services.AddScoped<IWeldingControlRepo, SqlWeldingControlRepo>();
+            services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
+            services.AddScoped<IStandardConstructionRepo, SqlStandardConstructionRepo>();
+            services.AddScoped<IConstructionRepo, SqlConstructionRepo>();
+            services.AddScoped<IBoltDiameterRepo, SqlBoltDiameterRepo>();
+            services.AddScoped<IBoltLengthRepo, SqlBoltLengthRepo>();
+            services.AddScoped<IConstructionBoltRepo, SqlConstructionBoltRepo>();
+
+            services.AddScoped<IProfileTypeRepo, SqlProfileTypeRepo>();
+            services.AddScoped<IProfileClassRepo, SqlProfileClassRepo>();
+            services.AddScoped<ISteelRepo, SqlSteelRepo>();
+            services.AddScoped<IProfileRepo, SqlProfileRepo>();
+            services.AddScoped<IConstructionElementRepo, SqlConstructionElementRepo>();
 
             services.AddScoped<IDocRepo, SqlDocRepo>();
             services.AddScoped<ISheetNameRepo, SqlSheetNameRepo>();

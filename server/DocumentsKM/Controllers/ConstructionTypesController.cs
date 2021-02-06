@@ -15,7 +15,8 @@ namespace DocumentsKM.Controllers
     {
         private readonly IConstructionTypeService _service;
 
-        public ConstructionTypesController(IConstructionTypeService constructionTypeService)
+        public ConstructionTypesController(
+            IConstructionTypeService constructionTypeService)
         {
             _service = constructionTypeService;
         }

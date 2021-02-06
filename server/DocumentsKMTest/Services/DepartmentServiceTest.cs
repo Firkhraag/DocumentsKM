@@ -14,9 +14,9 @@ namespace DocumentsKM.Tests
             // Arrange
             var repository = new Mock<IDepartmentRepo>();
 
-            repository.Setup(mock=>
+            repository.Setup(mock =>
                 mock.GetAll()).Returns(TestData.departments);
-                
+
             _service = new DepartmentService(repository.Object);
         }
 

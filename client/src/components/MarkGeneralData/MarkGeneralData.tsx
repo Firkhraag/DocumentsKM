@@ -13,18 +13,15 @@ import GeneralDataPoint from '../../model/GeneralDataPoint'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
 import SectionsSelectPopup from './SectionsSelectPopup'
 import PointsSelectPopup from './PointsSelectPopup'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
-type MarkGeneralDataProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
-}
-
-const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
+const MarkGeneralData = () => {
 	const mark = useMark()
+	const setPopup = useSetPopup()
 
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
 		section: null,
@@ -41,6 +38,16 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 	)
 	const [isPointsSelectionShown, setPointsSelectionShown] = useState(false)
 	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
+
+	let createBtnDisabled = false
+	if (
+		optionsObject.points.length > 0 &&
+		optionsObject.points
+			.map((v) => v.text)
+			.includes(selectedObject.pointText)
+	) {
+		createBtnDisabled = true
+	}
 
 	const [errMsg, setErrMsg] = useState('')
 
@@ -73,6 +80,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 				...selectedObject,
 				section: null,
 				point: null,
+				pointText: '',
 			})
 			return
 		}
@@ -91,6 +99,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					...selectedObject,
 					section: v,
 					point: null,
+					pointText: '',
 				})
 			} else {
 				try {
@@ -106,6 +115,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 						...selectedObject,
 						section: v,
 						point: null,
+						pointText: '',
 					})
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -171,7 +181,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					point: null,
 				})
 			}
-			setPopupObj(defaultPopupObj)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error', e)
 		}
@@ -263,7 +273,6 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					...selectedObject,
 					point: response.data,
 				})
-				window.scrollTo(0, 0)
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
@@ -278,14 +287,17 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 	const onDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/general-data`
+				`/marks/${mark.id}/general-data`,
+				{
+					responseType: 'blob',
+				}
 			)
-			const blob = new Blob([response.data], {
-				type: 'application/x-tex',
-			})
+
+			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
-			link.href = window.URL.createObjectURL(blob)
-			link.download = 'Общие данные.tex'
+			link.href = url
+			link.setAttribute('download', 'Общие данные.docx')
+			document.body.appendChild(link)
 			link.click()
 			link.remove()
 		} catch (e) {
@@ -315,8 +327,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 					)}
 					close={() => setPointsSelectionShown(false)}
 					optionsObject={optionsObject}
-                    setOptionsObject={setOptionsObject}
-                    selectedObject={selectedObject}
+					selectedObject={selectedObject}
 					setSelectedObject={setSelectedObject}
 				/>
 			) : null}
@@ -352,14 +363,14 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 									label: s.name,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Разделы</label>
 						<div className="flex-v general-data-selection mrg-top">
-							{optionsObject.sections.map((s) => {
+							{optionsObject.sections.map((s, index) => {
 								return (
 									<div
 										className={
@@ -373,7 +384,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 										onClick={() => onSectionSelect(s.id)}
 										key={s.id}
 									>
-										<p className="no-bot-mrg">{s.name}</p>
+										<p className="no-bot-mrg">{(index + 1).toString() + '. ' +s.name}</p>
 									</div>
 								)
 							})}
@@ -418,7 +429,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 									label: p.text,
 								}
 							})}
-							styles={reactSelectstyle}
+							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
@@ -447,22 +458,20 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 										</p>
 										<div
 											onClick={() =>
-												setPopupObj({
+												setPopup({
 													isShown: true,
-													msg: `Вы действительно хотите удалить ${truncateText(
+													msg: `Вы действительно хотите удалить пункт "${truncateText(
 														p.text,
-														100,
+														33,
 														null
-													)}?`,
+													)}"?`,
 													onAccept: () =>
 														onDeleteClick(
 															index,
 															p.id
 														),
 													onCancel: () =>
-														setPopupObj(
-															defaultPopupObj
-														),
+														setPopup(defaultPopup),
 												})
 											}
 											className="trash-area"
@@ -545,7 +554,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 								label: v + 1,
 							}
 						})}
-						styles={reactSelectstyle}
+						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 				<Form.Group className="no-bot-mrg mrg-top-2">
@@ -575,6 +584,7 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 						variant="secondary"
 						className="flex-grow mrg-left"
 						onClick={onCreatePointButtonClick}
+						disabled={createBtnDisabled ? true : false}
 					>
 						Добавить новый пункт
 					</Button>
@@ -587,23 +597,6 @@ const MarkGeneralData = ({ setPopupObj }: MarkGeneralDataProps) => {
 				>
 					Скачать документ
 				</Button>
-
-				{/* <div className="flex btn-mrg-top-2">
-                    <Button
-                        variant="secondary"
-                        className="flex-grow"
-                        onClick={onDownloadButtonClick}
-                    >
-                        Скачать документ
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        className="flex-grow mrg-left"
-                        onClick={onDownloadButtonClick}
-                    >
-                        Скачать документ
-                    </Button>
-				</div> */}
 			</div>
 		</div>
 	)

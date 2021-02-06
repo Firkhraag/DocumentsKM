@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Net.Mime;
-using AutoMapper;
-using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-// Только листы основного комплекта?
 namespace DocumentsKM.Controllers
 {
     [Route("api")]
@@ -20,7 +15,8 @@ namespace DocumentsKM.Controllers
     {
         private readonly ILinkedDocTypeService _service;
 
-        public LinkedDocTypesController(ILinkedDocTypeService linkedDocTypeService)
+        public LinkedDocTypesController(
+            ILinkedDocTypeService linkedDocTypeService)
         {
             _service = linkedDocTypeService;
         }

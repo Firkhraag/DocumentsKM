@@ -20,7 +20,8 @@ namespace DocumentsKM.Data
 
         public HighTensileBoltsType GetById(int id)
         {
-            return _context.HighTensileBoltsTypes.SingleOrDefault(v => v.Id == id);
+            return _context.HighTensileBoltsTypes.SingleOrDefault(
+                v => v.Id == id);
         }
     }
 }

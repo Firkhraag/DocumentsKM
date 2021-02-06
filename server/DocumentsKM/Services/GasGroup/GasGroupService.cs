@@ -6,11 +6,11 @@ namespace DocumentsKM.Services
 {
     public class GasGroupService : IGasGroupService
     {
-        private IGasGroupRepo _repository;
+        private readonly IGasGroupRepo _repository;
 
-        public GasGroupService(IGasGroupRepo gasGroupRepoo)
+        public GasGroupService(IGasGroupRepo gasGroupRepo)
         {
-            _repository = gasGroupRepoo;
+            _repository = gasGroupRepo;
         }
 
         public IEnumerable<GasGroup> GetAll()

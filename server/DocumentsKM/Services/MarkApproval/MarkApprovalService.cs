@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
+using System.Text.Json;
+using Serilog;
 
 namespace DocumentsKM.Services
 {
     public class MarkApprovalService : IMarkApprovalService
     {
-        private IMarkApprovalRepo _repository;
+        private readonly IMarkApprovalRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
 
@@ -36,6 +38,7 @@ namespace DocumentsKM.Services
             int markId,
             List<int> employeeIds)
         {
+            Log.Information(JsonSerializer.Serialize(employeeIds));
             if (employeeIds == null)
                 throw new ArgumentNullException(nameof(employeeIds));
             var foundMark = _markRepo.GetById(markId);
@@ -68,6 +71,9 @@ namespace DocumentsKM.Services
                             Mark=foundMark,
                             Employee=employees[i],
                         });
+            
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

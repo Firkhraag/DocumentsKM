@@ -26,18 +26,11 @@ namespace DocumentsKM.Data
         
         public MarkLinkedDoc GetById(int id)
         {
-            // return _context.MarkLinkedDocs.Include(
-            //         v => v.Mark).Include(
-            //             v => v.LinkedDoc).SingleOrDefault(v => v.Id == id);
             return _context.MarkLinkedDocs.SingleOrDefault(v => v.Id == id);
         }
 
         public MarkLinkedDoc GetByMarkIdAndLinkedDocId(int markId, int linkedDocId)
         {
-            // return _context.MarkLinkedDocs.Include(
-            //         v => v.Mark).Include(
-            //             v => v.LinkedDoc).SingleOrDefault(
-            //                 v => v.Mark.Id == markId && v.LinkedDoc.Id == linkedDocId);
             return _context.MarkLinkedDocs.SingleOrDefault(
                 v => v.Mark.Id == markId && v.LinkedDoc.Id == linkedDocId);
         }

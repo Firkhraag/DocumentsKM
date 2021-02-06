@@ -55,10 +55,8 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.docs);
             var repo = new SqlDocRepo(context);
 
-            var wrongMarkId = 999;
-
             // Act
-            var docs = repo.GetAllByMarkId(wrongMarkId);
+            var docs = repo.GetAllByMarkId(999);
 
             // Assert
             Assert.Empty(docs);
@@ -80,7 +78,8 @@ namespace DocumentsKM.Tests
             var docs = repo.GetAllByMarkIdAndDocType(markId, docTypeId);
 
             // Assert
-            Assert.Equal(TestData.docs.Where(v => v.Mark.Id == markId && v.Type.Id == docTypeId), docs);
+            Assert.Equal(TestData.docs.Where(
+                v => v.Mark.Id == markId && v.Type.Id == docTypeId), docs);
 
             context.Database.EnsureDeleted();
         }
@@ -92,11 +91,10 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.docs);
             var repo = new SqlDocRepo(context);
 
-            var wrongMarkId = 999;
             var docTypeId = _rnd.Next(1, TestData.docTypes.Count());
 
             // Act
-            var docs = repo.GetAllByMarkIdAndDocType(wrongMarkId, docTypeId);
+            var docs = repo.GetAllByMarkIdAndDocType(999, docTypeId);
 
             // Assert
             Assert.Empty(docs);
@@ -118,7 +116,8 @@ namespace DocumentsKM.Tests
             var docs = repo.GetAllByMarkIdAndNotDocType(markId, docTypeId);
 
             // Assert
-            Assert.Equal(TestData.docs.Where(v => v.Mark.Id == markId && v.Type.Id != docTypeId), docs);
+            Assert.Equal(TestData.docs.Where(
+                v => v.Mark.Id == markId && v.Type.Id != docTypeId), docs);
 
             context.Database.EnsureDeleted();
         }
@@ -130,11 +129,10 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.docs);
             var repo = new SqlDocRepo(context);
 
-            var wrongMarkId = 999;
             var docTypeId = _rnd.Next(1, TestData.docTypes.Count());
 
             // Act
-            var docs = repo.GetAllByMarkIdAndNotDocType(wrongMarkId, docTypeId);
+            var docs = repo.GetAllByMarkIdAndNotDocType(999, docTypeId);
 
             // Assert
             Assert.Empty(docs);
@@ -149,7 +147,7 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.docs);
             var repo = new SqlDocRepo(context);
 
-            int id = _rnd.Next(1, TestData.docs.Count());
+            var id = _rnd.Next(1, TestData.docs.Count());
 
             // Act
             var doc = repo.GetById(id);
@@ -161,12 +159,13 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
-            // Act
+            // Arrange
             var context = GetContext(TestData.docs);
             var repo = new SqlDocRepo(context);
 
+            // Act
             var doc = repo.GetById(999);
 
             // Assert
@@ -204,10 +203,7 @@ namespace DocumentsKM.Tests
             repo.Add(doc);
 
             // Assert
-            Assert.NotEqual(0, doc.Id);
-            Assert.Equal(
-                TestData.docs.Where(v => v.Mark.Id == markId).Count() + 1,
-                repo.GetAllByMarkId(markId).Count());
+            Assert.NotNull(repo.GetById(doc.Id));
 
             context.Database.EnsureDeleted();
         }
@@ -216,11 +212,12 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateDoc()
         {
             // Arrange
-            var docs = new List<Doc>{};
+            var docs = new List<Doc> { };
             foreach (var d in TestData.docs)
             {
                 docs.Add(new Doc
                 {
+                    Id = d.Id,
                     Mark = d.Mark,
                     Type = d.Type,
                     Name = d.Name,

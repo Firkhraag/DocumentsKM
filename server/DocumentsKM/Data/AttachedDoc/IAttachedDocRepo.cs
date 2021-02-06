@@ -5,17 +5,17 @@ namespace DocumentsKM.Data
 {
     public interface IAttachedDocRepo
     {
-        // Получить прочий прилагаемый документ по id
-        AttachedDoc GetById(int id);
-        // Получить прочий прилагаемый документ по марке и обозначению
-        AttachedDoc GetByUniqueKeyValues(int markId, string designation);
         // Получить все прочие прилагаемые документы по id марки
         IEnumerable<AttachedDoc> GetAllByMarkId(int markId);
+        // Получить прочий прилагаемый документ по id
+        AttachedDoc GetById(int id);
+        // Получить прочий прилагаемый документ по unique key
+        AttachedDoc GetByUniqueKey(int markId, string designation);
         // Добавить новый прочий прилагаемый документ
         void Add(AttachedDoc attachedDoc);
-        // Изменить имеющийся прочий прилагаемый документ
+        // Изменить прочий прилагаемый документ
         void Update(AttachedDoc attachedDoc);
-        // Удалить имеющийся прочий прилагаемый документ
+        // Удалить прочий прилагаемый документ
         void Delete(AttachedDoc attachedDoc);
     }
 }

@@ -18,7 +18,7 @@ namespace DocumentsKM.Tests
         private readonly Mock<IDocTypeRepo> _mockDocTypeRepo = new Mock<IDocTypeRepo>();
         private readonly IDocService _service;
         private readonly Random _rnd = new Random();
-        private readonly List<Doc> _docs = new List<Doc>{};
+        private readonly List<Doc> _docs = new List<Doc> { };
         private readonly int _maxMarkId = 3;
 
         public DocServiceTest()
@@ -44,45 +44,47 @@ namespace DocumentsKM.Tests
             }
             foreach (var doc in _docs)
             {
-                _mockDocRepo.Setup(mock=>
+                _mockDocRepo.Setup(mock =>
                     mock.GetById(doc.Id)).Returns(
                         _docs.SingleOrDefault(v => v.Id == doc.Id));
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock=>
+                _mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
                 foreach (var docType in TestData.docTypes)
                 {
-                    _mockDocRepo.Setup(mock=>
+                    _mockDocRepo.Setup(mock =>
                         mock.GetAllByMarkIdAndDocType(mark.Id, docType.Id)).Returns(
-                            _docs.Where(v => v.Mark.Id == mark.Id && v.Type.Id == docType.Id));
+                            _docs.Where(
+                                v => v.Mark.Id == mark.Id && v.Type.Id == docType.Id));
 
-                    _mockDocRepo.Setup(mock=>
+                    _mockDocRepo.Setup(mock =>
                         mock.GetAllByMarkIdAndNotDocType(mark.Id, docType.Id)).Returns(
-                            _docs.Where(v => v.Mark.Id == mark.Id && v.Type.Id != docType.Id));
+                            _docs.Where(
+                                v => v.Mark.Id == mark.Id && v.Type.Id != docType.Id));
                 }
             }
             foreach (var employee in TestData.employees)
             {
-                _mockEmployeeRepo.Setup(mock=>
+                _mockEmployeeRepo.Setup(mock =>
                     mock.GetById(employee.Id)).Returns(
                         TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
             }
             foreach (var docType in TestData.docTypes)
             {
-                _mockDocTypeRepo.Setup(mock=>
+                _mockDocTypeRepo.Setup(mock =>
                     mock.GetById(docType.Id)).Returns(
                         TestData.docTypes.SingleOrDefault(v => v.Id == docType.Id));
             }
 
-            _mockDocRepo.Setup(mock=>
+            _mockDocRepo.Setup(mock =>
                 mock.Add(It.IsAny<Doc>())).Verifiable();
-            _mockDocRepo.Setup(mock=>
+            _mockDocRepo.Setup(mock =>
                 mock.Update(It.IsAny<Doc>())).Verifiable();
-            _mockDocRepo.Setup(mock=>
+            _mockDocRepo.Setup(mock =>
                 mock.Delete(It.IsAny<Doc>())).Verifiable();
 
             _service = new DocService(
@@ -110,11 +112,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void GetAllSheetsByMarkId_ShouldReturnEmptyArray_WhenWrongMarkId()
         {
-            // Arrange
-            int wrongMarkId = 999;
-            
             // Act
-            var returnedSheets = _service.GetAllSheetsByMarkId(wrongMarkId);
+            var returnedSheets = _service.GetAllSheetsByMarkId(999);
 
             // Assert
             Assert.Empty(returnedSheets);
@@ -138,11 +137,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void GetAllAttachedByMarkId_ShouldReturnEmptyArray_WhenWrongMarkId()
         {
-            // Arrange
-            int wrongMarkId = 999;
-            
             // Act
-            var returnedAttachedDocs = _service.GetAllSheetsByMarkId(wrongMarkId);
+            var returnedAttachedDocs = _service.GetAllSheetsByMarkId(999);
 
             // Assert
             Assert.Empty(returnedAttachedDocs);
@@ -160,13 +156,14 @@ namespace DocumentsKM.Tests
 
             var newDoc = new Doc
             {
-                Name="NewCreate",
-                NumOfPages=1,
-                Form=1.0f,
+                Name = "NewCreate",
+                NumOfPages = 1,
+                Form = 1.0f,
             };
-            
+
             // Act
-            _service.Create(newDoc, markId, docTypeId, creatorId, inspectorId, normContrId);
+            _service.Create(
+                newDoc, markId, docTypeId, creatorId, inspectorId, normContrId);
 
             // Assert
             _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Once);
@@ -178,44 +175,39 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void Create_ShouldFailWithNull()
+        public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int markId = _rnd.Next(1, TestData.marks.Count());
-            int wrongMarkId = 999;
             int docTypeId = _rnd.Next(1, TestData.docTypes.Count());
-            int wrongDocTypeId = 999;
             int creatorId = _rnd.Next(1, TestData.employees.Count());
-            int wrongCreatorId = 999;
             int inspectorId = _rnd.Next(1, TestData.employees.Count());
-            int wrongInspectorId = 999;
             int normContrId = _rnd.Next(1, TestData.employees.Count());
-            int wrongNormContrId = 999;
 
             var newDoc = new Doc
             {
-                Name="NewCreate",
-                NumOfPages=1,
-                Form=1.0f,
+                Name = "NewCreate",
+                NumOfPages = 1,
+                Form = 1.0f,
             };
-            
+
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 null, markId, docTypeId, creatorId, inspectorId, normContrId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
-                newDoc, wrongMarkId, docTypeId, creatorId, inspectorId, normContrId));
+                newDoc, 999, docTypeId, creatorId, inspectorId, normContrId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
-                newDoc, markId, wrongDocTypeId, creatorId, inspectorId, normContrId));
+                newDoc, markId, 999, creatorId, inspectorId, normContrId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
-                newDoc, markId, docTypeId, wrongCreatorId, inspectorId, normContrId));
+                newDoc, markId, docTypeId, 999, inspectorId, normContrId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
-                newDoc, markId, docTypeId, creatorId, wrongInspectorId, normContrId));
+                newDoc, markId, docTypeId, creatorId, 999, normContrId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
-                newDoc, markId, docTypeId, creatorId, inspectorId, wrongNormContrId));
+                newDoc, markId, docTypeId, creatorId, inspectorId, 999));
 
             _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Never);
         }
-        
+
         [Fact]
         public void Update_ShouldUpdateDoc()
         {
@@ -223,36 +215,43 @@ namespace DocumentsKM.Tests
             int id = _rnd.Next(2, _docs.Count());
             var newName = "NewUpdate";
             var newTypeId = _docs[0].Type.Id;
+            var newNumOfPages = 9;
+            var newForm = 9.0f;
 
             var newDocRequest = new DocUpdateRequest
             {
-                Name=newName,
-                TypeId=newTypeId,
+                Name = newName,
+                TypeId = newTypeId,
+                NumOfPages = newNumOfPages,
+                Form = newForm,
             };
-            
+
             // Act
             _service.Update(id, newDocRequest);
 
             // Assert
             _mockDocRepo.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Once);
+            Assert.Equal(newTypeId, _docs.SingleOrDefault(v => v.Id == id).Type.Id);
             Assert.Equal(newName, _docs.SingleOrDefault(v => v.Id == id).Name);
+            Assert.Equal(newNumOfPages, _docs.SingleOrDefault(v => v.Id == id).NumOfPages);
+            Assert.Equal(newForm, _docs.SingleOrDefault(v => v.Id == id).Form);
         }
 
         [Fact]
-        public void Update_ShouldFailWithNull()
+        public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
             int id = _rnd.Next(1, _docs.Count());
-            int wrongId = 999;
 
             var newDocRequest = new DocUpdateRequest
             {
-                Name="NewUpdate",
+                Name = "NewUpdate",
             };
-            
+
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(id, null));
-            Assert.Throws<ArgumentNullException>(() => _service.Update(wrongId, newDocRequest));
+            Assert.Throws<ArgumentNullException>(() => _service.Update(
+                999, newDocRequest));
 
             _mockDocRepo.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Never);
         }
@@ -262,7 +261,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _docs.Count());
-            
+
             // Act
             _service.Delete(id);
 
@@ -273,11 +272,8 @@ namespace DocumentsKM.Tests
         [Fact]
         public void Delete_ShouldFailWithNull_WhenWrongId()
         {
-            // Arrange
-            var wrongId = 999;
-
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(wrongId));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(999));
 
             _mockDocRepo.Verify(mock => mock.Delete(It.IsAny<Doc>()), Times.Never);
         }

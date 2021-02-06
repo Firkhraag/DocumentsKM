@@ -14,9 +14,9 @@ namespace DocumentsKM.Tests
             // Arrange
             var repository = new Mock<ISheetNameRepo>();
 
-            repository.Setup(mock=>
+            repository.Setup(mock =>
                 mock.GetAll()).Returns(TestData.sheetNames);
-            
+
             _service = new SheetNameService(repository.Object);
         }
 
@@ -32,4 +32,3 @@ namespace DocumentsKM.Tests
         }
     }
 }
-

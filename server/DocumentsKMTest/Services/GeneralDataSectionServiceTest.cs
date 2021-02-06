@@ -14,9 +14,9 @@ namespace DocumentsKM.Tests
             // Arrange
             var repository = new Mock<IGeneralDataSectionRepo>();
 
-            repository.Setup(mock=>
+            repository.Setup(mock =>
                 mock.GetAll()).Returns(TestData.generalDataSections);
-            
+
             _service = new GeneralDataSectionService(repository.Object);
         }
 
@@ -32,4 +32,3 @@ namespace DocumentsKM.Tests
         }
     }
 }
-

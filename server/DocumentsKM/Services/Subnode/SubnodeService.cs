@@ -6,7 +6,7 @@ namespace DocumentsKM.Services
 {
     public class SubnodeService : ISubnodeService
     {
-        private ISubnodeRepo _repository;
+        private readonly ISubnodeRepo _repository;
 
         public SubnodeService(ISubnodeRepo subnodeRepo)
         {

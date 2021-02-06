@@ -7,7 +7,7 @@ namespace DocumentsKM.Services
     {
         // Получить технические условия марки
         MarkOperatingConditions GetByMarkId(int markId);
-        // Создать технические условия марки
+        // Добавить технические условия марки
         void Create(MarkOperatingConditions markOperatingConditions,
             int markId,
             int envAggressivenessId,
@@ -16,7 +16,7 @@ namespace DocumentsKM.Services
             int constructionMaterialId,
             int paintworkTypeId,
             int highTensileBoltsTypeId);
-        // Обновить технические условия марки
+        // Изменить технические условия марки
         void Update(int markId, MarkOperatingConditionsUpdateRequest markOperatingConditions);
     }
 }

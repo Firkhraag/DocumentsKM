@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Mime;
 using AutoMapper;
 using DocumentsKM.Dtos;
@@ -78,9 +77,12 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkOperatingConditions> Create(int markId, [FromBody] MarkOperatingConditionsCreateRequest markOperatingConditionsRequest)
+        public ActionResult<MarkOperatingConditions> Create(
+            int markId,
+            [FromBody] MarkOperatingConditionsCreateRequest markOperatingConditionsRequest)
         {
-            var markOperatingConditionsModel = _mapper.Map<MarkOperatingConditions>(markOperatingConditionsRequest);
+            var markOperatingConditionsModel = _mapper.Map<MarkOperatingConditions>(
+                markOperatingConditionsRequest);
             try
             {
                 _service.Create(
@@ -102,15 +104,20 @@ namespace DocumentsKM.Controllers
                 return Conflict();
             }
             
-            var markOperatingConditionsResponse = _mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditionsModel);
-            return Created($"marks/{markId}/mark-operating-conditions", _mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditionsModel));
+            var markOperatingConditionsResponse = _mapper.Map<MarkOperatingConditionsResponse>(
+                markOperatingConditionsModel);
+            return Created(
+                $"marks/{markId}/mark-operating-conditions",
+                _mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditionsModel));
         }
 
         [HttpPatch, Route("marks/{markId}/mark-operating-conditions")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Update(int markId, [FromBody] MarkOperatingConditionsUpdateRequest markOperatingConditionsRequest)
+        public ActionResult Update(
+            int markId,
+            [FromBody] MarkOperatingConditionsUpdateRequest markOperatingConditionsRequest)
         {
             try
             {

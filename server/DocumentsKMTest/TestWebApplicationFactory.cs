@@ -78,15 +78,24 @@ public class TestWebApplicationFactory<TStartup>
         context.Nodes.AddRange(TestData.nodes);
         context.Subnodes.AddRange(TestData.subnodes);
         context.Marks.AddRange(TestData.marks);
-
         context.MarkApprovals.AddRange(TestData.markApprovals);
+
         context.Specifications.AddRange(TestData.specifications);
+        context.BoltDiameters.AddRange(TestData.boltDiameters);
+        context.ProfileClasses.AddRange(TestData.profileClasses);
+        context.ProfileTypes.AddRange(TestData.profileTypes);
+        context.Steel.AddRange(TestData.steel);
+        context.Constructions.AddRange(TestData.constructions);
+        context.StandardConstructions.AddRange(TestData.standardConstructions);
+        context.ConstructionBolts.AddRange(TestData.constructionBolts);
+        context.ConstructionElements.AddRange(TestData.constructionElements);
         
         context.Docs.AddRange(TestData.docs);
         context.AttachedDocs.AddRange(TestData.attachedDocs);
         context.LinkedDocs.AddRange(TestData.linkedDocs);
         context.MarkLinkedDocs.AddRange(TestData.markLinkedDocs);
         context.MarkOperatingConditions.AddRange(TestData.markOperatingConditions);
+        context.AdditionalWork.AddRange(TestData.additionalWork);
 
         context.GeneralDataPoints.AddRange(TestData.generalDataPoints);
         context.MarkGeneralDataPoints.AddRange(TestData.markGeneralDataPoints);

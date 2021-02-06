@@ -51,10 +51,8 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.specifications);
             var repo = new SqlSpecificationRepo(context);
 
-            var wrongMarkId = 999;
-
             // Act
-            var specifications = repo.GetAllByMarkId(wrongMarkId);
+            var specifications = repo.GetAllByMarkId(999);
 
             // Assert
             Assert.Empty(specifications);
@@ -82,7 +80,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.specifications);
@@ -116,10 +114,7 @@ namespace DocumentsKM.Tests
             repo.Add(specification);
 
             // Assert
-            Assert.NotEqual(0, specification.Id);
-            Assert.Equal(
-                TestData.specifications.Where(v => v.Mark.Id == markId).Count() + 1,
-                repo.GetAllByMarkId(markId).Count());
+            Assert.NotNull(repo.GetById(specification.Id));
 
             context.Database.EnsureDeleted();
         }
@@ -128,15 +123,15 @@ namespace DocumentsKM.Tests
         public void Update_ShouldUpdateSpecification()
         {
             // Arrange
-            var specifications = new List<Specification>{};
+            var specifications = new List<Specification> { };
             foreach (var s in TestData.specifications)
             {
                 specifications.Add(new Specification
                 {
-                    Id=s.Id,
-                    Mark=s.Mark,
-                    Num=s.Num,
-                    IsCurrent=s.IsCurrent,
+                    Id = s.Id,
+                    Mark = s.Mark,
+                    Num = s.Num,
+                    IsCurrent = s.IsCurrent,
                 });
             }
             var context = GetContext(specifications);

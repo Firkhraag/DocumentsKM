@@ -15,24 +15,17 @@ public class RequestResponseLoggingMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        // Read and log request body data
         string requestBodyPayload = await ReadRequestBody(context.Request);
         LogHelper.RequestPayload = requestBodyPayload;
 
-        // Read and log response body data
-        // Copy a pointer to the original response body stream
         var originalResponseBodyStream = context.Response.Body;
 
-        // Create a new memory stream...
         using (var responseBody = new MemoryStream())
         {
-            // ...and use that for the temporary response body
             context.Response.Body = responseBody;
 
-            // Continue down the Middleware pipeline, eventually returning to this class
             await _next(context);
 
-            // Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
             await responseBody.CopyToAsync(originalResponseBodyStream);
         }
     }

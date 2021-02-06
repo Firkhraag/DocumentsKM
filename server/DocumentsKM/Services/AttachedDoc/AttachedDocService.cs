@@ -8,7 +8,7 @@ namespace DocumentsKM.Services
 {
     public class AttachedDocService : IAttachedDocService
     {
-        private IAttachedDocRepo _repository;
+        private readonly IAttachedDocRepo _repository;
         private readonly IMarkRepo _markRepo;
 
         public AttachedDocService(
@@ -34,13 +34,17 @@ namespace DocumentsKM.Services
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
 
-            var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                 markId, attachedDoc.Designation);
             if (uniqueConstraintViolationCheck != null)
-                throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
+                throw new ConflictException(
+                    uniqueConstraintViolationCheck.Id.ToString());
 
             attachedDoc.Mark = foundMark;
             _repository.Add(attachedDoc);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(
@@ -55,7 +59,7 @@ namespace DocumentsKM.Services
 
             if (attachedDoc.Designation != null)
             {
-                var uniqueConstraintViolationCheck = _repository.GetByUniqueKeyValues(
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                     foundAttachedDoc.Mark.Id, attachedDoc.Designation);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
@@ -67,6 +71,10 @@ namespace DocumentsKM.Services
                 foundAttachedDoc.Note = attachedDoc.Note;
 
             _repository.Update(foundAttachedDoc);
+
+            var foundMark = _markRepo.GetById(foundAttachedDoc.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -74,7 +82,12 @@ namespace DocumentsKM.Services
             var foundAttachedDoc = _repository.GetById(id);
             if (foundAttachedDoc == null)
                 throw new ArgumentNullException(nameof(foundAttachedDoc));
+            var markId = foundAttachedDoc.Mark.Id;
             _repository.Delete(foundAttachedDoc);
+
+            var foundMark = _markRepo.GetById(markId);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

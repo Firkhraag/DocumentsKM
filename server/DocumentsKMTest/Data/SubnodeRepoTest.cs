@@ -46,6 +46,22 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
+        public void GetAllByNodeId_ShouldReturnEmptyArray_WhenWrongNodeId()
+        {
+            // Arrange
+            var context = GetContext(TestData.subnodes);
+            var repo = new SqlSubnodeRepo(context);
+
+            // Act
+            var subnodes = repo.GetAllByNodeId(999);
+
+            // Assert
+            Assert.Empty(subnodes);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
         public void GetById_ShouldReturnSubnode()
         {
             // Arrange
@@ -64,16 +80,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.subnodes);
             var repo = new SqlSubnodeRepo(context);
-            
-            int wrongId = 999;
 
             // Act
-            var subnode = repo.GetById(wrongId);
+            var subnode = repo.GetById(999);
 
             // Assert
             Assert.Null(subnode);

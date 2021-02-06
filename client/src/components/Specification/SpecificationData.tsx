@@ -2,62 +2,99 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 // Bootstrap
-import Table from 'react-bootstrap/Table'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { PlusCircle } from 'react-bootstrap-icons'
-import { PencilSquare } from 'react-bootstrap-icons'
-import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import Specification from '../../model/Specification'
+import Construction from '../../model/Construction'
+import StandardConstruction from '../../model/StandardConstruction'
 import { useMark } from '../../store/MarkStore'
+import ConstructionTable from '../Construction/ConstructionTable'
+import StandardConstructionTable from '../StandardConstruction/StandardConstructionTable'
 
 type SpecificationDataProps = {
 	specification: Specification
+	setConstruction: (c: Construction) => void
+	copiedConstruction: Construction
+	setCopiedConstruction: (c: Construction) => void
+	setStandardConstruction: (sc: StandardConstruction) => void
 }
 
-const SpecificationData = ({ specification }: SpecificationDataProps) => {
+const SpecificationData = ({
+	specification,
+	setConstruction,
+	copiedConstruction,
+	setCopiedConstruction,
+	setStandardConstruction,
+}: SpecificationDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
 
 	const [selectedObject, setSelectedObject] = useState(specification)
 
-	// const [constructions, setConstructions] = useState([] as ConstructionType[])
-	// const [highTensileBolts, setHighTensileBolts] = useState([] as Specification[])
-	// const [standardConstructions, setStandardConstructions] = useState([] as StandardConstruction[])
-
 	useEffect(() => {
-		if (mark != null && mark.id != null) {
-			if (selectedObject == null) {
-				history.push('/specifications')
-				return
-			}
+		if (mark != null && mark.id != null && selectedObject == null) {
+			history.push('/specifications')
 		}
 	}, [mark])
 
-	const onNoteChange = async (event: React.FormEvent<HTMLTextAreaElement>) => {
-        try {
-            await httpClient.patch(`/specifications/${selectedObject.id}`, {
-                note: event.currentTarget.value,
-            })
-        } catch (e) {
-            console.log('Error')
-        }
+	const onNoteChange = async (
+		event: React.FormEvent<HTMLTextAreaElement>
+	) => {
 		setSelectedObject({
 			...selectedObject,
 			note: event.currentTarget.value,
 		})
 	}
 
+	const onChangeButtonClick = async () => {
+		try {
+			await httpClient.patch(`/specifications/${selectedObject.id}`, {
+				note: selectedObject.note,
+			})
+			history.push('/specifications')
+		} catch (e) {
+			console.log('Error')
+		}
+	}
+
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Данные выпуска спецификации</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
+				<div className="space-between">
+					<Form.Group className="flex-cent-v">
+						<Form.Label
+							className="no-bot-mrg"
+							style={{ marginRight: '.75em' }}
+						>
+							Номер
+						</Form.Label>
+						<Form.Control
+							type="text"
+							value={selectedObject.num}
+							readOnly={true}
+							className="text-centered"
+							style={{ width: '50px' }}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Check
+							// ref={refs[index]}
+							// id={`is${s.id}`}
+							name="currentRelease"
+							type="radio"
+							style={{ pointerEvents: 'none' }}
+							checked={selectedObject.isCurrent}
+							readOnly={true}
+						/>
+					</Form.Group>
+				</div>
 				<Form.Group className="no-bot-mrg">
 					<Form.Label htmlFor="note">Примечание</Form.Label>
 					<Form.Control
-                        id="note"
+						id="note"
 						as="textarea"
 						rows={4}
 						style={{ resize: 'none' }}
@@ -66,219 +103,27 @@ const SpecificationData = ({ specification }: SpecificationDataProps) => {
 						onBlur={onNoteChange}
 					/>
 				</Form.Group>
-
-				<h2 className="mrg-top-2 bold text-centered">Перечень видов конструкций</h2>
-
-				<PlusCircle
-					onClick={() => history.push(`/specifications/${selectedObject.id}/construction-create`)}
-					color="#666"
-					size={28}
-					className="pointer mrg-top"
-				/>
-
-				<Table bordered striped className="mrg-top no-bot-mrg">
-					<thead>
-						<tr>
-							<th>№</th>
-							<th>Вид конструкции</th>
-							<th className="text-centered" colSpan={2}>
-								Действия
-							</th>
-						</tr>
-					</thead>
-				</Table>
-
-				{/* <table>
-					<tbody>
-						<tr className="head-tr">
-							<td>Вид конструкции</td>
-							<td>Шифр</td>
-							<td>Вкл</td>
-						</tr>
-						<tr>
-							<td>Балки</td>
-							<td>11</td>
-							<td>+</td>
-						</tr>
-						<tr>
-							<td>Связи</td>
-							<td>11</td>
-							<td>+</td>
-						</tr>
-						<tr>
-							<td>Прогоны</td>
-							<td>11</td>
-							<td>+</td>
-						</tr>
-						<tr>
-							<td>
-								Lorem Ipsum - это текст-"рыба", часто
-								используемый в печати и вэб-дизайне.
-							</td>
-							<td>11</td>
-							<td>+</td>
-						</tr>
-					</tbody>
-				</table> */}
-
-				{/* <Button
+				<Button
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
-					onClick={null}
+					onClick={onChangeButtonClick}
 				>
 					Сохранить изменения
-				</Button> */}
+				</Button>
 			</div>
+
+			<ConstructionTable
+				setConstruction={setConstruction}
+				copiedConstruction={copiedConstruction}
+				setCopiedConstruction={setCopiedConstruction}
+				specificationId={selectedObject.id}
+			/>
+			<StandardConstructionTable
+				setStandardConstruction={setStandardConstruction}
+				specificationId={selectedObject.id}
+			/>
 		</div>
 	)
-
-	// <div className="component-cnt component-width">
-	//     <h1 className="text-centered">Данные спецификации</h1>
-	//     <div>
-	//         <p>Выпуск: 0</p>
-	//         <div className="flex-v mrg-bottom">
-	//             <p className="label-area">Выпуск</p>
-	//             <div className="info-area">
-	//                 2
-	//             </div>
-	//         </div>
-	//         <p>Текущий: M32788.111.111-KVB 8.AA</p>
-	// <p>Перечень видов конструкций</p>
-	// <table>
-	//     <tbody>
-	//         <tr>
-	//             <td>Вид</td>
-	//             <td>Шифр</td>
-	//             <td>Вкл</td>
-	//         </tr>
-	//         <tr>
-	//             <td>Балки</td>
-	//             <td>11</td>
-	//             <td>+</td>
-	//         </tr>
-	//         <tr>
-	//             <td>Связи</td>
-	//             <td>11</td>
-	//             <td>+</td>
-	//         </tr>
-	//         <tr>
-	//             <td>Прогоны</td>
-	//             <td>11</td>
-	//             <td>+</td>
-	//         </tr>
-	//         <tr>
-	//             <td>Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне.</td>
-	//             <td>11</td>
-	//             <td>+</td>
-	//         </tr>
-	//     </tbody>
-	// </table>
-	//         <div>
-	//             <p>Высокопрочные болты</p>
-	//         </div>
-	//         <div>
-	//             <p>Типовые конструкции</p>
-	//         </div>
-	//         <div>
-	//             <p>Данные по виду конструкции</p>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Название вида конструкции</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Шифр вида конструкции</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Шифр подвида конструкции</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Расценка</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Шифр типового альбома конструкции</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Число типовых конструкций</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Притупление кромок</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Динамическая нагрузка</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Фланцевые соединения</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Контроль плотности сварных швов</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Коэффициент окрашивания</p>
-	//                 <div className="info-area">
-	//                     2
-	//                 </div>
-	//             </div>
-
-	//             <div className="flex-v mrg-bottom">
-	//                 <p className="label-area">Включить вид конструкции в спецификацию</p>
-	//                 <div className="info-area">
-	//                     +/-
-	//                 </div>
-	//             </div>
-
-	//             {/* <p>Вид конструкции</p>
-	//             <textarea />
-	//             <p>Включить в спецификацию +/-</p>
-	//             <p>Коэффициент окрашивания</p>
-	//             <input type="text" /> */}
-	//         </div>
-
-	//         <div>
-	//             <p>Перечень элементов вида конструкции</p>
-	//             <p>TBD</p>
-	//         </div>
-	//     </div>
-	// </div>
 }
 
 export default SpecificationData

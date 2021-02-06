@@ -14,9 +14,9 @@ namespace DocumentsKM.Tests
             // Arrange
             var repository = new Mock<IHighTensileBoltsTypeRepo>();
 
-            repository.Setup(mock=>
+            repository.Setup(mock =>
                 mock.GetAll()).Returns(TestData.highTensileBoltsTypes);
-            
+
             _service = new HighTensileBoltsTypeService(repository.Object);
         }
 
@@ -32,4 +32,3 @@ namespace DocumentsKM.Tests
         }
     }
 }
-

@@ -20,7 +20,8 @@ namespace DocumentsKM.Data
 
         public IEnumerable<LinkedDoc> GetAllByDocTypeId(int docTypeId)
         {
-            return _context.LinkedDocs.Where(v => v.Type.Id == docTypeId).ToList();
+            return _context.LinkedDocs.Where(
+                v => v.Type.Id == docTypeId).ToList();
         }
     }
 }

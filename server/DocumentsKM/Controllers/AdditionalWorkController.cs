@@ -30,10 +30,10 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("marks/{markId}/additional-work")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<AdditionalWorkResponse>> GetAllByMarkId(int markId)
+        public ActionResult<IEnumerable<AdditionalWorkResponse>> GetAllByMarkId(
+            int markId)
         {
-            var additionalWork = _service.GetAllByMarkId(markId);
-            return Ok(_mapper.Map<IEnumerable<AdditionalWorkResponse>>(additionalWork));
+            return Ok(_service.GetAllByMarkId(markId));
         }
 
         [HttpPost, Route("marks/{markId}/additional-work")]
@@ -45,7 +45,8 @@ namespace DocumentsKM.Controllers
         public ActionResult<AdditionalWorkResponse> Create(
             int markId, [FromBody] AdditionalWorkCreateRequest additionalWorkRequest)
         {
-            var additionalWorkModel = _mapper.Map<AdditionalWork>(additionalWorkRequest);
+            var additionalWorkModel = _mapper.Map<AdditionalWork>(
+                additionalWorkRequest);
             try
             {
                 _service.Create(
@@ -61,7 +62,8 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"additional-work/{additionalWorkModel.Id}", _mapper.Map<AdditionalWorkResponse>(additionalWorkModel));
+            return Created($"additional-work/{additionalWorkModel.Id}",
+                _mapper.Map<AdditionalWorkResponse>(additionalWorkModel));
         }
 
         [HttpPatch, Route("additional-work/{id}")]
@@ -69,10 +71,9 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int id, [FromBody] AdditionalWorkUpdateRequest additionalWorkRequest)
+        public ActionResult Update(
+            int id, [FromBody] AdditionalWorkUpdateRequest additionalWorkRequest)
         {
-            // DEBUG
-            // Log.Information(JsonSerializer.Serialize(markRequest));
             try
             {
                 _service.Update(id, additionalWorkRequest);

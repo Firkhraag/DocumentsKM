@@ -3,24 +3,24 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
-using Serilog;
 using System.Linq;
 
 namespace DocumentsKM.Services
 {
     public class GeneralDataPointService : IGeneralDataPointService
     {
-        private IGeneralDataPointRepo _repository;
-        private readonly IGeneralDataSectionRepo _generalDataSectionRepo;
+        private readonly IGeneralDataPointRepo _repository;
         private readonly IUserRepo _userRepo;
+        private readonly IGeneralDataSectionRepo _generalDataSectionRepo;
 
-        public GeneralDataPointService(IGeneralDataPointRepo generalDataPointRepo,
-            IGeneralDataSectionRepo generalDataSectionRepo,
-            IUserRepo userRepo)
+        public GeneralDataPointService(
+            IGeneralDataPointRepo generalDataPointRepo,
+            IUserRepo userRepo,
+            IGeneralDataSectionRepo generalDataSectionRepo)
         {
             _repository = generalDataPointRepo;
-            _generalDataSectionRepo = generalDataSectionRepo;
             _userRepo = userRepo;
+            _generalDataSectionRepo = generalDataSectionRepo;
         }
 
         public IEnumerable<GeneralDataPoint> GetAllByUserAndSectionId(
@@ -43,7 +43,7 @@ namespace DocumentsKM.Services
             if (foundUser == null)
                 throw new ArgumentNullException(nameof(foundUser));
 
-            var uniqueConstraintViolationCheck = _repository.GetByUserAndSectionIdAndText(
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                 userId, sectionId, generalDataPoint.Text);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
@@ -51,8 +51,6 @@ namespace DocumentsKM.Services
             generalDataPoint.Section = foundSection;
             generalDataPoint.User = foundUser;
 
-            // generalDataPoint.OrderNum = _repository.GetAllByUserAndSectionId(
-            //     userId, sectionId).Max(v => v.OrderNum) + 1;
             var currentPoints = _repository.GetAllByUserAndSectionId(userId, sectionId);
             if (currentPoints.Count() == 0)
                 generalDataPoint.OrderNum = 1;
@@ -71,10 +69,16 @@ namespace DocumentsKM.Services
             var foundGeneralDataPoint = _repository.GetById(id);
             if (foundGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundGeneralDataPoint));
+            var foundUser = _userRepo.GetById(userId);
+            if (foundUser == null)
+                throw new ArgumentNullException(nameof(foundUser));
+            var foundSection = _generalDataSectionRepo.GetById(sectionId);
+            if (foundSection == null)
+                throw new ArgumentNullException(nameof(foundSection));
 
             if (generalDataPoint.Text != null)
             {
-                var uniqueConstraintViolationCheck = _repository.GetByUserAndSectionIdAndText(
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                     foundGeneralDataPoint.User.Id,
                     foundGeneralDataPoint.Section.Id,
                     generalDataPoint.Text);
@@ -112,11 +116,16 @@ namespace DocumentsKM.Services
             var foundGeneralDataPoint = _repository.GetById(id);
             if (foundGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundGeneralDataPoint));
+            var foundUser = _userRepo.GetById(userId);
+            if (foundUser == null)
+                throw new ArgumentNullException(nameof(foundUser));
+            var foundSection = _generalDataSectionRepo.GetById(sectionId);
+            if (foundSection == null)
+                throw new ArgumentNullException(nameof(foundSection));
             foreach (var p in _repository.GetAllByUserAndSectionId(userId, sectionId))
             {
                 if (p.OrderNum > foundGeneralDataPoint.OrderNum)
                 {
-                    // Log.Information(p.OrderNum.ToString());
                     p.OrderNum = p.OrderNum - 1;
                     _repository.Update(p);
                 }

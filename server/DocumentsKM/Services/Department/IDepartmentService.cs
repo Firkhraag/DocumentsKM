@@ -5,7 +5,7 @@ namespace DocumentsKM.Services
 {
     public interface IDepartmentService
     {
-        // Получить все активные отделы
+        // Получить все отделы
         IEnumerable<Department> GetAll();
     }
 }

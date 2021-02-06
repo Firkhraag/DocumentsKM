@@ -6,11 +6,12 @@ namespace DocumentsKM.Services
 {
     public class ConstructionTypeService : IConstructionTypeService
     {
-        private IConstructionTypeRepo _repository;
+        private readonly IConstructionTypeRepo _repository;
 
-        public ConstructionTypeService(IConstructionTypeRepo constructionTypeRepoo)
+        public ConstructionTypeService(
+            IConstructionTypeRepo constructionTypeRepo)
         {
-            _repository = constructionTypeRepoo;
+            _repository = constructionTypeRepo;
         }
 
         public IEnumerable<ConstructionType> GetAll()

@@ -11,7 +11,7 @@ import Employee from '../../model/Employee'
 import getFromOptions from '../../util/get-from-options'
 import { useMark } from '../../store/MarkStore'
 import { removeValueFromArray } from '../../util/array'
-import { reactSelectstyle } from '../../util/react-select-style'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 const MarkApproval = () => {
 	const mark = useMark()
@@ -201,15 +201,25 @@ const MarkApproval = () => {
 			<h1 className="text-centered">Согласования</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-cnt-div">
 				<div className="flex">
-					<label className="bold input-width no-bot-mrg" htmlFor="approvalDepartment0">Отдел</label>
-					<label className="bold input-width mrg-left no-bot-mrg" htmlFor="approvalEmployee0">Специалист</label>
+					<label
+						className="bold input-width no-bot-mrg"
+						htmlFor="approvalDepartment0"
+					>
+						Отдел
+					</label>
+					<label
+						className="bold input-width mrg-left no-bot-mrg"
+						htmlFor="approvalEmployee0"
+					>
+						Специалист
+					</label>
 				</div>
 				{[...Array(optionsObject.employees.length).keys()].map(
 					(rowNumber) => {
 						return (
 							<div className="flex mrg-top" key={rowNumber}>
 								<Select
-                                    inputId={`approvalDepartment${rowNumber}`}
+									inputId={`approvalDepartment${rowNumber}`}
 									maxMenuHeight={250}
 									className="input-width"
 									isClearable={true}
@@ -261,10 +271,10 @@ const MarkApproval = () => {
 													}
 											  )
 									}
-									styles={reactSelectstyle}
+									styles={reactSelectStyle}
 								/>
 								<Select
-                                    inputId={`approvalEmployee${rowNumber}`}
+									inputId={`approvalEmployee${rowNumber}`}
 									maxMenuHeight={250}
 									className="input-width mrg-left"
 									isClearable={true}
@@ -316,7 +326,7 @@ const MarkApproval = () => {
 												label: e.name,
 											}
 										})}
-									styles={reactSelectstyle}
+									styles={reactSelectStyle}
 								/>
 							</div>
 						)

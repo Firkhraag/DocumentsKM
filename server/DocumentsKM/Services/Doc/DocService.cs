@@ -3,7 +3,6 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
-using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -12,7 +11,7 @@ namespace DocumentsKM.Services
         // Id листа основного комплекта из справочника типов документов
         private readonly int _sheetDocTypeId = 1;
 
-        private IDocRepo _repository;
+        private readonly IDocRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IDocTypeRepo _docTypeRepo;
@@ -34,34 +33,16 @@ namespace DocumentsKM.Services
             return _repository.GetAllByMarkId(markId);
         }
 
-        public (IEnumerable<Doc>, IEnumerable<Doc>) GetAddWorkByMarkId(int markId)
-        {
-            var docs = _repository.GetAllByMarkId(markId);
-            var docsGroupedByCreator = docs.Where(v => v.Creator != null).GroupBy(d => d.Creator).Select(
-                g => new Doc
-                {
-                    Creator = g.First().Creator,
-                    Form = g.Sum(v => v.Form),
-                    NumOfPages = g.Sum(v => v.NumOfPages),
-                });
-            var docsGroupedByNormContr = docs.Where(v => v.NormContr != null).GroupBy(d => d.NormContr).Select(
-                g => new Doc
-                {
-                    NormContr = g.First().NormContr,
-                    Form = g.Sum(v => v.Form),
-                    NumOfPages = g.Sum(v => v.NumOfPages),
-                });
-            return (docsGroupedByCreator, docsGroupedByNormContr);
-        }
-
         public IEnumerable<Doc> GetAllSheetsByMarkId(int markId)
         {
-            return _repository.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+            return _repository.GetAllByMarkIdAndDocType(
+                markId, _sheetDocTypeId);
         }
 
         public IEnumerable<Doc> GetAllAttachedByMarkId(int markId)
         {
-            return _repository.GetAllByMarkIdAndNotDocType(markId, _sheetDocTypeId);
+            return _repository.GetAllByMarkIdAndNotDocType(
+                markId, _sheetDocTypeId);
         }
 
         public void Create(
@@ -115,6 +96,9 @@ namespace DocumentsKM.Services
                 doc.NormContr = normContr;
             }
             _repository.Add(doc);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Update(
@@ -136,7 +120,8 @@ namespace DocumentsKM.Services
                 foundDoc.NumOfPages = doc.NumOfPages.GetValueOrDefault();
             if (doc.Note != null)
                 foundDoc.Note = doc.Note;
-            if (doc.TypeId != null) {
+            if (doc.TypeId != null)
+            {
 
                 var docs = _repository.GetAllByMarkIdAndDocType(
                     foundDoc.Mark.Id, doc.TypeId.GetValueOrDefault());
@@ -178,7 +163,7 @@ namespace DocumentsKM.Services
                         throw new ArgumentNullException(nameof(inspector));
                     foundDoc.Inspector = inspector;
                 }
-                
+
             }
             if (doc.NormContrId != null)
             {
@@ -192,9 +177,13 @@ namespace DocumentsKM.Services
                         throw new ArgumentNullException(nameof(normContr));
                     foundDoc.NormContr = normContr;
                 }
-                
+
             }
             _repository.Update(foundDoc);
+
+            var foundMark = _markRepo.GetById(foundDoc.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
@@ -202,7 +191,12 @@ namespace DocumentsKM.Services
             var foundDoc = _repository.GetById(id);
             if (foundDoc == null)
                 throw new ArgumentNullException(nameof(foundDoc));
+            var markId = foundDoc.Mark.Id;
             _repository.Delete(foundDoc);
+
+            var foundMark = _markRepo.GetById(markId);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

@@ -6,11 +6,11 @@ namespace DocumentsKM.Services
 {
     public class PaintworkTypeService : IPaintworkTypeService
     {
-        private IPaintworkTypeRepo _repository;
+        private readonly IPaintworkTypeRepo _repository;
 
-        public PaintworkTypeService(IPaintworkTypeRepo paintworkTypeRepoo)
+        public PaintworkTypeService(IPaintworkTypeRepo paintworkTypeRepo)
         {
-            _repository = paintworkTypeRepoo;
+            _repository = paintworkTypeRepo;
         }
 
         public IEnumerable<PaintworkType> GetAll()

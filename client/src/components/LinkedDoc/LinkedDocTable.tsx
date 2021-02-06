@@ -8,31 +8,29 @@ import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
-import { useMark } from '../../store/MarkStore'
 import MarkLinkedDoc from '../../model/MarkLinkedDoc'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { useMark } from '../../store/MarkStore'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type LinkedDocTableProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
 	setMarkLinkedDoc: (mld: MarkLinkedDoc) => void
 }
 
-const LinkedDocTable = ({
-	setPopupObj,
-	setMarkLinkedDoc,
-}: LinkedDocTableProps) => {
+const LinkedDocTable = ({ setMarkLinkedDoc }: LinkedDocTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
+	const setPopup = useSetPopup()
+
 	const [linkedDocs, setLinkedDocs] = useState([] as MarkLinkedDoc[])
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const linkedDocsFetchedResponse = await httpClient.get(
+					const linkedDocsResponse = await httpClient.get(
 						`/marks/${mark.id}/mark-linked-docs`
 					)
-					setLinkedDocs(linkedDocsFetchedResponse.data)
+					setLinkedDocs(linkedDocsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
@@ -45,7 +43,7 @@ const LinkedDocTable = ({
 		try {
 			await httpClient.delete(`/mark-linked-docs/${id}`)
 			linkedDocs.splice(row, 1)
-			setPopupObj(defaultPopupObj)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -69,6 +67,7 @@ const LinkedDocTable = ({
 						<th className="linked-doc-name-col-width">
 							Наименование
 						</th>
+						<th>Примечание</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
@@ -85,6 +84,7 @@ const LinkedDocTable = ({
 								<td className="linked-doc-name-col-width">
 									{ld.name}
 								</td>
+								<td>{mld.note}</td>
 								<td
 									onClick={() => {
 										setMarkLinkedDoc(mld)
@@ -96,13 +96,13 @@ const LinkedDocTable = ({
 								</td>
 								<td
 									onClick={() =>
-										setPopupObj({
+										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить ссылочный документ ${ld.code}?`,
+											msg: `Вы действительно хотите удалить ссылочный документ № ${index + 1}?`,
 											onAccept: () =>
 												onDeleteClick(index, mld.id),
 											onCancel: () =>
-												setPopupObj(defaultPopupObj),
+												setPopup(defaultPopup),
 										})
 									}
 									className="pointer action-cell-width text-centered"

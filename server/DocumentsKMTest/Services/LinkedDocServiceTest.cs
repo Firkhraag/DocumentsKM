@@ -19,7 +19,7 @@ namespace DocumentsKM.Tests
 
             foreach (var type in TestData.linkedDocTypes)
             {
-                mockLinkedDocRepo.Setup(mock=>
+                mockLinkedDocRepo.Setup(mock =>
                     mock.GetAllByDocTypeId(type.Id)).Returns(
                         TestData.linkedDocs.Where(v => v.Type.Id == type.Id));
             }

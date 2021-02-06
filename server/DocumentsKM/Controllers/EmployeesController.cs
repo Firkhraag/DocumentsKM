@@ -36,7 +36,8 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("departments/{departmentId}/mark-approval-employees")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<EmployeeBaseResponse>> GetMarkApprovalEmployeesByDepartmentId(int departmentId)
+        public ActionResult<IEnumerable<EmployeeBaseResponse>> GetMarkApprovalEmployeesByDepartmentId(
+            int departmentId)
         {
             var employees = _service.GetMarkApprovalEmployeesByDepartmentId(departmentId);
             return Ok(_mapper.Map<IEnumerable<EmployeeBaseResponse>>(employees));
@@ -44,7 +45,8 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("departments/{departmentId}/mark-main-employees")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<MarkMainEmployeesResponse> GetMarkMainEmployeesByDepartmentId(int departmentId)
+        public ActionResult<MarkMainEmployeesResponse> GetMarkMainEmployeesByDepartmentId(
+            int departmentId)
         {
             (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) = _service
                 .GetMarkMainEmployeesByDepartmentId(departmentId);

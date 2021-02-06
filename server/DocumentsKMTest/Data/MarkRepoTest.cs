@@ -27,19 +27,6 @@ namespace DocumentsKM.Tests
             return context;
         }
 
-        // // Получить все марки
-        // IEnumerable<Mark> GetAll();
-        // // Получить все марки по id подузла
-        // IEnumerable<Mark> GetAllBySubnodeId(int subnodeId);
-        // // Получить марку по id
-        // Mark GetById(int id);
-        // // Получить марку по подузлу и коду
-        // Mark GetBySubnodeIdAndCode(int subnodeId, string code);
-        // // Добавить новую марку
-        // void Add(Mark mark);
-        // // Изменить имеющуюся марку
-        // void Update(Mark mark);
-
         [Fact]
         public void GetAll_ShouldReturnMarks()
         {
@@ -75,16 +62,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllBySubnodeId_ShouldReturnEmptyArray_WhenWrongMarkId()
+        public void GetAllBySubnodeId_ShouldReturnEmptyArray_WhenWrongSubnodeId()
         {
             // Arrange
             var context = GetContext(TestData.marks);
             var repo = new SqlMarkRepo(context);
 
-            var wrongSubnodeId = 999;
-
             // Act
-            var marks = repo.GetAllBySubnodeId(wrongSubnodeId);
+            var marks = repo.GetAllBySubnodeId(999);
 
             // Assert
             Assert.Empty(marks);
@@ -112,7 +97,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Act
             var context = GetContext(TestData.marks);
@@ -147,20 +132,18 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetBySubnodeIdAndCode_ShouldReturnNull_WhenWrongSubnodeId()
+        public void GetBySubnodeIdAndCode_ShouldReturnNull_WhenWrongSubnodeIdOrCode()
         {
             // Arrange
             var context = GetContext(TestData.marks);
             var repo = new SqlMarkRepo(context);
 
             var subnodeId = TestData.marks[0].Subnode.Id;
-            var wrongSubnodeId = 999;
             var code = TestData.marks[0].Code;
-            var wrongCode = "NotFound";
 
             // Act
-            var mark1 = repo.GetBySubnodeIdAndCode(wrongSubnodeId, code);
-            var mark2 = repo.GetBySubnodeIdAndCode(subnodeId, wrongCode);
+            var mark1 = repo.GetBySubnodeIdAndCode(999, code);
+            var mark2 = repo.GetBySubnodeIdAndCode(subnodeId, "NotFound");
 
             // Assert
             Assert.Null(mark1);
@@ -169,62 +152,103 @@ namespace DocumentsKM.Tests
             context.Database.EnsureDeleted();
         }
 
-        // [Fact]
-        // public void Add_ShouldAddMark()
-        // {
-        //     // Arrange
-        //     var context = GetContext(TestData.Marks);
-        //     var repo = new SqlMarkRepo(context);
+        [Fact]
+        public void Add_ShouldAddMark()
+        {
+            // Arrange
+            var context = GetContext(TestData.marks);
+            var repo = new SqlMarkRepo(context);
 
-        //     int markId = _rnd.Next(1, TestData.marks.Count());
-        //     var Mark = new Mark
-        //     {
-        //         Mark=TestData.marks.SingleOrDefault(v => v.Id == markId),
-        //         Designation="NewCreate",
-        //         Name="NewCreate",
-        //     };
+            int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
+            int departmentId = _rnd.Next(1, TestData.departments.Count());
+            int chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
+            int groupLeaderId = _rnd.Next(1, TestData.employees.Count());
+            int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            var mark = new Mark
+            {
+                Subnode = TestData.subnodes.SingleOrDefault(
+                    v => v.Id == subnodeId
+                ),
+                Code = "NewCreate",
+                Name = "NewCreate",
+                Department = TestData.departments.SingleOrDefault(
+                    v => v.Id == departmentId
+                ),
+                ChiefSpecialist = TestData.employees.SingleOrDefault(
+                    v => v.Id == chiefSpecialistId
+                ),
+                GroupLeader = TestData.employees.SingleOrDefault(
+                    v => v.Id == groupLeaderId
+                ),
+                MainBuilder = TestData.employees.SingleOrDefault(
+                    v => v.Id == mainBuilderId
+                ),
+            };
 
-        //     // Act
-        //     repo.Add(Mark);
+            // Act
+            repo.Add(mark);
 
-        //     // Assert
-        //     Assert.NotEqual(0, Mark.Id);
-        //     Assert.Equal(
-        //         TestData.Marks.Where(v => v.Mark.Id == markId).Count() + 1,
-        //         repo.GetAllByMarkId(markId).Count());
+            // Assert
+            Assert.NotNull(repo.GetById(mark.Id));
 
-        //     context.Database.EnsureDeleted();
-        // }
+            context.Database.EnsureDeleted();
+        }
 
-        // [Fact]
-        // public void Update_ShouldUpdateMark()
-        // {
-        //     // Arrange
-        //     var Marks = new List<Mark>{};
-        //     foreach (var ad in TestData.Marks)
-        //     {
-        //         Marks.Add(new Mark
-        //         {
-        //             Id = ad.Id,
-        //             Mark = ad.Mark,
-        //             Designation = ad.Designation,
-        //             Name = ad.Name,
-        //         });
-        //     }
-        //     var context = GetContext(Marks);
-        //     var repo = new SqlMarkRepo(context);
+        [Fact]
+        public void Update_ShouldUpdateMark()
+        {
+            // Arrange
+            var marks = new List<Mark>{};
+            foreach (var m in TestData.marks)
+            {
+                marks.Add(new Mark
+                {
+                    Id = m.Id,
+                    Subnode = m.Subnode,
+                    Code = m.Code,
+                    Name = m.Name,
+                    Department = m.Department,
+                    ChiefSpecialist = m.ChiefSpecialist,
+                    GroupLeader = m.GroupLeader,
+                    MainBuilder = m.MainBuilder,
+                    EditedDate = m.EditedDate,
+                    Signed1Id = m.Signed1Id,
+                    Signed2Id = m.Signed2Id,
+                    IssuedDate = m.IssuedDate,
+                    NumOfVolumes = m.NumOfVolumes,
+                    SafetyCoeff = m.SafetyCoeff,
+                    OperatingTemp = m.OperatingTemp,
+                    OperatingZone = m.OperatingZone,
+                    GasGroup = m.GasGroup,
+                    Aggressiveness = m.Aggressiveness,
+                    Material = m.Material,
+                    PaintworkType = m.PaintworkType,
+                    Note = m.Note,
+                    FireHazardCategoryId = m.FireHazardCategoryId,
+                    HighTensileBolts = m.HighTensileBolts,
+                    P_transport = m.P_transport,
+                    P_site = m.P_site,
+                    Xcnd = m.Xcnd,
+                    Text_3d_estimate = m.Text_3d_estimate,
+                    AddVolumes = m.AddVolumes,
+                    VmpWeight = m.VmpWeight,
+                    Impl_3d_estimate = m.Impl_3d_estimate,
+                });
+            }
+            var context = GetContext(marks);
+            var repo = new SqlMarkRepo(context);
 
-        //     int id = _rnd.Next(1, Marks.Count());
-        //     var Mark = Marks.FirstOrDefault(v => v.Id == id);
-        //     Mark.Name = "NewUpdate";
+            int id = _rnd.Next(1, marks.Count());
+            var mark = marks.FirstOrDefault(v => v.Id == id);
+            mark.Name = "NewUpdate";
 
-        //     // Act
-        //     repo.Update(Mark);
+            // Act
+            repo.Update(mark);
 
-        //     // Assert
-        //     Assert.Equal(Mark.Name, repo.GetById(id).Name);
+            // Assert
+            Assert.Equal(mark.Name, repo.GetById(id).Name);
 
-        //     context.Database.EnsureDeleted();
-        // }
+            context.Database.EnsureDeleted();
+        }
     }
 }

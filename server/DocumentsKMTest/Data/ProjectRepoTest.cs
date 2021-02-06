@@ -60,16 +60,14 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetById_ShouldReturnNull()
+        public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
             var context = GetContext(TestData.projects);
             var repo = new SqlProjectRepo(context);
 
-            int wrongId = 999;
-
             // Act
-            var project = repo.GetById(wrongId);
+            var project = repo.GetById(999);
 
             // Assert
             Assert.Null(project);

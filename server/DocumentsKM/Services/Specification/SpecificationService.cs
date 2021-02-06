@@ -9,7 +9,7 @@ namespace DocumentsKM.Services
 {
     public class SpecificationService : ISpecificationService
     {
-        private ISpecificationRepo _repository;
+        private readonly ISpecificationRepo _repository;
         private readonly IMarkRepo _markRepo;
 
         public SpecificationService(
@@ -39,14 +39,19 @@ namespace DocumentsKM.Services
                     _repository.Update(s);
                 }
             }
-                
-            var newSpecification = new Specification{
+
+            var newSpecification = new Specification
+            {
                 Mark = foundMark,
                 Num = specifications.Count() == 0 ? 1 :
                     specifications.Max(v => v.Num) + 1,
                 IsCurrent = true,
             };
             _repository.Add(newSpecification);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
+
             return newSpecification;
         }
 
@@ -60,8 +65,6 @@ namespace DocumentsKM.Services
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
 
-            // if (specification.IsCurrent != null)
-            //     foundSpecification.IsCurrent = specification.IsCurrent ?? false;
             if (specification.IsCurrent == true)
             {
                 var specs = _repository.GetAllByMarkId(foundSpecification.Mark.Id);
@@ -78,17 +81,25 @@ namespace DocumentsKM.Services
             if (specification.Note != null)
                 foundSpecification.Note = specification.Note;
             _repository.Update(foundSpecification);
+
+            var foundMark = _markRepo.GetById(foundSpecification.Mark.Id);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
 
         public void Delete(int id)
         {
-            var foundSpecification = _repository.GetById(id);
+            var foundSpecification = _repository.GetById(id, true);
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
             if (foundSpecification.IsCurrent)
                 throw new ConflictException(nameof(foundSpecification.IsCurrent));
-
+            var markId = foundSpecification.Mark.Id;
             _repository.Delete(foundSpecification);
+
+            var foundMark = _markRepo.GetById(markId);
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
         }
     }
 }

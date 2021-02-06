@@ -16,9 +16,8 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
         {
-            // return _context.Subnodes.Include(
-            //     v => v.Node).Where(v => v.Node.Id == nodeId).ToList();
-            return _context.Subnodes.Where(v => v.Node.Id == nodeId).ToList();
+            return _context.Subnodes.Where(
+                v => v.Node.Id == nodeId).ToList();
         }
 
         public Subnode GetById(int id)

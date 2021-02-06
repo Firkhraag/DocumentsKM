@@ -6,9 +6,10 @@ namespace DocumentsKM.Services
 {
     public class GeneralDataSectionService : IGeneralDataSectionService
     {
-        private IGeneralDataSectionRepo _repository;
+        private readonly IGeneralDataSectionRepo _repository;
 
-        public GeneralDataSectionService(IGeneralDataSectionRepo generalDataSectionRepo)
+        public GeneralDataSectionService(
+            IGeneralDataSectionRepo generalDataSectionRepo)
         {
             _repository = generalDataSectionRepo;
         }

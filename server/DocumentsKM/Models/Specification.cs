@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,5 +33,9 @@ namespace DocumentsKM.Models
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedDate { get; set; }
+
+        public virtual IList<Construction> Constructions { get; set; } = new List<Construction>();
+
+        public virtual IList<StandardConstruction> StandardConstructions { get; set; } = new List<StandardConstruction>();
     }
 }

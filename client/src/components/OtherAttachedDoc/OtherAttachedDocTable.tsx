@@ -10,19 +10,18 @@ import { Trash } from 'react-bootstrap-icons'
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
 import AttachedDoc from '../../model/AttachedDoc'
-import { IPopupObj, defaultPopupObj } from '../Popup/Popup'
+import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type OtherAttachedDocTableProps = {
-	setPopupObj: (popupObj: IPopupObj) => void
 	setOtherAttachedDoc: (s: AttachedDoc) => void
 }
 
 const OtherAttachedDocTable = ({
-	setPopupObj,
 	setOtherAttachedDoc,
 }: OtherAttachedDocTableProps) => {
 	const mark = useMark()
 	const history = useHistory()
+	const setPopup = useSetPopup()
 
 	const [otherAttachedDocs, setOtherAttachedDocs] = useState(
 		[] as AttachedDoc[]
@@ -32,10 +31,10 @@ const OtherAttachedDocTable = ({
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
 				try {
-					const otherAttachedDocsFetchedResponse = await httpClient.get(
+					const otherAttachedDocsResponse = await httpClient.get(
 						`/marks/${mark.id}/attached-docs`
 					)
-					setOtherAttachedDocs(otherAttachedDocsFetchedResponse.data)
+					setOtherAttachedDocs(otherAttachedDocsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
@@ -48,7 +47,7 @@ const OtherAttachedDocTable = ({
 		try {
 			await httpClient.delete(`/attached-docs/${id}`)
 			otherAttachedDocs.splice(row, 1)
-			setPopupObj(defaultPopupObj)
+			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
 		}
@@ -97,13 +96,15 @@ const OtherAttachedDocTable = ({
 								</td>
 								<td
 									onClick={() =>
-										setPopupObj({
+										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить прилагаемый документ ${d.designation}?`,
+											msg: `Вы действительно хотите удалить прилагаемый документ № ${
+												index + 1
+											}?`,
 											onAccept: () =>
 												onDeleteClick(index, d.id),
 											onCancel: () =>
-												setPopupObj(defaultPopupObj),
+												setPopup(defaultPopup),
 										})
 									}
 									className="pointer action-cell-width text-centered"

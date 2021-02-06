@@ -5,11 +5,11 @@ namespace DocumentsKM.Data
 {
     public interface IMarkApprovalRepo
     {
-        // Получить все согласования по id марки
+        // Получить все согласования марки по id марки
         IEnumerable<MarkApproval> GetAllByMarkId(int markId);
-        // Добавить согласование
+        // Добавить согласование марки
         void Add(MarkApproval markApproval);
-        // Удалить согласование
+        // Удалить согласование марки
         void Delete(MarkApproval markApproval);
     }
 }
