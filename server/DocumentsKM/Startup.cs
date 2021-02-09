@@ -14,6 +14,7 @@ using System.Text;
 using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
+using RabbitMQ.Client;
 
 namespace DocumentsKM
 {
@@ -106,10 +107,18 @@ namespace DocumentsKM
                 ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
             services.AddSingleton<ICacheService, RedisCacheService>();
 
-            services.AddSingleton<IConnectionProvider>(
-                new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
+            // services.AddSingleton<IConnectionProvider>(
+            //     new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
+            services.AddSingleton(serviceProvider =>
+            {
+                var uri = new Uri(Configuration.GetConnectionString("RabbitMQConnection"));
+                return new ConnectionFactory
+                {
+                    Uri = uri
+                };
+            });
             services.AddHostedService<ConsumerService>(
-                x => new ConsumerService(x.GetService<IConnectionProvider>(),
+                x => new ConsumerService(x.GetService<ConnectionFactory>(),
                     "personnel_exchange", "personnel_queue", "personnel.exchange"));
 
             // DI for application services
