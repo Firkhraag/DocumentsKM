@@ -48,6 +48,9 @@ namespace DocumentsKM.Tests
                 _mockConstructionRepo.Setup(mock =>
                     mock.GetById(construction.Id, false)).Returns(
                         TestData.constructions.SingleOrDefault(v => v.Id == construction.Id));
+                _mockConstructionRepo.Setup(mock =>
+                    mock.GetById(construction.Id, true)).Returns(
+                        TestData.constructions.SingleOrDefault(v => v.Id == construction.Id));
 
                 _repository.Setup(mock =>
                     mock.GetAllByConstructionId(construction.Id)).Returns(

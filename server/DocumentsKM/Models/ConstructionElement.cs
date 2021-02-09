@@ -17,22 +17,8 @@ namespace DocumentsKM.Models
         public virtual ProfileClass ProfileClass { get; set; }
 
         [Required]
-        [MaxLength(30)]
-        public string ProfileName { get; set; }
-
-        [Required]
-        [MaxLength(2)]
-        public string Symbol { get; set; }
-
-        [Required]
-        public float Weight { get; set; }
-
-        [Required]
-        public float SurfaceArea { get; set; }
-
-        [Required]
-        [ForeignKey("ProfileTypeId")]
-        public virtual ProfileType ProfileType { get; set; }
+        [ForeignKey("ProfileId")]
+        public virtual Profile Profile { get; set; }
 
         [Required]
         [ForeignKey("SteelId")]
@@ -40,8 +26,5 @@ namespace DocumentsKM.Models
 
         [Required]
         public float Length { get; set; }
-
-        [Required]
-        public int Status { get; set; }
     }
 }

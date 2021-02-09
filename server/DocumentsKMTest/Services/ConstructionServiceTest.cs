@@ -49,11 +49,17 @@ namespace DocumentsKM.Tests
                 _repository.Setup(mock =>
                     mock.GetById(construction.Id, false)).Returns(
                         _constructions.SingleOrDefault(v => v.Id == construction.Id));
+                _repository.Setup(mock =>
+                    mock.GetById(construction.Id, true)).Returns(
+                        _constructions.SingleOrDefault(v => v.Id == construction.Id));
             }
             foreach (var specification in TestData.specifications)
             {
                 _mockSpecificationRepo.Setup(mock =>
                     mock.GetById(specification.Id, false)).Returns(
+                        TestData.specifications.SingleOrDefault(v => v.Id == specification.Id));
+                _mockSpecificationRepo.Setup(mock =>
+                    mock.GetById(specification.Id, true)).Returns(
                         TestData.specifications.SingleOrDefault(v => v.Id == specification.Id));
 
                 _repository.Setup(mock =>

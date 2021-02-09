@@ -46,6 +46,9 @@ namespace DocumentsKM.Tests
                 _mockSpecificationRepo.Setup(mock =>
                     mock.GetById(specification.Id, false)).Returns(
                         TestData.specifications.SingleOrDefault(v => v.Id == specification.Id));
+                _mockSpecificationRepo.Setup(mock =>
+                    mock.GetById(specification.Id, true)).Returns(
+                        TestData.specifications.SingleOrDefault(v => v.Id == specification.Id));
 
                 _repository.Setup(mock =>
                     mock.GetAllBySpecificationId(specification.Id)).Returns(

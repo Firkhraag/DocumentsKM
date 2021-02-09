@@ -14,7 +14,6 @@ using System.Text;
 using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
-using RabbitMQ.Client;
 
 namespace DocumentsKM
 {
@@ -94,17 +93,12 @@ namespace DocumentsKM
                 };
             });
 
-            // Подключение к базе данных
-            // Postgres
+            // Подключение к базе данных Postgres
             services.AddDbContext<ApplicationContext>(
                 opt => opt.UseLazyLoadingProxies()
                     .UseNpgsql(
                         Configuration.GetConnectionString("PostgresConnection")
                     ));
-            // services.AddDbContext<ApplicationContext>(
-            //     opt => opt.UseNpgsql(
-            //         Configuration.GetConnectionString("PostgresConnection")
-            //     ));
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -114,12 +108,9 @@ namespace DocumentsKM
 
             services.AddSingleton<IConnectionProvider>(
                 new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
-            services.AddSingleton<ISubscriberService>(x => new SubscriberService(x.GetService<IConnectionProvider>(),
-                "personnel_exchange",
-                "personnel_queue",
-                "personnel.*",
-                ExchangeType.Topic));
-            services.AddHostedService<DataCollectorService>();
+            services.AddHostedService<ConsumerService>(
+                x => new ConsumerService(x.GetService<IConnectionProvider>(),
+                    "personnel_exchange", "personnel_queue", "personnel.exchange"));
 
             // DI for application services
             injectScopedServices(services);

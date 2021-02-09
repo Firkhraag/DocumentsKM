@@ -56,7 +56,7 @@ namespace DocumentsKM.Controllers
                     constructionElementModel,
                     constructionId,
                     constructionElementRequest.ProfileClassId,
-                    constructionElementRequest.ProfileTypeId,
+                    constructionElementRequest.ProfileId,
                     constructionElementRequest.SteelId);
                 return Created($"construction-elements/", constructionElementModel);
             }

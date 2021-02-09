@@ -1,16 +1,10 @@
 using System;
-using System.Text;
-using System.Text.Json;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
 using Personnel.Data;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Personnel
 {
@@ -18,18 +12,13 @@ namespace Personnel
     {
         public static void Main(string[] args)
         {
-            // var factory = new ConnectionFactory()
-            // {
-            //     Uri = new Uri("amqp://guest:guest@localhost:5672"),
-            // };
-            // using var connection = factory.CreateConnection();
-            // using var channel = connection.CreateModel();
-            // QueueProducer.Publish(channel);
-
-            // Создание конфигурации, используя appsettings.json
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
 
             var host = CreateHostBuilder(args).Build();
 
@@ -40,24 +29,33 @@ namespace Personnel
                 {
                     var context = services.GetRequiredService<ApplicationContext>();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Fatal(ex, "An error occurred while seeding the database");
                     return;
                 }
             }
 
             try
             {
+                Log.Information("Application starting up");
                 host.Run();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return;
+                Log.Fatal(ex, "Application failed to start");
+            }
+            finally
+            {
+                Log.Information("Application is shutting down");
+                // Записываем оставшиеся логи
+                Log.CloseAndFlush();
             }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

@@ -30,12 +30,17 @@ namespace DocumentsKM.Tests
                     Mark = spec.Mark,
                     IsCurrent = spec.IsCurrent,
                     Note = spec.Note,
+                    Constructions = new List<Construction> {},
+                    StandardConstructions = new List<StandardConstruction> {},
                 });
             }
             foreach (var specification in _specifications)
             {
                 _mockSpecificationRepo.Setup(mock =>
                     mock.GetById(specification.Id, false)).Returns(
+                        _specifications.SingleOrDefault(v => v.Id == specification.Id));
+                _mockSpecificationRepo.Setup(mock =>
+                    mock.GetById(specification.Id, true)).Returns(
                         _specifications.SingleOrDefault(v => v.Id == specification.Id));
             }
             foreach (var mark in TestData.marks)

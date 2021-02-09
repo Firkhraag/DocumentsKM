@@ -1,231 +1,241 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using DocumentsKM.Data;
-using DocumentsKM.Models;
-using Microsoft.EntityFrameworkCore;
-using Xunit;
+// using System;
+// using System.Collections.Generic;
+// using System.Linq;
+// using DocumentsKM.Data;
+// using DocumentsKM.Models;
+// using Microsoft.EntityFrameworkCore;
+// using Xunit;
 
-namespace DocumentsKM.Tests
-{
-    public class StandardConstructionRepoTest
-    {
-        private readonly Random _rnd = new Random();
-        private readonly int _maxSpecificationId = 3;
+// namespace DocumentsKM.Tests
+// {
+//     public class StandardConstructionRepoTest
+//     {
+//         private readonly Random _rnd = new Random();
+//         private readonly int _maxSpecificationId = 3;
 
-        private ApplicationContext GetContext(List<StandardConstruction> StandardConstructions)
-        {
-            var builder = new DbContextOptionsBuilder<ApplicationContext>();
-            builder.UseInMemoryDatabase(databaseName: "StandardConstructionTestDb");
-            var options = builder.Options;
-            var context = new ApplicationContext(options);
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
+//         private ApplicationContext GetContext(List<StandardConstruction> standardConstructions)
+//         {
+//             var builder = new DbContextOptionsBuilder<ApplicationContext>();
+//             builder.UseInMemoryDatabase(databaseName: "StandardConstructionTestDb");
+//             var options = builder.Options;
+//             var context = new ApplicationContext(options);
+//             context.Database.EnsureDeleted();
+//             context.Database.EnsureCreated();
 
-            context.Specifications.AddRange(TestData.specifications);
-            context.StandardConstructions.AddRange(StandardConstructions);
-            context.SaveChanges();
-            return context;
-        }
+//             // context.Specifications.AddRange(TestData.specifications);
 
-        [Fact]
-        public void GetAllBySpecificationId_ShouldReturnStandardConstructions()
-        {
-            // Arrange
-            var context = GetContext(TestData.standardConstructions);
-            var repo = new SqlStandardConstructionRepo(context);
+//             // foreach (var sc in standardConstructions)
+//             // {
+//             //     if (context.StandardConstructions.SingleOrDefault(v => v.Id == sc.Id) == null)
+//             //     {
+//             //         context.StandardConstructions.Add(sc);
+//             //     }
+//             // }
 
-            var specificationId = _rnd.Next(1, _maxSpecificationId);
+//             context.StandardConstructions.AddRange(standardConstructions);
+            
+//             context.SaveChanges();
+//             return context;
+//         }
 
-            // Act
-            var standardConstructions = repo.GetAllBySpecificationId(specificationId);
+//         [Fact]
+//         public void GetAllBySpecificationId_ShouldReturnStandardConstructions()
+//         {
+//             // Arrange
+//             var context = GetContext(TestData.standardConstructions);
+//             var repo = new SqlStandardConstructionRepo(context);
 
-            // Assert
-            Assert.Equal(TestData.standardConstructions.Where(
-                v => v.Specification.Id == specificationId), standardConstructions);
+//             var specificationId = _rnd.Next(1, _maxSpecificationId);
 
-            context.Database.EnsureDeleted();
-        }
+//             // Act
+//             var standardConstructions = repo.GetAllBySpecificationId(specificationId);
 
-        [Fact]
-        public void GetAllBySpecificationId_ShouldReturnEmptyArray_WhenWrongSpecificationId()
-        {
-            // Arrange
-            var context = GetContext(TestData.standardConstructions);
-            var repo = new SqlStandardConstructionRepo(context);
+//             // Assert
+//             Assert.Equal(TestData.standardConstructions.Where(
+//                 v => v.Specification.Id == specificationId), standardConstructions);
 
-            // Act
-            var standardConstructions = repo.GetAllBySpecificationId(999);
+//             context.Database.EnsureDeleted();
+//         }
 
-            // Assert
-            Assert.Empty(standardConstructions);
+//         [Fact]
+//         public void GetAllBySpecificationId_ShouldReturnEmptyArray_WhenWrongSpecificationId()
+//         {
+//             // Arrange
+//             var context = GetContext(TestData.standardConstructions);
+//             var repo = new SqlStandardConstructionRepo(context);
 
-            context.Database.EnsureDeleted();
-        }
+//             // Act
+//             var standardConstructions = repo.GetAllBySpecificationId(999);
 
-        [Fact]
-        public void GetById_ShouldReturnStandardConstruction()
-        {
-            // Arrange
-            var context = GetContext(TestData.standardConstructions);
-            var repo = new SqlStandardConstructionRepo(context);
+//             // Assert
+//             Assert.Empty(standardConstructions);
 
-            int id = _rnd.Next(1, TestData.standardConstructions.Count());
+//             context.Database.EnsureDeleted();
+//         }
 
-            // Act
-            var standardConstruction = repo.GetById(id);
+//         [Fact]
+//         public void GetById_ShouldReturnStandardConstruction()
+//         {
+//             // Arrange
+//             var context = GetContext(TestData.standardConstructions);
+//             var repo = new SqlStandardConstructionRepo(context);
 
-            // Assert
-            Assert.Equal(TestData.standardConstructions.SingleOrDefault(
-                v => v.Id == id), standardConstruction);
+//             int id = _rnd.Next(1, TestData.standardConstructions.Count());
 
-            context.Database.EnsureDeleted();
-        }
+//             // Act
+//             var standardConstruction = repo.GetById(id);
 
-        [Fact]
-        public void GetById_ShouldReturnNull_WhenWrongId()
-        {
-            // Arrange
-            var context = GetContext(TestData.standardConstructions);
-            var repo = new SqlStandardConstructionRepo(context);
+//             // Assert
+//             Assert.Equal(TestData.standardConstructions.SingleOrDefault(
+//                 v => v.Id == id), standardConstruction);
 
-            // Act
-            var standardConstruction = repo.GetById(999);
+//             context.Database.EnsureDeleted();
+//         }
 
-            // Assert
-            Assert.Null(standardConstruction);
+//         [Fact]
+//         public void GetById_ShouldReturnNull_WhenWrongId()
+//         {
+//             // Arrange
+//             var context = GetContext(TestData.standardConstructions);
+//             var repo = new SqlStandardConstructionRepo(context);
 
-            context.Database.EnsureDeleted();
-        }
+//             // Act
+//             var standardConstruction = repo.GetById(999);
 
-        // [Fact]
-        // public void GetByUniqueKey_ShouldReturnStandardConstruction()
-        // {
-        //     // Arrange
-        //     var context = GetContext(TestData.standardConstructions);
-        //     var repo = new SqlStandardConstructionRepo(context);
+//             // Assert
+//             Assert.Null(standardConstruction);
 
-        //     var specificationId = TestData.StandardConstructions[0].Specification.Id;
-        //     var name = TestData.StandardConstructions[0].Name;
-        //     var paintworkCoeff = TestData.StandardConstructions[0].PaintworkCoeff;
+//             context.Database.EnsureDeleted();
+//         }
 
-        //     // Act
-        //     var StandardConstruction = repo.GetByUniqueKey(
-        //         specificationId, name, paintworkCoeff);
+//         // [Fact]
+//         // public void GetByUniqueKey_ShouldReturnStandardConstruction()
+//         // {
+//         //     // Arrange
+//         //     var context = GetContext(TestData.standardConstructions);
+//         //     var repo = new SqlStandardConstructionRepo(context);
 
-        //     // Assert
-        //     Assert.Equal(TestData.StandardConstructions.SingleOrDefault(
-        //         v => v.Specification.Id == specificationId &&
-        //             v.Name == name && v.PaintworkCoeff == paintworkCoeff), StandardConstruction);
+//         //     var specificationId = TestData.StandardConstructions[0].Specification.Id;
+//         //     var name = TestData.StandardConstructions[0].Name;
+//         //     var paintworkCoeff = TestData.StandardConstructions[0].PaintworkCoeff;
 
-        //     context.Database.EnsureDeleted();
-        // }
+//         //     // Act
+//         //     var StandardConstruction = repo.GetByUniqueKey(
+//         //         specificationId, name, paintworkCoeff);
 
-        // [Fact]
-        // public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
-        // {
-        //     // Arrange
-        //     var context = GetContext(TestData.standardConstructions);
-        //     var repo = new SqlStandardConstructionRepo(context);
+//         //     // Assert
+//         //     Assert.Equal(TestData.StandardConstructions.SingleOrDefault(
+//         //         v => v.Specification.Id == specificationId &&
+//         //             v.Name == name && v.PaintworkCoeff == paintworkCoeff), StandardConstruction);
 
-        //     var specificationId = TestData.StandardConstructions[0].Specification.Id;
-        //     var wrongSpecificationId = 999;
-        //     var name = TestData.StandardConstructions[0].Name;
-        //     var wrongName = "wrong";
-        //     var paintworkCoeff = TestData.StandardConstructions[0].PaintworkCoeff;
-        //     var wrongPaintworkCoeff = -1;
+//         //     context.Database.EnsureDeleted();
+//         // }
 
-        //     // Act
-        //     var additionalWork1 = repo.GetByUniqueKey(wrongSpecificationId, name, paintworkCoeff);
-        //     var additionalWork2 = repo.GetByUniqueKey(specificationId, wrongName, paintworkCoeff);
-        //     var additionalWork3 = repo.GetByUniqueKey(specificationId, name, wrongPaintworkCoeff);
+//         // [Fact]
+//         // public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
+//         // {
+//         //     // Arrange
+//         //     var context = GetContext(TestData.standardConstructions);
+//         //     var repo = new SqlStandardConstructionRepo(context);
 
-        //     // Assert
-        //     Assert.Null(additionalWork1);
-        //     Assert.Null(additionalWork2);
-        //     Assert.Null(additionalWork3);
+//         //     var specificationId = TestData.StandardConstructions[0].Specification.Id;
+//         //     var wrongSpecificationId = 999;
+//         //     var name = TestData.StandardConstructions[0].Name;
+//         //     var wrongName = "wrong";
+//         //     var paintworkCoeff = TestData.StandardConstructions[0].PaintworkCoeff;
+//         //     var wrongPaintworkCoeff = -1;
 
-        //     context.Database.EnsureDeleted();
-        // }
+//         //     // Act
+//         //     var additionalWork1 = repo.GetByUniqueKey(wrongSpecificationId, name, paintworkCoeff);
+//         //     var additionalWork2 = repo.GetByUniqueKey(specificationId, wrongName, paintworkCoeff);
+//         //     var additionalWork3 = repo.GetByUniqueKey(specificationId, name, wrongPaintworkCoeff);
 
-        [Fact]
-        public void Add_ShouldAddStandardConstruction()
-        {
-            // Arrange
-            var context = GetContext(TestData.standardConstructions);
-            var repo = new SqlStandardConstructionRepo(context);
+//         //     // Assert
+//         //     Assert.Null(additionalWork1);
+//         //     Assert.Null(additionalWork2);
+//         //     Assert.Null(additionalWork3);
 
-            int specificationId = _rnd.Next(1, TestData.specifications.Count());
-            var standardConstruction = new StandardConstruction
-            {
-                Specification = TestData.specifications.SingleOrDefault(v => v.Id == specificationId),
-                Name = "NewCreate",
-                Num = 1,
-                Sheet = "NewCreate",
-                Weight = 1.0f,
-            };
+//         //     context.Database.EnsureDeleted();
+//         // }
 
-            // Act
-            repo.Add(standardConstruction);
+//         [Fact]
+//         public void Add_ShouldAddStandardConstruction()
+//         {
+//             // Arrange
+//             var context = GetContext(TestData.standardConstructions);
+//             var repo = new SqlStandardConstructionRepo(context);
 
-            // Assert
-            Assert.NotNull(repo.GetById(standardConstruction.Id));
+//             int specificationId = _rnd.Next(1, TestData.specifications.Count());
+//             var standardConstruction = new StandardConstruction
+//             {
+//                 Specification = TestData.specifications.SingleOrDefault(v => v.Id == specificationId),
+//                 Name = "NewCreate",
+//                 Num = 1,
+//                 Sheet = "NewCreate",
+//                 Weight = 1.0f,
+//             };
 
-            context.Database.EnsureDeleted();
-        }
+//             // Act
+//             repo.Add(standardConstruction);
 
-        [Fact]
-        public void Update_ShouldUpdateStandardConstruction()
-        {
-            // Arrange
-            var StandardConstructions = new List<StandardConstruction> { };
-            foreach (var c in TestData.standardConstructions)
-            {
-                StandardConstructions.Add(new StandardConstruction
-                {
-                    Id = c.Id,
-                    Specification = c.Specification,
-                    Name = c.Name,
-                    Num = c.Num,
-                    Sheet = c.Sheet,
-                    Weight = c.Weight,
-                });
-            }
-            var context = GetContext(StandardConstructions);
-            var repo = new SqlStandardConstructionRepo(context);
+//             // Assert
+//             Assert.NotNull(repo.GetById(standardConstruction.Id));
 
-            int id = _rnd.Next(1, StandardConstructions.Count());
-            var standardConstruction = StandardConstructions.FirstOrDefault(
-                v => v.Id == id);
-            standardConstruction.Name = "NewUpdate";
+//             context.Database.EnsureDeleted();
+//         }
 
-            // Act
-            repo.Update(standardConstruction);
+//         [Fact]
+//         public void Update_ShouldUpdateStandardConstruction()
+//         {
+//             // Arrange
+//             var standardConstructions = new List<StandardConstruction> { };
+//             foreach (var c in TestData.standardConstructions)
+//             {
+//                 standardConstructions.Add(new StandardConstruction
+//                 {
+//                     Id = c.Id,
+//                     Specification = c.Specification,
+//                     Name = c.Name,
+//                     Num = c.Num,
+//                     Sheet = c.Sheet,
+//                     Weight = c.Weight,
+//                 });
+//             }
+//             var context = GetContext(standardConstructions);
+//             var repo = new SqlStandardConstructionRepo(context);
 
-            // Assert
-            Assert.Equal(standardConstruction.Name, repo.GetById(id).Name);
+//             int id = _rnd.Next(1, standardConstructions.Count());
+//             var standardConstruction = standardConstructions.FirstOrDefault(
+//                 v => v.Id == id);
+//             standardConstruction.Name = "NewUpdate";
 
-            context.Database.EnsureDeleted();
-        }
+//             // Act
+//             repo.Update(standardConstruction);
 
-        [Fact]
-        public void Delete_ShouldDeleteStandardConstruction()
-        {
-            // Arrange
-            var context = GetContext(TestData.standardConstructions);
-            var repo = new SqlStandardConstructionRepo(context);
+//             // Assert
+//             Assert.Equal(standardConstruction.Name, repo.GetById(id).Name);
 
-            int id = _rnd.Next(1, TestData.standardConstructions.Count());
-            var standardConstruction = TestData.standardConstructions.FirstOrDefault(
-                v => v.Id == id);
+//             context.Database.EnsureDeleted();
+//         }
 
-            // Act
-            repo.Delete(standardConstruction);
+//         [Fact]
+//         public void Delete_ShouldDeleteStandardConstruction()
+//         {
+//             // Arrange
+//             var context = GetContext(TestData.standardConstructions);
+//             var repo = new SqlStandardConstructionRepo(context);
 
-            // Assert
-            Assert.Null(repo.GetById(id));
+//             int id = _rnd.Next(1, TestData.standardConstructions.Count());
+//             var standardConstruction = TestData.standardConstructions.FirstOrDefault(
+//                 v => v.Id == id);
 
-            context.Database.EnsureDeleted();
-        }
-    }
-}
+//             // Act
+//             repo.Delete(standardConstruction);
+
+//             // Assert
+//             Assert.Null(repo.GetById(id));
+
+//             context.Database.EnsureDeleted();
+//         }
+//     }
+// }

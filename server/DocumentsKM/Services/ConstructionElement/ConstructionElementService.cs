@@ -12,7 +12,7 @@ namespace DocumentsKM.Services
         private readonly IMarkRepo _markRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IProfileClassRepo _profileClassRepo;
-        private readonly IProfileTypeRepo _profileTypeRepo;
+        private readonly IProfileRepo _profileRepo;
         private readonly ISteelRepo _steelRepo;
 
         public ConstructionElementService(
@@ -20,14 +20,14 @@ namespace DocumentsKM.Services
             IMarkRepo markRepo,
             IConstructionRepo constructionRepo,
             IProfileClassRepo profileClassRepo,
-            IProfileTypeRepo profileTypeRepo,
+            IProfileRepo profileRepo,
             ISteelRepo steelRepo)
         {
             _repository = constructionElementRepo;
             _markRepo = markRepo;
             _constructionRepo = constructionRepo;
             _profileClassRepo = profileClassRepo;
-            _profileTypeRepo = profileTypeRepo;
+            _profileRepo = profileRepo;
             _steelRepo = steelRepo;
         }
 
@@ -41,7 +41,7 @@ namespace DocumentsKM.Services
             ConstructionElement constructionElement,
             int constructionId,
             int profileClassId,
-            int profileTypeId,
+            int profileId,
             int steelId)
         {
             if (constructionElement == null)
@@ -52,9 +52,9 @@ namespace DocumentsKM.Services
             var foundProfileClass = _profileClassRepo.GetById(profileClassId);
             if (foundProfileClass == null)
                 throw new ArgumentNullException(nameof(foundProfileClass));
-            var foundProfileType = _profileTypeRepo.GetById(profileTypeId);
-            if (foundProfileType == null)
-                throw new ArgumentNullException(nameof(foundProfileType));
+            var foundProfile = _profileRepo.GetById(profileId);
+            if (foundProfile == null)
+                throw new ArgumentNullException(nameof(foundProfile));
             var foundSteel = _steelRepo.GetById(steelId);
             if (foundSteel == null)
                 throw new ArgumentNullException(nameof(foundSteel));
@@ -65,7 +65,7 @@ namespace DocumentsKM.Services
 
             constructionElement.Construction = foundConstruction;
             constructionElement.ProfileClass = foundProfileClass;
-            constructionElement.ProfileType = foundProfileType;
+            constructionElement.Profile = foundProfile;
             constructionElement.Steel = foundSteel;
 
             _repository.Add(constructionElement);
@@ -101,21 +101,13 @@ namespace DocumentsKM.Services
                 foundConstructionElement.ProfileClass = profileClass;
             }
 
-            if (constructionElementRequest.ProfileName != null)
-                foundConstructionElement.ProfileName = constructionElementRequest.ProfileName;
-            if (constructionElementRequest.Symbol != null)
-                foundConstructionElement.Symbol = constructionElementRequest.Symbol;
-            if (constructionElementRequest.Weight != null)
-                foundConstructionElement.Weight = constructionElementRequest.Weight.GetValueOrDefault();
-            if (constructionElementRequest.SurfaceArea != null)
-                foundConstructionElement.SurfaceArea = constructionElementRequest.SurfaceArea.GetValueOrDefault();
-            if (constructionElementRequest.ProfileTypeId != null)
+            if (constructionElementRequest.ProfileId != null)
             {
-                var profileType = _profileTypeRepo.GetById(
-                    constructionElementRequest.ProfileTypeId.GetValueOrDefault());
-                if (profileType == null)
-                    throw new ArgumentNullException(nameof(profileType));
-                foundConstructionElement.ProfileType = profileType;
+                var profile = _profileRepo.GetById(
+                    constructionElementRequest.ProfileId.GetValueOrDefault());
+                if (profile == null)
+                    throw new ArgumentNullException(nameof(profile));
+                foundConstructionElement.Profile = profile;
             }
             if (constructionElementRequest.SteelId != null)
             {
@@ -127,8 +119,6 @@ namespace DocumentsKM.Services
             }
             if (constructionElementRequest.Length != null)
                 foundConstructionElement.Length = constructionElementRequest.Length.GetValueOrDefault();
-            if (constructionElementRequest.Status != null)
-                foundConstructionElement.Status = constructionElementRequest.Status.GetValueOrDefault();
 
             _repository.Update(foundConstructionElement);
 

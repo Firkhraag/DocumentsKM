@@ -16,7 +16,7 @@ namespace DocumentsKM.Tests
         private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly Mock<IConstructionRepo> _mockConstructionRepo = new Mock<IConstructionRepo>();
         private readonly Mock<IProfileClassRepo> _mockProfileClassRepo = new Mock<IProfileClassRepo>();
-        private readonly Mock<IProfileTypeRepo> _mockProfileTypeRepo = new Mock<IProfileTypeRepo>();
+        private readonly Mock<IProfileRepo> _mockProfileRepo = new Mock<IProfileRepo>();
         private readonly Mock<ISteelRepo> _mockSteelRepo = new Mock<ISteelRepo>();
         private readonly IConstructionElementService _service;
         private readonly Random _rnd = new Random();
@@ -33,14 +33,9 @@ namespace DocumentsKM.Tests
                     Id = ce.Id,
                     Construction = ce.Construction,
                     ProfileClass = ce.ProfileClass,
-                    ProfileName = ce.ProfileName,
-                    Symbol = ce.Symbol,
-                    Weight = ce.Weight,
-                    SurfaceArea = ce.SurfaceArea,
-                    ProfileType = ce.ProfileType,
+                    Profile = ce.Profile,
                     Steel = ce.Steel,
                     Length = ce.Length,
-                    Status = ce.Status,
                 });
             }
             foreach (var constructionElement in _constructionElements)
@@ -53,6 +48,9 @@ namespace DocumentsKM.Tests
             {
                 _mockConstructionRepo.Setup(mock =>
                     mock.GetById(construction.Id, false)).Returns(
+                        TestData.constructions.SingleOrDefault(v => v.Id == construction.Id));
+                _mockConstructionRepo.Setup(mock =>
+                    mock.GetById(construction.Id, true)).Returns(
                         TestData.constructions.SingleOrDefault(v => v.Id == construction.Id));
 
                 _repository.Setup(mock =>
@@ -74,12 +72,12 @@ namespace DocumentsKM.Tests
                         TestData.profileClasses.SingleOrDefault(
                             v => v.Id == profileClass.Id));
             }
-            foreach (var profileType in TestData.profileTypes)
+            foreach (var profile in TestData.profiles)
             {
-                _mockProfileTypeRepo.Setup(mock =>
-                    mock.GetById(profileType.Id)).Returns(
-                        TestData.profileTypes.SingleOrDefault(
-                            v => v.Id == profileType.Id));
+                _mockProfileRepo.Setup(mock =>
+                    mock.GetById(profile.Id)).Returns(
+                        TestData.profiles.SingleOrDefault(
+                            v => v.Id == profile.Id));
             }
             foreach (var steel in TestData.steel)
             {
@@ -107,7 +105,7 @@ namespace DocumentsKM.Tests
                 _mockMarkRepo.Object,
                 _mockConstructionRepo.Object,
                 _mockProfileClassRepo.Object,
-                _mockProfileTypeRepo.Object,
+                _mockProfileRepo.Object,
                 _mockSteelRepo.Object);
         }
 
@@ -142,17 +140,12 @@ namespace DocumentsKM.Tests
             // Arrange
             int constructionId = _rnd.Next(1, TestData.marks.Count());
             int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());
-            int profileTypeId = _rnd.Next(1, TestData.profileTypes.Count());
+            int profileId = _rnd.Next(1, TestData.profiles.Count());
             int steelId = _rnd.Next(1, TestData.steel.Count());
 
             var newConstructionElement = new ConstructionElement
             {
-                ProfileName = "NewCreate",
-                Symbol = "NewCreate",
-                Weight = 1.0f,
-                SurfaceArea = 1.0f,
                 Length = 1.0f,
-                Status = 1,
             };
 
             // Act
@@ -160,7 +153,7 @@ namespace DocumentsKM.Tests
                 newConstructionElement,
                 constructionId,
                 profileClassId,
-                profileTypeId,
+                profileId,
                 steelId);
 
             // Assert
@@ -175,17 +168,12 @@ namespace DocumentsKM.Tests
             // Arrange
             int constructionId = _rnd.Next(1, TestData.marks.Count());
             int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());
-            int profileTypeId = _rnd.Next(1, TestData.profileTypes.Count());
+            int profileId = _rnd.Next(1, TestData.profiles.Count());
             int steelId = _rnd.Next(1, TestData.steel.Count());
 
             var newConstructionElement = new ConstructionElement
             {
-                ProfileName = "NewCreate",
-                Symbol = "NewCreate",
-                Weight = 1.0f,
-                SurfaceArea = 1.0f,
                 Length = 1.0f,
-                Status = 1,
             };
 
             // Act & Assert
@@ -193,19 +181,19 @@ namespace DocumentsKM.Tests
                 null,
                 constructionId,
                 profileClassId,
-                profileTypeId,
+                profileId,
                 steelId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newConstructionElement,
                 999,
                 profileClassId,
-                profileTypeId,
+                profileId,
                 steelId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newConstructionElement,
                 constructionId,
                 999,
-                profileTypeId,
+                profileId,
                 steelId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newConstructionElement,
@@ -217,7 +205,7 @@ namespace DocumentsKM.Tests
                 newConstructionElement,
                 constructionId,
                 profileClassId,
-                profileTypeId,
+                profileId,
                 999));
 
             _repository.Verify(mock => mock.Add(It.IsAny<ConstructionElement>()), Times.Never);
@@ -247,18 +235,15 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _constructionElements.Count());
-            var newStringValue = "NewUpdate";
+            int profileId = _rnd.Next(1, TestData.profiles.Count());
+            int steelId = _rnd.Next(1, TestData.steel.Count());
             var newFloatValue = 9.0f;
-            var newIntValue = 9;
 
             var newConstructionElementRequest = new ConstructionElementUpdateRequest
             {
-                ProfileName = newStringValue,
-                Symbol = newStringValue,
-                Weight = newFloatValue,
-                SurfaceArea = newFloatValue,
+                ProfileId = profileId,
+                SteelId = steelId,
                 Length = newFloatValue,
-                Status = newIntValue,
             };
 
             // Act
@@ -266,18 +251,12 @@ namespace DocumentsKM.Tests
 
             // Assert
             _repository.Verify(mock => mock.Update(It.IsAny<ConstructionElement>()), Times.Once);
-            Assert.Equal(newStringValue, _constructionElements.SingleOrDefault(
-                v => v.Id == id).ProfileName);
-            Assert.Equal(newStringValue, _constructionElements.SingleOrDefault(
-                v => v.Id == id).Symbol);
-            Assert.Equal(newFloatValue, _constructionElements.SingleOrDefault(
-                v => v.Id == id).Weight);
-            Assert.Equal(newFloatValue, _constructionElements.SingleOrDefault(
-                v => v.Id == id).SurfaceArea);
+            Assert.Equal(TestData.profiles.SingleOrDefault(v => v.Id == profileId), _constructionElements.SingleOrDefault(
+                v => v.Id == id).Profile);
+            Assert.Equal(TestData.steel.SingleOrDefault(v => v.Id == steelId), _constructionElements.SingleOrDefault(
+                v => v.Id == id).Steel);
             Assert.Equal(newFloatValue, _constructionElements.SingleOrDefault(
                 v => v.Id == id).Length);
-            Assert.Equal(newIntValue, _constructionElements.SingleOrDefault(
-                v => v.Id == id).Status);
         }
 
         [Fact]
@@ -288,7 +267,7 @@ namespace DocumentsKM.Tests
 
             var newConstructionElementRequest = new ConstructionElementUpdateRequest
             {
-                Weight = 9,
+                Length = 9,
             };
 
             // Act & Assert
