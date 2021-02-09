@@ -42,7 +42,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<AdditionalWorkResponse> Create(
+        public ActionResult Create(
             int markId, [FromBody] AdditionalWorkCreateRequest additionalWorkRequest)
         {
             var additionalWorkModel = _mapper.Map<AdditionalWork>(
@@ -62,8 +62,7 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"additional-work/{additionalWorkModel.Id}",
-                _mapper.Map<AdditionalWorkResponse>(additionalWorkModel));
+            return Created($"additional-work/{additionalWorkModel.Id}", null);
         }
 
         [HttpPatch, Route("additional-work/{id}")]

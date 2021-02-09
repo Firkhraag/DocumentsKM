@@ -43,7 +43,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<StandardConstructionResponse> Create(
+        public ActionResult Create(
             int specificationId,
             [FromBody] StandardConstructionCreateRequest standardConstructionRequest)
         {
@@ -63,8 +63,8 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"standard-constructions/{standardConstructionModel.Id}",
-                _mapper.Map<StandardConstructionResponse>(standardConstructionModel));
+            return Created(
+                $"standard-constructions/{standardConstructionModel.Id}", null);
         }
 
         [HttpPatch, Route("standard-constructions/{id}")]

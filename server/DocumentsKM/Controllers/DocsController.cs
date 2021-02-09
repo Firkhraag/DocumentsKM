@@ -51,7 +51,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<DocResponse> Create(
+        public ActionResult Create(
             int markId, [FromBody] DocCreateRequest docRequest)
         {
             var docModel = _mapper.Map<Doc>(docRequest);
@@ -71,7 +71,7 @@ namespace DocumentsKM.Controllers
             }
             
             return Created(
-                $"docs/{docModel.Id}", _mapper.Map<DocResponse>(docModel));
+                $"docs/{docModel.Id}", null);
         }
 
         [HttpPatch, Route("docs/{id}")]

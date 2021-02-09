@@ -25,11 +25,11 @@ public class TestWebApplicationFactory<TStartup>
                     typeof(DbContextOptions<ApplicationContext>));
             services.Remove(descriptor);
 
-            services.RemoveAll(typeof(IHostedService));
-
             descriptor = services.FirstOrDefault(
                 d => d.ServiceType == typeof(ConnectionFactory));
             services.Remove(descriptor);
+
+            services.RemoveAll(typeof(IHostedService));
 
             // services.AddAutoMapper(typeof(TStartup));
 

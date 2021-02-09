@@ -77,7 +77,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkOperatingConditions> Create(
+        public ActionResult Create(
             int markId,
             [FromBody] MarkOperatingConditionsCreateRequest markOperatingConditionsRequest)
         {
@@ -107,8 +107,7 @@ namespace DocumentsKM.Controllers
             var markOperatingConditionsResponse = _mapper.Map<MarkOperatingConditionsResponse>(
                 markOperatingConditionsModel);
             return Created(
-                $"marks/{markId}/mark-operating-conditions",
-                _mapper.Map<MarkOperatingConditionsResponse>(markOperatingConditionsModel));
+                $"marks/{markId}/mark-operating-conditions", null);
         }
 
         [HttpPatch, Route("marks/{markId}/mark-operating-conditions")]

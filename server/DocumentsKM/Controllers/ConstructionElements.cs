@@ -45,7 +45,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<ConstructionElement> Add(
+        public ActionResult Create(
             int constructionId, ConstructionElementCreateRequest constructionElementRequest)
         {
             try
@@ -58,7 +58,8 @@ namespace DocumentsKM.Controllers
                     constructionElementRequest.ProfileClassId,
                     constructionElementRequest.ProfileId,
                     constructionElementRequest.SteelId);
-                return Created($"construction-elements/", constructionElementModel);
+                return Created(
+                    $"construction-elements/{constructionElementModel.Id}", null);
             }
             catch (ArgumentNullException)
             {
