@@ -51,7 +51,9 @@ const AdditionalWorkTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/additional-work/${id}`)
-			additionalWorkArray.splice(row, 1)
+            var arr = [...additionalWorkArray]
+			arr.splice(row, 1)
+			setAdditionalWorkArray(arr)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')

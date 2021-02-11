@@ -52,7 +52,9 @@ const ConstructionElementTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/construction-elements/${id}`)
-			constructionElements.splice(row, 1)
+            var arr = [...constructionElements]
+			arr.splice(row, 1)
+			setConstructionElements(arr)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')

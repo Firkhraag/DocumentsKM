@@ -52,7 +52,9 @@ const StandardConstructionTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/standard-constructions/${id}`)
-			standardConstructions.splice(row, 1)
+            var arr = [...standardConstructions]
+			arr.splice(row, 1)
+			setStandardConstructions(arr)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')

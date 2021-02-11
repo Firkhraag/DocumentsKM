@@ -107,9 +107,9 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 		try {
 			await httpClient.delete(`/specifications/${id}`)
 			refs.splice(row, 1)
-			const newSpecArr = [...specifications]
-			newSpecArr.splice(row, 1)
-			setSpecifications(newSpecArr)
+			const arr = [...specifications]
+			arr.splice(row, 1)
+			setSpecifications(arr)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')

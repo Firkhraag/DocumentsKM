@@ -42,7 +42,9 @@ const LinkedDocTable = ({ setMarkLinkedDoc }: LinkedDocTableProps) => {
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/mark-linked-docs/${id}`)
-			linkedDocs.splice(row, 1)
+            var arr = [...linkedDocs]
+			arr.splice(row, 1)
+			setLinkedDocs(arr)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
