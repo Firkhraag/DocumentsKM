@@ -75,6 +75,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] StandardConstructionUpdateRequest standardConstructionRequest)
         {
+            if (!standardConstructionRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, standardConstructionRequest);

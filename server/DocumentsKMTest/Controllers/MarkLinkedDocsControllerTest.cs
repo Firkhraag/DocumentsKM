@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Dtos;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,20 +41,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var markLinkedDocs = TestData.markLinkedDocs.Where(v => v.Mark.Id == markId)
-                .Select(v => new MarkLinkedDocResponse
-                {
-                    Id = v.Id,
-                    LinkedDoc = v.LinkedDoc,
-                }).ToArray();
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<MarkLinkedDocResponse>>(
-                responseBody, options).Should().BeEquivalentTo(markLinkedDocs);
         }
 
         [Fact]

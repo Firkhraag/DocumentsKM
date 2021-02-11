@@ -110,6 +110,8 @@ namespace DocumentsKM.Controllers
         {
             // DEBUG
             // Log.Information(JsonSerializer.Serialize(markRequest));
+            if (!markRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, markRequest);

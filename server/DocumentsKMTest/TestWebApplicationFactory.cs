@@ -31,8 +31,6 @@ public class TestWebApplicationFactory<TStartup>
 
             services.RemoveAll(typeof(IHostedService));
 
-            // services.AddAutoMapper(typeof(TStartup));
-
             services.AddDbContext<ApplicationContext>(opt =>
             {
                 opt.UseLazyLoadingProxies().UseInMemoryDatabase("TestDb");
@@ -93,6 +91,7 @@ public class TestWebApplicationFactory<TStartup>
         context.ProfileClasses.AddRange(TestData.profileClasses);
         context.ProfileTypes.AddRange(TestData.profileTypes);
         context.Steel.AddRange(TestData.steel);
+        context.Profiles.AddRange(TestData.profiles);
         context.Constructions.AddRange(TestData.constructions);
         context.StandardConstructions.AddRange(TestData.standardConstructions);
         context.ConstructionBolts.AddRange(TestData.constructionBolts);

@@ -107,8 +107,6 @@ namespace DocumentsKM
                 ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
             services.AddSingleton<ICacheService, RedisCacheService>();
 
-            // services.AddSingleton<IConnectionProvider>(
-            //     new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
             services.AddSingleton(serviceProvider =>
             {
                 var uri = new Uri(Configuration.GetConnectionString("RabbitMQConnection"));

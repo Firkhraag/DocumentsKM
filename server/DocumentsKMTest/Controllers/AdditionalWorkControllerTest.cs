@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,7 +14,6 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    // TBD: Update, Delete
     public class AdditionalWorkControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
@@ -32,6 +32,8 @@ namespace DocumentsKM.Tests
             
             _authHttpClient = factory.CreateClient();
         }
+
+        // ------------------------------------GET------------------------------------
 
         [Fact]
         public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
@@ -61,12 +63,14 @@ namespace DocumentsKM.Tests
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
+        // ------------------------------------POST------------------------------------
+
         [Fact]
         public async Task Create_ShouldReturnCreated()
         {
             // Arrange
             int markId = 1;
-            int employeeId = 3;
+            int employeeId = 5;
             var additionalWorkRequest = new AdditionalWorkCreateRequest
             {
                 EmployeeId = employeeId,
@@ -84,138 +88,299 @@ namespace DocumentsKM.Tests
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         }
 
-        // [Fact]
-        // public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
-        // {
-        //     // Arrange
-        //     int markId = _rnd.Next(1, TestData.marks.Count());
-        //     var wrongAttachedDocRequest1 = new AttachedDocCreateRequest
-        //     {
-        //         Name = "NewCreate",
-        //     };
-        //     var wrongAttachedDocRequest2 = new AttachedDocCreateRequest
-        //     {
-        //         Designation = "NewCreate",
-        //     };
-        //     string json1 = JsonSerializer.Serialize(wrongAttachedDocRequest1);
-        //     string json2 = JsonSerializer.Serialize(wrongAttachedDocRequest2);
-        //     var httpContent1 = new StringContent(json1, Encoding.UTF8, "application/json");
-        //     var httpContent2 = new StringContent(json2, Encoding.UTF8, "application/json");
-        //     var endpoint = $"/api/marks/{markId}/attached-docs";
+        [Fact]
+        public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
+        {
+            // Arrange
+            int markId = 1;
+            int employeeId = 4;
+            var wrongAdditionalWorkRequests = new List<AdditionalWorkCreateRequest>
+            {
+                new AdditionalWorkCreateRequest
+                {
+                    EmployeeId = employeeId,
+                    Valuation = -9,
+                    MetalOrder = 9,
+                },
+                new AdditionalWorkCreateRequest
+                {
+                    EmployeeId = employeeId,
+                    Valuation = 9,
+                    MetalOrder = -9,
+                },
+            };
 
-        //     // Act
-        //     var response1 = await _httpClient.PostAsync(endpoint, httpContent1);
-        //     var response2 = await _httpClient.PostAsync(endpoint, httpContent2);
+            var endpoint = $"/api/marks/{markId}/additional-work";
+            foreach (var wrongAdditionalWorkRequest in wrongAdditionalWorkRequests)
+            {
+                var json = JsonSerializer.Serialize(wrongAdditionalWorkRequest);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.BadRequest, response1.StatusCode);
-        //     Assert.Equal(HttpStatusCode.BadRequest, response2.StatusCode);
-        // }
+                // Act
+                var response = await _httpClient.PostAsync(endpoint, httpContent);
 
-        // [Fact]
-        // public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
-        // {
-        //     // Arrange
-        //     int markId = _rnd.Next(1, TestData.marks.Count());
-        //     var attachedDocRequest = new AttachedDocCreateRequest
-        //     {
-        //         Designation = "NewCreate",
-        //         Name = "NewCreate",
-        //     };
-        //     string json = JsonSerializer.Serialize(attachedDocRequest);
-        //     var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-        //     var endpoint = $"/api/marks/{markId}/attached-docs";
+                // Assert
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            }
+        }
 
-        //     // Act
-        //     var response = await _authHttpClient.PostAsync(endpoint, httpContent);
+        [Fact]
+        public async Task Create_ShouldReturnNotFound_WhenWrongValues()
+        {
+            // Arrange
+            int markId = 1;
+            int employeeId = 4;
+            var additionalWorkRequest = new AdditionalWorkCreateRequest
+            {
+                EmployeeId = employeeId,
+                Valuation = 9,
+                MetalOrder = 9,
+            };
+            var wrongAdditionalWorkRequest = new AdditionalWorkCreateRequest
+            {
+                EmployeeId = 999,
+                Valuation = 9,
+                MetalOrder = 9,
+            };
+            string json1 = JsonSerializer.Serialize(wrongAdditionalWorkRequest);
+            string json2 = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent1 = new StringContent(json1, Encoding.UTF8, "application/json");
+            var httpContent2 = new StringContent(json2, Encoding.UTF8, "application/json");
+            var endpoint1 = $"/api/marks/{markId}/additional-work";
+            var endpoint2 = $"/api/marks/{999}/additional-work";
 
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        // }
+            // Act
+            var response1 = await _httpClient.PostAsync(endpoint1, httpContent1);
+            var response2 = await _httpClient.PostAsync(endpoint2, httpContent2);
 
-        // [Fact]
-        // public async Task Update_ShouldReturnNoContent()
-        // {
-        //     // Arrange
-        //     int id = 1;
-        //     var attachedDocRequest = new AttachedDocUpdateRequest
-        //     {
-        //         Name = "NewUpdate",
-        //     };
-        //     string json = JsonSerializer.Serialize(attachedDocRequest);
-        //     var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-        //     var endpoint = $"/api/attached-docs/{id}";
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response1.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response2.StatusCode);
+        }
 
-        //     // Act
-        //     var response = await _httpClient.PatchAsync(endpoint, httpContent);
+        [Fact]
+        public async Task Create_ShouldReturnConflict_WhenConflictValues()
+        {
+            // Arrange
+            int markId = 1;
+            int employeeId = 1;
+            var additionalWorkRequest = new AdditionalWorkCreateRequest
+            {
+                EmployeeId = employeeId,
+                Valuation = 9,
+                MetalOrder = 9,
+            };
+            string json = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks/{markId}/additional-work";
 
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        // }
+            // Act
+            var response = await _httpClient.PostAsync(endpoint, httpContent);
 
-        // [Fact]
-        // public async Task Update_ShouldReturnBadRequest_WhenEmptyString()
-        // {
-        //     // Arrange
-        //     int id = 1;
-        //     var httpContent = new StringContent("", Encoding.UTF8, "application/json");
-        //     var endpoint = $"/api/attached-docs/{id}";
+            // Assert
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        }
 
-        //     // Act
-        //     var response = await _httpClient.PatchAsync(endpoint, httpContent);
+        [Fact]
+        public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = 1;
+            int employeeId = 4;
+            var additionalWorkRequest = new AdditionalWorkCreateRequest
+            {
+                EmployeeId = employeeId,
+                Valuation = 9,
+                MetalOrder = 9,
+            };
+            string json = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks/{markId}/additional-work";
 
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        // }
+            // Act
+            var response = await _authHttpClient.PostAsync(endpoint, httpContent);
 
-        // [Fact]
-        // public async Task Update_ShouldReturnUnauthorized_WhenNoAccessToken()
-        // {
-        //     // Arrange
-        //     int id = 1;
-        //     var attachedDocRequest = new AttachedDocUpdateRequest
-        //     {
-        //         Name = "NewUpdate",
-        //     };
-        //     string json = JsonSerializer.Serialize(attachedDocRequest);
-        //     var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-        //     var endpoint = $"/api/attached-docs/{id}";
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
 
-        //     // Act
-        //     var response = await _authHttpClient.PatchAsync(endpoint, httpContent);
+        // ------------------------------------PATCH------------------------------------
 
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        // }
+        [Fact]
+        public async Task Update_ShouldReturnNoContent()
+        {
+            // Arrange
+            int id = 1;
+            var additionalWorkRequest = new AdditionalWorkUpdateRequest
+            {
+                Valuation = 9,
+                MetalOrder = 9,
+            };
+            string json = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/additional-work/{id}";
 
-        // [Fact]
-        // public async Task Delete_ShouldReturnNoContent_WhenAccessTokenIsProvided()
-        // {
-        //     // Arrange
-        //     int id = 2;
-        //     var endpoint = $"/api/attached-docs/{id}";
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
-        //     int markId = TestData.attachedDocs.FirstOrDefault(v => v.Id == id).Mark.Id;
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
 
-        //     // Act
-        //     var response = await _httpClient.DeleteAsync(endpoint);
+        [Fact]
+        public async Task Update_ShouldReturnBadRequest_WhenWrongValues()
+        {
+            // Arrange
+            int id = 1;
+            var wrongAdditionalWorkRequests = new List<AdditionalWorkUpdateRequest>
+            {
+                new AdditionalWorkUpdateRequest
+                {
+                    Valuation = -9,
+                    MetalOrder = 9,
+                },
+                new AdditionalWorkUpdateRequest
+                {
+                    Valuation = 9,
+                    MetalOrder = -9,
+                },
+            };
+            var httpContent = new StringContent("", Encoding.UTF8, "application/json");
+            var endpoint = $"/api/additional-work/{id}";
 
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        // }
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
-        // [Fact]
-        // public async Task Delete_ShouldReturnUnauthorized_WhenNoAccessToken()
-        // {
-        //     // Arrange
-        //     int id = 2;
-        //     var endpoint = $"/api/attached-docs/{id}";
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-        //     // Act
-        //     var response = await _authHttpClient.DeleteAsync(endpoint);
+            foreach (var wrongAdditionalWorkRequest in wrongAdditionalWorkRequests)
+            {
+                var json = JsonSerializer.Serialize(wrongAdditionalWorkRequest);
+                httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        // }
+                // Act
+                response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNotFound_WhenWrongValues()
+        {
+            // Arrange
+            int id = 1;
+            var additionalWorkRequest = new AdditionalWorkUpdateRequest
+            {
+                Valuation = 9,
+                MetalOrder = 9,
+            };
+            var wrongAdditionalWorkRequest = new AdditionalWorkUpdateRequest
+            {
+                EmployeeId = 999,
+            };
+            string json1 = JsonSerializer.Serialize(wrongAdditionalWorkRequest);
+            string json2 = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent1 = new StringContent(json1, Encoding.UTF8, "application/json");
+            var httpContent2 = new StringContent(json2, Encoding.UTF8, "application/json");
+            var endpoint1 = $"/api/additional-work/{id}";
+            var endpoint2 = $"/api/additional-work/{999}";
+
+            // Act
+            var response1 = await _httpClient.PatchAsync(endpoint1, httpContent1);
+            var response2 = await _httpClient.PatchAsync(endpoint2, httpContent2);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response1.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response2.StatusCode);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnConflict_WhenConflictValues()
+        {
+            // Arrange
+            int id = 3;
+            var additionalWorkRequest = new AdditionalWorkUpdateRequest
+            {
+                EmployeeId = 2,
+                Valuation = 9,
+                MetalOrder = 9,
+            };
+            string json = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/additional-work/{id}";
+
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int id = 1;
+            var additionalWorkRequest = new AdditionalWorkUpdateRequest
+            {
+                Valuation = 9,
+                MetalOrder = 9,
+            };
+            string json = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/additional-work/{id}";
+
+            // Act
+            var response = await _authHttpClient.PatchAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        // ------------------------------------DELETE------------------------------------
+
+        [Fact]
+        public async Task Delete_ShouldReturnNoContent()
+        {
+            // Arrange
+            int id = 2;
+            var endpoint = $"/api/additional-work/{id}";
+
+            // Act
+            var response = await _httpClient.DeleteAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Delete_ShouldReturnNotFound_WhenWrongId()
+        {
+            // Arrange
+            var endpoint = $"/api/additional-work/{999}";
+
+            // Act
+            var response = await _httpClient.DeleteAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Delete_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int id = 2;
+            var endpoint = $"/api/additional-work/{id}";
+
+            // Act
+            var response = await _authHttpClient.DeleteAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
     }
 }

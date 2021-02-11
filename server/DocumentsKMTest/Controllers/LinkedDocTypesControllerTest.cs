@@ -1,10 +1,6 @@
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Models;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,14 +37,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<LinkedDocType>>(
-                responseBody, options).Should().BeEquivalentTo(TestData.linkedDocTypes);
         }
 
         [Fact]

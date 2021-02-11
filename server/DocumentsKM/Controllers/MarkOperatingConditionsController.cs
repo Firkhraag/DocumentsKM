@@ -118,6 +118,8 @@ namespace DocumentsKM.Controllers
             int markId,
             [FromBody] MarkOperatingConditionsUpdateRequest markOperatingConditionsRequest)
         {
+            if (!markOperatingConditionsRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(markId, markOperatingConditionsRequest);

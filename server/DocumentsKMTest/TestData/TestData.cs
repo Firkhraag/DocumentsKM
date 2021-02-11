@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DocumentsKM.Data;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Tests
@@ -984,7 +985,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 1,
                 Construction = constructions[0],
-                ProfileClass = profileClasses[0],
                 Profile = profiles[0],
                 Steel = steel[0],
                 Length = 1.0f,
@@ -993,7 +993,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 2,
                 Construction = constructions[0],
-                ProfileClass = profileClasses[1],
                 Profile = profiles[1],
                 Steel = steel[1],
                 Length = 1.0f,
@@ -1002,7 +1001,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 3,
                 Construction = constructions[0],
-                ProfileClass = profileClasses[2],
                 Profile = profiles[2],
                 Steel = steel[2],
                 Length = 1.0f,
@@ -1011,7 +1009,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 4,
                 Construction = constructions[1],
-                ProfileClass = profileClasses[0],
                 Profile = profiles[0],
                 Steel = steel[0],
                 Length = 1.0f,
@@ -1020,7 +1017,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 5,
                 Construction = constructions[1],
-                ProfileClass = profileClasses[1],
                 Profile = profiles[1],
                 Steel = steel[1],
                 Length = 1.0f,
@@ -1029,7 +1025,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 6,
                 Construction = constructions[1],
-                ProfileClass = profileClasses[2],
                 Profile = profiles[2],
                 Steel = steel[2],
                 Length = 1.0f,
@@ -1038,7 +1033,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 7,
                 Construction = constructions[2],
-                ProfileClass = profileClasses[0],
                 Profile = profiles[0],
                 Steel = steel[0],
                 Length = 1.0f,
@@ -1047,7 +1041,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 8,
                 Construction = constructions[2],
-                ProfileClass = profileClasses[1],
                 Profile = profiles[1],
                 Steel = steel[1],
                 Length = 1.0f,
@@ -1056,7 +1049,6 @@ namespace DocumentsKM.Tests
             {
                 Id = 9,
                 Construction = constructions[2],
-                ProfileClass = profileClasses[2],
                 Profile = profiles[2],
                 Steel = steel[2],
                 Length = 1.0f,

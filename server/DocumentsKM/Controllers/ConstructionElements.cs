@@ -55,7 +55,6 @@ namespace DocumentsKM.Controllers
                 _service.Create(
                     constructionElementModel,
                     constructionId,
-                    constructionElementRequest.ProfileClassId,
                     constructionElementRequest.ProfileId,
                     constructionElementRequest.SteelId);
                 return Created(
@@ -79,6 +78,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] ConstructionElementUpdateRequest constructionElementRequest)
         {
+            if (!constructionElementRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, constructionElementRequest);

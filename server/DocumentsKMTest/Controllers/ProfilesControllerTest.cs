@@ -10,13 +10,13 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class ConstructionSubtypesControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    public class ProfilesControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
         private readonly Random _rnd = new Random();
 
-        public ConstructionSubtypesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        public ProfilesControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
@@ -30,11 +30,11 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByTypeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByProfileClassId_ShouldReturnOK_WhenAccessTokenIsProvided()
         {
             // Arrange
-            int typeId = _rnd.Next(1, TestData.constructionTypes.Count());
-            var endpoint = $"/api/construction-types/{typeId}/construction-subtypes";
+            int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());
+            var endpoint = $"/api/profile-classes/{profileClassId}/profiles";
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
@@ -44,11 +44,11 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByTypeId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        public async Task GetAllByProfileClassId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            int typeId = _rnd.Next(1, TestData.constructionTypes.Count());
-            var endpoint = $"/api/construction-types/{typeId}/construction-subtypes";
+            int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());
+            var endpoint = $"/api/profile-classes/{profileClassId}/profiles";
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);

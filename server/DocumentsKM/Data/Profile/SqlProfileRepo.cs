@@ -13,7 +13,7 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<Profile> GetAllByProfileClass(int profileClassId)
+        public IEnumerable<Profile> GetAllByProfileClassId(int profileClassId)
         {
             return _context.Profiles.Where(
                 v => v.Class.Id == profileClassId).ToList();

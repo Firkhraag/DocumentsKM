@@ -69,6 +69,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] MarkLinkedDocUpdateRequest markLinkedDocRequest)
         {
+            if (!markLinkedDocRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, markLinkedDocRequest);

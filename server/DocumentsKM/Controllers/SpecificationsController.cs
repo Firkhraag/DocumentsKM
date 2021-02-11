@@ -62,6 +62,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] SpecificationUpdateRequest specificationRequest)
         {
+            if (!specificationRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, specificationRequest);

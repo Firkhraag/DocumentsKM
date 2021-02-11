@@ -45,9 +45,9 @@ namespace DocumentsKM.Services
             if (foundBoltDiameter == null)
                 throw new ArgumentNullException(nameof(foundBoltDiameter));
 
-            // var uniqueConstraintViolationCheck = _repository.GetByUniqueConstraint(markId, linkedDocId);
-            // if (uniqueConstraintViolationCheck != null)
-            //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(constructionId, boltDiameterId);
+            if (uniqueConstraintViolationCheck != null)
+                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
             constructionBolt.Construction = foundConstruction;
             constructionBolt.Diameter = foundBoltDiameter;
@@ -67,25 +67,18 @@ namespace DocumentsKM.Services
             if (foundConstructionBolt == null)
                 throw new ArgumentNullException(nameof(foundConstructionBolt));
 
-            // var foundLinkedDoc = _linkedDocRepo.GetById(ConstructionBoltRequest.LinkedDocId);
-            // if (foundLinkedDoc == null)
-            //     throw new ArgumentNullException(nameof(foundLinkedDoc));
-
-            // var uniqueConstraintViolationCheck = _repository.GetByMarkIdAndLinkedDocId(
-            //     foundConstructionBolt.Mark.Id, ConstructionBoltRequest.LinkedDocId);
-            // if (uniqueConstraintViolationCheck != null)
-            //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-
             if (constructionBoltRequest.DiameterId != null)
             {
                 var boltDiameter = _boltDiameterRepo.GetById(
                     constructionBoltRequest.DiameterId.GetValueOrDefault());
                 if (boltDiameter == null)
                     throw new ArgumentNullException(nameof(boltDiameter));
-                // var uniqueConstraintViolationCheck = _repository.GetByUniqueConstraint(
-                //     foundConstructionBolt.Mark.Id, ConstructionBoltRequest.LinkedDocId.GetValueOrDefault());
-                // if (uniqueConstraintViolationCheck != null)
-                //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+                
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
+                    foundConstructionBolt.Construction.Id, constructionBoltRequest.DiameterId.GetValueOrDefault());
+                if (uniqueConstraintViolationCheck != null)
+                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+                
                 foundConstructionBolt.Diameter = boltDiameter;
             }
 

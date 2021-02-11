@@ -39,7 +39,8 @@ const ConstructionElementTable = ({
 						`/constructions/${constructionId}/elements`
 					)
 					setConstructionElements(
-                        constructionElementsResponse.data as ConstructionElement[])
+						constructionElementsResponse.data as ConstructionElement[]
+					)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
@@ -92,7 +93,7 @@ const ConstructionElementTable = ({
 							<tr key={index}>
 								<td>{index + 1}</td>
 								<td className="profile-class-name-col-width">
-									{ce.profileClass.name}
+									{ce.profile.class.name}
 								</td>
 								<td>{ce.profile.name}</td>
 								<td>{ce.steel.id}</td>

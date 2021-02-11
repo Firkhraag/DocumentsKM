@@ -158,65 +158,65 @@
 //         //     context.Database.EnsureDeleted();
 //         // }
 
-//         [Fact]
-//         public void Add_ShouldAddStandardConstruction()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.standardConstructions);
-//             var repo = new SqlStandardConstructionRepo(context);
+//         // [Fact]
+//         // public void Add_ShouldAddStandardConstruction()
+//         // {
+//         //     // Arrange
+//         //     var context = GetContext(TestData.standardConstructions);
+//         //     var repo = new SqlStandardConstructionRepo(context);
 
-//             int specificationId = _rnd.Next(1, TestData.specifications.Count());
-//             var standardConstruction = new StandardConstruction
-//             {
-//                 Specification = TestData.specifications.SingleOrDefault(v => v.Id == specificationId),
-//                 Name = "NewCreate",
-//                 Num = 1,
-//                 Sheet = "NewCreate",
-//                 Weight = 1.0f,
-//             };
+//         //     int specificationId = _rnd.Next(1, TestData.specifications.Count());
+//         //     var standardConstruction = new StandardConstruction
+//         //     {
+//         //         Specification = TestData.specifications.SingleOrDefault(v => v.Id == specificationId),
+//         //         Name = "NewCreate",
+//         //         Num = 1,
+//         //         Sheet = "NewCreate",
+//         //         Weight = 1.0f,
+//         //     };
 
-//             // Act
-//             repo.Add(standardConstruction);
+//         //     // Act
+//         //     repo.Add(standardConstruction);
 
-//             // Assert
-//             Assert.NotNull(repo.GetById(standardConstruction.Id));
+//         //     // Assert
+//         //     Assert.NotNull(repo.GetById(standardConstruction.Id));
 
-//             context.Database.EnsureDeleted();
-//         }
+//         //     context.Database.EnsureDeleted();
+//         // }
 
-//         [Fact]
-//         public void Update_ShouldUpdateStandardConstruction()
-//         {
-//             // Arrange
-//             var standardConstructions = new List<StandardConstruction> { };
-//             foreach (var c in TestData.standardConstructions)
-//             {
-//                 standardConstructions.Add(new StandardConstruction
-//                 {
-//                     Id = c.Id,
-//                     Specification = c.Specification,
-//                     Name = c.Name,
-//                     Num = c.Num,
-//                     Sheet = c.Sheet,
-//                     Weight = c.Weight,
-//                 });
-//             }
-//             var context = GetContext(standardConstructions);
-//             var repo = new SqlStandardConstructionRepo(context);
+//         // [Fact]
+//         // public void Update_ShouldUpdateStandardConstruction()
+//         // {
+//         //     // Arrange
+//         //     var standardConstructions = new List<StandardConstruction> { };
+//         //     foreach (var c in TestData.standardConstructions)
+//         //     {
+//         //         standardConstructions.Add(new StandardConstruction
+//         //         {
+//         //             Id = c.Id,
+//         //             Specification = c.Specification,
+//         //             Name = c.Name,
+//         //             Num = c.Num,
+//         //             Sheet = c.Sheet,
+//         //             Weight = c.Weight,
+//         //         });
+//         //     }
+//         //     var context = GetContext(standardConstructions);
+//         //     var repo = new SqlStandardConstructionRepo(context);
 
-//             int id = _rnd.Next(1, standardConstructions.Count());
-//             var standardConstruction = standardConstructions.FirstOrDefault(
-//                 v => v.Id == id);
-//             standardConstruction.Name = "NewUpdate";
+//         //     int id = _rnd.Next(1, standardConstructions.Count());
+//         //     var standardConstruction = standardConstructions.FirstOrDefault(
+//         //         v => v.Id == id);
+//         //     standardConstruction.Name = "NewUpdate";
 
-//             // Act
-//             repo.Update(standardConstruction);
+//         //     // Act
+//         //     repo.Update(standardConstruction);
 
-//             // Assert
-//             Assert.Equal(standardConstruction.Name, repo.GetById(id).Name);
+//         //     // Assert
+//         //     Assert.Equal(standardConstruction.Name, repo.GetById(id).Name);
 
-//             context.Database.EnsureDeleted();
-//         }
+//         //     context.Database.EnsureDeleted();
+//         // }
 
 //         [Fact]
 //         public void Delete_ShouldDeleteStandardConstruction()

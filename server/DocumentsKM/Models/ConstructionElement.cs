@@ -13,10 +13,6 @@ namespace DocumentsKM.Models
         public virtual Construction Construction { get; set; }
 
         [Required]
-        [ForeignKey("ProfileClassId")]
-        public virtual ProfileClass ProfileClass { get; set; }
-
-        [Required]
         [ForeignKey("ProfileId")]
         public virtual Profile Profile { get; set; }
 
@@ -25,6 +21,7 @@ namespace DocumentsKM.Models
         public virtual Steel Steel { get; set; }
 
         [Required]
+        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Length { get; set; }
     }
 }

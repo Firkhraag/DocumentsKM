@@ -73,6 +73,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] AdditionalWorkUpdateRequest additionalWorkRequest)
         {
+            if (!additionalWorkRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, additionalWorkRequest);

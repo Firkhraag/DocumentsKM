@@ -15,7 +15,6 @@ import Steel from '../../model/Steel'
 import Profile from '../../model/Profile'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
 
 type ConstructionElementDataProps = {
@@ -42,11 +41,14 @@ const ConstructionElementData = ({
 			? {
 					id: -1,
 					profileClass: null,
-                    profile: null,
+					profile: null,
 					steel: null,
 					length: NaN,
 			  }
-			: constructionElement
+			: {
+					...constructionElement,
+					profileClass: constructionElement.profile.class,
+			  }
 	)
 	const [optionsObject, setOptionsObject] = useState({
 		profileClasses: [] as ProfileClass[],
@@ -55,16 +57,10 @@ const ConstructionElementData = ({
 		profiles: [] as Profile[],
 	})
 
-	// const [profiles, setProfiles] = useState<Profile[]>([])
-
 	const [errMsg, setErrMsg] = useState('')
 
 	const [width, setWidth] = useState<number>(null)
 	const [thickness, setThickness] = useState<number>(null)
-
-	// TBD
-	// let width = 1
-	// let thickness = 1
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -77,18 +73,11 @@ const ConstructionElementData = ({
 					const profileClassesResponse = await httpClient.get(
 						`/profile-classes`
 					)
-					// const profileTypeResponse = await httpClient.get(
-					// 	`/profile-types`
-					// )
-					// const profiles = await httpClient.get(
-					// 	`/profiles`
-					// )
 					const steelResponse = await httpClient.get(`/steel`)
 
 					setOptionsObject({
 						...optionsObject,
 						profileClasses: profileClassesResponse.data,
-						// profileTypes: profileTypeResponse.data,
 						steel: steelResponse.data,
 					})
 
@@ -99,7 +88,6 @@ const ConstructionElementData = ({
 						setOptionsObject({
 							...optionsObject,
 							profileClasses: profileClassesResponse.data,
-							// profileTypes: profileTypeResponse.data,
 							steel: steelResponse.data,
 							profiles: profilesResponse.data,
 						})
@@ -233,7 +221,6 @@ const ConstructionElementData = ({
 				await httpClient.post(
 					`/constructions/${constructionId}/elements`,
 					{
-						profileClassId: selectedObject.profileClass,
 						profileId: selectedObject.profile,
 						steelId: selectedObject.steel,
 						length: selectedObject.length,
@@ -255,16 +242,11 @@ const ConstructionElementData = ({
 				await httpClient.patch(
 					`/construction-elements/${selectedObject.id}`,
 					{
-						profileClassId:
-							selectedObject.profileClass.id ===
-							constructionElement.profileClass.id
+						profileId:
+							selectedObject.profile.id ===
+							constructionElement.profile.id
 								? undefined
-								: selectedObject.profileClass.id,
-                        profileId:
-                            selectedObject.profile.id ===
-                            constructionElement.profile.id
-                                ? undefined
-                                : selectedObject.profile.id,
+								: selectedObject.profile.id,
 						steelId:
 							selectedObject.steel.id ===
 							constructionElement.steel.id

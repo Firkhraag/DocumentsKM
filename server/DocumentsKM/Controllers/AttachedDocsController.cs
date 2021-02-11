@@ -72,6 +72,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] AttachedDocUpdateRequest attachedDocRequest)
         {
+            if (!attachedDocRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, attachedDocRequest);

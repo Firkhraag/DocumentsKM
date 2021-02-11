@@ -22,9 +22,9 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("profile-classes/{profileClassId}/profiles")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Profile>> GetAllByProfileClass(int profileClassId)
+        public ActionResult<IEnumerable<Profile>> GetAllByProfileClassId(int profileClassId)
         {
-            var profiles = _service.GetAllByProfileClass(profileClassId);
+            var profiles = _service.GetAllByProfileClassId(profileClassId);
             return Ok(profiles);
         }
     }

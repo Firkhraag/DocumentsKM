@@ -100,71 +100,71 @@
 //             context.Database.EnsureDeleted();
 //         }
 
-//         [Fact]
-//         public void Add_ShouldAddConstructionElement()
-//         {
-//             // Arrange
-//             var context = GetContext(TestData.constructionElements);
-//             var repo = new SqlConstructionElementRepo(context);
+//         // [Fact]
+//         // public void Add_ShouldAddConstructionElement()
+//         // {
+//         //     // Arrange
+//         //     var context = GetContext(TestData.constructionElements);
+//         //     var repo = new SqlConstructionElementRepo(context);
 
-//             int constructionId = _rnd.Next(1, TestData.marks.Count());
-//             int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());
-//             int profileId = _rnd.Next(1, TestData.profiles.Count());
-//             int steelId = _rnd.Next(1, TestData.steel.Count());
-//             var constructionElement = new ConstructionElement
-//             {
-//                 Construction = TestData.constructions.SingleOrDefault(
-//                     v => v.Id == constructionId),
-//                 ProfileClass = TestData.profileClasses.SingleOrDefault(
-//                     v => v.Id == profileClassId),
-//                 Profile = TestData.profiles.SingleOrDefault(
-//                     v => v.Id == profileId),
-//                 Steel = TestData.steel.SingleOrDefault(
-//                     v => v.Id == steelId),
-//                 Length = 1.0f,
-//             };
+//         //     int constructionId = _rnd.Next(1, TestData.marks.Count());
+//         //     int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());
+//         //     int profileId = _rnd.Next(1, TestData.profiles.Count());
+//         //     int steelId = _rnd.Next(1, TestData.steel.Count());
+//         //     var constructionElement = new ConstructionElement
+//         //     {
+//         //         Construction = TestData.constructions.SingleOrDefault(
+//         //             v => v.Id == constructionId),
+//         //         ProfileClass = TestData.profileClasses.SingleOrDefault(
+//         //             v => v.Id == profileClassId),
+//         //         Profile = TestData.profiles.SingleOrDefault(
+//         //             v => v.Id == profileId),
+//         //         Steel = TestData.steel.SingleOrDefault(
+//         //             v => v.Id == steelId),
+//         //         Length = 1.0f,
+//         //     };
 
-//             // Act
-//             repo.Add(constructionElement);
+//         //     // Act
+//         //     repo.Add(constructionElement);
 
-//             // Assert
-//             Assert.NotNull(repo.GetById(constructionElement.Id));
+//         //     // Assert
+//         //     Assert.NotNull(repo.GetById(constructionElement.Id));
 
-//             context.Database.EnsureDeleted();
-//         }
+//         //     context.Database.EnsureDeleted();
+//         // }
 
-//         [Fact]
-//         public void Update_ShouldUpdateConstructionElement()
-//         {
-//             // Arrange
-//             var constructionElements = new List<ConstructionElement> { };
-//             foreach (var ce in TestData.constructionElements)
-//             {
-//                 constructionElements.Add(new ConstructionElement
-//                 {
-//                     Id = ce.Id,
-//                     Construction = ce.Construction,
-//                     ProfileClass = ce.ProfileClass,
-//                     Profile = ce.Profile,
-//                     Steel = ce.Steel,
-//                     Length = ce.Length,
-//                 });
-//             }
-//             var context = GetContext(constructionElements);
-//             var repo = new SqlConstructionElementRepo(context);
+//         // [Fact]
+//         // public void Update_ShouldUpdateConstructionElement()
+//         // {
+//         //     // Arrange
+//         //     var constructionElements = new List<ConstructionElement> { };
+//         //     foreach (var ce in TestData.constructionElements)
+//         //     {
+//         //         constructionElements.Add(new ConstructionElement
+//         //         {
+//         //             Id = ce.Id,
+//         //             Construction = ce.Construction,
+//         //             ProfileClass = ce.ProfileClass,
+//         //             Profile = ce.Profile,
+//         //             Steel = ce.Steel,
+//         //             Length = ce.Length,
+//         //         });
+//         //     }
+//         //     var context = GetContext(constructionElements);
+//         //     var repo = new SqlConstructionElementRepo(context);
 
-//             int id = _rnd.Next(1, constructionElements.Count());
-//             var constructionElement = constructionElements.FirstOrDefault(v => v.Id == id);
-//             constructionElement.Length = 9;
+//         //     int id = _rnd.Next(1, constructionElements.Count());
+//         //     var constructionElement = constructionElements.FirstOrDefault(v => v.Id == id);
+//         //     constructionElement.Length = 9;
 
-//             // Act
-//             repo.Update(constructionElement);
+//         //     // Act
+//         //     repo.Update(constructionElement);
 
-//             // Assert
-//             Assert.Equal(constructionElement.Length, repo.GetById(id).Length);
+//         //     // Assert
+//         //     Assert.Equal(constructionElement.Length, repo.GetById(id).Length);
 
-//             context.Database.EnsureDeleted();
-//         }
+//         //     context.Database.EnsureDeleted();
+//         // }
 
 //         [Fact]
 //         public void Delete_ShouldDeleteConstructionElement()

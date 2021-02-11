@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Dtos;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,26 +41,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var nodes = TestData.nodes.Where(v => v.Project.Id == projectId)
-                .Select(s => new NodeResponse
-                {
-                    Id = s.Id,
-                    Code = s.Code,
-                    Name = s.Name,
-                    ChiefEngineer = new EmployeeBaseResponse
-                    {
-                        Id = s.ChiefEngineer.Id,
-                        Name = s.ChiefEngineer.Name,
-                    }
-                }).ToArray();
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<NodeResponse>>(
-                responseBody, options).Should().BeEquivalentTo(nodes);
         }
 
         [Fact]

@@ -15,7 +15,6 @@ namespace DocumentsKM.Tests
         private readonly Mock<IConstructionElementRepo> _repository = new Mock<IConstructionElementRepo>();
         private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly Mock<IConstructionRepo> _mockConstructionRepo = new Mock<IConstructionRepo>();
-        private readonly Mock<IProfileClassRepo> _mockProfileClassRepo = new Mock<IProfileClassRepo>();
         private readonly Mock<IProfileRepo> _mockProfileRepo = new Mock<IProfileRepo>();
         private readonly Mock<ISteelRepo> _mockSteelRepo = new Mock<ISteelRepo>();
         private readonly IConstructionElementService _service;
@@ -32,7 +31,6 @@ namespace DocumentsKM.Tests
                 {
                     Id = ce.Id,
                     Construction = ce.Construction,
-                    ProfileClass = ce.ProfileClass,
                     Profile = ce.Profile,
                     Steel = ce.Steel,
                     Length = ce.Length,
@@ -64,13 +62,6 @@ namespace DocumentsKM.Tests
                 //             _constructionElements.SingleOrDefault(
                 //                 v => v.Mark.Id == mark.Id && v.Designation == ConstructionElement.Designation));
                 // }
-            }
-            foreach (var profileClass in TestData.profileClasses)
-            {
-                _mockProfileClassRepo.Setup(mock =>
-                    mock.GetById(profileClass.Id)).Returns(
-                        TestData.profileClasses.SingleOrDefault(
-                            v => v.Id == profileClass.Id));
             }
             foreach (var profile in TestData.profiles)
             {
@@ -104,7 +95,6 @@ namespace DocumentsKM.Tests
                 _repository.Object,
                 _mockMarkRepo.Object,
                 _mockConstructionRepo.Object,
-                _mockProfileClassRepo.Object,
                 _mockProfileRepo.Object,
                 _mockSteelRepo.Object);
         }
@@ -139,7 +129,6 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int constructionId = _rnd.Next(1, TestData.marks.Count());
-            int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());
             int profileId = _rnd.Next(1, TestData.profiles.Count());
             int steelId = _rnd.Next(1, TestData.steel.Count());
 
@@ -152,7 +141,6 @@ namespace DocumentsKM.Tests
             _service.Create(
                 newConstructionElement,
                 constructionId,
-                profileClassId,
                 profileId,
                 steelId);
 
@@ -167,7 +155,6 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int constructionId = _rnd.Next(1, TestData.marks.Count());
-            int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());
             int profileId = _rnd.Next(1, TestData.profiles.Count());
             int steelId = _rnd.Next(1, TestData.steel.Count());
 
@@ -180,31 +167,21 @@ namespace DocumentsKM.Tests
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 null,
                 constructionId,
-                profileClassId,
                 profileId,
                 steelId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newConstructionElement,
-                999,
-                profileClassId,
-                profileId,
-                steelId));
-            Assert.Throws<ArgumentNullException>(() => _service.Create(
-                newConstructionElement,
-                constructionId,
                 999,
                 profileId,
                 steelId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newConstructionElement,
                 constructionId,
-                profileClassId,
                 999,
                 steelId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newConstructionElement,
                 constructionId,
-                profileClassId,
                 profileId,
                 999));
 

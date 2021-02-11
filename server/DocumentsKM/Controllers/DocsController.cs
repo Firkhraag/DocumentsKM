@@ -80,6 +80,8 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult Update(int id, [FromBody] DocUpdateRequest docRequest)
         {
+            if (!docRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, docRequest);

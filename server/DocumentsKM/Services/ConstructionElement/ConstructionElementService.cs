@@ -11,7 +11,6 @@ namespace DocumentsKM.Services
         private readonly IConstructionElementRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IConstructionRepo _constructionRepo;
-        private readonly IProfileClassRepo _profileClassRepo;
         private readonly IProfileRepo _profileRepo;
         private readonly ISteelRepo _steelRepo;
 
@@ -19,14 +18,12 @@ namespace DocumentsKM.Services
             IConstructionElementRepo constructionElementRepo,
             IMarkRepo markRepo,
             IConstructionRepo constructionRepo,
-            IProfileClassRepo profileClassRepo,
             IProfileRepo profileRepo,
             ISteelRepo steelRepo)
         {
             _repository = constructionElementRepo;
             _markRepo = markRepo;
             _constructionRepo = constructionRepo;
-            _profileClassRepo = profileClassRepo;
             _profileRepo = profileRepo;
             _steelRepo = steelRepo;
         }
@@ -40,7 +37,6 @@ namespace DocumentsKM.Services
         public void Create(
             ConstructionElement constructionElement,
             int constructionId,
-            int profileClassId,
             int profileId,
             int steelId)
         {
@@ -49,9 +45,6 @@ namespace DocumentsKM.Services
             var foundConstruction = _constructionRepo.GetById(constructionId);
             if (foundConstruction == null)
                 throw new ArgumentNullException(nameof(foundConstruction));
-            var foundProfileClass = _profileClassRepo.GetById(profileClassId);
-            if (foundProfileClass == null)
-                throw new ArgumentNullException(nameof(foundProfileClass));
             var foundProfile = _profileRepo.GetById(profileId);
             if (foundProfile == null)
                 throw new ArgumentNullException(nameof(foundProfile));
@@ -64,7 +57,6 @@ namespace DocumentsKM.Services
             //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
             constructionElement.Construction = foundConstruction;
-            constructionElement.ProfileClass = foundProfileClass;
             constructionElement.Profile = foundProfile;
             constructionElement.Steel = foundSteel;
 
@@ -87,19 +79,6 @@ namespace DocumentsKM.Services
             //     foundConstructionElement.Mark.Id, ConstructionElementRequest.LinkedDocId);
             // if (uniqueConstraintViolationCheck != null)
             //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-
-            if (constructionElementRequest.ProfileClassId != null)
-            {
-                var profileClass = _profileClassRepo.GetById(
-                    constructionElementRequest.ProfileClassId.GetValueOrDefault());
-                if (profileClass == null)
-                    throw new ArgumentNullException(nameof(profileClass));
-                // var uniqueConstraintViolationCheck = _repository.GetByUniqueConstraint(
-                //     foundConstructionElement.Mark.Id, ConstructionElementRequest.LinkedDocId.GetValueOrDefault());
-                // if (uniqueConstraintViolationCheck != null)
-                //     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-                foundConstructionElement.ProfileClass = profileClass;
-            }
 
             if (constructionElementRequest.ProfileId != null)
             {

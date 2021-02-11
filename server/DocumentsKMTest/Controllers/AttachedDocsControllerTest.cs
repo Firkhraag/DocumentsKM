@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,7 +14,6 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    // TBD: Create, Update, Delete
     public class AttachedDocsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
@@ -32,6 +32,8 @@ namespace DocumentsKM.Tests
             
             _authHttpClient = factory.CreateClient();
         }
+
+        // ------------------------------------GET------------------------------------
 
         [Fact]
         public async Task GetAllByMarkId_ShouldReturnOK()
@@ -61,11 +63,13 @@ namespace DocumentsKM.Tests
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
+        // ------------------------------------POST------------------------------------
+
         [Fact]
         public async Task Create_ShouldReturnCreated()
         {
             // Arrange
-            int markId = _rnd.Next(1, TestData.marks.Count());
+            int markId = 1;
             var attachedDocRequest = new AttachedDocCreateRequest
             {
                 Designation = "NewCreate",
@@ -86,35 +90,68 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
         {
             // Arrange
-            int markId = _rnd.Next(1, TestData.marks.Count());
-            var wrongAttachedDocRequest1 = new AttachedDocCreateRequest
+            int markId = 2;
+            var wrongAttachedDocRequests = new List<AttachedDocCreateRequest>
             {
-                Name = "NewCreate",
+                new AttachedDocCreateRequest
+                {
+                    Name = "NewCreate",
+                },
+                new AttachedDocCreateRequest
+                {
+                    Designation = "NewCreate",
+                },
+                new AttachedDocCreateRequest
+                {
+                    Designation = "",
+                    Name = "NewCreate",
+                },
+                new AttachedDocCreateRequest
+                {
+                    Designation = "NewCreate",
+                    Name = "",
+                },
             };
-            var wrongAttachedDocRequest2 = new AttachedDocCreateRequest
+
+            var endpoint = $"/api/marks/{markId}/attached-docs";
+            foreach (var wrongAttachedDocRequest in wrongAttachedDocRequests)
+            {
+                var json = JsonSerializer.Serialize(wrongAttachedDocRequest);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Act
+                var response = await _httpClient.PostAsync(endpoint, httpContent);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnNotFound_WhenWrongValues()
+        {
+            // Arrange
+            var attachedDocRequest = new AttachedDocCreateRequest
             {
                 Designation = "NewCreate",
+                Name = "NewCreate",
             };
-            string json1 = JsonSerializer.Serialize(wrongAttachedDocRequest1);
-            string json2 = JsonSerializer.Serialize(wrongAttachedDocRequest2);
-            var httpContent1 = new StringContent(json1, Encoding.UTF8, "application/json");
-            var httpContent2 = new StringContent(json2, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/marks/{markId}/attached-docs";
+            string json = JsonSerializer.Serialize(attachedDocRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks/{999}/attached-docs";
 
             // Act
-            var response1 = await _httpClient.PostAsync(endpoint, httpContent1);
-            var response2 = await _httpClient.PostAsync(endpoint, httpContent2);
+            var response = await _httpClient.PostAsync(endpoint, httpContent);
 
             // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response1.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, response2.StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
         public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            int markId = _rnd.Next(1, TestData.marks.Count());
+            int markId = 2;
             var attachedDocRequest = new AttachedDocCreateRequest
             {
                 Designation = "NewCreate",
@@ -130,6 +167,8 @@ namespace DocumentsKM.Tests
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
+
+        // ------------------------------------PATCH------------------------------------
 
         [Fact]
         public async Task Update_ShouldReturnNoContent()
@@ -186,20 +225,33 @@ namespace DocumentsKM.Tests
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
+        // ------------------------------------DELETE------------------------------------
+
         [Fact]
-        public async Task Delete_ShouldReturnNoContent_WhenAccessTokenIsProvided()
+        public async Task Delete_ShouldReturnNoContent()
         {
             // Arrange
             int id = 2;
             var endpoint = $"/api/attached-docs/{id}";
-
-            int markId = TestData.attachedDocs.FirstOrDefault(v => v.Id == id).Mark.Id;
 
             // Act
             var response = await _httpClient.DeleteAsync(endpoint);
 
             // Assert
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Delete_ShouldReturnNotFound_WhenWrongId()
+        {
+            // Arrange
+            var endpoint = $"/api/attached-docs/{999}";
+
+            // Act
+            var response = await _httpClient.DeleteAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]

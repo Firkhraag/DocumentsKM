@@ -12,7 +12,6 @@ namespace DocumentsKM.Services
         void Create(
             ConstructionElement constructionElement,
             int constructionId,
-            int profileClassId,
             int profileTypeId,
             int steelId);
         // Изменить элемент у конструкции

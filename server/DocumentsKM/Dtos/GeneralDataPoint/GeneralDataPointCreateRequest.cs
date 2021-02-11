@@ -6,12 +6,5 @@ namespace DocumentsKM.Dtos
     {
         [Required]
         public string Text { get; set; }
-
-        // public int? OrderNum { get; set; }
-
-        // public GeneralDataPointCreateRequest()
-        // {
-        //     OrderNum = null;
-        // }
     }
 }
