@@ -266,58 +266,33 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int diameterId = 3;
-            var wrongConstructionBoltRequests = new List<ConstructionBoltCreateRequest>
+            var wrongConstructionBoltRequests = new List<ConstructionBoltUpdateRequest>
             {
-                new ConstructionBoltCreateRequest
+                new ConstructionBoltUpdateRequest
                 {
-                    DiameterId = diameterId,
                     Packet = -9,
-                    Num = 9,
-                    NutNum = 9,
-                    WasherNum = 9,
                 },
-                new ConstructionBoltCreateRequest
+                new ConstructionBoltUpdateRequest
                 {
-                    DiameterId = diameterId,
-                    Packet = 9,
                     Num = -9,
-                    NutNum = 9,
-                    WasherNum = 9,
                 },
-                new ConstructionBoltCreateRequest
+                new ConstructionBoltUpdateRequest
                 {
-                    DiameterId = diameterId,
-                    Packet = 9,
-                    Num = 9,
                     NutNum = -9,
-                    WasherNum = 9,
                 },
-                new ConstructionBoltCreateRequest
+                new ConstructionBoltUpdateRequest
                 {
-                    DiameterId = diameterId,
-                    Packet = 9,
-                    Num = 9,
-                    NutNum = 9,
                     WasherNum = -9,
                 },
             };
-            var httpContent = new StringContent("", Encoding.UTF8, "application/json");
             var endpoint = $"/api/construction-bolts/{id}";
-
-            // Act
-            var response = await _httpClient.PatchAsync(endpoint, httpContent);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-
             foreach (var wrongConstructionBoltRequest in wrongConstructionBoltRequests)
             {
                 var json = JsonSerializer.Serialize(wrongConstructionBoltRequest);
-                httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // Act
-                response = await _httpClient.PatchAsync(endpoint, httpContent);
+                var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
                 // Assert
                 Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -329,22 +304,13 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int diameterId = 3;
             var constructionBoltRequest = new ConstructionBoltUpdateRequest
             {
-                DiameterId = diameterId,
                 Packet = 9,
-                Num = 9,
-                NutNum = 9,
-                WasherNum = 9,
             };
             var wrongConstructionBoltRequest = new ConstructionBoltUpdateRequest
             {
                 DiameterId = 999,
-                Packet = 9,
-                Num = 9,
-                NutNum = 9,
-                WasherNum = 9,
             };
             string json1 = JsonSerializer.Serialize(wrongConstructionBoltRequest);
             string json2 = JsonSerializer.Serialize(constructionBoltRequest);
@@ -371,10 +337,6 @@ namespace DocumentsKM.Tests
             var constructionBoltRequest = new ConstructionBoltUpdateRequest
             {
                 DiameterId = diameterId,
-                Packet = 9,
-                Num = 9,
-                NutNum = 9,
-                WasherNum = 9,
             };
             string json = JsonSerializer.Serialize(constructionBoltRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
@@ -392,14 +354,9 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int diameterId = 3;
             var constructionBoltRequest = new ConstructionBoltUpdateRequest
             {
-                DiameterId = diameterId,
                 Packet = 9,
-                Num = 9,
-                NutNum = 9,
-                WasherNum = 9,
             };
             string json = JsonSerializer.Serialize(constructionBoltRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");

@@ -411,31 +411,6 @@ namespace DocumentsKM.Tests
                 },
             };
 
-            // foreach (var c in _constructions)
-            // {
-            //     var spec = c.Specification;
-            //     _constructions.Add(new Construction
-            //     {
-            //         Id = c.Id,
-            //         Specification = new Specification
-            //         {
-            //             Id = spec.Id,
-            //             Mark = spec.Mark,
-            //             IsCurrent = spec.IsCurrent,
-            //             Note = spec.Note,
-            //         },
-            //         Name = c.Name,
-            //         Type = c.Type,
-            //         Subtype = c.Subtype,
-            //         Valuation = c.Valuation,
-            //         NumOfStandardConstructions = c.NumOfStandardConstructions,
-            //         HasEdgeBlunting = c.HasEdgeBlunting,
-            //         HasDynamicLoad = c.HasDynamicLoad,
-            //         HasFlangedConnections = c.HasFlangedConnections,
-            //         WeldingControl = c.WeldingControl,
-            //         PaintworkCoeff = c.PaintworkCoeff,
-            //     });
-            // }
             foreach (var c in _constructions)
             {
                 _updateConstructions.Add(new Construction

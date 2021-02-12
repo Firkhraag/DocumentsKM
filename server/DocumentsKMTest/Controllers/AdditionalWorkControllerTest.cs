@@ -245,22 +245,15 @@ namespace DocumentsKM.Tests
                     MetalOrder = -9,
                 },
             };
-            var httpContent = new StringContent("", Encoding.UTF8, "application/json");
+
             var endpoint = $"/api/additional-work/{id}";
-
-            // Act
-            var response = await _httpClient.PatchAsync(endpoint, httpContent);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-
             foreach (var wrongAdditionalWorkRequest in wrongAdditionalWorkRequests)
             {
                 var json = JsonSerializer.Serialize(wrongAdditionalWorkRequest);
-                httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // Act
-                response = await _httpClient.PatchAsync(endpoint, httpContent);
+                var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
                 // Assert
                 Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

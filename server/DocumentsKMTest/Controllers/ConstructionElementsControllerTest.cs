@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -18,6 +19,18 @@ namespace DocumentsKM.Tests
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
         private readonly Random _rnd = new Random();
+
+        private class CreateRequest
+        {
+            public int ConstructionId { set; get; }
+            public ConstructionElementCreateRequest Body { set; get; }
+        }
+
+        private class UpdateRequest
+        {
+            public int Id { set; get; }
+            public ConstructionElementUpdateRequest Body { set; get; }
+        }
 
         public ConstructionElementsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
@@ -120,43 +133,53 @@ namespace DocumentsKM.Tests
             int constructionId = 1;
             int profileId = 3;
             int steelId = 3;
-            var constructionElementRequest = new ConstructionElementCreateRequest
-            {
-                ProfileId = profileId,
-                SteelId = steelId,
-                Length = 9,
-            };
-            var wrongConstructionElementRequest1 = new ConstructionElementCreateRequest
-            {
-                ProfileId = 999,
-                SteelId = steelId,
-                Length = 9,
-            };
-            var wrongConstructionElementRequest2 = new ConstructionElementCreateRequest
-            {
-                ProfileId = profileId,
-                SteelId = 999,
-                Length = 9,
-            };
-            string json1 = JsonSerializer.Serialize(wrongConstructionElementRequest1);
-            string json2 = JsonSerializer.Serialize(wrongConstructionElementRequest2);
-            string json3 = JsonSerializer.Serialize(constructionElementRequest);
-            var httpContent1 = new StringContent(json1, Encoding.UTF8, "application/json");
-            var httpContent2 = new StringContent(json2, Encoding.UTF8, "application/json");
-            var httpContent3 = new StringContent(json3, Encoding.UTF8, "application/json");
-            var endpoint1 = $"/api/constructions/{constructionId}/elements";
-            var endpoint2 = $"/api/constructions/{constructionId}/elements";
-            var endpoint3 = $"/api/constructions/{999}/elements";
 
-            // Act
-            var response1 = await _httpClient.PostAsync(endpoint1, httpContent1);
-            var response2 = await _httpClient.PostAsync(endpoint2, httpContent2);
-            var response3 = await _httpClient.PostAsync(endpoint3, httpContent2);
+            var constructionElementRequests = new List<CreateRequest>
+            {
+                new CreateRequest
+                {
+                    ConstructionId = 999,
+                    Body = new ConstructionElementCreateRequest
+                    {
+                        ProfileId = profileId,
+                        SteelId = steelId,
+                        Length = 9,
+                    },
+                },
+                new CreateRequest
+                {
+                    ConstructionId = constructionId,
+                    Body = new ConstructionElementCreateRequest
+                    {
+                        ProfileId = 999,
+                        SteelId = steelId,
+                        Length = 9,
+                    },
+                },
+                new CreateRequest
+                {
+                    ConstructionId = constructionId,
+                    Body = new ConstructionElementCreateRequest
+                    {
+                        ProfileId = 999,
+                        SteelId = steelId,
+                        Length = 9,
+                    },
+                },
+            };
 
-            // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response1.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, response2.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, response3.StatusCode);
+            foreach (var req in constructionElementRequests)
+            {
+                var json = JsonSerializer.Serialize(req.Body);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var endpoint = $"/api/constructions/{req.ConstructionId}/elements";
+
+                // Act
+                var response = await _httpClient.PostAsync(endpoint, httpContent);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
         }
 
         [Fact]
@@ -214,26 +237,19 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int profileId = 3;
-            int steelId = 3;
             var wrongConstructionElementRequest = new ConstructionElementUpdateRequest
             {
-                ProfileId = profileId,
-                SteelId = steelId,
                 Length = -9.0f,
             };
             var json = JsonSerializer.Serialize(wrongConstructionElementRequest);
-            var httpContent1 = new StringContent(json, Encoding.UTF8, "application/json");
-            var httpContent2 = new StringContent("", Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var endpoint = $"/api/construction-elements/{id}";
 
             // Act
-            var response1 = await _httpClient.PatchAsync(endpoint, httpContent1);
-            var response2 = await _httpClient.PatchAsync(endpoint, httpContent2);
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
             // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response1.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, response2.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact]
@@ -241,45 +257,47 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int profileId = 3;
-            int steelId = 3;
-            var constructionElementRequest = new ConstructionElementUpdateRequest
-            {
-                ProfileId = profileId,
-                SteelId = steelId,
-                Length = 9,
-            };
-            var wrongConstructionElementRequest1 = new ConstructionElementUpdateRequest
-            {
-                ProfileId = 999,
-                SteelId = steelId,
-                Length = 9,
-            };
-            var wrongConstructionElementRequest2 = new ConstructionElementUpdateRequest
-            {
-                ProfileId = profileId,
-                SteelId = 999,
-                Length = 9,
-            };
-            string json1 = JsonSerializer.Serialize(wrongConstructionElementRequest1);
-            string json2 = JsonSerializer.Serialize(wrongConstructionElementRequest2);
-            string json3 = JsonSerializer.Serialize(constructionElementRequest);
-            var httpContent1 = new StringContent(json1, Encoding.UTF8, "application/json");
-            var httpContent2 = new StringContent(json2, Encoding.UTF8, "application/json");
-            var httpContent3 = new StringContent(json3, Encoding.UTF8, "application/json");
-            var endpoint1 = $"/api/construction-elements/{id}";
-            var endpoint2 = $"/api/construction-elements/{id}";
-            var endpoint3 = $"/api/construction-elements/{999}";
 
-            // Act
-            var response1 = await _httpClient.PatchAsync(endpoint1, httpContent1);
-            var response2 = await _httpClient.PatchAsync(endpoint2, httpContent2);
-            var response3 = await _httpClient.PatchAsync(endpoint3, httpContent2);
+            var constructionElementRequests = new List<UpdateRequest>
+            {
+                new UpdateRequest
+                {
+                    Id = 999,
+                    Body = new ConstructionElementUpdateRequest
+                    {
+                        Length = 9,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new ConstructionElementUpdateRequest
+                    {
+                        ProfileId = 999,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new ConstructionElementUpdateRequest
+                    {
+                        SteelId = 999,
+                    },
+                },
+            };
 
-            // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response1.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, response2.StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, response3.StatusCode);
+            foreach (var req in constructionElementRequests)
+            {
+                var json = JsonSerializer.Serialize(req.Body);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var endpoint = $"/api/construction-elements/{req.Id}";
+
+                // Act
+                var response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
         }
 
         [Fact]
@@ -287,12 +305,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int profileId = 2;
-            int steelId = 2;
             var constructionElementRequest = new ConstructionElementUpdateRequest
             {
-                ProfileId = profileId,
-                SteelId = steelId,
                 Length = 9,
             };
             string json = JsonSerializer.Serialize(constructionElementRequest);

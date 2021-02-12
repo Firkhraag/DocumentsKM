@@ -10,6 +10,7 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
+    // Entity is involved in One-To-Many relationship
     public class SpecificationServiceTest
     {
         private readonly Mock<ISpecificationRepo> _repository = new Mock<ISpecificationRepo>();
@@ -395,7 +396,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
-            int id = _rnd.Next(1, _specifications.Count());
+            int id = _rnd.Next(1, _updateSpecifications.Count());
 
             var newSpecificationRequest = new SpecificationUpdateRequest
             {
@@ -404,11 +405,11 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(
-                () => _service.Update(id, null));
+                () => _updateService.Update(id, null));
             Assert.Throws<ArgumentNullException>(
-                () => _service.Update(999, newSpecificationRequest));
+                () => _updateService.Update(999, newSpecificationRequest));
 
-            _repository.Verify(
+            _updateRepository.Verify(
                 mock => mock.Update(It.IsAny<Specification>()), Times.Never);
         }
 

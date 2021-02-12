@@ -58,48 +58,5 @@ namespace DocumentsKM.Tests
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
-
-        // ------------------------------------DELETE------------------------------------
-
-        // [Fact]
-        // public async Task Delete_ShouldReturnNoContent()
-        // {
-        //     // Arrange
-        //     int id = 2;
-        //     var endpoint = $"/api/constructions/{id}";
-
-        //     // Act
-        //     var response = await _httpClient.DeleteAsync(endpoint);
-
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        // }
-
-        // [Fact]
-        // public async Task Delete_ShouldReturnNotFound_WhenWrongId()
-        // {
-        //     // Arrange
-        //     var endpoint = $"/api/constructions/{999}";
-
-        //     // Act
-        //     var response = await _httpClient.DeleteAsync(endpoint);
-
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        // }
-
-        // [Fact]
-        // public async Task Delete_ShouldReturnUnauthorized_WhenNoAccessToken()
-        // {
-        //     // Arrange
-        //     int id = 2;
-        //     var endpoint = $"/api/constructions/{id}";
-
-        //     // Act
-        //     var response = await _authHttpClient.DeleteAsync(endpoint);
-
-        //     // Assert
-        //     Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        // }
     }
 }
