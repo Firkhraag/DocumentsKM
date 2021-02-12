@@ -27,10 +27,25 @@ namespace DocumentsKM.Tests
             // Arrange
             foreach (var ce in TestData.constructionElements)
             {
+                var c = ce.Construction;
                 _constructionElements.Add(new ConstructionElement
                 {
                     Id = ce.Id,
-                    Construction = ce.Construction,
+                    Construction = new Construction
+                    {
+                        Id = c.Id,
+                        Specification = c.Specification,
+                        Name = c.Name,
+                        Type = c.Type,
+                        Subtype = c.Subtype,
+                        Valuation = c.Valuation,
+                        NumOfStandardConstructions = c.NumOfStandardConstructions,
+                        HasEdgeBlunting = c.HasEdgeBlunting,
+                        HasDynamicLoad = c.HasDynamicLoad,
+                        HasFlangedConnections = c.HasFlangedConnections,
+                        WeldingControl = c.WeldingControl,
+                        PaintworkCoeff = c.PaintworkCoeff,
+                    },
                     Profile = ce.Profile,
                     Steel = ce.Steel,
                     Length = ce.Length,

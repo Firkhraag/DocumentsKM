@@ -20,7 +20,6 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
             context.Subnodes.AddRange(TestData.subnodes);
             context.Marks.AddRange(marks);
             context.SaveChanges();
@@ -41,6 +40,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.marks, marks);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -59,6 +59,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.marks.Where(v => v.Subnode.Id == subnodeId), marks);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -75,6 +76,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(marks);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -94,6 +96,7 @@ namespace DocumentsKM.Tests
                 mark);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -109,6 +112,7 @@ namespace DocumentsKM.Tests
             Assert.Null(mark);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -129,6 +133,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(id, mark.Id);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -150,6 +155,7 @@ namespace DocumentsKM.Tests
             Assert.Null(mark2);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -192,6 +198,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetById(mark.Id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -249,6 +256,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(mark.Name, repo.GetById(id).Name);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

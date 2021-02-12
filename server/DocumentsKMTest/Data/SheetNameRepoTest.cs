@@ -38,6 +38,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.sheetNames, sheetNames);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

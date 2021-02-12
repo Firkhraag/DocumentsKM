@@ -25,10 +25,17 @@ namespace DocumentsKM.Tests
             // Arrange
             foreach (var sc in TestData.standardConstructions)
             {
+                var spec = sc.Specification;
                 _standardConstructions.Add(new StandardConstruction
                 {
                     Id = sc.Id,
-                    Specification = sc.Specification,
+                    Specification = new Specification
+                    {
+                        Id = spec.Id,
+                        Mark = spec.Mark,
+                        IsCurrent = spec.IsCurrent,
+                        Note = spec.Note,
+                    },
                     Name = sc.Name,
                     Num = sc.Num,
                     Sheet = sc.Sheet,

@@ -42,6 +42,7 @@ namespace DocumentsKM.Tests
                 docTypes);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -61,6 +62,7 @@ namespace DocumentsKM.Tests
                 docType);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -77,6 +79,7 @@ namespace DocumentsKM.Tests
             Assert.Null(docType);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

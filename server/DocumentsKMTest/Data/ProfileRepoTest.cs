@@ -20,7 +20,6 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
             context.ProfileClasses.AddRange(TestData.profileClasses);
             context.Profiles.AddRange(profiles);
             context.SaveChanges();
@@ -43,6 +42,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.profiles.Where(v => v.Class.Id == classId), profiles);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -59,6 +59,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(profiles);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -77,6 +78,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.profiles.SingleOrDefault(v => v.Id == id), profile);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -93,6 +95,7 @@ namespace DocumentsKM.Tests
             Assert.Null(profile);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

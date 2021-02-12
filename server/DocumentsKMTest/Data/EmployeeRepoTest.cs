@@ -42,6 +42,7 @@ namespace DocumentsKM.Tests
                 v => v.Department.Id == departmentId), employees);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -58,6 +59,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(employees);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -78,6 +80,7 @@ namespace DocumentsKM.Tests
                 v => v.Department.Id == departmentId && v.Position.Id == positionId), employees);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -96,6 +99,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(employees);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -116,6 +120,7 @@ namespace DocumentsKM.Tests
                 v => v.Department.Id == departmentId && positionIds.Contains(v.Position.Id)), employees);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -134,6 +139,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(employees);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -153,6 +159,7 @@ namespace DocumentsKM.Tests
                 employee);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -169,6 +176,7 @@ namespace DocumentsKM.Tests
             Assert.Null(employee);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

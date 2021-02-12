@@ -44,6 +44,7 @@ namespace DocumentsKM.Tests
                 v => v.Type.Id == typeId), constructionSubtypes);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -59,6 +60,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(constructionSubtypes);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -78,6 +80,7 @@ namespace DocumentsKM.Tests
                 v => v.Id == id), constructionSubtype);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -94,6 +97,7 @@ namespace DocumentsKM.Tests
             Assert.Null(constructionSubtype);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

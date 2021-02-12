@@ -26,10 +26,25 @@ namespace DocumentsKM.Tests
             // Arrange
             foreach (var cb in TestData.constructionBolts)
             {
+                var c = cb.Construction;
                 _constructionBolts.Add(new ConstructionBolt
                 {
                     Id = cb.Id,
-                    Construction = cb.Construction,
+                    Construction = new Construction
+                    {
+                        Id = c.Id,
+                        Specification = c.Specification,
+                        Name = c.Name,
+                        Type = c.Type,
+                        Subtype = c.Subtype,
+                        Valuation = c.Valuation,
+                        NumOfStandardConstructions = c.NumOfStandardConstructions,
+                        HasEdgeBlunting = c.HasEdgeBlunting,
+                        HasDynamicLoad = c.HasDynamicLoad,
+                        HasFlangedConnections = c.HasFlangedConnections,
+                        WeldingControl = c.WeldingControl,
+                        PaintworkCoeff = c.PaintworkCoeff,
+                    },
                     Diameter = cb.Diameter,
                     Packet = cb.Packet,
                     Num = cb.Num,
@@ -56,13 +71,14 @@ namespace DocumentsKM.Tests
                     mock.GetAllByConstructionId(construction.Id)).Returns(
                         _constructionBolts.Where(v => v.Construction.Id == construction.Id));
 
-                // foreach (var ConstructionBolt in _constructionBolts)
-                // {
-                //     _repository.Setup(mock =>
-                //         mock.GetByUniqueKey(mark.Id, ConstructionBolt.Designation)).Returns(
-                //             _constructionBolts.SingleOrDefault(
-                //                 v => v.Mark.Id == mark.Id && v.Designation == ConstructionBolt.Designation));
-                // }
+                foreach (var constructionBolt in _constructionBolts)
+                {
+                    _repository.Setup(mock =>
+                        mock.GetByUniqueKey(construction.Id, constructionBolt.Diameter.Id)).Returns(
+                            _constructionBolts.SingleOrDefault(
+                                v => v.Construction.Id == construction.Id &&
+                                    v.Diameter.Id == constructionBolt.Diameter.Id));
+                }
             }
             foreach (var diameter in TestData.boltDiameters)
             {
@@ -121,8 +137,8 @@ namespace DocumentsKM.Tests
         public void Create_ShouldCreateConstructionBolt()
         {
             // Arrange
-            int constructionId = _rnd.Next(1, TestData.marks.Count());
-            int diameterId = _rnd.Next(1, TestData.boltDiameters.Count());
+            int constructionId = 1;
+            int diameterId = 3;
 
             var newConstructionBolt = new ConstructionBolt
             {
@@ -167,24 +183,27 @@ namespace DocumentsKM.Tests
             _repository.Verify(mock => mock.Add(It.IsAny<ConstructionBolt>()), Times.Never);
         }
 
-        // [Fact]
-        // public void Create_ShouldFailWithConflict()
-        // {
-        //     // Arrange
-        //     var conflictConstructionId = _constructionBolts[0].Mark.Id;
-        //     var conflictDesignation = _constructionBolts[0].Designation;
+        [Fact]
+        public void Create_ShouldFailWithConflict()
+        {
+            // Arrange
+            int conflictConstructionId = TestData.constructionBolts[0].Construction.Id;
+            int conflictDiameterId = TestData.constructionBolts[0].Diameter.Id;
 
-        //     var newConstructionBolt = new ConstructionBolt
-        //     {
-        //         Designation = conflictDesignation,
-        //         Name = "NewCreate",
-        //     };
+            var newConstructionBolt = new ConstructionBolt
+            {
+                Packet = 5,
+                Num = 5,
+                NutNum = 5,
+                WasherNum = 5,
+            };
 
-        //     // Act & Assert
-        //     Assert.Throws<ConflictException>(() => _service.Create(newConstructionBolt, conflictConstructionId));
+            // Act & Assert
+            Assert.Throws<ConflictException>(() => _service.Create(
+                newConstructionBolt, conflictConstructionId, conflictDiameterId));
 
-        //     _repository.Verify(mock => mock.Add(It.IsAny<ConstructionBolt>()), Times.Never);
-        // }
+            _repository.Verify(mock => mock.Add(It.IsAny<ConstructionBolt>()), Times.Never);
+        }
 
         [Fact]
         public void Update_ShouldUpdateConstructionBolt()
@@ -241,25 +260,24 @@ namespace DocumentsKM.Tests
                 It.IsAny<ConstructionBolt>()), Times.Never);
         }
 
-        // [Fact]
-        // public void Update_ShouldFailWithConflict()
-        // {
-        //     // Arrange
-        //     var conflictDesignation = _constructionBolts[0].Designation;
-        //     var id = _constructionBolts[3].Id;
+        [Fact]
+        public void Update_ShouldFailWithConflict()
+        {
+            // Arrange
+            var conflictDiameterId = 2;
+            var id = 1;
 
-        //     var newConstructionBoltRequest = new ConstructionBoltUpdateRequest
-        //     {
-        //         Designation = conflictDesignation,
-        //         Name = "NewUpdate",
-        //     };
+            var newConstructionBoltRequest = new ConstructionBoltUpdateRequest
+            {
+                DiameterId = conflictDiameterId,
+            };
 
-        //     // Act & Assert
-        //     Assert.Throws<ConflictException>(() => _service.Update(id, newConstructionBoltRequest));
+            // Act & Assert
+            Assert.Throws<ConflictException>(() => _service.Update(id, newConstructionBoltRequest));
 
-        //     _repository.Verify(mock => mock.Update(
-        //         It.IsAny<ConstructionBolt>()), Times.Never);
-        // }
+            _repository.Verify(mock => mock.Update(
+                It.IsAny<ConstructionBolt>()), Times.Never);
+        }
 
         [Fact]
         public void Delete_ShouldDeleteConstructionBolt()

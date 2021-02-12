@@ -39,6 +39,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.projects, projects);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -57,6 +58,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.projects.SingleOrDefault(v => v.Id == id), project);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -73,6 +75,7 @@ namespace DocumentsKM.Tests
             Assert.Null(project);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

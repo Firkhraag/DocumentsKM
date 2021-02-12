@@ -38,6 +38,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.departments, departments);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -57,6 +58,7 @@ namespace DocumentsKM.Tests
                 department);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -73,6 +75,7 @@ namespace DocumentsKM.Tests
             Assert.Null(department);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

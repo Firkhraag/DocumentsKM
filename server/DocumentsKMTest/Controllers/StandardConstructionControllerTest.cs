@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Dtos;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,24 +42,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var standardConstructions = TestData.standardConstructions.Where(
-                v => v.Specification.Id == specificationId)
-                .Select(v => new StandardConstructionResponse
-                {
-                    Id = v.Id,
-                    Name = v.Name,
-                    Num = v.Num,
-                    Sheet = v.Sheet,
-                    Weight = v.Weight,
-                }).ToArray();
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<StandardConstructionResponse>>(
-                responseBody, options).Should().BeEquivalentTo(standardConstructions);
         }
 
         [Fact]

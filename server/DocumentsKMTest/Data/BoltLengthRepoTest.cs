@@ -44,6 +44,7 @@ namespace DocumentsKM.Tests
                 v => v.Diameter.Id == diameterId), boltLengths);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -63,6 +64,7 @@ namespace DocumentsKM.Tests
                 v => v.Id == id), boltLength);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -79,6 +81,7 @@ namespace DocumentsKM.Tests
             Assert.Null(boltLength);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }
