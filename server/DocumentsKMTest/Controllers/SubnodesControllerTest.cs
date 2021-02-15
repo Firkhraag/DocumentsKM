@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Dtos;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByNodeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByNodeId_ShouldReturnOK()
         {
             // Arrange
             int nodeId = _rnd.Next(1, TestData.nodes.Count());
@@ -45,21 +41,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var subnodes = TestData.subnodes.Where(v => v.Node.Id == nodeId)
-                .Select(s => new SubnodeResponse
-                {
-                    Id = s.Id,
-                    Code = s.Code,
-                    Name = s.Name,
-                }).ToArray();
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<SubnodeResponse>>(
-                responseBody, options).Should().BeEquivalentTo(subnodes);
         }
 
         [Fact]

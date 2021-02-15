@@ -78,6 +78,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(int userId, int sectionId, int id,
             [FromBody] GeneralDataPointUpdateRequest generalDataPointRequest)
         {
+            if (!generalDataPointRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, userId, sectionId, generalDataPointRequest);

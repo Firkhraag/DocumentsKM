@@ -36,7 +36,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetByMarkId_ShouldReturnOK()
         {
             // Arrange
             int markId = _rnd.Next(1, _maxMarkId);

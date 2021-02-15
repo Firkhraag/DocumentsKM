@@ -38,7 +38,9 @@ const ConstructionElementTable = ({
 					const constructionElementsResponse = await httpClient.get(
 						`/constructions/${constructionId}/elements`
 					)
-					setConstructionElements(constructionElementsResponse.data)
+					setConstructionElements(
+						constructionElementsResponse.data as ConstructionElement[]
+					)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
@@ -50,7 +52,9 @@ const ConstructionElementTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/construction-elements/${id}`)
-			constructionElements.splice(row, 1)
+            var arr = [...constructionElements]
+			arr.splice(row, 1)
+			setConstructionElements(arr)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
@@ -91,11 +95,11 @@ const ConstructionElementTable = ({
 							<tr key={index}>
 								<td>{index + 1}</td>
 								<td className="profile-class-name-col-width">
-									{ce.profileClass.name}
+									{ce.profile.class.name}
 								</td>
-								<td>{ce.profileName}</td>
+								<td>{ce.profile.name}</td>
 								<td>{ce.steel.id}</td>
-								<td>{ce.surfaceArea}</td>
+								<td>{ce.profile.area}</td>
 								<td
 									onClick={() => {
 										setConstructionElement(ce)

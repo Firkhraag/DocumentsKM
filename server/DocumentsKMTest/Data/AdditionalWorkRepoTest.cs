@@ -46,6 +46,7 @@ namespace DocumentsKM.Tests
                 v => v.Mark.Id == markId), additionalWork);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -62,6 +63,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(additionalWork);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -81,6 +83,7 @@ namespace DocumentsKM.Tests
                 v => v.Id == id), additionalWork);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -97,6 +100,7 @@ namespace DocumentsKM.Tests
             Assert.Null(additionalWork);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -116,6 +120,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.additionalWork[0], additionalWork);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -137,6 +142,7 @@ namespace DocumentsKM.Tests
             Assert.Null(additionalWork2);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -163,6 +169,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetById(additionalWork.Id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -195,6 +202,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(additionalWork.Valuation, repo.GetById(id).Valuation);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -215,6 +223,7 @@ namespace DocumentsKM.Tests
             Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

@@ -13,35 +13,15 @@ namespace DocumentsKM.Models
         public virtual Construction Construction { get; set; }
 
         [Required]
-        [ForeignKey("ProfileClassId")]
-        public virtual ProfileClass ProfileClass { get; set; }
-
-        [Required]
-        [MaxLength(30)]
-        public string ProfileName { get; set; }
-
-        [Required]
-        [MaxLength(2)]
-        public string Symbol { get; set; }
-
-        [Required]
-        public float Weight { get; set; }
-
-        [Required]
-        public float SurfaceArea { get; set; }
-
-        [Required]
-        [ForeignKey("ProfileTypeId")]
-        public virtual ProfileType ProfileType { get; set; }
+        [ForeignKey("ProfileId")]
+        public virtual Profile Profile { get; set; }
 
         [Required]
         [ForeignKey("SteelId")]
         public virtual Steel Steel { get; set; }
 
         [Required]
+        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Length { get; set; }
-
-        [Required]
-        public int Status { get; set; }
     }
 }

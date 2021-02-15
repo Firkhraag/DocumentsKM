@@ -42,7 +42,9 @@ const SheetTable = ({ setSheet }: SheetTableProps) => {
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/docs/${id}`)
-			sheets.splice(row, 1)
+            var arr = [...sheets]
+			arr.splice(row, 1)
+			setSheets(arr)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')

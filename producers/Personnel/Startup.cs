@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Personnel.Data;
 using Personnel.Helpers;
 using Personnel.Services;
-using RabbitMQ.Client;
+using Serilog;
 
 namespace Personnel
 {
@@ -52,9 +52,9 @@ namespace Personnel
             services.AddSingleton<IConnectionProvider>(
                 new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
 
-            services.AddScoped<IPublisherService>(
+            services.AddSingleton<IPublisherService>(
                 x => new PublisherService(x.GetService<IConnectionProvider>(),
-                    "personnel_exchange", ExchangeType.Topic));
+                    "personnel_exchange", "personnel_queue", "personnel.exchange"));
 
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IPositionService, PositionService>();
@@ -74,6 +74,8 @@ namespace Personnel
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSerilogRequestLogging();
 
             app.UseEndpoints(endpoints =>
             {

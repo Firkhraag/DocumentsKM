@@ -38,7 +38,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByUserId_ShouldReturnOK()
         {
             // Arrange
             int userId = _rnd.Next(1, _maxUserId);
@@ -69,7 +69,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        public async Task GetAllByUserId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
             int userId = _rnd.Next(1, _maxUserId);

@@ -21,7 +21,6 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
             context.DocTypes.AddRange(TestData.docTypes);
             context.Marks.AddRange(TestData.marks);
             context.Employees.AddRange(TestData.employees);
@@ -46,6 +45,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.docs.Where(v => v.Mark.Id == markId), docs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -62,6 +62,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(docs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -82,6 +83,7 @@ namespace DocumentsKM.Tests
                 v => v.Mark.Id == markId && v.Type.Id == docTypeId), docs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -100,6 +102,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(docs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -120,6 +123,7 @@ namespace DocumentsKM.Tests
                 v => v.Mark.Id == markId && v.Type.Id != docTypeId), docs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -138,6 +142,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(docs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -156,6 +161,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.docs.SingleOrDefault(v => v.Id == id), doc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -172,6 +178,7 @@ namespace DocumentsKM.Tests
             Assert.Null(doc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -206,6 +213,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetById(doc.Id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -244,6 +252,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(doc.Name, repo.GetById(id).Name);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -263,6 +272,7 @@ namespace DocumentsKM.Tests
             Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

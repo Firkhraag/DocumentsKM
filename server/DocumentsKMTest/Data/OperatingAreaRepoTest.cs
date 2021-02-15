@@ -39,6 +39,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.operatingAreas, operatingAreas);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -58,6 +59,7 @@ namespace DocumentsKM.Tests
                 operatingArea);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -74,6 +76,7 @@ namespace DocumentsKM.Tests
             Assert.Null(operatingArea);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

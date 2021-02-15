@@ -173,7 +173,12 @@ const MarkGeneralData = () => {
 				}
 			}
 
-			optionsObject.points.splice(row, 1)
+            var arr = [...optionsObject.points]
+			arr.splice(row, 1)
+			setOptionsObject({
+                ...optionsObject,
+                points: arr,
+            })
 
 			if (selectedObject.point != null && selectedObject.point.id == id) {
 				setSelectedObject({

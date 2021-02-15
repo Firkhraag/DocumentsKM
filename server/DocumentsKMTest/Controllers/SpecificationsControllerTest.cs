@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Dtos;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,8 +30,10 @@ namespace DocumentsKM.Tests
             _authHttpClient = factory.CreateClient();
         }
 
+        // ------------------------------------GET------------------------------------
+
         [Fact]
-        public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByMarkId_ShouldReturnOK()
         {
             // Arrange
             int markId = _rnd.Next(1, TestData.marks.Count());
@@ -46,23 +44,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var specifications = TestData.specifications.Where(v => v.Mark.Id == markId)
-                .Select(s => new SpecificationResponse
-                {
-                    Id = s.Id,
-                    Num = s.Num,
-                    IsCurrent = s.IsCurrent,
-                    Note = s.Note,
-                    CreatedDate = s.CreatedDate,
-                }).ToArray();
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<SpecificationResponse>>(
-                responseBody, options).Should().BeEquivalentTo(specifications);
         }
 
         [Fact]

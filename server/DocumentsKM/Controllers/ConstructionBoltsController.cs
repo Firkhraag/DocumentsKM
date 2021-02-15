@@ -45,7 +45,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<ConstructionBolt> Add(
+        public ActionResult Create(
             int constructionId, ConstructionBoltCreateRequest constructionBoltRequest)
         {
             try
@@ -56,7 +56,7 @@ namespace DocumentsKM.Controllers
                     constructionBoltModel,
                     constructionId,
                     constructionBoltRequest.DiameterId);
-                return Created($"construction-bolts/", constructionBoltModel);
+                return Created($"construction-bolts/{constructionBoltModel.Id}", null);
             }
             catch (ArgumentNullException)
             {
@@ -76,6 +76,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] ConstructionBoltUpdateRequest constructionBoltRequest)
         {
+            if (!constructionBoltRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, constructionBoltRequest);

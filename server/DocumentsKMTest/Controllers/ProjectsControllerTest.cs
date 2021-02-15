@@ -1,10 +1,6 @@
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Models;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +27,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAll_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAll_ShouldReturnOK()
         {
             // Arrange
             var endpoint = "/api/projects";
@@ -41,14 +37,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<Project>>(
-                responseBody, options).Should().BeEquivalentTo(TestData.projects);
         }
 
         [Fact]

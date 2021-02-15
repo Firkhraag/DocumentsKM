@@ -30,7 +30,7 @@ namespace DocumentsKM.Data
             return _context.Marks.SingleOrDefault(v => v.Id == id);
         }
 
-        public Mark GetBySubnodeIdAndCode(int subnodeId, string code)
+        public Mark GetByUniqueKey(int subnodeId, string code)
         {
             return _context.Marks.SingleOrDefault(
                 v => v.Subnode.Id == subnodeId && v.Code == code);

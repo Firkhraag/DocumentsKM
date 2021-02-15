@@ -39,6 +39,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.envAggressiveness, envAggressiveness);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -58,6 +59,7 @@ namespace DocumentsKM.Tests
                 envAggressiveness);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -74,6 +76,7 @@ namespace DocumentsKM.Tests
             Assert.Null(envAggressiveness);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

@@ -22,7 +22,6 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
             context.Users.AddRange(TestData.users);
             context.GeneralDataSections.AddRange(TestData.generalDataSections);
             context.GeneralDataPoints.AddRange(generalDataPoints);
@@ -49,6 +48,7 @@ namespace DocumentsKM.Tests
                 generalDataPoints);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -72,6 +72,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(generalDataPoints2);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -91,6 +92,7 @@ namespace DocumentsKM.Tests
                 generalDataPoint);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -107,6 +109,7 @@ namespace DocumentsKM.Tests
             Assert.Null(generalDataPoint);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -129,6 +132,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(id, generalDataPoint.Id);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -153,6 +157,7 @@ namespace DocumentsKM.Tests
             Assert.Null(generalDataPoint3);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -179,6 +184,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetById(generalDataPoint.Id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -211,6 +217,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(generalDataPoint.Text, repo.GetById(id).Text);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -230,6 +237,7 @@ namespace DocumentsKM.Tests
             Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

@@ -42,14 +42,14 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkLinkedDoc> Add(
+        public ActionResult Create(
             int markId, MarkLinkedDocCreateRequest markLinkedDocRequest)
         {
             try
             {
                 var markLinkedDocModel = _mapper.Map<MarkLinkedDoc>(markLinkedDocRequest);
                 _service.Create(markLinkedDocModel, markId, markLinkedDocRequest.LinkedDocId);
-                return Created($"mark-linked-docs/", markLinkedDocModel);
+                return Created($"mark-linked-docs/{markLinkedDocModel.Id}", null);
             }
             catch (ArgumentNullException)
             {
@@ -69,6 +69,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] MarkLinkedDocUpdateRequest markLinkedDocRequest)
         {
+            if (!markLinkedDocRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, markLinkedDocRequest);

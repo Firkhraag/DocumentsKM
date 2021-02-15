@@ -220,15 +220,9 @@ namespace DocumentsKM.Services
                 PaintworkCoeff = foundConstruction.PaintworkCoeff,
                 ConstructionElements = foundConstruction.ConstructionElements.Select(ce => new ConstructionElement
                 {
-                    ProfileClass = ce.ProfileClass,
-                    ProfileName = ce.ProfileName,
-                    Symbol = ce.Symbol,
-                    Weight = ce.Weight,
-                    SurfaceArea = ce.SurfaceArea,
-                    ProfileType = ce.ProfileType,
+                    Profile = ce.Profile,
                     Steel = ce.Steel,
                     Length = ce.Length,
-                    Status = ce.Status,
                 }).ToList(),
                 ConstructionBolts = foundConstruction.ConstructionBolts.Select(cb => new ConstructionBolt
                 {

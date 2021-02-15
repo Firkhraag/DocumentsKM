@@ -8,12 +8,304 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
+    // Entity is involved in One-To-Many relationship
     public class StandardConstructionRepoTest
     {
         private readonly Random _rnd = new Random();
         private readonly int _maxSpecificationId = 3;
 
-        private ApplicationContext GetContext(List<StandardConstruction> StandardConstructions)
+        private readonly List<Department> _departments;
+        private readonly List<Position> _positions;
+        private readonly List<Employee> _employees;
+        private readonly List<Project> _projects;
+        private readonly List<Node> _nodes;
+        private readonly List<Subnode> _subnodes;
+        private readonly List<Mark> _marks;
+        private readonly List<Specification> _specifications;
+        private readonly List<StandardConstruction> _standardConstructions;
+
+        private readonly List<StandardConstruction> _updateStandardConstructions = new List<StandardConstruction> {};
+
+        public StandardConstructionRepoTest()
+        {
+            // Arrange
+            _departments = new List<Department>
+            {
+                new Department
+                {
+                    Id = 1,
+                    Name = "D1",
+                },
+                new Department
+                {
+                    Id = 2,
+                    Name = "D2",
+                },
+            };
+            _positions = new List<Position>
+            {
+                new Position
+                {
+                    Id = 1,
+                    Name = "P1",
+                },
+                new Position
+                {
+                    Id = 2,
+                    Name = "P2",
+                },
+                new Position
+                {
+                    Id = 3,
+                    Name = "P3",
+                },
+                new Position
+                {
+                    Id = 4,
+                    Name = "P4",
+                },
+                new Position
+                {
+                    Id = 7,
+                    Name = "P7",
+                },
+                new Position
+                {
+                    Id = 9,
+                    Name = "P9",
+                },
+                new Position
+                {
+                    Id = 10,
+                    Name = "P10",
+                },
+            };
+            _employees = new List<Employee>
+            {
+                new Employee
+                {
+                    Id = 1,
+                    Name = "E1",
+                    Department = _departments[0],
+                    Position = _positions[0],
+                },
+                new Employee
+                {
+                    Id = 2,
+                    Name = "E2",
+                    Department = _departments[1],
+                    Position = _positions[1],
+                },
+                new Employee
+                {
+                    Id = 3,
+                    Name = "E3",
+                    Department = _departments[0],
+                    Position = _positions[2],
+                },
+                new Employee
+                {
+                    Id = 4,
+                    Name = "E4",
+                    Department = _departments[1],
+                    Position = _positions[1],
+                },
+                new Employee
+                {
+                    Id = 5,
+                    Name = "E5",
+                    Department = _departments[0],
+                    Position = _positions[4],
+                },
+                new Employee
+                {
+                    Id = 6,
+                    Name = "E6",
+                    Department = _departments[1],
+                    Position = _positions[4],
+                },
+                new Employee
+                {
+                    Id = 7,
+                    Name = "E7",
+                    Department = _departments[0],
+                    Position = _positions[5],
+                },
+                new Employee
+                {
+                    Id = 8,
+                    Name = "E8",
+                    Department = _departments[1],
+                    Position = _positions[6],
+                },
+            };
+            _projects = new List<Project>
+            {
+                new Project
+                {
+                    Id = 1,
+                    Name = "P1",
+                    BaseSeries = "M32787",
+                },
+                new Project
+                {
+                    Id = 2,
+                    Name = "2",
+                    BaseSeries = "M32788",
+                },
+            };
+            _nodes = new List<Node>
+            {
+                new Node
+                {
+                    Id = 1,
+                    Project = _projects[0],
+                    Code = "11",
+                    Name = "Name 1",
+                    ChiefEngineer = _employees[0],
+                },
+                new Node
+                {
+                    Id = 2,
+                    Project = _projects[1],
+                    Code = "22",
+                    Name = "Name 2",
+                    ChiefEngineer = _employees[1],
+                },
+            };
+            _subnodes = new List<Subnode>
+            {
+                new Subnode
+                {
+                    Id = 1,
+                    Node = _nodes[0],
+                    Code = "Code1",
+                    Name = "Name 1",
+                },
+                new Subnode
+                {
+                    Id = 2,
+                    Node = _nodes[1],
+                    Code = "Code2",
+                    Name = "Name 2",
+                },
+            };
+            _marks = new List<Mark>
+            {
+                new Mark
+                {
+                    Id = 1,
+                    Subnode = _subnodes[0],
+                    Code = "KM1",
+                    Name = "Name 1",
+                    Department = _departments[0],
+                    MainBuilder = _employees[0],
+                },
+                new Mark
+                {
+                    Id = 2,
+                    Subnode = _subnodes[0],
+                    Code = "KM2",
+                    Name = "Name 2",
+                    Department = _departments[0],
+                    MainBuilder = _employees[1],
+                },
+                new Mark
+                {
+                    Id = 3,
+                    Subnode = _subnodes[1],
+                    Code = "KM3",
+                    Name = "Name 3",
+                    Department = _departments[1],
+                    MainBuilder = _employees[2],
+                },
+                new Mark
+                {
+                    Id = 4,
+                    Subnode = _subnodes[1],
+                    Code = "KM4",
+                    Name = "Name 4",
+                    Department = _departments[1],
+                    MainBuilder = _employees[2],
+                },
+            };
+            _specifications = new List<Specification>
+            {
+                new Specification
+                {
+                    Id = 1,
+                    Mark = _marks[0],
+                    Num = 0,
+                    IsCurrent = true,
+                },
+                new Specification
+                {
+                    Id = 2,
+                    Mark = _marks[1],
+                    Num = 0,
+                    IsCurrent = false,
+                },
+                new Specification
+                {
+                    Id = 3,
+                    Mark = _marks[1],
+                    Num = 1,
+                    IsCurrent = true,
+                },
+                new Specification
+                {
+                    Id = 4,
+                    Mark = _marks[2],
+                    Num = 0,
+                    IsCurrent = true,
+                },
+            };
+            _standardConstructions = new List<StandardConstruction>
+            {
+                new StandardConstruction
+                {
+                    Id = 1,
+                    Specification = _specifications[0],
+                    Name = "N1",
+                    Num = 1,
+                    Sheet = "S1",
+                    Weight = 1.0f,
+                },
+                new StandardConstruction
+                {
+                    Id = 2,
+                    Specification = _specifications[1],
+                    Name = "N2",
+                    Num = 2,
+                    Sheet = "S2",
+                    Weight = 2.0f,
+                },
+                new StandardConstruction
+                {
+                    Id = 3,
+                    Specification = _specifications[2],
+                    Name = "N3",
+                    Num = 3,
+                    Sheet = "S3",
+                    Weight = 3.0f,
+                },
+            };
+
+            foreach (var sc in _standardConstructions)
+            {
+                _updateStandardConstructions.Add(new StandardConstruction
+                {
+                    Id = sc.Id,
+                    Specification = sc.Specification,
+                    Name = sc.Name,
+                    Num = sc.Num,
+                    Sheet = sc.Sheet,
+                    Weight = sc.Weight,
+                });
+            }
+        }
+
+        private ApplicationContext GetContext(bool isUpdate = false)
         {
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
             builder.UseInMemoryDatabase(databaseName: "StandardConstructionTestDb");
@@ -22,17 +314,19 @@ namespace DocumentsKM.Tests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            context.Specifications.AddRange(TestData.specifications);
-            context.StandardConstructions.AddRange(StandardConstructions);
+            if (!isUpdate)
+                context.StandardConstructions.AddRange(_standardConstructions);
+            else
+                context.StandardConstructions.AddRange(_updateStandardConstructions);
             context.SaveChanges();
             return context;
         }
 
         [Fact]
-        public void GetAllBySpecificationId_ShouldReturnStandardConstructions()
+        public void GetAllBySpecificationId_ShouldReturnstandardConstructions()
         {
             // Arrange
-            var context = GetContext(TestData.standardConstructions);
+            var context = GetContext();
             var repo = new SqlStandardConstructionRepo(context);
 
             var specificationId = _rnd.Next(1, _maxSpecificationId);
@@ -41,17 +335,18 @@ namespace DocumentsKM.Tests
             var standardConstructions = repo.GetAllBySpecificationId(specificationId);
 
             // Assert
-            Assert.Equal(TestData.standardConstructions.Where(
+            Assert.Equal(_standardConstructions.Where(
                 v => v.Specification.Id == specificationId), standardConstructions);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
         public void GetAllBySpecificationId_ShouldReturnEmptyArray_WhenWrongSpecificationId()
         {
             // Arrange
-            var context = GetContext(TestData.standardConstructions);
+            var context = GetContext();
             var repo = new SqlStandardConstructionRepo(context);
 
             // Act
@@ -61,32 +356,33 @@ namespace DocumentsKM.Tests
             Assert.Empty(standardConstructions);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
-        public void GetById_ShouldReturnStandardConstruction()
+        public void GetById_ShouldReturnstandardConstruction()
         {
             // Arrange
-            var context = GetContext(TestData.standardConstructions);
+            var context = GetContext();
             var repo = new SqlStandardConstructionRepo(context);
 
-            int id = _rnd.Next(1, TestData.standardConstructions.Count());
+            int id = _rnd.Next(1, _standardConstructions.Count());
 
             // Act
             var standardConstruction = repo.GetById(id);
 
             // Assert
-            Assert.Equal(TestData.standardConstructions.SingleOrDefault(
-                v => v.Id == id), standardConstruction);
+            Assert.Equal(_standardConstructions.SingleOrDefault(v => v.Id == id), standardConstruction);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
         public void GetById_ShouldReturnNull_WhenWrongId()
         {
             // Arrange
-            var context = GetContext(TestData.standardConstructions);
+            var context = GetContext();
             var repo = new SqlStandardConstructionRepo(context);
 
             // Act
@@ -96,49 +392,48 @@ namespace DocumentsKM.Tests
             Assert.Null(standardConstruction);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         // [Fact]
-        // public void GetByUniqueKey_ShouldReturnStandardConstruction()
+        // public void GetByUniqueKey_ShouldReturnstandardConstruction()
         // {
         //     // Arrange
-        //     var context = GetContext(TestData.standardConstructions);
+        //     var context = GetContext();
         //     var repo = new SqlStandardConstructionRepo(context);
 
-        //     var specificationId = TestData.StandardConstructions[0].Specification.Id;
-        //     var name = TestData.StandardConstructions[0].Name;
-        //     var paintworkCoeff = TestData.StandardConstructions[0].PaintworkCoeff;
+        //     var specificationId = _standardConstructions[0].Specification.Id;
+        //     var name = _standardConstructions[0].Name;
+        //     var paintworkCoeff = _standardConstructions[0].PaintworkCoeff;
 
         //     // Act
-        //     var StandardConstruction = repo.GetByUniqueKey(
+        //     var standardConstruction = repo.GetByUniqueKey(
         //         specificationId, name, paintworkCoeff);
 
         //     // Assert
-        //     Assert.Equal(TestData.StandardConstructions.SingleOrDefault(
+        //     Assert.Equal(_standardConstructions.SingleOrDefault(
         //         v => v.Specification.Id == specificationId &&
-        //             v.Name == name && v.PaintworkCoeff == paintworkCoeff), StandardConstruction);
+        //             v.Name == name && v.PaintworkCoeff == paintworkCoeff), standardConstruction);
 
         //     context.Database.EnsureDeleted();
+        //     context.Dispose();
         // }
 
         // [Fact]
         // public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
         // {
         //     // Arrange
-        //     var context = GetContext(TestData.standardConstructions);
+        //     var context = GetContext();
         //     var repo = new SqlStandardConstructionRepo(context);
 
-        //     var specificationId = TestData.StandardConstructions[0].Specification.Id;
-        //     var wrongSpecificationId = 999;
-        //     var name = TestData.StandardConstructions[0].Name;
-        //     var wrongName = "wrong";
-        //     var paintworkCoeff = TestData.StandardConstructions[0].PaintworkCoeff;
-        //     var wrongPaintworkCoeff = -1;
+        //     var specificationId = _standardConstructions[0].Specification.Id;
+        //     var name = _standardConstructions[0].Name;
+        //     var paintworkCoeff = _standardConstructions[0].PaintworkCoeff;
 
         //     // Act
-        //     var additionalWork1 = repo.GetByUniqueKey(wrongSpecificationId, name, paintworkCoeff);
-        //     var additionalWork2 = repo.GetByUniqueKey(specificationId, wrongName, paintworkCoeff);
-        //     var additionalWork3 = repo.GetByUniqueKey(specificationId, name, wrongPaintworkCoeff);
+        //     var additionalWork1 = repo.GetByUniqueKey(999, name, paintworkCoeff);
+        //     var additionalWork2 = repo.GetByUniqueKey(specificationId, "NotFound", paintworkCoeff);
+        //     var additionalWork3 = repo.GetByUniqueKey(specificationId, name, -1);
 
         //     // Assert
         //     Assert.Null(additionalWork1);
@@ -146,19 +441,20 @@ namespace DocumentsKM.Tests
         //     Assert.Null(additionalWork3);
 
         //     context.Database.EnsureDeleted();
+        //     context.Dispose();
         // }
 
         [Fact]
-        public void Add_ShouldAddStandardConstruction()
+        public void Add_ShouldAddstandardConstruction()
         {
             // Arrange
-            var context = GetContext(TestData.standardConstructions);
+            var context = GetContext();
             var repo = new SqlStandardConstructionRepo(context);
 
-            int specificationId = _rnd.Next(1, TestData.specifications.Count());
+            int specificationId = _rnd.Next(1, _specifications.Count());
             var standardConstruction = new StandardConstruction
             {
-                Specification = TestData.specifications.SingleOrDefault(v => v.Id == specificationId),
+                Specification = _specifications.SingleOrDefault(v => v.Id == specificationId),
                 Name = "NewCreate",
                 Num = 1,
                 Sheet = "NewCreate",
@@ -172,31 +468,18 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetById(standardConstruction.Id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
-        public void Update_ShouldUpdateStandardConstruction()
+        public void Update_ShouldUpdatestandardConstruction()
         {
             // Arrange
-            var StandardConstructions = new List<StandardConstruction> { };
-            foreach (var c in TestData.standardConstructions)
-            {
-                StandardConstructions.Add(new StandardConstruction
-                {
-                    Id = c.Id,
-                    Specification = c.Specification,
-                    Name = c.Name,
-                    Num = c.Num,
-                    Sheet = c.Sheet,
-                    Weight = c.Weight,
-                });
-            }
-            var context = GetContext(StandardConstructions);
+            var context = GetContext(true);
             var repo = new SqlStandardConstructionRepo(context);
 
-            int id = _rnd.Next(1, StandardConstructions.Count());
-            var standardConstruction = StandardConstructions.FirstOrDefault(
-                v => v.Id == id);
+            int id = _rnd.Next(1, _updateStandardConstructions.Count());
+            var standardConstruction = _updateStandardConstructions.FirstOrDefault(v => v.Id == id);
             standardConstruction.Name = "NewUpdate";
 
             // Act
@@ -206,18 +489,18 @@ namespace DocumentsKM.Tests
             Assert.Equal(standardConstruction.Name, repo.GetById(id).Name);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
-        public void Delete_ShouldDeleteStandardConstruction()
+        public void Delete_ShouldDeletestandardConstruction()
         {
             // Arrange
-            var context = GetContext(TestData.standardConstructions);
+            var context = GetContext();
             var repo = new SqlStandardConstructionRepo(context);
 
-            int id = _rnd.Next(1, TestData.standardConstructions.Count());
-            var standardConstruction = TestData.standardConstructions.FirstOrDefault(
-                v => v.Id == id);
+            int id = _rnd.Next(1, _standardConstructions.Count());
+            var standardConstruction = _standardConstructions.FirstOrDefault(v => v.Id == id);
 
             // Act
             repo.Delete(standardConstruction);
@@ -226,6 +509,7 @@ namespace DocumentsKM.Tests
             Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

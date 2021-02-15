@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Dtos;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByTypeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByTypeId_ShouldReturnOK()
         {
             // Arrange
             int typeId = _rnd.Next(1, TestData.constructionTypes.Count());
@@ -45,21 +41,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var subtypes = TestData.constructionSubtypes.Where(v => v.Type.Id == typeId)
-                .Select(s => new ConstructionSubtypeResponse
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Valuation = s.Valuation,
-                }).ToArray();
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<ConstructionSubtypeResponse>>(
-                responseBody, options).Should().BeEquivalentTo(subtypes);
         }
 
         [Fact]

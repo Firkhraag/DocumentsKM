@@ -39,6 +39,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.generalDataSections, generalDataSections);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -58,6 +59,7 @@ namespace DocumentsKM.Tests
                 generalDataSection);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -74,6 +76,7 @@ namespace DocumentsKM.Tests
             Assert.Null(generalDataSection);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

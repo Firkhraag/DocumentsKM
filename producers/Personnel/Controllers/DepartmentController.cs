@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Personnel.Dtos;
 using Personnel.Models;
 using Personnel.Services;
+using Serilog;
 
 namespace DocumentsKM.Controllers
 {
@@ -31,7 +32,7 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("departments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Department>> GetAlld()
+        public ActionResult<IEnumerable<Department>> GetAll()
         {
             var departments = _service.GetAll();
             return Ok(departments);
@@ -58,8 +59,7 @@ namespace DocumentsKM.Controllers
                     { "method", "add" },
                 };
                 _publisherService.Publish(
-                    JsonSerializer.Serialize(new DepartmentRabbitResponse(department)),
-                    "personnel.department.add", d);
+                    JsonSerializer.Serialize(new DepartmentRabbitResponse(department)), d);
             }
             catch
             {
@@ -115,8 +115,7 @@ namespace DocumentsKM.Controllers
                         { "method", "delete" },
                     };
                     _publisherService.Publish(
-                        JsonSerializer.Serialize(new { Id = id }),
-                        "personnel.department.delete", d);
+                        JsonSerializer.Serialize(new { Id = id }), d);
                 }
                 catch
                 {

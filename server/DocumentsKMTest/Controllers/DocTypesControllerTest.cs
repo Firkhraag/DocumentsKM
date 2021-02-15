@@ -1,11 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Models;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,25 +27,16 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllAttached_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllAttached_ShouldReturnOK()
         {
             // Arrange
             var endpoint = "/api/doc-types/attached";
-            var sheetDocTypeId = 1;
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<DocType>>(
-                responseBody, options).Should().BeEquivalentTo(TestData.docTypes.Where(v => v.Id != sheetDocTypeId));
         }
 
         [Fact]

@@ -18,16 +18,13 @@ namespace DocumentsKM.Controllers
     public class ConstructionsController : ControllerBase
     {
         private readonly IConstructionService _service;
-        // private readonly IConstructionCopyService _constructionCopyService;
         private readonly IMapper _mapper;
 
         public ConstructionsController(
             IConstructionService constructionService,
-            // IConstructionCopyService constructionCopyService,
             IMapper mapper)
         {
             _service = constructionService;
-            // _constructionCopyService = constructionCopyService;
             _mapper = mapper;
         }
 
@@ -46,7 +43,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<ConstructionResponse> Create(
+        public ActionResult Create(
             int specificationId,
             [FromBody] ConstructionCreateRequest constructionRequest)
         {
@@ -68,8 +65,7 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"constructions/{constructionModel.Id}",
-                _mapper.Map<ConstructionResponse>(constructionModel));
+            return Created($"constructions/{constructionModel.Id}", null);
         }
 
         [HttpPatch, Route("constructions/{id}")]
@@ -80,6 +76,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] ConstructionUpdateRequest constructionRequest)
         {
+            if (!constructionRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, constructionRequest);

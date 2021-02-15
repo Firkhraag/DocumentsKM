@@ -45,6 +45,7 @@ namespace DocumentsKM.Tests
                 markLinkedDocs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -61,6 +62,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(markLinkedDocs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -80,6 +82,7 @@ namespace DocumentsKM.Tests
                 v => v.Id == id), markLinkedDoc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -95,6 +98,7 @@ namespace DocumentsKM.Tests
             Assert.Null(markLinkedDoc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -115,6 +119,7 @@ namespace DocumentsKM.Tests
                 v => v.Mark.Id == markId && v.LinkedDoc.Id == linkedDocId), markLinkedDoc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -130,6 +135,7 @@ namespace DocumentsKM.Tests
             Assert.Null(markLinkedDoc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -155,6 +161,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetById(markLinkedDoc.Id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -187,6 +194,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(markLinkedDoc.LinkedDoc.Id, repo.GetById(id).LinkedDoc.Id);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -206,6 +214,7 @@ namespace DocumentsKM.Tests
             Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

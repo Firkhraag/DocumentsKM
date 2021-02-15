@@ -43,7 +43,7 @@ namespace DocumentsKM.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<AttachedDocResponse> Create(
+        public ActionResult Create(
             int markId, [FromBody] AttachedDocCreateRequest attachedDocRequest)
         {
             var attachedDocModel = _mapper.Map<AttachedDoc>(attachedDocRequest);
@@ -61,8 +61,7 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"docs/{attachedDocModel.Id}",
-                _mapper.Map<AttachedDocResponse>(attachedDocModel));
+            return Created($"docs/{attachedDocModel.Id}", null);
         }
 
         [HttpPatch, Route("attached-docs/{id}")]
@@ -73,6 +72,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] AttachedDocUpdateRequest attachedDocRequest)
         {
+            if (!attachedDocRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, attachedDocRequest);

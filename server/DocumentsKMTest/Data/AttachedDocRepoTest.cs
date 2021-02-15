@@ -45,6 +45,7 @@ namespace DocumentsKM.Tests
                 attachedDocs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -61,6 +62,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(attachedDocs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -80,6 +82,7 @@ namespace DocumentsKM.Tests
                 attachedDoc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -95,6 +98,7 @@ namespace DocumentsKM.Tests
             Assert.Null(attachedDoc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -116,6 +120,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(id, attachedDoc.Id);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -137,6 +142,7 @@ namespace DocumentsKM.Tests
             Assert.Null(attachedDoc2);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -161,6 +167,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetById(attachedDoc.Id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -192,6 +199,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(attachedDoc.Name, repo.GetById(id).Name);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -211,6 +219,7 @@ namespace DocumentsKM.Tests
             Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

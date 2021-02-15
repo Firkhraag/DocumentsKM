@@ -35,6 +35,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.linkedDocTypes, linkedDocTypes);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

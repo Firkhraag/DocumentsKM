@@ -39,6 +39,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.constructionMaterials, constructionMaterials);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -58,6 +59,7 @@ namespace DocumentsKM.Tests
                 constructionMaterial);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -74,6 +76,7 @@ namespace DocumentsKM.Tests
             Assert.Null(constructionMaterial);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

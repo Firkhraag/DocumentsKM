@@ -94,17 +94,12 @@ namespace DocumentsKM
                 };
             });
 
-            // Подключение к базе данных
-            // Postgres
+            // Подключение к базе данных Postgres
             services.AddDbContext<ApplicationContext>(
                 opt => opt.UseLazyLoadingProxies()
                     .UseNpgsql(
                         Configuration.GetConnectionString("PostgresConnection")
                     ));
-            // services.AddDbContext<ApplicationContext>(
-            //     opt => opt.UseNpgsql(
-            //         Configuration.GetConnectionString("PostgresConnection")
-            //     ));
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -112,14 +107,17 @@ namespace DocumentsKM
                 ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
             services.AddSingleton<ICacheService, RedisCacheService>();
 
-            services.AddSingleton<IConnectionProvider>(
-                new ConnectionProvider(Configuration.GetConnectionString("RabbitMQConnection")));
-            services.AddSingleton<ISubscriberService>(x => new SubscriberService(x.GetService<IConnectionProvider>(),
-                "personnel_exchange",
-                "personnel_queue",
-                "personnel.*",
-                ExchangeType.Topic));
-            services.AddHostedService<DataCollectorService>();
+            services.AddSingleton(serviceProvider =>
+            {
+                var uri = new Uri(Configuration.GetConnectionString("RabbitMQConnection"));
+                return new ConnectionFactory
+                {
+                    Uri = uri
+                };
+            });
+            services.AddHostedService<ConsumerService>(
+                x => new ConsumerService(x.GetService<ConnectionFactory>(),
+                    "personnel_exchange", "personnel_queue", "personnel.exchange"));
 
             // DI for application services
             injectScopedServices(services);
@@ -174,7 +172,7 @@ namespace DocumentsKM
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
             services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
             services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
-            services.AddScoped<IGeneralDataDocService, GeneralDataDocService>();
+            services.AddScoped<IDocumentService, DocumentService>();
         }
 
         private void injectScopedRepositories(IServiceCollection services)

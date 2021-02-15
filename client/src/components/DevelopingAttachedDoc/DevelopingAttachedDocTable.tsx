@@ -44,7 +44,9 @@ const DevelopingAttachedDocTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/docs/${id}`)
-			docs.splice(row, 1)
+            var arr = [...docs]
+			arr.splice(row, 1)
+			setDocs(arr)
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')

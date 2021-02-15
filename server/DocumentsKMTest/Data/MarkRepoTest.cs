@@ -20,7 +20,6 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
             context.Subnodes.AddRange(TestData.subnodes);
             context.Marks.AddRange(marks);
             context.SaveChanges();
@@ -41,6 +40,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.marks, marks);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -59,6 +59,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.marks.Where(v => v.Subnode.Id == subnodeId), marks);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -75,6 +76,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(marks);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -94,6 +96,7 @@ namespace DocumentsKM.Tests
                 mark);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -109,10 +112,11 @@ namespace DocumentsKM.Tests
             Assert.Null(mark);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
-        public void GetBySubnodeIdAndCode_ShouldReturnMark()
+        public void GetByUniqueKey_ShouldReturnMark()
         {
             // Arrange
             var context = GetContext(TestData.marks);
@@ -123,16 +127,17 @@ namespace DocumentsKM.Tests
             var code = TestData.marks[0].Code;
 
             // Act
-            var mark = repo.GetBySubnodeIdAndCode(subnodeId, code);
+            var mark = repo.GetByUniqueKey(subnodeId, code);
 
             // Assert
             Assert.Equal(id, mark.Id);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
-        public void GetBySubnodeIdAndCode_ShouldReturnNull_WhenWrongSubnodeIdOrCode()
+        public void GetByUniqueKey_ShouldReturnNull_WhenWrongSubnodeIdOrCode()
         {
             // Arrange
             var context = GetContext(TestData.marks);
@@ -142,14 +147,15 @@ namespace DocumentsKM.Tests
             var code = TestData.marks[0].Code;
 
             // Act
-            var mark1 = repo.GetBySubnodeIdAndCode(999, code);
-            var mark2 = repo.GetBySubnodeIdAndCode(subnodeId, "NotFound");
+            var mark1 = repo.GetByUniqueKey(999, code);
+            var mark2 = repo.GetByUniqueKey(subnodeId, "NotFound");
 
             // Assert
             Assert.Null(mark1);
             Assert.Null(mark2);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -192,6 +198,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetById(mark.Id));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -249,6 +256,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(mark.Name, repo.GetById(id).Name);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

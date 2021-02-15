@@ -12,7 +12,7 @@ namespace DocumentsKM.Tests
 {
     public class DocServiceTest
     {
-        private readonly Mock<IDocRepo> _mockDocRepo = new Mock<IDocRepo>();
+        private readonly Mock<IDocRepo> _repository = new Mock<IDocRepo>();
         private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
         private readonly Mock<IDocTypeRepo> _mockDocTypeRepo = new Mock<IDocTypeRepo>();
@@ -44,7 +44,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var doc in _docs)
             {
-                _mockDocRepo.Setup(mock =>
+                _repository.Setup(mock =>
                     mock.GetById(doc.Id)).Returns(
                         _docs.SingleOrDefault(v => v.Id == doc.Id));
             }
@@ -56,12 +56,12 @@ namespace DocumentsKM.Tests
 
                 foreach (var docType in TestData.docTypes)
                 {
-                    _mockDocRepo.Setup(mock =>
+                    _repository.Setup(mock =>
                         mock.GetAllByMarkIdAndDocType(mark.Id, docType.Id)).Returns(
                             _docs.Where(
                                 v => v.Mark.Id == mark.Id && v.Type.Id == docType.Id));
 
-                    _mockDocRepo.Setup(mock =>
+                    _repository.Setup(mock =>
                         mock.GetAllByMarkIdAndNotDocType(mark.Id, docType.Id)).Returns(
                             _docs.Where(
                                 v => v.Mark.Id == mark.Id && v.Type.Id != docType.Id));
@@ -80,15 +80,15 @@ namespace DocumentsKM.Tests
                         TestData.docTypes.SingleOrDefault(v => v.Id == docType.Id));
             }
 
-            _mockDocRepo.Setup(mock =>
+            _repository.Setup(mock =>
                 mock.Add(It.IsAny<Doc>())).Verifiable();
-            _mockDocRepo.Setup(mock =>
+            _repository.Setup(mock =>
                 mock.Update(It.IsAny<Doc>())).Verifiable();
-            _mockDocRepo.Setup(mock =>
+            _repository.Setup(mock =>
                 mock.Delete(It.IsAny<Doc>())).Verifiable();
 
             _service = new DocService(
-                _mockDocRepo.Object,
+                _repository.Object,
                 _mockMarkRepo.Object,
                 _mockEmployeeRepo.Object,
                 _mockDocTypeRepo.Object);
@@ -166,7 +166,7 @@ namespace DocumentsKM.Tests
                 newDoc, markId, docTypeId, creatorId, inspectorId, normContrId);
 
             // Assert
-            _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Once);
+            _repository.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Once);
             Assert.NotNull(newDoc.Mark);
             Assert.NotNull(newDoc.Type);
             Assert.NotNull(newDoc.Creator);
@@ -205,7 +205,7 @@ namespace DocumentsKM.Tests
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newDoc, markId, docTypeId, creatorId, inspectorId, 999));
 
-            _mockDocRepo.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Never);
+            _repository.Verify(mock => mock.Add(It.IsAny<Doc>()), Times.Never);
         }
 
         [Fact]
@@ -230,7 +230,7 @@ namespace DocumentsKM.Tests
             _service.Update(id, newDocRequest);
 
             // Assert
-            _mockDocRepo.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Once);
+            _repository.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Once);
             Assert.Equal(newTypeId, _docs.SingleOrDefault(v => v.Id == id).Type.Id);
             Assert.Equal(newName, _docs.SingleOrDefault(v => v.Id == id).Name);
             Assert.Equal(newNumOfPages, _docs.SingleOrDefault(v => v.Id == id).NumOfPages);
@@ -253,7 +253,7 @@ namespace DocumentsKM.Tests
             Assert.Throws<ArgumentNullException>(() => _service.Update(
                 999, newDocRequest));
 
-            _mockDocRepo.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Never);
+            _repository.Verify(mock => mock.Update(It.IsAny<Doc>()), Times.Never);
         }
 
         [Fact]
@@ -266,7 +266,7 @@ namespace DocumentsKM.Tests
             _service.Delete(id);
 
             // Assert
-            _mockDocRepo.Verify(mock => mock.Delete(It.IsAny<Doc>()), Times.Once);
+            _repository.Verify(mock => mock.Delete(It.IsAny<Doc>()), Times.Once);
         }
 
         [Fact]
@@ -275,7 +275,7 @@ namespace DocumentsKM.Tests
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Delete(999));
 
-            _mockDocRepo.Verify(mock => mock.Delete(It.IsAny<Doc>()), Times.Never);
+            _repository.Verify(mock => mock.Delete(It.IsAny<Doc>()), Times.Never);
         }
     }
 }

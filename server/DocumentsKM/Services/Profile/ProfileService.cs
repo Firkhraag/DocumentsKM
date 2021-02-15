@@ -13,9 +13,9 @@ namespace DocumentsKM.Services
             _repository = profileRepo;
         }
 
-        public IEnumerable<Profile> GetAllByProfileClass(int profileClassId)
+        public IEnumerable<Profile> GetAllByProfileClassId(int profileClassId)
         {
-            return _repository.GetAllByProfileClass(profileClassId);
+            return _repository.GetAllByProfileClassId(profileClassId);
         }
     }
 }

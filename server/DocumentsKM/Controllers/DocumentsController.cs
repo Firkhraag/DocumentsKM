@@ -11,12 +11,12 @@ namespace DocumentsKM.Controllers
     [ApiController]
     public class GeneralDataDocController : ControllerBase
     {
-        private readonly IGeneralDataDocService _service;
+        private readonly IDocumentService _service;
 
         public GeneralDataDocController(
-            IGeneralDataDocService generalDataDocService)
+            IDocumentService documentService)
         {
-            _service = generalDataDocService;
+            _service = documentService;
         }
 
         [HttpGet, Route("marks/{markId}/general-data")]
@@ -25,11 +25,29 @@ namespace DocumentsKM.Controllers
         {
             try
             {
-                var file = _service.GetDocByMarkId(markId);
+                var file = _service.GetGeneralDataDocument(markId);
                 return File(
                     file,
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     "Общие данные.docx");
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet, Route("marks/{markId}/bolts-doc")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetBoltDocument(int markId)
+        {
+            try
+            {
+                var file = _service.GetBoltDocument(markId);
+                return File(
+                    file,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "Ведомость болтов.docx");
             }
             catch (ArgumentNullException)
             {

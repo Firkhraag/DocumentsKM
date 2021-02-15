@@ -39,6 +39,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.profileClasses, profileClasses);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -58,6 +59,7 @@ namespace DocumentsKM.Tests
                 profileClass);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -74,6 +76,7 @@ namespace DocumentsKM.Tests
             Assert.Null(ProfileClass);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

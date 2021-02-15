@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Models;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByDocTypeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByDocTypeId_ShouldReturnOK()
         {
             // Arrange
             int docTypeId = _rnd.Next(1, TestData.linkedDocTypes.Count());
@@ -45,15 +41,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<LinkedDoc>>(
-                responseBody, options).Should().BeEquivalentTo(TestData.linkedDocs.Where(
-                    v => v.Type.Id == docTypeId));
         }
 
         [Fact]

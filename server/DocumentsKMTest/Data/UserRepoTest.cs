@@ -42,6 +42,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(TestData.users.SingleOrDefault(v => v.Id == id), user);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -58,6 +59,7 @@ namespace DocumentsKM.Tests
             Assert.Null(user);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -76,6 +78,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(u, user);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -92,6 +95,7 @@ namespace DocumentsKM.Tests
             Assert.Null(user);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

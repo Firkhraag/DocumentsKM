@@ -20,7 +20,6 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
             context.LinkedDocTypes.AddRange(TestData.linkedDocTypes);
             context.LinkedDocs.AddRange(linkedDocs);
             context.SaveChanges();
@@ -44,6 +43,7 @@ namespace DocumentsKM.Tests
                 v => v.Type.Id == docTypeId), linkedDocs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -60,6 +60,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(linkedDocs);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -79,6 +80,7 @@ namespace DocumentsKM.Tests
                 linkedDoc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -95,6 +97,7 @@ namespace DocumentsKM.Tests
             Assert.Null(linkedDoc);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

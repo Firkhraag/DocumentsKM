@@ -130,6 +130,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(int markId, int sectionId, int id,
             [FromBody] MarkGeneralDataPointUpdateRequest markGeneralDataPointRequest)
         {
+            if (!markGeneralDataPointRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, markId, sectionId, markGeneralDataPointRequest);

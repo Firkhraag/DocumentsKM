@@ -20,7 +20,6 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
             context.ConstructionMaterials.AddRange(TestData.constructionMaterials);
             context.EnvAggressiveness.AddRange(TestData.envAggressiveness);
             context.GasGroups.AddRange(TestData.gasGroups);
@@ -51,6 +50,7 @@ namespace DocumentsKM.Tests
                 markOperatingConditions);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -67,6 +67,7 @@ namespace DocumentsKM.Tests
             Assert.Null(markOperatingConditions);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -103,6 +104,7 @@ namespace DocumentsKM.Tests
             Assert.NotNull(repo.GetByMarkId(markId));
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -139,6 +141,7 @@ namespace DocumentsKM.Tests
             Assert.Equal(markOperatingConditions.Temperature, repo.GetByMarkId(markId).Temperature);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

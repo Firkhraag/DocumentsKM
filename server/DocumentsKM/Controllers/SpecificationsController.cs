@@ -40,7 +40,7 @@ namespace DocumentsKM.Controllers
         [HttpPost, Route("marks/{markId}/specifications")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<SpecificationResponse>> Create(
+        public ActionResult<SpecificationResponse> Create(
             int markId)
         {
             try
@@ -62,6 +62,8 @@ namespace DocumentsKM.Controllers
         public ActionResult Update(
             int id, [FromBody] SpecificationUpdateRequest specificationRequest)
         {
+            if (!specificationRequest.Validate())
+                return BadRequest();
             try
             {
                 _service.Update(id, specificationRequest);

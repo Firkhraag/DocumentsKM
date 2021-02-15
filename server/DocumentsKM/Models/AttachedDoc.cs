@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
 {
+    // Прочие прилагаемые документы
     public class AttachedDoc
     {
         [Key]

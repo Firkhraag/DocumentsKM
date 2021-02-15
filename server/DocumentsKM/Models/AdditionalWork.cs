@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
@@ -15,9 +16,11 @@ namespace DocumentsKM.Models
         public virtual Employee Employee { get; set; }
 
         [Required]
+        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
         public int Valuation { get; set; }
 
         [Required]
+        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
         public int MetalOrder { get; set; }
     }
 }

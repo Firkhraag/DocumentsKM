@@ -6,7 +6,7 @@ namespace DocumentsKM.Data
     public interface IProfileRepo
     {
         // Получить все профили по id вида профиля
-        IEnumerable<Profile> GetAllByProfileClass(int profileClassId);
+        IEnumerable<Profile> GetAllByProfileClassId(int profileClassId);
         // Получить профиль по id
         Profile GetById(int id);
     }

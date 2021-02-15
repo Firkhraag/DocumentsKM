@@ -46,6 +46,7 @@ namespace DocumentsKM.Tests
                 markApprovals);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -62,6 +63,7 @@ namespace DocumentsKM.Tests
             Assert.Empty(markApprovals);
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -90,6 +92,7 @@ namespace DocumentsKM.Tests
                 repo.GetAllByMarkId(markId).Count());
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
 
         [Fact]
@@ -110,6 +113,7 @@ namespace DocumentsKM.Tests
                 repo.GetAllByMarkId(markApproval.MarkId).Count());
 
             context.Database.EnsureDeleted();
+            context.Dispose();
         }
     }
 }

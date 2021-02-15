@@ -30,6 +30,7 @@ namespace DocumentsKM.Models
 
         // Формат
         [Required]
+        [Range(0.0f, 10000.0f, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Form { get; set; }
 
         // Разраб
@@ -46,10 +47,12 @@ namespace DocumentsKM.Models
 
         // Выпуск
         [Required]
+        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
         public int ReleaseNum { get; set; }
 
         // Листов
         [Required]
+        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
         public int NumOfPages { get; set; }
 
         // Прим
