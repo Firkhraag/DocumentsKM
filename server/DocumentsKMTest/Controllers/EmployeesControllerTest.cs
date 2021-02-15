@@ -30,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByDepartmentId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByDepartmentId_ShouldReturnOK()
         {
             // Arrange
             int departmentId = _rnd.Next(1, TestData.departments.Count());
@@ -58,7 +58,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetMarkApprovalEmployeesByDepartmentId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetMarkApprovalEmployeesByDepartmentId_ShouldReturnOK()
         {
             // Arrange
             int[] approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
@@ -87,7 +87,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetMarkMainEmployeesByDepartmentId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetMarkMainEmployeesByDepartmentId_ShouldReturnOK()
         {
             // Arrange
             int[] approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};

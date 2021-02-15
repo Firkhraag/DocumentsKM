@@ -56,7 +56,7 @@ namespace DocumentsKM.Tests
                 foreach (var mark in _marks)
                 {
                     _repository.Setup(mock =>
-                        mock.GetBySubnodeIdAndCode(subnode.Id, mark.Code)).Returns(
+                        mock.GetByUniqueKey(subnode.Id, mark.Code)).Returns(
                             _marks.SingleOrDefault(v => v.Subnode.Id == subnode.Id &&
                             v.Code == mark.Code));
                 }

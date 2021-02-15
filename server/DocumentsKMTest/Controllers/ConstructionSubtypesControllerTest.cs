@@ -30,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByTypeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByTypeId_ShouldReturnOK()
         {
             // Arrange
             int typeId = _rnd.Next(1, TestData.constructionTypes.Count());

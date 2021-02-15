@@ -104,12 +104,52 @@ const Home = () => {
 						Общие данные
 					</Button>
 				</Link>
-                <Link to={mark != null ? `/bolts-doc` : '/'}>
+                <Link to={mark != null ? `/bolt-doc` : '/'}>
 					<Button
 						variant="outline-secondary"
 						disabled={mark == null ? true : false}
 					>
 						Ведомость болтов
+					</Button>
+				</Link>
+                <Link to={mark != null ? `/metal construction-doc` : '/'}>
+					<Button
+						variant="outline-secondary"
+						disabled={mark == null ? true : false}
+					>
+						Ведомость металлоконструкций
+					</Button>
+				</Link>
+                <Link to={mark != null ? `/work-doc` : '/'}>
+					<Button
+						variant="outline-secondary"
+						disabled={mark == null ? true : false}
+					>
+						Задание на смету
+					</Button>
+				</Link>
+                <Link to={mark != null ? `/set-doc` : '/'}>
+					<Button
+						variant="outline-secondary"
+						disabled={mark == null ? true : false}
+					>
+						Комплект для расчета
+					</Button>
+				</Link>
+                <Link to={mark != null ? `/registration-doc` : '/'}>
+					<Button
+						variant="outline-secondary"
+						disabled={mark == null ? true : false}
+					>
+						Лист регистрации проекта
+					</Button>
+				</Link>
+                <Link to={mark != null ? `/metal-spec-doc` : '/'}>
+					<Button
+						variant="outline-secondary"
+						disabled={mark == null ? true : false}
+					>
+						Спецификация металла
 					</Button>
 				</Link>
 			</div>

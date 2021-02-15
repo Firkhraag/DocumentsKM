@@ -78,7 +78,7 @@ namespace DocumentsKM.Services
             if (subnode == null)
                 throw new ArgumentNullException(nameof(subnode));
 
-            var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                 subnode.Id, mark.Code);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(nameof(uniqueConstraintViolationCheck));
@@ -139,7 +139,7 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(subnode));
                 foundMark.Subnode = subnode;
 
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                     subnode.Id, mark.Code);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
@@ -148,7 +148,7 @@ namespace DocumentsKM.Services
             {
                 foundMark.Code = mark.Code;
 
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                     foundMark.Subnode.Id, mark.Code);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
@@ -160,7 +160,7 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(subnode));
                 foundMark.Subnode = subnode;
 
-                var uniqueConstraintViolationCheck = _repository.GetBySubnodeIdAndCode(
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
                     subnode.Id, foundMark.Code);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));

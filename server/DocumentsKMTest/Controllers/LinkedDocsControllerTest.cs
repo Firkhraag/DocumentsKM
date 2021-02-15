@@ -30,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByDocTypeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByDocTypeId_ShouldReturnOK()
         {
             // Arrange
             int docTypeId = _rnd.Next(1, TestData.linkedDocTypes.Count());

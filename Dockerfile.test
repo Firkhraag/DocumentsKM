@@ -1,17 +1,36 @@
-FROM mcr.microsoft.com/dotnet/runtime:5.0 AS base
-WORKDIR /app
+# FROM mcr.microsoft.com/dotnet/runtime:5.0 AS base
+# WORKDIR /app
+
+# FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+# WORKDIR /src
+# COPY server/DocumentsKMTest/DocumentsKMTest.csproj server/DocumentsKMTest/
+# COPY . .
+# WORKDIR /src/server/DocumentsKMTest/
+# RUN dotnet build -c Release -o /app
+
+# FROM build AS publish
+# RUN dotnet publish -c Release -o /app
+
+# FROM base AS final
+# WORKDIR /app
+# COPY --from=publish /app .
+# ENTRYPOINT ["dotnet", "test", "DocumentsKMTest.csproj"]
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
-WORKDIR /src
-COPY server/DocumentsKMTest/DocumentsKMTest.csproj server/DocumentsKMTest/
-COPY . .
-WORKDIR /src/server/DocumentsKMTest/
-RUN dotnet build -c Release -o /app
+WORKDIR /source
 
-FROM build AS publish
-RUN dotnet publish -c Release -o /app
+# copy csproj and restore as distinct layers
+COPY server/DocumentsKM/*.csproj server/DocumentsKM/
+RUN dotnet restore server/DocumentsKM/DocumentsKM.csproj
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "test", "DocumentsKMTest.csproj"]
+# copy and build app
+COPY server/DocumentsKM/ server/DocumentsKM/
+WORKDIR /source/server/DocumentsKM
+RUN dotnet build -c release --no-restore
+
+# test stage -- exposes optional entrypoint
+# target entrypoint with: docker build --target test
+FROM build AS test
+WORKDIR /source/server/DocumentsKMTest
+COPY server/DocumentsKMTest/ .
+ENTRYPOINT ["dotnet", "test", "--logger:trx"]

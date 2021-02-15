@@ -30,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByProfileClassId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByProfileClassId_ShouldReturnOK()
         {
             // Arrange
             int profileClassId = _rnd.Next(1, TestData.profileClasses.Count());

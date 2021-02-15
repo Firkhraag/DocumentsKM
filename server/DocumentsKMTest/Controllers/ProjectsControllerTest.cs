@@ -27,7 +27,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAll_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAll_ShouldReturnOK()
         {
             // Arrange
             var endpoint = "/api/projects";

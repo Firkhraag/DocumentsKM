@@ -11,8 +11,8 @@ namespace DocumentsKM.Data
         IEnumerable<Mark> GetAllBySubnodeId(int subnodeId);
         // Получить марку по id
         Mark GetById(int id);
-        // Получить марку по id подузла и коду
-        Mark GetBySubnodeIdAndCode(int subnodeId, string code);
+        // Получить марку по unique key
+        Mark GetByUniqueKey(int subnodeId, string code);
         // Добавить новую марку
         void Add(Mark mark);
         // Изменить имеющуюся марку

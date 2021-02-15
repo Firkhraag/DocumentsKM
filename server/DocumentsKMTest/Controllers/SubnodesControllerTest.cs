@@ -30,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByNodeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByNodeId_ShouldReturnOK()
         {
             // Arrange
             int nodeId = _rnd.Next(1, TestData.nodes.Count());

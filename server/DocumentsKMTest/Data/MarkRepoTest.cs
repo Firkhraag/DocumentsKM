@@ -116,7 +116,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetBySubnodeIdAndCode_ShouldReturnMark()
+        public void GetByUniqueKey_ShouldReturnMark()
         {
             // Arrange
             var context = GetContext(TestData.marks);
@@ -127,7 +127,7 @@ namespace DocumentsKM.Tests
             var code = TestData.marks[0].Code;
 
             // Act
-            var mark = repo.GetBySubnodeIdAndCode(subnodeId, code);
+            var mark = repo.GetByUniqueKey(subnodeId, code);
 
             // Assert
             Assert.Equal(id, mark.Id);
@@ -137,7 +137,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetBySubnodeIdAndCode_ShouldReturnNull_WhenWrongSubnodeIdOrCode()
+        public void GetByUniqueKey_ShouldReturnNull_WhenWrongSubnodeIdOrCode()
         {
             // Arrange
             var context = GetContext(TestData.marks);
@@ -147,8 +147,8 @@ namespace DocumentsKM.Tests
             var code = TestData.marks[0].Code;
 
             // Act
-            var mark1 = repo.GetBySubnodeIdAndCode(999, code);
-            var mark2 = repo.GetBySubnodeIdAndCode(subnodeId, "NotFound");
+            var mark1 = repo.GetByUniqueKey(999, code);
+            var mark2 = repo.GetByUniqueKey(subnodeId, "NotFound");
 
             // Assert
             Assert.Null(mark1);

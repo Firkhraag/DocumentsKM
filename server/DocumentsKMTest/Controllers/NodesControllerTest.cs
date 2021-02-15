@@ -30,7 +30,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByProjectId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByProjectId_ShouldReturnOK()
         {
             // Arrange
             int projectId = _rnd.Next(1, TestData.projects.Count());

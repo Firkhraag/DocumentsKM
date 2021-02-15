@@ -48,7 +48,7 @@ namespace DocumentsKM.Tests
         // ------------------------------------GET------------------------------------
 
         [Fact]
-        public async Task GetAllSheetsByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllSheetsByMarkId_ShouldReturnOK()
         {
             // Arrange
             int markId = _rnd.Next(1, TestData.marks.Count());
@@ -76,7 +76,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllAttachedByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllAttachedByMarkId_ShouldReturnOK()
         {
             // Arrange
             int markId = _rnd.Next(1, TestData.marks.Count());

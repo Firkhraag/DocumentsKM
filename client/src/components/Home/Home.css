@@ -3,7 +3,7 @@
 	display: grid;
 	grid-row-gap: 30px;
 	grid-column-gap: 20px;
-	grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	justify-items: center;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .home-cnt button {
-	width: 175px;
+	width: 200px;
 	height: 100px;
 	color: #000;
 	font-weight: 500;

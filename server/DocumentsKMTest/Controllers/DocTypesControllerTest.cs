@@ -27,7 +27,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllAttached_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllAttached_ShouldReturnOK()
         {
             // Arrange
             var endpoint = "/api/doc-types/attached";

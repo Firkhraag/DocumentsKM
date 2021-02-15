@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DocumentsKM.Dtos;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,12 +14,17 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    // TBD: Create, Update
     public class MarksControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
         private readonly Random _rnd = new Random();
+
+        private class UpdateRequest
+        {
+            public int Id { set; get; }
+            public MarkUpdateRequest Body { set; get; }
+        }
 
         public MarksControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
@@ -34,10 +39,10 @@ namespace DocumentsKM.Tests
             _authHttpClient = factory.CreateClient();
         }
 
-        // Added get new mark code endpoint
+        // ------------------------------------GET------------------------------------
 
         [Fact]
-        public async Task GetAllBySubnodeId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllBySubnodeId_ShouldReturnOK()
         {
             // Arrange
             int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
@@ -48,21 +53,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var marks = TestData.marks.Where(v => v.Subnode.Id == subnodeId)
-                .Select(v => new MarkBaseResponse
-                {
-                    Id = v.Id,
-                    Code = v.Code,
-                    Department = v.Department,
-                }).ToArray();
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<IEnumerable<MarkBaseResponse>>(
-                responseBody, options).Should().BeEquivalentTo(marks);
         }
 
         [Fact]
@@ -80,7 +70,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetById_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetById_ShouldReturnOK()
         {
             // Arrange
             int id = _rnd.Next(1, TestData.marks.Count());
@@ -91,21 +81,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var foundMark = TestData.marks.SingleOrDefault(v => v.Id == id);
-            var mark = new MarkBaseResponse
-            {
-                Id = foundMark.Id,
-                Code = foundMark.Code,
-                Department = foundMark.Department,
-            };
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<MarkBaseResponse>(
-                responseBody, options).Should().BeEquivalentTo(mark);
         }
 
         [Fact]
@@ -137,7 +112,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetMarkParentResponseById_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetMarkParentResponseById_ShouldReturnOK()
         {
             // Arrange
             int id = _rnd.Next(1, TestData.marks.Count());
@@ -148,21 +123,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var foundMark = TestData.marks.SingleOrDefault(v => v.Id == id);
-            var mark = new MarkBaseResponse
-            {
-                Id = foundMark.Id,
-                Code = foundMark.Code,
-                Department = foundMark.Department,
-            };
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<MarkBaseResponse>(
-                responseBody, options).Should().BeEquivalentTo(mark);
         }
 
         [Fact]
@@ -174,6 +134,375 @@ namespace DocumentsKM.Tests
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        // ------------------------------------POST------------------------------------
+
+        [Fact]
+        public async Task Create_ShouldReturnCreated()
+        {
+            // Arrange
+            var subnodeId = 1;
+            var departmentId = 1;
+            var mainBuilderId = 1;
+            var markRequest = new MarkCreateRequest
+            {
+                SubnodeId = subnodeId,
+                Code = "NewCreate",
+                Name = "NewCreate",
+                DepartmentId = departmentId,
+                MainBuilderId = mainBuilderId,
+            };
+            string json = JsonSerializer.Serialize(markRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks";
+
+            // Act
+            var response = await _httpClient.PostAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
+        {
+            // Arrange
+            var subnodeId = 1;
+            var departmentId = 1;
+            var mainBuilderId = 1;
+            var wrongMarkRequests = new List<MarkCreateRequest>
+            {
+                new MarkCreateRequest
+                {
+                    SubnodeId = subnodeId,
+                    Code = "",
+                    Name = "NewCreate",
+                    DepartmentId = departmentId,
+                    MainBuilderId = mainBuilderId,
+                },
+                new MarkCreateRequest
+                {
+                    SubnodeId = subnodeId,
+                    Code = "NewCreate",
+                    Name = "",
+                    DepartmentId = departmentId,
+                    MainBuilderId = mainBuilderId,
+                },
+            };
+
+            var endpoint = $"/api/marks";
+            foreach (var wrongMarkRequest in wrongMarkRequests)
+            {
+                var json = JsonSerializer.Serialize(wrongMarkRequest);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Act
+                var response = await _httpClient.PostAsync(endpoint, httpContent);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnNotFound_WhenWrongValues()
+        {
+            // Arrange
+            var subnodeId = 1;
+            var departmentId = 1;
+            var mainBuilderId = 1;
+            var groupLeaderId = 1;
+            var chiefSpecialistId = 1;
+            var wrongMarkRequests = new List<MarkCreateRequest>
+            {
+                new MarkCreateRequest
+                {
+                    SubnodeId = 999,
+                    Code = "NewCreate2",
+                    Name = "NewCreate2",
+                    DepartmentId = departmentId,
+                    ChiefSpecialistId = chiefSpecialistId,
+                    GroupLeaderId = groupLeaderId,
+                    MainBuilderId = mainBuilderId,
+                },
+                new MarkCreateRequest
+                {
+                    SubnodeId = subnodeId,
+                    Code = "NewCreate2",
+                    Name = "NewCreate2",
+                    DepartmentId = 999,
+                    ChiefSpecialistId = chiefSpecialistId,
+                    GroupLeaderId = groupLeaderId,
+                    MainBuilderId = mainBuilderId,
+                },
+                new MarkCreateRequest
+                {
+                    SubnodeId = subnodeId,
+                    Code = "NewCreate2",
+                    Name = "NewCreate2",
+                    DepartmentId = departmentId,
+                    ChiefSpecialistId = 999,
+                    GroupLeaderId = groupLeaderId,
+                    MainBuilderId = mainBuilderId,
+                },
+                new MarkCreateRequest
+                {
+                    SubnodeId = subnodeId,
+                    Code = "NewCreate2",
+                    Name = "NewCreate2",
+                    DepartmentId = departmentId,
+                    ChiefSpecialistId = chiefSpecialistId,
+                    GroupLeaderId = 999,
+                    MainBuilderId = mainBuilderId,
+                },
+                 new MarkCreateRequest
+                {
+                    SubnodeId = subnodeId,
+                    Code = "NewCreate2",
+                    Name = "NewCreate2",
+                    DepartmentId = departmentId,
+                    ChiefSpecialistId = chiefSpecialistId,
+                    GroupLeaderId = groupLeaderId,
+                    MainBuilderId = 999,
+                },
+            };
+
+            var endpoint = $"/api/marks";
+            foreach (var wrongMarkRequest in wrongMarkRequests)
+            {
+                var json = JsonSerializer.Serialize(wrongMarkRequest);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Act
+                var response = await _httpClient.PostAsync(endpoint, httpContent);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnConflict_WhenEmployeesAndDepartmentDontMatchOrConflictValues()
+        {
+            // Arrange
+            var subnodeId = 1;
+            var departmentId = 1;
+            var chiefSpecialistId = 1;
+            var groupLeaderId = 2;
+            var mainBuilderId = 3;
+
+            var wrongMarkRequests = new List<MarkCreateRequest>
+            {
+                new MarkCreateRequest
+                {
+                    SubnodeId = TestData.marks[0].Subnode.Id,
+                    Code = TestData.marks[0].Code,
+                    Name = "NewCreate",
+                    DepartmentId = departmentId,
+                    ChiefSpecialistId = chiefSpecialistId,
+                    GroupLeaderId = groupLeaderId,
+                    MainBuilderId = mainBuilderId,
+                },
+                new MarkCreateRequest
+                {
+                    SubnodeId = subnodeId,
+                    Code = "NewCreate",
+                    Name = "NewCreate",
+                    DepartmentId = departmentId,
+                    ChiefSpecialistId = chiefSpecialistId,
+                    GroupLeaderId = groupLeaderId,
+                    MainBuilderId = mainBuilderId,
+                },
+            };
+
+            var endpoint = $"/api/marks";
+            foreach (var wrongMarkRequest in wrongMarkRequests)
+            {
+                var json = JsonSerializer.Serialize(wrongMarkRequest);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Act
+                var response = await _httpClient.PostAsync(endpoint, httpContent);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            var subnodeId = 1;
+            var departmentId = 1;
+            var mainBuilderId = 1;
+            var markRequest = new MarkCreateRequest
+            {
+                SubnodeId = subnodeId,
+                Code = "NewCreate",
+                Name = "NewCreate",
+                DepartmentId = departmentId,
+                MainBuilderId = mainBuilderId,
+            };
+            string json = JsonSerializer.Serialize(markRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks";
+
+            // Act
+            var response = await _authHttpClient.PostAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        // ------------------------------------PATCH------------------------------------
+
+        [Fact]
+        public async Task Update_ShouldReturnNoContent()
+        {
+            // Arrange
+            var id = 1;
+            var markRequest = new MarkUpdateRequest
+            {
+                Name = "NewUpdate",
+            };
+            string json = JsonSerializer.Serialize(markRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks/{id}";
+
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnBadRequest_WhenWrongValues()
+        {
+            // Arrange
+            int id = 1;
+            var endpoint = $"/api/marks/{id}";
+
+            var httpContent = new StringContent("", Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNotFound_WhenWrongValues()
+        {
+            // Arrange
+            int id = 1;
+            var wrongMarkRequests = new List<UpdateRequest>
+            {
+                new UpdateRequest
+                {
+                    Id = 999,
+                    Body = new MarkUpdateRequest
+                    {
+                        Name = "NewUpdate",
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        SubnodeId = 999,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        DepartmentId = 999,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        ChiefSpecialistId = 999,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        GroupLeaderId = 999,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        MainBuilderId = 999,
+                    },
+                },
+            };
+
+            foreach (var wrongMarkRequest in wrongMarkRequests)
+            {
+                var json = JsonSerializer.Serialize(wrongMarkRequest.Body);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var endpoint = $"/api/marks/{wrongMarkRequest.Id}";
+
+                // Act
+                var response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnConflict_WhenConflictValues()
+        {
+            // Arrange
+            int id = 2;
+            var markRequest = new MarkUpdateRequest
+            {
+                Code = TestData.marks[0].Code,
+            };
+            string json = JsonSerializer.Serialize(markRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks/{id}";
+
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            var id = 1;
+            var markRequest = new MarkUpdateRequest
+            {
+                Name = "NewUpdate",
+            };
+            string json = JsonSerializer.Serialize(markRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks/{id}";
+
+            // Act
+            var response = await _authHttpClient.PatchAsync(endpoint, httpContent);
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);

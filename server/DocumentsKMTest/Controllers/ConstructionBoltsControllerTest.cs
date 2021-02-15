@@ -36,7 +36,7 @@ namespace DocumentsKM.Tests
         // ------------------------------------GET------------------------------------
 
         [Fact]
-        public async Task GetAllByConstructionId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByConstructionId_ShouldReturnOK()
         {
             // Arrange
             int constructionId = _rnd.Next(1, TestData.constructions.Count());

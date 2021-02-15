@@ -36,7 +36,7 @@ namespace DocumentsKM.Tests
         // ------------------------------------GET------------------------------------
 
         [Fact]
-        public async Task GetAllByMarkId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllByMarkId_ShouldReturnOK()
         {
             // Arrange
             int markId = _rnd.Next(1, TestData.marks.Count());

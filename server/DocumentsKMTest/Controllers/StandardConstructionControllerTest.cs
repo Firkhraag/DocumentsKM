@@ -31,7 +31,7 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllBySpecificationId_ShouldReturnOK_WhenAccessTokenIsProvided()
+        public async Task GetAllBySpecificationId_ShouldReturnOK()
         {
             // Arrange
             int specificationId = _rnd.Next(1, TestData.specifications.Count());
