@@ -808,25 +808,25 @@ namespace DocumentsKM.Tests
             {
                 Id = 1,
                 Diameter = boltDiameters[0],
-                BoltLen = 1,
-                ScrewLen = 1,
-                BoltWeight = 1,
+                Length = 1,
+                ScrewLength = 1,
+                Weight = 1,
             },
             new BoltLength
             {
                 Id = 2,
                 Diameter = boltDiameters[1],
-                BoltLen = 2,
-                ScrewLen = 2,
-                BoltWeight = 2,
+                Length = 2,
+                ScrewLength = 2,
+                Weight = 2,
             },
             new BoltLength
             {
                 Id = 3,
                 Diameter = boltDiameters[2],
-                BoltLen = 3,
-                ScrewLen = 3,
-                BoltWeight = 3,
+                Length = 3,
+                ScrewLength = 3,
+                Weight = 3,
             },
         };
 

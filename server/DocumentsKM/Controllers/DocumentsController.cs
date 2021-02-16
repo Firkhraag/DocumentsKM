@@ -37,7 +37,7 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        [HttpGet, Route("marks/{markId}/bolts-doc")]
+        [HttpGet, Route("marks/{markId}/bolt-doc")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetBoltDocument(int markId)
         {

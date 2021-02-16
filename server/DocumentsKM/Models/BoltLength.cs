@@ -13,12 +13,12 @@ namespace DocumentsKM.Models
         public virtual BoltDiameter Diameter { get; set; }
 
         [Required]
-        public int BoltLen { get; set; }
+        public int Length { get; set; }
 
         [Required]
-        public int ScrewLen { get; set; }
+        public int ScrewLength { get; set; }
 
         [Required]
-        public float BoltWeight { get; set; }
+        public float Weight { get; set; }
     }
 }

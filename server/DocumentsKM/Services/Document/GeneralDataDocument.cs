@@ -20,24 +20,24 @@ namespace DocumentsKM.Services
                 var firstTr = t.Descendants<TableRow>().ToList()[1];
                 var clonedFirstTr = firstTr.CloneNode(true);
 
-                var firstTrCells = firstTr.Descendants<TableCell>().ToList();
-                firstTrCells[0].GetFirstChild<Paragraph>().Append(
+                var trCells = firstTr.Descendants<TableCell>().ToList();
+                trCells[0].GetFirstChild<Paragraph>().Append(
                     GetWordTextElement("1", 26));
-                firstTrCells[1].GetFirstChild<Paragraph>().Append(
+                trCells[1].GetFirstChild<Paragraph>().Append(
                     GetWordTextElement(docs[0].Name, 26));
-                firstTrCells[2].GetFirstChild<Paragraph>().Append(
+                trCells[2].GetFirstChild<Paragraph>().Append(
                     GetWordTextElement(docs[0].Note, 26));
 
                 for (int i = 1; i < docs.Count(); i++)
                 {
                     var newTr = clonedFirstTr.CloneNode(true);
-                    firstTrCells = newTr.Descendants<TableCell>().ToList();
+                    trCells = newTr.Descendants<TableCell>().ToList();
 
-                    firstTrCells[0].GetFirstChild<Paragraph>().Append(
+                    trCells[0].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement((i + 1).ToString(), 26));
-                    firstTrCells[1].GetFirstChild<Paragraph>().Append(
+                    trCells[1].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement(docs[i].Name, 26));
-                    firstTrCells[2].GetFirstChild<Paragraph>().Append(
+                    trCells[2].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement(docs[i].Note, 26));
 
                     t.Append(newTr);
@@ -59,8 +59,8 @@ namespace DocumentsKM.Services
 
             if (markLinkedDocs.Count() > 0)
             {
-                var firstTrCells = firstTr.Descendants<TableCell>().ToList();
-                var p = firstTrCells[1].GetFirstChild<Paragraph>();
+                var trCells = firstTr.Descendants<TableCell>().ToList();
+                var p = trCells[1].GetFirstChild<Paragraph>();
                 var justification = new Justification
                 {
                     Val = JustificationValues.Center,
@@ -71,13 +71,13 @@ namespace DocumentsKM.Services
                 for (int i = 0; i < markLinkedDocs.Count(); i++)
                 {
                     var newTr = clonedFirstTr.CloneNode(true);
-                    firstTrCells = newTr.Descendants<TableCell>().ToList();
+                    trCells = newTr.Descendants<TableCell>().ToList();
 
-                    firstTrCells[0].GetFirstChild<Paragraph>().Append(
+                    trCells[0].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement(markLinkedDocs[i].LinkedDoc.Designation, 26));
-                    firstTrCells[1].GetFirstChild<Paragraph>().Append(
+                    trCells[1].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement(markLinkedDocs[i].LinkedDoc.Name, 26));
-                    firstTrCells[2].GetFirstChild<Paragraph>().Append(
+                    trCells[2].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement(markLinkedDocs[i].Note, 26));
                     t.Append(newTr);
                 }
@@ -85,8 +85,8 @@ namespace DocumentsKM.Services
             if (attachedDocs.Count() > 0)
             {
                 var newTr = clonedFirstTr.CloneNode(true);
-                var firstTrCells = newTr.Descendants<TableCell>().ToList();
-                var p = firstTrCells[1].GetFirstChild<Paragraph>();
+                var trCells = newTr.Descendants<TableCell>().ToList();
+                var p = trCells[1].GetFirstChild<Paragraph>();
                 var justification = new Justification
                 {
                     Val = JustificationValues.Center,
@@ -99,13 +99,13 @@ namespace DocumentsKM.Services
                 for (int i = 0; i < attachedDocs.Count(); i++)
                 {
                     newTr = clonedFirstTr.CloneNode(true);
-                    firstTrCells = newTr.Descendants<TableCell>().ToList();
+                    trCells = newTr.Descendants<TableCell>().ToList();
 
-                    firstTrCells[0].GetFirstChild<Paragraph>().Append(
+                    trCells[0].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement(attachedDocs[i].Designation, 26));
-                    firstTrCells[1].GetFirstChild<Paragraph>().Append(
+                    trCells[1].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement(attachedDocs[i].Name, 26));
-                    firstTrCells[2].GetFirstChild<Paragraph>().Append(
+                    trCells[2].GetFirstChild<Paragraph>().Append(
                         GetWordTextElement(attachedDocs[i].Note, 26));
 
                     t.Append(newTr);

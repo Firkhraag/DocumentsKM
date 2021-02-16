@@ -21,6 +21,12 @@ namespace DocumentsKM.Data
                 v => v.Construction.Id == constructionId).ToList();
         }
 
+        public IEnumerable<ConstructionBolt> GetAllByMarkId(int markId)
+        {
+            return _context.ConstructionBolts.Where(
+                v => v.Construction.Specification.Mark.Id == markId).ToList();
+        }
+
         public ConstructionBolt GetById(int id)
         {
             return _context.ConstructionBolts.SingleOrDefault(v => v.Id == id);

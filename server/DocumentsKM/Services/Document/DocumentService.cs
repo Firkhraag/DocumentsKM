@@ -16,30 +16,45 @@ namespace DocumentsKM.Services
         private readonly int _departmentHeadPosId = 7;
         private readonly int _sheetDocTypeId = 1;
         
-        private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
         private readonly IMarkRepo _markRepo;
         private readonly IMarkApprovalRepo _markApprovalRepo;
         private readonly IEmployeeRepo _employeeRepo;
+
         private readonly IDocRepo _docRepo;
+        private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
         private readonly IMarkLinkedDocRepo _markLinkedDocRepo;
         private readonly IAttachedDocRepo _attachedDocRepo;
 
+        private readonly IBoltDiameterRepo _boltDiameterRepo;
+        private readonly IBoltLengthRepo _boltLengthRepo;
+        private readonly IConstructionBoltRepo _constructionBoltRepo;
+
         public DocumentService(
-            IMarkGeneralDataPointRepo markGeneralDataPointRepo,
             IMarkRepo markRepo,
             IMarkApprovalRepo markApprovalRepo,
             IEmployeeRepo employeeRepo,
+
             IDocRepo docRepo,
+            IMarkGeneralDataPointRepo markGeneralDataPointRepo,
             IMarkLinkedDocRepo markLinkedDocRepo,
-            IAttachedDocRepo attachedDocRepo)
+            IAttachedDocRepo attachedDocRepo,
+            
+            IBoltDiameterRepo boltDiameterRepo,
+            IBoltLengthRepo boltLengthRepo,
+            IConstructionBoltRepo constructionBoltRepo)
         {
-            _markGeneralDataPointRepo = markGeneralDataPointRepo;
             _markRepo = markRepo;
             _markApprovalRepo = markApprovalRepo;
             _employeeRepo = employeeRepo;
+
             _docRepo = docRepo;
+            _markGeneralDataPointRepo = markGeneralDataPointRepo;
             _markLinkedDocRepo = markLinkedDocRepo;
             _attachedDocRepo = attachedDocRepo;
+
+            _boltDiameterRepo = boltDiameterRepo;
+            _boltLengthRepo = boltLengthRepo;
+            _constructionBoltRepo = constructionBoltRepo;
         }
 
         public MemoryStream GetGeneralDataDocument(int markId)
@@ -51,21 +66,14 @@ namespace DocumentsKM.Services
             var subnode = mark.Subnode;
             var node = subnode.Node;
             var project = node.Project;
+
             var markGeneralDataPoints = _markGeneralDataPointRepo.GetAllByMarkId(
                 markId).OrderByDescending(
                     v => v.Section.OrderNum).ThenByDescending(v => v.OrderNum);
             var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
 
             var path = "D:\\Dev\\Gipromez\\word\\template.docx";
-
-            var g = Guid.NewGuid();
-            string guidString = Convert.ToBase64String(g.ToByteArray());
-            guidString = guidString.Replace("=", "");
-            guidString = guidString.Replace("+", "");
-            var outputPath = $"D:\\Dev\\Gipromez\\word\\{guidString}.docx";
-
             var memory = GetStreamFromTemplate(path);
-
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
                 var markName = MakeMarkName(
@@ -98,48 +106,30 @@ namespace DocumentsKM.Services
             var mark = _markRepo.GetById(markId);
             if (mark == null)
                 throw new ArgumentNullException(nameof(mark));
-            var markApprovals = _markApprovalRepo.GetAllByMarkId(markId);
             var subnode = mark.Subnode;
             var node = subnode.Node;
             var project = node.Project;
-            var markGeneralDataPoints = _markGeneralDataPointRepo.GetAllByMarkId(
-                markId).OrderByDescending(
-                    v => v.Section.OrderNum).ThenByDescending(v => v.OrderNum);
-            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+
+            var constructionBolts = _constructionBoltRepo.GetAllByMarkId(markId);
+            var boltLengths = new List<BoltLength> {};
+            foreach (var bolt in constructionBolts)
+            {
+                var arr = _boltLengthRepo.GetAllByDiameterId(bolt.Diameter.Id);
+                var bl = arr.Where(
+                    v => v.Length >= bolt.Packet + v.ScrewLength).Aggregate(
+                        (i1, i2) => i1.Length < i2.Length ? i1 : i2);
+                boltLengths.Add(bl);
+            }
 
             var path = "D:\\Dev\\Gipromez\\word\\template_bolt.docx";
-
-            var g = Guid.NewGuid();
-            string guidString = Convert.ToBase64String(g.ToByteArray());
-            guidString = guidString.Replace("=", "");
-            guidString = guidString.Replace("+", "");
-            var outputPath = $"D:\\Dev\\Gipromez\\word\\{guidString}.docx";
-
             var memory = GetStreamFromTemplate(path);
-
-            // using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
-            // {
-            //     var markName = MakeMarkName(
-            //         project.BaseSeries, node.Code, subnode.Code, mark.Code);
-            //     (var complexName, var objectName) = MakeComplexAndObjectName(
-            //         project.Name, node.Name, subnode.Name, mark.Name);
-            //     GeneralDataDocument.AppendList(wordDoc, markGeneralDataPoints);
-
-            //     GeneralDataDocument.AppendToSheetTable(wordDoc, sheets.ToList());
-            //     GeneralDataDocument.AppendToLinkedAndAttachedDocsTable(
-            //         wordDoc,
-            //         _markLinkedDocRepo.GetAllByMarkId(markId).ToList(),
-            //         _attachedDocRepo.GetAllByMarkId(markId).ToList());
-            //     AppendToBigFooterTable(
-            //         wordDoc,
-            //         markName,
-            //         complexName,
-            //         objectName,
-            //         sheets.Count(),
-            //         mark,
-            //         markApprovals.ToList());
-            //     AppendToSmallFooterTable(wordDoc, markName);
-            // }
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
+            {
+                var markName = MakeMarkName(
+                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
+                BoltDocument.AppendToTable(wordDoc, constructionBolts.ToList(), boltLengths);
+                AppendToSmallFooterTable(wordDoc, markName);
+            }
             memory.Seek(0, SeekOrigin.Begin);
             return memory;
         }
