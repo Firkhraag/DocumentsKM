@@ -22,11 +22,11 @@ namespace DocumentsKM.Services
 
                 var trCells = firstTr.Descendants<TableCell>().ToList();
                 trCells[0].GetFirstChild<Paragraph>().Append(
-                    GetWordTextElement("1", 26));
+                    Word.GetTextElement("1", 26));
                 trCells[1].GetFirstChild<Paragraph>().Append(
-                    GetWordTextElement(docs[0].Name, 26));
+                    Word.GetTextElement(docs[0].Name, 26));
                 trCells[2].GetFirstChild<Paragraph>().Append(
-                    GetWordTextElement(docs[0].Note, 26));
+                    Word.GetTextElement(docs[0].Note, 26));
 
                 for (int i = 1; i < docs.Count(); i++)
                 {
@@ -34,11 +34,11 @@ namespace DocumentsKM.Services
                     trCells = newTr.Descendants<TableCell>().ToList();
 
                     trCells[0].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement((i + 1).ToString(), 26));
+                        Word.GetTextElement((i + 1).ToString(), 26));
                     trCells[1].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(docs[i].Name, 26));
+                        Word.GetTextElement(docs[i].Name, 26));
                     trCells[2].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(docs[i].Note, 26));
+                        Word.GetTextElement(docs[i].Note, 26));
 
                     t.Append(newTr);
                 }
@@ -66,7 +66,7 @@ namespace DocumentsKM.Services
                     Val = JustificationValues.Center,
                 };
                 p.ParagraphProperties.Append(justification);
-                p.Append(GetWordTextElement("Ссылочные документы", 26, true));
+                p.Append(Word.GetTextElement("Ссылочные документы", 26, true));
 
                 for (int i = 0; i < markLinkedDocs.Count(); i++)
                 {
@@ -74,11 +74,11 @@ namespace DocumentsKM.Services
                     trCells = newTr.Descendants<TableCell>().ToList();
 
                     trCells[0].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(markLinkedDocs[i].LinkedDoc.Designation, 26));
+                        Word.GetTextElement(markLinkedDocs[i].LinkedDoc.Designation, 26));
                     trCells[1].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(markLinkedDocs[i].LinkedDoc.Name, 26));
+                        Word.GetTextElement(markLinkedDocs[i].LinkedDoc.Name, 26));
                     trCells[2].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(markLinkedDocs[i].Note, 26));
+                        Word.GetTextElement(markLinkedDocs[i].Note, 26));
                     t.Append(newTr);
                 }
             }
@@ -93,7 +93,7 @@ namespace DocumentsKM.Services
                 };
                 p.ParagraphProperties.Append(justification);
 
-                p.Append(GetWordTextElement("Прилагаемые документы", 26, true));
+                p.Append(Word.GetTextElement("Прилагаемые документы", 26, true));
                 t.Append(newTr);
 
                 for (int i = 0; i < attachedDocs.Count(); i++)
@@ -102,11 +102,11 @@ namespace DocumentsKM.Services
                     trCells = newTr.Descendants<TableCell>().ToList();
 
                     trCells[0].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(attachedDocs[i].Designation, 26));
+                        Word.GetTextElement(attachedDocs[i].Designation, 26));
                     trCells[1].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(attachedDocs[i].Name, 26));
+                        Word.GetTextElement(attachedDocs[i].Name, 26));
                     trCells[2].GetFirstChild<Paragraph>().Append(
-                        GetWordTextElement(attachedDocs[i].Note, 26));
+                        Word.GetTextElement(attachedDocs[i].Note, 26));
 
                     t.Append(newTr);
                 }
@@ -317,19 +317,19 @@ namespace DocumentsKM.Services
                         for (int k = 0; k < split.Count(); k++)
                         {
                             if (k > 0)
-                                newPara.AppendChild(GetWordTextElement(split[k][0].ToString(), 26, false, true));
+                                newPara.AppendChild(Word.GetTextElement(split[k][0].ToString(), 26, false, true));
                             if (k == 0)
-                                newPara.AppendChild(GetWordTextElement(split[k], 26));
+                                newPara.AppendChild(Word.GetTextElement(split[k], 26));
                             else
                                 if (split[k].Length > 1)
-                                    newPara.AppendChild(GetWordTextElement(split[k].Substring(1), 26));
+                                    newPara.AppendChild(Word.GetTextElement(split[k].Substring(1), 26));
                         }
                     }
                     else
-                        newPara.AppendChild(GetWordTextElement(pointText, 26));
+                        newPara.AppendChild(Word.GetTextElement(pointText, 26));
                 }
                 else
-                    newPara.AppendChild(GetWordTextElement(pointText, 26));
+                    newPara.AppendChild(Word.GetTextElement(pointText, 26));
                 // if (pointText.Contains('^'))
                 // {
                 //     var split = pointText.Split("^2");
@@ -339,9 +339,9 @@ namespace DocumentsKM.Services
                 //         {
                 //             if (k > 0)
                 //             {
-                //                 newPara.AppendChild(GetWordTextElement("2", 26, false, true));
+                //                 newPara.AppendChild(Word.GetTextElement("2", 26, false, true));
                 //             }
-                //             newPara.AppendChild(GetWordTextElement(split[k], 26));
+                //             newPara.AppendChild(Word.GetTextElement(split[k], 26));
                 //         }
                 //         // var split2 = s.Split("^3");
                 //         // if (s.Count() > 1)
@@ -358,63 +358,19 @@ namespace DocumentsKM.Services
                 //             {
                 //                 if (k > 0)
                 //                 {
-                //                     newPara.AppendChild(GetWordTextElement("3", 26, false, true));
+                //                     newPara.AppendChild(Word.GetTextElement("3", 26, false, true));
                 //                 }
-                //                 newPara.AppendChild(GetWordTextElement(split[k], 26));
+                //                 newPara.AppendChild(Word.GetTextElement(split[k], 26));
                 //             }
                 //         }
                 //         else
-                //             newPara.AppendChild(GetWordTextElement(pointText, 26));
+                //             newPara.AppendChild(Word.GetTextElement(pointText, 26));
                 //     }
                 // }
                 // else
-                //     newPara.AppendChild(GetWordTextElement(pointText, 26));
+                //     newPara.AppendChild(Word.GetTextElement(pointText, 26));
                 body.PrependChild(newPara);
             }
-        }
-
-        private static Run GetWordTextElement(
-            string text,
-            int fSize,
-            bool isUnderlined = false,
-            bool isSuperscript = false)
-        {
-            Run run = new Run();
-            RunProperties runProperties = run.AppendChild(new RunProperties());
-            Italic italic = new Italic();
-            italic.Val = OnOffValue.FromBoolean(true);
-            FontSize fontSize = new FontSize() { Val = fSize.ToString() };
-            runProperties.AppendChild(italic);
-            runProperties.AppendChild(fontSize);
-            RunFonts font = new RunFonts()
-            {
-                Ascii = "GOST type B",
-                HighAnsi = "GOST type B",
-                ComplexScript = "GOST type B"
-            };
-            runProperties.Append(font);
-            if (isUnderlined)
-            {
-                Underline underline = new Underline()
-                {
-                    Val = UnderlineValues.Single,
-                };
-                runProperties.Append(underline);
-            }
-            if (isSuperscript)
-            {
-                VerticalTextAlignment vertAlign = new VerticalTextAlignment()
-                {
-                    Val = VerticalPositionValues.Superscript,
-                };
-                runProperties.Append(vertAlign);
-            }
-            run.AppendChild(new Text()
-            {
-                Text = text,
-                Space = SpaceProcessingModeValues.Preserve,
-            });
-            return run;
         }
     }
 }

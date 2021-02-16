@@ -101,6 +101,41 @@ namespace DocumentsKM.Services
             return memory;
         }
 
+        public MemoryStream GetConstructionDocument(int markId)
+        {
+            var mark = _markRepo.GetById(markId);
+            if (mark == null)
+                throw new ArgumentNullException(nameof(mark));
+            var markApprovals = _markApprovalRepo.GetAllByMarkId(markId);
+            var subnode = mark.Subnode;
+            var node = subnode.Node;
+            var project = node.Project;
+
+            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+
+            var path = "D:\\Dev\\Gipromez\\word\\template_construction.docx";
+            var memory = GetStreamFromTemplate(path);
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
+            {
+                var markName = MakeMarkName(
+                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
+                (var complexName, var objectName) = MakeComplexAndObjectName(
+                    project.Name, node.Name, subnode.Name, mark.Name);
+
+                ConstructionDocument.AppendToTable(wordDoc);   
+                AppendToBigFooterTable(
+                    wordDoc,
+                    markName,
+                    complexName,
+                    objectName,
+                    sheets.Count(),
+                    mark,
+                    markApprovals.ToList());
+            }
+            memory.Seek(0, SeekOrigin.Begin);
+            return memory;
+        }
+
         public MemoryStream GetBoltDocument(int markId)
         {
             var mark = _markRepo.GetById(markId);
@@ -134,6 +169,8 @@ namespace DocumentsKM.Services
             return memory;
         }
 
+        // -------------------------------------------------------------------------
+
         private void AppendToBigFooterTable(
             WordprocessingDocument document,
             string markFullCodeName,
@@ -154,22 +191,22 @@ namespace DocumentsKM.Services
             var trCells = trArr[0].Descendants<TableCell>().ToList();
             var tc = trCells[firstPartColumnIndexToFill];
             var p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetWordTextElement(markFullCodeName, 22));
+            p.Append(Word.GetTextElement(markFullCodeName, 22));
 
             trCells = trArr[2].Descendants<TableCell>().ToList();
             tc = trCells[firstPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetWordTextElement(complexName, 22));
+            p.Append(Word.GetTextElement(complexName, 22));
 
             trCells = trArr[5].Descendants<TableCell>().ToList();
 
             // tc = trCells[1];
             // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetWordTextElement("E1", 22));
+            // p.Append(Word.GetTextElement("E1", 22));
 
             tc = trCells[secondPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetWordTextElement(objectName, 20));
+            p.Append(Word.GetTextElement(objectName, 20));
 
             trCells = trArr[6].Descendants<TableCell>().ToList();
 
@@ -177,12 +214,12 @@ namespace DocumentsKM.Services
             {
                 tc = trCells[1];
                 p = tc.GetFirstChild<Paragraph>();
-                p.Append(GetWordTextElement(mark.ChiefSpecialist.Name, 22));
+                p.Append(Word.GetTextElement(mark.ChiefSpecialist.Name, 22));
             }
 
             tc = trCells.LastOrDefault();
             p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetWordTextElement(sheetsCount.ToString(), 22));
+            p.Append(Word.GetTextElement(sheetsCount.ToString(), 22));
 
             trCells = trArr[7].Descendants<TableCell>().ToList();
             tc = trCells[1];
@@ -194,23 +231,23 @@ namespace DocumentsKM.Services
             if (departmentHeadArr.Count() != 1)
                 throw new ConflictException();
 
-            p.Append(GetWordTextElement(
+            p.Append(Word.GetTextElement(
                 departmentHeadArr.ToList()[0].Name, 22));
 
             trCells = trArr[8].Descendants<TableCell>().ToList();
             tc = trCells[1];
             p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetWordTextElement(mark.Subnode.Node.ChiefEngineer.Name, 22));
+            p.Append(Word.GetTextElement(mark.Subnode.Node.ChiefEngineer.Name, 22));
 
             // trCells = trArr[9].Descendants<TableCell>().ToList();
             // tc = trCells[1];
             // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetWordTextElement("E5", 22));
+            // p.Append(Word.GetTextElement("E5", 22));
 
             // trCells = trArr[10].Descendants<TableCell>().ToList();
             // tc = trCells[1];
             // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetWordTextElement("E6", 22));
+            // p.Append(Word.GetTextElement("E6", 22));
 
             for (int i = 0; i < markApprovals.Count(); i++)
             {
@@ -219,7 +256,7 @@ namespace DocumentsKM.Services
                     trCells = trArr[12 + i].Descendants<TableCell>().ToList();
                     tc = trCells[0];
                     p = tc.GetFirstChild<Paragraph>();
-                    p.Append(GetWordTextElement(markApprovals[i].Employee.Department.Name, 22));
+                    p.Append(Word.GetTextElement(markApprovals[i].Employee.Department.Name, 22));
                     tc = trCells[1];
                 }
                 else if (i == 3)
@@ -227,7 +264,7 @@ namespace DocumentsKM.Services
                     trCells = trArr[8 + i].Descendants<TableCell>().ToList();
                     tc = trCells[1];
                     p = tc.GetFirstChild<Paragraph>();
-                    p.Append(GetWordTextElement(markApprovals[i].Employee.Department.Name, 22));
+                    p.Append(Word.GetTextElement(markApprovals[i].Employee.Department.Name, 22));
                     tc = trCells[2];
                 }
                 else
@@ -235,11 +272,11 @@ namespace DocumentsKM.Services
                     trCells = trArr[8 + i].Descendants<TableCell>().ToList();
                     tc = trCells[4];
                     p = tc.GetFirstChild<Paragraph>();
-                    p.Append(GetWordTextElement(markApprovals[i].Employee.Department.Name, 22));
+                    p.Append(Word.GetTextElement(markApprovals[i].Employee.Department.Name, 22));
                     tc = trCells[5];
                 }
                 p = tc.GetFirstChild<Paragraph>();
-                p.Append(GetWordTextElement(markApprovals[i].Employee.Name, 22));
+                p.Append(Word.GetTextElement(markApprovals[i].Employee.Name, 22));
             }
         }
 
@@ -254,51 +291,7 @@ namespace DocumentsKM.Services
             var firstTrCells = firstTr.Descendants<TableCell>().ToList();
             var tc = firstTrCells[columnIndexToFill];
             var p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetWordTextElement(markName, 26));
-        }
-
-        private Run GetWordTextElement(
-            string text,
-            int fSize,
-            bool isUnderlined = false,
-            bool isSuperscript = false)
-        {
-            Run run = new Run();
-            RunProperties runProperties = run.AppendChild(new RunProperties());
-            Italic italic = new Italic();
-            italic.Val = OnOffValue.FromBoolean(true);
-            FontSize fontSize = new FontSize() { Val = fSize.ToString() };
-            runProperties.AppendChild(italic);
-            runProperties.AppendChild(fontSize);
-            RunFonts font = new RunFonts()
-            {
-                Ascii = "GOST type B",
-                HighAnsi = "GOST type B",
-                ComplexScript = "GOST type B"
-            };
-            runProperties.Append(font);
-            if (isUnderlined)
-            {
-                Underline underline = new Underline()
-                {
-                    Val = UnderlineValues.Single,
-                };
-                runProperties.Append(underline);
-            }
-            if (isSuperscript)
-            {
-                VerticalTextAlignment vertAlign = new VerticalTextAlignment()
-                {
-                    Val = VerticalPositionValues.Superscript,
-                };
-                runProperties.Append(vertAlign);
-            }
-            run.AppendChild(new Text()
-            {
-                Text = text,
-                Space = SpaceProcessingModeValues.Preserve,
-            });
-            return run;
+            p.Append(Word.GetTextElement(markName, 26));
         }
 
         private MemoryStream GetStreamFromTemplate(string inputPath)

@@ -37,6 +37,24 @@ namespace DocumentsKM.Controllers
             }
         }
 
+        [HttpGet, Route("marks/{markId}/construction-doc")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetConstructionDocument(int markId)
+        {
+            try
+            {
+                var file = _service.GetConstructionDocument(markId);
+                return File(
+                    file,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "Ведомость металлоконструкций.docx");
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+        }
+
         [HttpGet, Route("marks/{markId}/bolt-doc")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetBoltDocument(int markId)

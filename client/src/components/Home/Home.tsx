@@ -12,6 +12,26 @@ import './Home.css'
 const Home = () => {
 	const mark = useMark()
 
+    const onConstructionDocumentDownloadButtonClick = async () => {
+		try {
+			const response = await httpClient.get(
+				`/marks/${mark.id}/construction-doc`,
+				{
+					responseType: 'blob',
+				}
+			)
+			const url = window.URL.createObjectURL(new Blob([response.data]))
+			const link = document.createElement('a')
+			link.href = url
+			link.setAttribute('download', `${mark.code}_ВМП.docx`)
+			document.body.appendChild(link)
+			link.click()
+			link.remove()
+		} catch (e) {
+			console.log('Failed to download the file')
+		}
+	}
+
     const onBoltDocumentDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
@@ -24,7 +44,7 @@ const Home = () => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', 'Ведомость болтов.docx')
+			link.setAttribute('download', `${mark.code}_ВБ.docx`)
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
@@ -129,19 +149,18 @@ const Home = () => {
                 <Button
                     variant="outline-secondary"
                     disabled={mark == null ? true : false}
+                    onClick={onConstructionDocumentDownloadButtonClick}
+                >
+                    Ведомость металлоконструкций
+                </Button>
+                <Button
+                    variant="outline-secondary"
+                    disabled={mark == null ? true : false}
                     onClick={onBoltDocumentDownloadButtonClick}
                 >
                     Ведомость болтов
                 </Button>
-                <Link to={mark != null ? `/metal construction-doc` : '/'}>
-					<Button
-						variant="outline-secondary"
-						disabled={mark == null ? true : false}
-					>
-						Ведомость металлоконструкций
-					</Button>
-				</Link>
-                <Link to={mark != null ? `/work-doc` : '/'}>
+                <Link to={mark != null ? `/task-document` : '/'}>
 					<Button
 						variant="outline-secondary"
 						disabled={mark == null ? true : false}
