@@ -190,11 +190,6 @@ const ConstructionElementData = ({
 		}
 	}
 
-	const getWidthAndThickness = (name: string) => {
-		var splitted = name.split('*', 2)
-		return parseFloat(splitted[0]), parseFloat(splitted[1])
-	}
-
 	const checkIfValid = () => {
 		if (selectedObject.profileClass == null) {
 			setErrMsg('Пожалуйста, выберите вид профиля')
@@ -231,7 +226,6 @@ const ConstructionElementData = ({
 				)
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -239,31 +233,34 @@ const ConstructionElementData = ({
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
+				const object = {
+					profileId:
+						selectedObject.profile.id ===
+						constructionElement.profile.id
+							? undefined
+							: selectedObject.profile.id,
+					steelId:
+						selectedObject.steel.id === constructionElement.steel.id
+							? undefined
+							: selectedObject.steel.id,
+					length:
+						selectedObject.length === constructionElement.length
+							? undefined
+							: selectedObject.length,
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
 				await httpClient.patch(
 					`/construction-elements/${selectedObject.id}`,
-					{
-						profileId:
-							selectedObject.profile.id ===
-							constructionElement.profile.id
-								? undefined
-								: selectedObject.profile.id,
-						steelId:
-							selectedObject.steel.id ===
-							constructionElement.steel.id
-								? undefined
-								: selectedObject.steel.id,
-						length:
-							selectedObject.length === constructionElement.length
-								? undefined
-								: selectedObject.length,
-					}
+					object
 				)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

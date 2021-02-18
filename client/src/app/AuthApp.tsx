@@ -453,7 +453,7 @@ const AuthApp = () => {
 								</div>
 							</Route>
 
-                            <Route exact path="/task-document">
+                            <Route exact path="/estimate-task">
 								<div className="full-width div-container">
 									<TaskDocument />
 								</div>

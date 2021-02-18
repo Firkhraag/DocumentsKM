@@ -23,6 +23,7 @@ namespace DocumentsKM.Models
 
         [ForeignKey("SubtypeId")]
         public virtual ConstructionSubtype Subtype { get; set; }
+        public int? SubtypeId { get; set; }
 
         [MaxLength(10)]
         public string Valuation { get; set; }

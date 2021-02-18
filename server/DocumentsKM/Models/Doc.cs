@@ -36,14 +36,17 @@ namespace DocumentsKM.Models
         // Разраб
         [ForeignKey("CreatorId")]
         public virtual Employee Creator { get; set; }
+        public int? CreatorId { get; set; }
 
         // Пров
         [ForeignKey("InspectorId")]
         public virtual Employee Inspector { get; set; }
+        public int? InspectorId { get; set; }
 
         // Н_контр
         [ForeignKey("NormContrId")]
         public virtual Employee NormContr { get; set; }
+        public int? NormContrId { get; set; }
 
         // Выпуск
         [Required]

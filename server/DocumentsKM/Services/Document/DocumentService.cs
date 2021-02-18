@@ -3,7 +3,6 @@ using DocumentsKM.Data;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
 using System;
@@ -29,6 +28,9 @@ namespace DocumentsKM.Services
         private readonly IBoltLengthRepo _boltLengthRepo;
         private readonly IConstructionBoltRepo _constructionBoltRepo;
 
+        private readonly IConstructionRepo _constructionRepo;
+        private readonly IMarkOperatingConditionsRepo _markOperatingConditionsRepo;
+
         public DocumentService(
             IMarkRepo markRepo,
             IMarkApprovalRepo markApprovalRepo,
@@ -41,7 +43,10 @@ namespace DocumentsKM.Services
             
             IBoltDiameterRepo boltDiameterRepo,
             IBoltLengthRepo boltLengthRepo,
-            IConstructionBoltRepo constructionBoltRepo)
+            IConstructionBoltRepo constructionBoltRepo,
+            
+            IConstructionRepo constructionRepo,
+            IMarkOperatingConditionsRepo markOperatingConditionsRepo)
         {
             _markRepo = markRepo;
             _markApprovalRepo = markApprovalRepo;
@@ -55,6 +60,9 @@ namespace DocumentsKM.Services
             _boltDiameterRepo = boltDiameterRepo;
             _boltLengthRepo = boltLengthRepo;
             _constructionBoltRepo = constructionBoltRepo;
+
+            _constructionRepo = constructionRepo;
+            _markOperatingConditionsRepo = markOperatingConditionsRepo;
         }
 
         public MemoryStream GetGeneralDataDocument(int markId)
@@ -164,6 +172,103 @@ namespace DocumentsKM.Services
                     project.BaseSeries, node.Code, subnode.Code, mark.Code);
                 BoltDocument.AppendToTable(wordDoc, constructionBolts.ToList(), boltLengths);
                 AppendToSmallFooterTable(wordDoc, markName);
+            }
+            memory.Seek(0, SeekOrigin.Begin);
+            return memory;
+        }
+
+        public MemoryStream GetEstimateTaskDocument(int markId)
+        {
+            var mark = _markRepo.GetById(markId);
+            if (mark == null)
+                throw new ArgumentNullException(nameof(mark));
+            var markApprovals = _markApprovalRepo.GetAllByMarkId(markId);
+            var subnode = mark.Subnode;
+            var node = subnode.Node;
+            var project = node.Project;
+
+            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+            // Вкл в состав спецификации
+            var constructions = _constructionRepo.GetAllByMarkId(markId);
+            var opCond = _markOperatingConditionsRepo.GetByMarkId(markId);
+            if (opCond == null)
+                throw new ArgumentNullException(nameof(opCond));
+
+            var path = "D:\\Dev\\Gipromez\\word\\template_estimate_task.docx";
+            var memory = GetStreamFromTemplate(path);
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
+            {
+                var markName = MakeMarkName(
+                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
+                (var complexName, var objectName) = MakeComplexAndObjectName(
+                    project.Name, node.Name, subnode.Name, mark.Name);
+
+                var textArr = new List<string> {
+                    "Дополнительно учитывать:",
+                    $"- коэффициент надежности по ответственности: {opCond.SafetyCoeff}",
+                    $"- среда: {opCond.EnvAggressiveness.Name}",
+                    $"- расчетная температура эксплуатации: {(opCond.Temperature < 0 ? ("минус " + -opCond.Temperature) : opCond.Temperature)}",
+                };
+                EstimateTaskDocument.AppendList(wordDoc, textArr);
+
+                // EstimateTaskDocument.AppendListItem(wordDoc, "Дополнительно учитывать:");
+                // EstimateTaskDocument.AppendListItem(wordDoc, $"- коэффициент надежности по ответственности: {opCond.SafetyCoeff}");
+                // EstimateTaskDocument.AppendListItem(wordDoc, $"- среда: {opCond.EnvAggressiveness.Name}");
+                // EstimateTaskDocument.AppendListItem(
+                //     wordDoc,
+                //     $"- расчетная температура эксплуатации: {(opCond.Temperature < 0 ? ("минус " + -opCond.Temperature) : opCond.Temperature)}");
+                textArr = new List<string> {};
+                foreach (var construction in constructions)
+                {
+                    // EstimateTaskDocument.AppendListItem(wordDoc, $"# {construction.Name}");
+                    textArr.Add($"# {construction.Name}");
+                }
+
+                EstimateTaskDocument.AppendList(wordDoc, textArr);
+
+                AppendToBigFooterTable(
+                    wordDoc,
+                    markName,
+                    complexName,
+                    objectName,
+                    sheets.Count(),
+                    mark,
+                    markApprovals.ToList());
+            }
+            memory.Seek(0, SeekOrigin.Begin);
+            return memory;
+        }
+
+        public MemoryStream GetSpecificationDocument(int markId)
+        {
+            var mark = _markRepo.GetById(markId);
+            if (mark == null)
+                throw new ArgumentNullException(nameof(mark));
+            var markApprovals = _markApprovalRepo.GetAllByMarkId(markId);
+            var subnode = mark.Subnode;
+            var node = subnode.Node;
+            var project = node.Project;
+
+            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+
+            var path = "D:\\Dev\\Gipromez\\word\\template_specification.docx";
+            var memory = GetStreamFromTemplate(path);
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
+            {
+                var markName = MakeMarkName(
+                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
+                (var complexName, var objectName) = MakeComplexAndObjectName(
+                    project.Name, node.Name, subnode.Name, mark.Name);
+
+                SpecificationDocument.AppendToTable(wordDoc);   
+                AppendToBigFooterTable(
+                    wordDoc,
+                    markName,
+                    complexName,
+                    objectName,
+                    sheets.Count(),
+                    mark,
+                    markApprovals.ToList());
             }
             memory.Seek(0, SeekOrigin.Begin);
             return memory;

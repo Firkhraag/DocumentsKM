@@ -118,7 +118,7 @@ const MarkGeneralData = () => {
 						pointText: '',
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -188,7 +188,7 @@ const MarkGeneralData = () => {
 			}
 			setPopup(defaultPopup)
 		} catch (e) {
-			console.log('Error', e)
+			setErrMsg('Произошла ошибка')
 		}
 	}
 
@@ -259,7 +259,6 @@ const MarkGeneralData = () => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -284,7 +283,6 @@ const MarkGeneralData = () => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -292,12 +290,11 @@ const MarkGeneralData = () => {
 	const onDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/general-data`,
+				`/marks/${mark.id}/general-data-document`,
 				{
 					responseType: 'blob',
 				}
 			)
-
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
@@ -306,7 +303,7 @@ const MarkGeneralData = () => {
 			link.click()
 			link.remove()
 		} catch (e) {
-			console.log('Failed to download the file')
+			setErrMsg('Произошла ошибка')
 		}
 	}
 

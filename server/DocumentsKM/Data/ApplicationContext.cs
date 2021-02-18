@@ -116,5 +116,7 @@ namespace DocumentsKM.Data
         public DbSet<GeneralDataSection> GeneralDataSections { get; set; }
         public DbSet<GeneralDataPoint> GeneralDataPoints { get; set; }
         public DbSet<MarkGeneralDataPoint> MarkGeneralDataPoints { get; set; }
+
+        public DbSet<EstimateTask> EstimateTask { get; set; }
     }
 }

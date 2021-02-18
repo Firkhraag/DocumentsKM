@@ -148,8 +148,11 @@ const ConstructionBoltData = ({
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
 			} catch (e) {
+				if (e.response != null && e.response.status === 409) {
+					setErrMsg('Болт уже существует')
+					return
+				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -157,39 +160,46 @@ const ConstructionBoltData = ({
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
+				const object = {
+					diameterId:
+						selectedObject.diameter.id ===
+						constructionBolt.diameter.id
+							? undefined
+							: selectedObject.diameter.id,
+					packet:
+						selectedObject.packet === constructionBolt.packet
+							? undefined
+							: selectedObject.packet,
+					num:
+						selectedObject.num === constructionBolt.num
+							? undefined
+							: selectedObject.num,
+					nutNum:
+						selectedObject.nutNum === constructionBolt.nutNum
+							? undefined
+							: selectedObject.nutNum,
+					washerNum:
+						selectedObject.washerNum === constructionBolt.washerNum
+							? undefined
+							: selectedObject.washerNum,
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
 				await httpClient.patch(
 					`/construction-bolts/${selectedObject.id}`,
-					{
-						diameterId:
-							selectedObject.diameter.id ===
-							constructionBolt.diameter.id
-								? undefined
-								: selectedObject.diameter.id,
-						packet:
-							selectedObject.packet === constructionBolt.packet
-								? undefined
-								: selectedObject.packet,
-						num:
-							selectedObject.num === constructionBolt.num
-								? undefined
-								: selectedObject.num,
-						nutNum:
-							selectedObject.nutNum === constructionBolt.nutNum
-								? undefined
-								: selectedObject.nutNum,
-						washerNum:
-							selectedObject.washerNum ===
-							constructionBolt.washerNum
-								? undefined
-								: selectedObject.washerNum,
-					}
+					object
 				)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
 			} catch (e) {
+				if (e.response != null && e.response.status === 409) {
+					setErrMsg('Болт уже существует')
+					return
+				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

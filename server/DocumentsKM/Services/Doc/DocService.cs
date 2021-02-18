@@ -142,7 +142,7 @@ namespace DocumentsKM.Services
             {
                 var creatorId = doc.CreatorId.GetValueOrDefault();
                 if (creatorId == -1)
-                    foundDoc.Creator = null;
+                    foundDoc.CreatorId = null;
                 else
                 {
                     var creator = _employeeRepo.GetById(creatorId);
@@ -155,7 +155,7 @@ namespace DocumentsKM.Services
             {
                 var inspectorId = doc.InspectorId.GetValueOrDefault();
                 if (inspectorId == -1)
-                    foundDoc.Inspector = null;
+                    foundDoc.InspectorId = null;
                 else
                 {
                     var inspector = _employeeRepo.GetById(inspectorId);
@@ -169,7 +169,7 @@ namespace DocumentsKM.Services
             {
                 var normContrId = doc.NormContrId.GetValueOrDefault();
                 if (normContrId == -1)
-                    foundDoc.NormContr = null;
+                    foundDoc.NormContrId = null;
                 else
                 {
                     var normContr = _employeeRepo.GetById(normContrId);

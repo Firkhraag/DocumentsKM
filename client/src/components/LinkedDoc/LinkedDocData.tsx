@@ -191,7 +191,6 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -199,19 +198,24 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
+				const object = {
+					linkedDocId:
+						selectedObject.linkedDoc.id ===
+						markLinkedDoc.linkedDoc.id
+							? undefined
+							: selectedObject.linkedDoc.id,
+					note:
+						selectedObject.note === markLinkedDoc.note
+							? undefined
+							: selectedObject.note,
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
 				await httpClient.patch(
 					`/mark-linked-docs/${selectedObject.id}`,
-					{
-						linkedDocId:
-							selectedObject.linkedDoc.id ===
-							markLinkedDoc.linkedDoc.id
-								? undefined
-								: selectedObject.linkedDoc.id,
-						note:
-							selectedObject.note === markLinkedDoc.note
-								? undefined
-								: selectedObject.note,
-					}
+					object
 				)
 				history.push('/linked-docs')
 			} catch (e) {
@@ -220,7 +224,6 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

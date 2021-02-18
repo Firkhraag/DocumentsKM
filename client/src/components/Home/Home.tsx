@@ -12,10 +12,10 @@ import './Home.css'
 const Home = () => {
 	const mark = useMark()
 
-    const onConstructionDocumentDownloadButtonClick = async () => {
+	const onConstructionDocumentDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/construction-doc`,
+				`/marks/${mark.id}/construction-document`,
 				{
 					responseType: 'blob',
 				}
@@ -32,10 +32,10 @@ const Home = () => {
 		}
 	}
 
-    const onBoltDocumentDownloadButtonClick = async () => {
+	const onBoltDocumentDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/bolt-doc`,
+				`/marks/${mark.id}/bolt-document`,
 				{
 					responseType: 'blob',
 				}
@@ -146,21 +146,21 @@ const Home = () => {
 						Общие данные
 					</Button>
 				</Link>
-                <Button
-                    variant="outline-secondary"
-                    disabled={mark == null ? true : false}
-                    onClick={onConstructionDocumentDownloadButtonClick}
-                >
-                    Ведомость металлоконструкций
-                </Button>
-                <Button
-                    variant="outline-secondary"
-                    disabled={mark == null ? true : false}
-                    onClick={onBoltDocumentDownloadButtonClick}
-                >
-                    Ведомость болтов
-                </Button>
-                <Link to={mark != null ? `/task-document` : '/'}>
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+					onClick={onConstructionDocumentDownloadButtonClick}
+				>
+					Ведомость металлоконструкций
+				</Button>
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null ? true : false}
+					onClick={onBoltDocumentDownloadButtonClick}
+				>
+					Ведомость болтов
+				</Button>
+				<Link to={mark != null ? `/estimate-task` : '/'}>
 					<Button
 						variant="outline-secondary"
 						disabled={mark == null ? true : false}
@@ -168,7 +168,7 @@ const Home = () => {
 						Задание на смету
 					</Button>
 				</Link>
-                <Link to={mark != null ? `/set-doc` : '/'}>
+				<Link to={mark != null ? `/set-doc` : '/'}>
 					<Button
 						variant="outline-secondary"
 						disabled={mark == null ? true : false}
@@ -176,7 +176,7 @@ const Home = () => {
 						Комплект для расчета
 					</Button>
 				</Link>
-                <Link to={mark != null ? `/registration-doc` : '/'}>
+				<Link to={mark != null ? `/registration-doc` : '/'}>
 					<Button
 						variant="outline-secondary"
 						disabled={mark == null ? true : false}
@@ -184,7 +184,7 @@ const Home = () => {
 						Лист регистрации проекта
 					</Button>
 				</Link>
-                <Link to={mark != null ? `/metal-spec-doc` : '/'}>
+				<Link to={mark != null ? `/metal-spec-doc` : '/'}>
 					<Button
 						variant="outline-secondary"
 						disabled={mark == null ? true : false}

@@ -10,5 +10,9 @@ namespace DocumentsKM.Services
         MemoryStream GetConstructionDocument(int markId);
         // Получить ведомость высокопрочных болтов
         MemoryStream GetBoltDocument(int markId);
+        // Получить задание на смету
+        MemoryStream GetEstimateTaskDocument(int markId);
+        // Получить спецификацию металла
+        MemoryStream GetSpecificationDocument(int markId);
     }
 }

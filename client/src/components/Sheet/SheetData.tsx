@@ -204,7 +204,6 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				history.push('/sheets')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -212,7 +211,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-				await httpClient.patch(`/docs/${selectedObject.id}`, {
+				const object = {
 					name:
 						selectedObject.name === sheet.name
 							? undefined
@@ -237,11 +236,15 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						selectedObject.note === sheet.note
 							? undefined
 							: selectedObject.note,
-				})
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
+				await httpClient.patch(`/docs/${selectedObject.id}`, object)
 				history.push('/sheets')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

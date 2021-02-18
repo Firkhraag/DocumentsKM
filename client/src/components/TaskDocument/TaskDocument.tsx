@@ -7,28 +7,40 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
+import EstimateTask from '../../model/EstimateTask'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
+import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
 
 const TaskDocument = () => {
 	const history = useHistory()
 	const mark = useMark()
 
+	const [
+		defaultSelectedObject,
+		setDefaultSelectedObject,
+	] = useState<EstimateTask>(null)
+
+	const [selectedObject, setSelectedObject] = useState<EstimateTask>(null)
+	// const [selectedApproval, setSelectedApproval] = useState({
+	// 	department: null as Department,
+	// 	employee: null as Employee,
+	// })
+    const [selectedDepartment, setSelectedDepartment] = useState<Department>(null)
+
 	const [optionsObject, setOptionsObject] = useState({
 		departments: [] as Department[],
 		employees: [] as Employee[],
 	})
-	const [selectedApproval, setSelectedApproval] = useState({
-		department: null as Department,
-		employee: null as Employee,
-	})
 
 	const cachedEmployees = useState(new Map<number, Employee[]>())[0]
 	const [errMsg, setErrMsg] = useState('')
+
+	const [isCreateMode, setCreateMode] = useState(false)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -42,14 +54,48 @@ const TaskDocument = () => {
 						employees: optionsObject.employees,
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data', e)
+					console.log('Failed to fetch the data')
+				}
+
+				try {
+					const estimateTaskResponse = await httpClient.get(
+						`/marks/${mark.id}/estimate-task`
+					)
+					setSelectedObject(estimateTaskResponse.data)
+                    setSelectedDepartment(estimateTaskResponse.data.approvalEmployee?.department)
+					setDefaultSelectedObject(estimateTaskResponse.data)
+				} catch (e) {
+					if (e.response.status === 404) {
+						setCreateMode(true)
+						setSelectedObject({
+							taskText: '',
+							additionalText: '',
+							approvalEmployee: null,
+						})
+						return
+					}
+					console.log('Failed to fetch the data')
 				}
 			}
 			fetchData()
 		}
 	}, [mark])
 
-	const onTaskTextChange = (event: React.FormEvent<HTMLTextAreaElement>) => {}
+	const onTaskTextChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+		setSelectedObject({
+			...selectedObject,
+			taskText: event.currentTarget.value,
+		})
+	}
+
+	const onAdditionalTextChange = (
+		event: React.FormEvent<HTMLTextAreaElement>
+	) => {
+		setSelectedObject({
+			...selectedObject,
+			additionalText: event.currentTarget.value,
+		})
+	}
 
 	const onDepartmentSelect = async (id: number) => {
 		if (id == null) {
@@ -57,16 +103,17 @@ const TaskDocument = () => {
 				...optionsObject,
 				employees: [],
 			})
-			setSelectedApproval({
-				department: null,
-				employee: null,
-			})
+			setSelectedDepartment(null)
+            setSelectedObject({
+                ...selectedObject,
+                approvalEmployee: null,
+            })
 			return
 		}
 		const v = getFromOptions(
 			id,
 			optionsObject.departments,
-			selectedApproval.department
+			selectedDepartment
 		)
 		if (v != null) {
 			if (cachedEmployees.has(v.id)) {
@@ -74,10 +121,11 @@ const TaskDocument = () => {
 					...optionsObject,
 					employees: cachedEmployees.get(v.id),
 				})
-				setSelectedApproval({
-					department: v,
-					employee: null,
-				})
+                setSelectedDepartment(v)
+                setSelectedObject({
+                    ...selectedObject,
+                    approvalEmployee: null,
+                })
 			} else {
 				try {
 					const employeesResponse = await httpClient.get(
@@ -88,45 +136,58 @@ const TaskDocument = () => {
 						...optionsObject,
 						employees: employeesResponse.data,
 					})
-					setSelectedApproval({
-						department: v,
-						employee: null,
-					})
+					setSelectedDepartment(v)
+                    setSelectedObject({
+                        ...selectedObject,
+                        approvalEmployee: null,
+                    })
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
 	}
 
-    const onEmployeeSelect = (id: number) => {
+	const onEmployeeSelect = (id: number) => {
 		if (id == null) {
-			setSelectedApproval({
-				...selectedApproval,
-				employee: null,
-			})
+			setSelectedObject({
+                ...selectedObject,
+                approvalEmployee: null,
+            })
 			return
 		}
-		const v = getFromOptions(id, optionsObject.employees, selectedApproval.employee)
+		const v = getFromOptions(
+			id,
+			optionsObject.employees,
+			selectedObject.approvalEmployee
+		)
 		if (v != null) {
-			setSelectedApproval({
-				...selectedApproval,
-				employee: v,
-			})
+			setSelectedObject({
+                ...selectedObject,
+                approvalEmployee: v,
+            })
 		}
 	}
 
 	const checkIfValid = () => {
-		// if (selectedObject.envAggressiveness == null) {
-		// 	setErrMsg('Пожалуйста, введите агрессивность среды')
-		// 	return false
-		// }
+		if (selectedObject.taskText == null) {
+			setErrMsg('Пожалуйста, введите текст задания')
+			return false
+		}
 		return true
 	}
 
-	const onChangeButtonClick = async () => {
+	const onCreateButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
+				await httpClient.post(`/marks/${mark.id}/estimate-task`, {
+					taskText: selectedObject.taskText,
+					additionalText: selectedObject.additionalText,
+					approvalEmployeeId:
+						selectedObject.approvalEmployee === null
+							? undefined
+							: selectedObject.approvalEmployee.id,
+				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
 				console.log('Error')
@@ -134,10 +195,44 @@ const TaskDocument = () => {
 		}
 	}
 
-	const onTaskDocumentDownloadButtonClick = async () => {
+	const onChangeButtonClick = async () => {
+		if (checkIfValid()) {
+			try {
+				const object = {
+					taskText:
+						selectedObject.taskText ===
+						defaultSelectedObject.taskText
+							? undefined
+							: selectedObject.taskText,
+					additionalText:
+						selectedObject.additionalText ===
+						defaultSelectedObject.additionalText
+							? undefined
+							: selectedObject.additionalText,
+					approvalEmployeeId: getNullableFieldValue(
+						selectedObject.approvalEmployee,
+						defaultSelectedObject.approvalEmployee
+					),
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
+				await httpClient.patch(
+					`/marks/${mark.id}/estimate-task`,
+					object
+				)
+                history.push('/')
+			} catch (e) {
+				setErrMsg('Произошла ошибка')
+			}
+		}
+	}
+
+	const onDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/task-doc`,
+				`/marks/${mark.id}/estimate-task-document`,
 				{
 					responseType: 'blob',
 				}
@@ -151,11 +246,11 @@ const TaskDocument = () => {
 			link.click()
 			link.remove()
 		} catch (e) {
-			console.log('Failed to download the file')
+			setErrMsg('Произошла ошибка')
 		}
 	}
 
-	return mark == null ? null : (
+	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Задание на смету</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
@@ -167,7 +262,7 @@ const TaskDocument = () => {
 						rows={4}
 						style={{ resize: 'none' }}
 						placeholder="Введите текст задания"
-						defaultValue={''}
+						defaultValue={selectedObject.taskText}
 						onBlur={onTaskTextChange}
 					/>
 				</Form.Group>
@@ -179,8 +274,8 @@ const TaskDocument = () => {
 						rows={8}
 						style={{ resize: 'none' }}
 						placeholder="Дополнительная информация отсутствует"
-						defaultValue={''}
-						onBlur={onTaskTextChange}
+						defaultValue={selectedObject.additionalText}
+						onBlur={onAdditionalTextChange}
 					/>
 				</Form.Group>
 				<div className="flex">
@@ -207,13 +302,14 @@ const TaskDocument = () => {
 						placeholder="Отсутствует"
 						noOptionsMessage={() => 'Отделы не найдены'}
 						onChange={(selectedOption) =>
-                            onDepartmentSelect((selectedOption as any)?.value)}
+							onDepartmentSelect((selectedOption as any)?.value)
+						}
 						value={
-							selectedApproval.department == null
+							selectedDepartment == null
 								? null
 								: {
-										value: selectedApproval.department.id,
-										label: selectedApproval.department.name,
+										value: selectedDepartment.id,
+										label: selectedDepartment.name,
 								  }
 						}
 						options={optionsObject.departments.map((d) => {
@@ -233,13 +329,16 @@ const TaskDocument = () => {
 						placeholder="Отсутствует"
 						noOptionsMessage={() => 'Специалисты не найдены'}
 						onChange={(selectedOption) =>
-                            onEmployeeSelect((selectedOption as any)?.value)}
-						value={selectedApproval.employee == null
-                            ? null
-                            : {
-                                    value: selectedApproval.employee.id,
-                                    label: selectedApproval.employee.name,
-                              }}
+							onEmployeeSelect((selectedOption as any)?.value)
+						}
+						value={
+							selectedObject.approvalEmployee == null
+								? null
+								: {
+										value: selectedObject.approvalEmployee.id,
+										label: selectedObject.approvalEmployee.name,
+								  }
+						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
@@ -250,24 +349,22 @@ const TaskDocument = () => {
 					/>
 				</div>
 				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-				{/* <div className="flex btn-mrg-top-2"> */}
 				<Button
 					variant="secondary"
-					// className="flex-grow"
 					className="full-width btn-mrg-top-2"
-					onClick={onChangeButtonClick}
+					onClick={
+						isCreateMode ? onCreateButtonClick : onChangeButtonClick
+					}
 				>
 					Сохранить изменения
 				</Button>
 				<Button
 					variant="secondary"
-					// className="flex-grow mrg-left"
 					className="full-width btn-mrg-top"
-					onClick={onChangeButtonClick}
+					onClick={onDownloadButtonClick}
 				>
 					Скачать документ
 				</Button>
-				{/* </div> */}
 			</div>
 		</div>
 	)

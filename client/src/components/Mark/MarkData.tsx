@@ -190,7 +190,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 					})
 					setDepartmentHead(fetchedMainEmployees.departmentHead)
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -265,10 +265,6 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 			setErrMsg('Пожалуйста, введите наименование марки')
 			return false
 		}
-		if (selectedObject.subnode == null) {
-			setErrMsg('Ошибка')
-			return false
-		}
 		if (selectedObject.department == null) {
 			setErrMsg('Пожалуйста, выберите отдел')
 			return false
@@ -315,7 +311,6 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -323,7 +318,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-				await httpClient.patch(`/marks/${selectedObject.id}`, {
+                const object = {
 					code:
 						selectedObject.code === mark.code
 							? undefined
@@ -348,7 +343,12 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 						selectedObject.mainBuilder.id === mark.mainBuilder.id
 							? undefined
 							: selectedObject.mainBuilder.id,
-				})
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
+				await httpClient.patch(`/marks/${selectedObject.id}`, object)
 				setMark(selectedObject)
 				history.push('/')
 			} catch (e) {
@@ -357,7 +357,6 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

@@ -188,7 +188,7 @@ namespace DocumentsKM.Services
             {
                 int chiefSpecialistId = mark.ChiefSpecialistId.GetValueOrDefault();
                 if (chiefSpecialistId == -1)
-                    foundMark.ChiefSpecialist = null;
+                    foundMark.ChiefSpecialistId = null;
                 else
                 {
                     var chiefSpecialist = _employeeRepo.GetById(chiefSpecialistId);
@@ -203,7 +203,7 @@ namespace DocumentsKM.Services
             {
                 int groupLeaderId = mark.GroupLeaderId.GetValueOrDefault();
                 if (groupLeaderId == -1)
-                    foundMark.GroupLeader = null;
+                    foundMark.GroupLeaderId = null;
                 else
                 {
                     var groupLeader = _employeeRepo.GetById(groupLeaderId);

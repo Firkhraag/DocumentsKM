@@ -97,8 +97,11 @@ const standardConstructionData = ({
 				)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
+				if (e.response != null && e.response.status === 409) {
+					setErrMsg('Типовая конструкция уже существует')
+					return
+				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error', e)
 			}
 		}
 	}
@@ -106,32 +109,39 @@ const standardConstructionData = ({
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
+				const object = {
+					name:
+						selectedObject.name === standardConstruction.name
+							? undefined
+							: selectedObject.name,
+					num:
+						selectedObject.num === standardConstruction.num
+							? undefined
+							: selectedObject.num,
+					sheet:
+						selectedObject.sheet === standardConstruction.sheet
+							? undefined
+							: selectedObject.sheet,
+					weight:
+						selectedObject.weight === standardConstruction.weight
+							? undefined
+							: selectedObject.weight,
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
 				await httpClient.patch(
 					`/standard-constructions/${selectedObject.id}`,
-					{
-						name:
-							selectedObject.name === standardConstruction.name
-								? undefined
-								: selectedObject.name,
-						num:
-							selectedObject.num === standardConstruction.num
-								? undefined
-								: selectedObject.num,
-						sheet:
-							selectedObject.sheet === standardConstruction.sheet
-								? undefined
-								: selectedObject.sheet,
-						weight:
-							selectedObject.weight ===
-							standardConstruction.weight
-								? undefined
-								: selectedObject.weight,
-					}
+					object
 				)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
+				if (e.response != null && e.response.status === 409) {
+					setErrMsg('Типовая конструкция уже существует')
+					return
+				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error', e)
 			}
 		}
 	}

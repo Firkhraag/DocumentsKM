@@ -216,7 +216,6 @@ const DevelopingAttachedDocData = ({
 				history.push('/developing-attached-docs')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -224,7 +223,7 @@ const DevelopingAttachedDocData = ({
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-				await httpClient.patch(`/docs/${selectedObject.id}`, {
+				const object = {
 					typeId:
 						selectedObject.type.id === developingAttachedDoc.type.id
 							? undefined
@@ -258,11 +257,15 @@ const DevelopingAttachedDocData = ({
 						selectedObject.note === developingAttachedDoc.note
 							? undefined
 							: selectedObject.note,
-				})
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
+				await httpClient.patch(`/docs/${selectedObject.id}`, object)
 				history.push('/developing-attached-docs')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

@@ -103,9 +103,6 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            
-            var markOperatingConditionsResponse = _mapper.Map<MarkOperatingConditionsResponse>(
-                markOperatingConditionsModel);
             return Created(
                 $"marks/{markId}/mark-operating-conditions", null);
         }

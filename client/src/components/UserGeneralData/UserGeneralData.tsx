@@ -110,7 +110,7 @@ const UserGeneralData = () => {
 						pointText: '',
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -180,7 +180,7 @@ const UserGeneralData = () => {
 			}
 			setPopup(defaultPopup)
 		} catch (e) {
-			console.log('Error')
+			setErrMsg('Произошла ошибка')
 		}
 	}
 
@@ -198,7 +198,6 @@ const UserGeneralData = () => {
 
 	const onUpdatePointButtonClick = async () => {
 		if (checkIfValid()) {
-			console.log(selectedObject.point.orderNum)
 			try {
 				await httpClient.patch(
 					`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${selectedObject.point.id}`,
@@ -251,7 +250,6 @@ const UserGeneralData = () => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -276,7 +274,6 @@ const UserGeneralData = () => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

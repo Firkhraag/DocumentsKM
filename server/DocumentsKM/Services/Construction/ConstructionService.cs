@@ -112,7 +112,7 @@ namespace DocumentsKM.Services
             {
                 var subtypeId = construction.SubtypeId.GetValueOrDefault();
                 if (subtypeId == -1)
-                    foundConstruction.Subtype = null;
+                    foundConstruction.SubtypeId = null;
                 else
                 {
                     var subtype = _constructionSubtypeRepo.GetById(subtypeId);
