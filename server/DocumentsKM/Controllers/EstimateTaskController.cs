@@ -38,36 +38,6 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
-        [HttpPost, Route("marks/{markId}/estimate-task")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Create(
-            int markId,
-            [FromBody] EstimateTaskCreateRequest estimateTaskRequest)
-        {
-            var estimateTaskModel = _mapper.Map<EstimateTask>(
-                estimateTaskRequest);
-            try
-            {
-                _service.Create(
-                    estimateTaskModel,
-                    markId,
-                    estimateTaskRequest.ApprovalEmployeeId);
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            catch (ConflictException)
-            {
-                return Conflict();
-            }
-            return Created(
-                $"marks/{markId}/estimate-task", null);
-        }
-
         [HttpPatch, Route("marks/{markId}/estimate-task")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

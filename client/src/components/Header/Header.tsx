@@ -38,7 +38,7 @@ const Header = () => {
 			<div onClick={onMainClick} className="pointer bold header-link-pad">
 				Главная
 			</div>
-			<div onClick={onMainClick} className="pointer bold header-link-pad">
+			<div className="bold header-link-pad">
 				{mark == null
 					? '-'
 					: makeMarkName(

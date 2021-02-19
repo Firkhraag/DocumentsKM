@@ -114,7 +114,9 @@ namespace DocumentsKM.Services
         }
 
         public static void AppendList(
-            WordprocessingDocument wordDoc, IEnumerable<MarkGeneralDataPoint> markGeneralDataPoints)
+            WordprocessingDocument wordDoc,
+            IEnumerable<MarkGeneralDataPoint> markGeneralDataPoints,
+            MarkOperatingConditions markOperatingConditions)
         {
             NumberingDefinitionsPart numberingPart = wordDoc.MainDocumentPart.NumberingDefinitionsPart;
             if (numberingPart == null)
@@ -308,6 +310,17 @@ namespace DocumentsKM.Services
                 var paragraphProperties = new ParagraphProperties(
                     numberingProperties, spacingBetweenLines, indentation);
                 var newPara = new Paragraph(paragraphProperties);
+
+                if (item.Section.Id == 7)
+                {
+                    if (pointText.Contains("коэффициент надежности по ответственности"))
+                        pointText = pointText.Replace("{}", markOperatingConditions.SafetyCoeff.ToString());
+                    else if (pointText.Contains("степень агрессивного воздействия среды"))
+                        pointText = pointText.Replace("{}", markOperatingConditions.EnvAggressiveness.Name);
+                    else if (pointText.Contains("расчетная температура эксплуатации"))
+                        pointText = pointText.Replace("{}",
+                            $"{(markOperatingConditions.Temperature < 0 ? ("минус " + -markOperatingConditions.Temperature) : markOperatingConditions.Temperature)}");
+                }
 
                 if (pointText.Contains('^'))
                 {

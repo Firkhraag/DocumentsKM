@@ -27,35 +27,6 @@ namespace DocumentsKM.Services
             return _repository.GetByMarkId(markId);
         }
 
-        public void Create(EstimateTask estimateTask,
-            int markId,
-            int? approvalEmployeeId)
-        {
-            if (estimateTask == null)
-                throw new ArgumentNullException(nameof(estimateTask));
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
-            var uniqueConstraintViolationCheck = _repository.GetByMarkId(markId);
-            if (uniqueConstraintViolationCheck != null)
-                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            estimateTask.Mark = foundMark;
-
-            if (approvalEmployeeId != null)
-            {
-                var approvalEmployee = _employeeRepo.GetById(
-                    approvalEmployeeId.GetValueOrDefault());
-                if (approvalEmployee == null)
-                    throw new ArgumentNullException(nameof(approvalEmployee));
-                estimateTask.ApprovalEmployee = approvalEmployee;
-            }
-
-            _repository.Add(estimateTask);
-
-            foundMark.EditedDate = DateTime.Now;
-            _markRepo.Update(foundMark);
-        }
-
         public void Update(
             int markId,
             EstimateTaskUpdateRequest estimateTask)

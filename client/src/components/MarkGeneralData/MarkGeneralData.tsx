@@ -173,12 +173,12 @@ const MarkGeneralData = () => {
 				}
 			}
 
-            var arr = [...optionsObject.points]
+			var arr = [...optionsObject.points]
 			arr.splice(row, 1)
 			setOptionsObject({
-                ...optionsObject,
-                points: arr,
-            })
+				...optionsObject,
+				points: arr,
+			})
 
 			if (selectedObject.point != null && selectedObject.point.id == id) {
 				setSelectedObject({
@@ -303,6 +303,10 @@ const MarkGeneralData = () => {
 			link.click()
 			link.remove()
 		} catch (e) {
+            if (e.response != null && e.response.status === 404) {
+                setErrMsg('Пожалуйста, заполните условия эскплуатации у марки')
+                return
+            }
 			setErrMsg('Произошла ошибка')
 		}
 	}
@@ -386,7 +390,11 @@ const MarkGeneralData = () => {
 										onClick={() => onSectionSelect(s.id)}
 										key={s.id}
 									>
-										<p className="no-bot-mrg">{(index + 1).toString() + '. ' +s.name}</p>
+										<p className="no-bot-mrg">
+											{(index + 1).toString() +
+												'. ' +
+												s.name}
+										</p>
 									</div>
 								)
 							})}

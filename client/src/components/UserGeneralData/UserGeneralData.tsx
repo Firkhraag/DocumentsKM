@@ -319,7 +319,7 @@ const UserGeneralData = () => {
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Разделы</label>
 						<div className="flex-v general-data-selection mrg-top">
-							{optionsObject.sections.map((s) => {
+							{optionsObject.sections.map((s, index) => {
 								return (
 									<div
 										className={
@@ -333,7 +333,7 @@ const UserGeneralData = () => {
 										onClick={() => onSectionSelect(s.id)}
 										key={s.id}
 									>
-										<p className="no-bot-mrg">{s.name}</p>
+										<p className="no-bot-mrg">{(index + 1).toString() + '. ' + s.name}</p>
 									</div>
 								)
 							})}

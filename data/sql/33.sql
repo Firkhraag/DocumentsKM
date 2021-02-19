@@ -6,5 +6,7 @@ CREATE TABLE profiles (
 	weight real NOT NULL,
 	area real NOT NULL,
 	type_id smallint NOT NULL,
-	UNIQUE(class_id, type_id, name, symbol)
+	UNIQUE(class_id, name, symbol),
+	CONSTRAINT fk_class FOREIGN KEY(class_id) REFERENCES profile_classes(id),
+	CONSTRAINT fk_type FOREIGN KEY(type_id) REFERENCES profile_types(id)
 );

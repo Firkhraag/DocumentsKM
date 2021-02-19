@@ -125,7 +125,7 @@ const SectionsSelectPopup = ({
 								onClick={() => onSectionClick(index, s.id)}
 							>
 								<p className="no-bot-mrg" style={{ flex: 1 }}>
-									{s.name}
+									{(index + 1).toString() + '. ' + s.name}
 								</p>
 								<div className="check-area">
 									<Form.Check

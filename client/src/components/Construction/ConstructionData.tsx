@@ -491,7 +491,7 @@ const ConstructionData = ({
 					<Form.Control
 						id="valuation"
 						type="text"
-						placeholder="Введите расценку"
+						placeholder="Не введено"
 						autoComplete="off"
 						className="auto-width flex-grow"
 						defaultValue={selectedObject.valuation}

@@ -8,7 +8,6 @@ namespace DocumentsKM.Profiles
         public EstimateTaskProfile()
         {
             CreateMap<EstimateTask, EstimateTaskResponse>();
-            CreateMap<EstimateTaskCreateRequest, EstimateTask>();
         }
     }
 }

@@ -7,6 +7,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
 using System;
 using System.Text;
+using DocumentsKM.Helpers;
 
 namespace DocumentsKM.Services
 {
@@ -75,6 +76,9 @@ namespace DocumentsKM.Services
             var node = subnode.Node;
             var project = node.Project;
 
+            var opCond = _markOperatingConditionsRepo.GetByMarkId(markId);
+            if (opCond == null)
+                throw new ArgumentNullException(nameof(opCond));
             var markGeneralDataPoints = _markGeneralDataPointRepo.GetAllByMarkId(
                 markId).OrderByDescending(
                     v => v.Section.OrderNum).ThenByDescending(v => v.OrderNum);
@@ -84,11 +88,11 @@ namespace DocumentsKM.Services
             var memory = GetStreamFromTemplate(path);
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
-                var markName = MakeMarkName(
+                var markName = MarkHelper.MakeMarkName(
                     project.BaseSeries, node.Code, subnode.Code, mark.Code);
-                (var complexName, var objectName) = MakeComplexAndObjectName(
+                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                     project.Name, node.Name, subnode.Name, mark.Name);
-                GeneralDataDocument.AppendList(wordDoc, markGeneralDataPoints);
+                GeneralDataDocument.AppendList(wordDoc, markGeneralDataPoints, opCond);
 
                 GeneralDataDocument.AppendToSheetTable(wordDoc, sheets.ToList());
                 GeneralDataDocument.AppendToLinkedAndAttachedDocsTable(
@@ -125,9 +129,9 @@ namespace DocumentsKM.Services
             var memory = GetStreamFromTemplate(path);
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
-                var markName = MakeMarkName(
+                var markName = MarkHelper.MakeMarkName(
                     project.BaseSeries, node.Code, subnode.Code, mark.Code);
-                (var complexName, var objectName) = MakeComplexAndObjectName(
+                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                     project.Name, node.Name, subnode.Name, mark.Name);
 
                 ConstructionDocument.AppendToTable(wordDoc);   
@@ -168,7 +172,7 @@ namespace DocumentsKM.Services
             var memory = GetStreamFromTemplate(path);
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
-                var markName = MakeMarkName(
+                var markName = MarkHelper.MakeMarkName(
                     project.BaseSeries, node.Code, subnode.Code, mark.Code);
                 BoltDocument.AppendToTable(wordDoc, constructionBolts.ToList(), boltLengths);
                 AppendToSmallFooterTable(wordDoc, markName);
@@ -198,9 +202,9 @@ namespace DocumentsKM.Services
             var memory = GetStreamFromTemplate(path);
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
-                var markName = MakeMarkName(
+                var markName = MarkHelper.MakeMarkName(
                     project.BaseSeries, node.Code, subnode.Code, mark.Code);
-                (var complexName, var objectName) = MakeComplexAndObjectName(
+                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                     project.Name, node.Name, subnode.Name, mark.Name);
 
                 var textArr = new List<string> {
@@ -222,6 +226,23 @@ namespace DocumentsKM.Services
                 {
                     // EstimateTaskDocument.AppendListItem(wordDoc, $"# {construction.Name}");
                     textArr.Add($"# {construction.Name}");
+                    if (construction.Valuation != null)
+                        textArr.Add($"Расценка: {construction.Valuation}");
+                    if (construction.StandardAlbumCode != null)
+                        textArr.Add($"Шифр типового альбома конструкций: {construction.StandardAlbumCode}");
+                    if (construction.NumOfStandardConstructions != 0)
+                        textArr.Add($"Число типовых конструкций: {construction.NumOfStandardConstructions}");
+                    if (construction.HasEdgeBlunting)
+                        textArr.Add("Притупление кромок");
+                    if (construction.HasDynamicLoad)
+                        textArr.Add("Динамическая нагрузка");
+                    if (construction.HasFlangedConnections)
+                        textArr.Add("Фланцевые соединения");
+                    if (construction.WeldingControl.Id > 1)
+                    {
+                        textArr.Add($"Контроль плотности сварных швов {construction.WeldingControl.Name}");
+                        
+                    }
                 }
 
                 EstimateTaskDocument.AppendList(wordDoc, textArr);
@@ -255,9 +276,9 @@ namespace DocumentsKM.Services
             var memory = GetStreamFromTemplate(path);
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
-                var markName = MakeMarkName(
+                var markName = MarkHelper.MakeMarkName(
                     project.BaseSeries, node.Code, subnode.Code, mark.Code);
-                (var complexName, var objectName) = MakeComplexAndObjectName(
+                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                     project.Name, node.Name, subnode.Name, mark.Name);
 
                 SpecificationDocument.AppendToTable(wordDoc);   
@@ -419,52 +440,6 @@ namespace DocumentsKM.Services
                 mainPart.Document.Save();
             }
             return documentStream;
-        }
-
-        private string MakeMarkName(
-            string projectBaseSeries,
-            string nodeCode,
-            string subnodeCode,
-            string markCode)
-        {
-            var markName = new StringBuilder(projectBaseSeries, 255);
-            var overhaul = "";
-            if (nodeCode != "-" && nodeCode != "")
-            {
-                var nodeCodeSplitted = nodeCode.Split('-');
-                var nodeValue = nodeCodeSplitted[0];
-                if (nodeCodeSplitted.Count() == 2)
-                {
-                    overhaul = nodeCodeSplitted[1];
-                }
-
-                markName.Append($".{nodeValue}");
-            }
-            if (subnodeCode != "-" && subnodeCode != "")
-            {
-                markName.Append($".{subnodeCode}");
-                if (overhaul != "")
-                {
-                    markName.Append($"-{overhaul}");
-                }
-            }
-            if (markCode != "-" && markCode != "")
-            {
-                markName.Append($"-{markCode}");
-            }
-            return markName.ToString();
-        }
-
-        private (string, string) MakeComplexAndObjectName(
-            string projectName,
-            string nodeName,
-            string subnodeName,
-            string markName)
-        {
-            var complexName = projectName;
-            var objectName = nodeName + ". " + subnodeName + ". " + markName;
-
-            return (complexName, objectName);
         }
     }
 }

@@ -16,7 +16,7 @@ import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
 
-const TaskDocument = () => {
+const EstimateTaskDocument = () => {
 	const history = useHistory()
 	const mark = useMark()
 
@@ -26,10 +26,6 @@ const TaskDocument = () => {
 	] = useState<EstimateTask>(null)
 
 	const [selectedObject, setSelectedObject] = useState<EstimateTask>(null)
-	// const [selectedApproval, setSelectedApproval] = useState({
-	// 	department: null as Department,
-	// 	employee: null as Employee,
-	// })
     const [selectedDepartment, setSelectedDepartment] = useState<Department>(null)
 
 	const [optionsObject, setOptionsObject] = useState({
@@ -39,8 +35,6 @@ const TaskDocument = () => {
 
 	const cachedEmployees = useState(new Map<number, Employee[]>())[0]
 	const [errMsg, setErrMsg] = useState('')
-
-	const [isCreateMode, setCreateMode] = useState(false)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -65,15 +59,6 @@ const TaskDocument = () => {
                     setSelectedDepartment(estimateTaskResponse.data.approvalEmployee?.department)
 					setDefaultSelectedObject(estimateTaskResponse.data)
 				} catch (e) {
-					if (e.response.status === 404) {
-						setCreateMode(true)
-						setSelectedObject({
-							taskText: '',
-							additionalText: '',
-							approvalEmployee: null,
-						})
-						return
-					}
 					console.log('Failed to fetch the data')
 				}
 			}
@@ -177,24 +162,6 @@ const TaskDocument = () => {
 		return true
 	}
 
-	const onCreateButtonClick = async () => {
-		if (checkIfValid()) {
-			try {
-				await httpClient.post(`/marks/${mark.id}/estimate-task`, {
-					taskText: selectedObject.taskText,
-					additionalText: selectedObject.additionalText,
-					approvalEmployeeId:
-						selectedObject.approvalEmployee === null
-							? undefined
-							: selectedObject.approvalEmployee.id,
-				})
-			} catch (e) {
-				setErrMsg('Произошла ошибка')
-				console.log('Error')
-			}
-		}
-	}
-
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
@@ -246,6 +213,10 @@ const TaskDocument = () => {
 			link.click()
 			link.remove()
 		} catch (e) {
+            if (e.response != null && e.response.status === 404) {
+                setErrMsg('Пожалуйста, заполните условия эскплуатации у марки')
+                return
+            }
 			setErrMsg('Произошла ошибка')
 		}
 	}
@@ -352,15 +323,13 @@ const TaskDocument = () => {
 				<Button
 					variant="secondary"
 					className="full-width btn-mrg-top-2"
-					onClick={
-						isCreateMode ? onCreateButtonClick : onChangeButtonClick
-					}
+					onClick={onChangeButtonClick}
 				>
 					Сохранить изменения
 				</Button>
 				<Button
 					variant="secondary"
-					className="full-width btn-mrg-top"
+					className="full-width btn-mrg-top-2"
 					onClick={onDownloadButtonClick}
 				>
 					Скачать документ
@@ -370,4 +339,4 @@ const TaskDocument = () => {
 	)
 }
 
-export default TaskDocument
+export default EstimateTaskDocument

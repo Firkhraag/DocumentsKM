@@ -1,32 +1,13 @@
-using DocumentsKM.Models;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
-using System;
 
 namespace DocumentsKM.Services
 {
     public static class EstimateTaskDocument
     {
-        public static void AppendText(
-            WordprocessingDocument document,
-            string text)
-        {
-            Body body = document.MainDocumentPart.Document.Body;
-            var p = body.GetFirstChild<Paragraph>();
-        
-            p.AppendChild(Word.GetTextElement(text, 26));
-
-            p.AppendChild(Word.GetTextElement("Дополнительно учитывать:", 26));
-            p.AppendChild(Word.GetTextElement($"- коэффициент надежности по отвественности: {1}", 26));
-            p.AppendChild(Word.GetTextElement($"- среда: {2}", 26));
-            p.AppendChild(Word.GetTextElement($"- расчетная температура эксплуатации: {3}", 26));
-
-            p.AppendChild(Word.GetTextElement("Балки", 26));
-        }
-
         // public static void AppendListItem(
         public static void AppendList(
             WordprocessingDocument wordDoc, List<string> textArr)
