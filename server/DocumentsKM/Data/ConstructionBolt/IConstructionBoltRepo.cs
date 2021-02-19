@@ -7,6 +7,8 @@ namespace DocumentsKM.Data
     {
         // Получить все высокопрочные болты конструкции по id вида конструкции
         IEnumerable<ConstructionBolt> GetAllByConstructionId(int constructionId);
+        // Получить все высокопрочные болты конструкции по id марки
+        IEnumerable<ConstructionBolt> GetAllByMarkId(int markId);
         // Получить высокопрочный болт конструкции по id
         ConstructionBolt GetById(int id);
         // Получить высокопрочный болт конструкции по unique key

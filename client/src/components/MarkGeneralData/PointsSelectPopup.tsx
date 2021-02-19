@@ -100,35 +100,11 @@ const PointsSelectPopup = ({
 				...selectedObject,
 				point: null,
 			})
-
 			optionsObject.points = addedPointsResponse.data
-			// for (let p of selectedPoints)
-			// {
-			//     var doesNotContain = optionsObject.points.filter(v => v.text == p.text).length === 0
-			//     if (doesNotContain) {
-			//         let orderNum = 1
-			//         if (optionsObject.points.length > 0) {
-			//             orderNum = Math.max.apply(null, optionsObject.points.map(v => v.orderNum)) + 1
-			//         }
-			//         p.orderNum = orderNum
-			//         optionsObject.points.push(p)
-			//     }
-			// }
-
-			// setOptionsObject({
-			// 	...optionsObject,
-			// 	sections: selectedSections.sort((a, b) => a.id - b.id),
-			// })
 			close()
 		} catch (e) {
 			console.log('Error')
 		}
-
-		// setOptionsObject({
-		//     ...optionsObject,
-		//     points: selectedPoints.sort((a, b) => a.id - b.id),
-		// })
-		// close()
 	}
 
 	return (

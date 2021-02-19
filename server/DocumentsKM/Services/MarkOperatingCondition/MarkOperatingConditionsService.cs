@@ -52,13 +52,12 @@ namespace DocumentsKM.Services
         {
             if (markOperatingConditions == null)
                 throw new ArgumentNullException(nameof(markOperatingConditions));
-            var uniqueConstraintViolationCheck = _repository.GetByMarkId(markId);
-            if (uniqueConstraintViolationCheck != null)
-                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-
             var foundMark = _markRepo.GetById(markId);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
+            var uniqueConstraintViolationCheck = _repository.GetByMarkId(markId);
+            if (uniqueConstraintViolationCheck != null)
+                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             markOperatingConditions.Mark = foundMark;
 
             var envAggressiveness = _envAggressivenessRepo.GetById(envAggressivenessId);

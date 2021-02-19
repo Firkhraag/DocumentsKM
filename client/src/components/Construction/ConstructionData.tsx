@@ -150,7 +150,7 @@ const ConstructionData = ({
 						name: v.name,
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -308,8 +308,11 @@ const ConstructionData = ({
 				)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
+				if (e.response != null && e.response.status === 409) {
+					setErrMsg('Вид конструкции уже существует')
+					return
+				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error', e)
 			}
 		}
 	}
@@ -317,7 +320,7 @@ const ConstructionData = ({
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-				await httpClient.patch(`/constructions/${selectedObject.id}`, {
+				const object = {
 					name:
 						selectedObject.name === construction.name
 							? undefined
@@ -369,11 +372,22 @@ const ConstructionData = ({
 						construction.hasFlangedConnections
 							? undefined
 							: selectedObject.hasFlangedConnections,
-				})
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
+				await httpClient.patch(
+					`/constructions/${selectedObject.id}`,
+					object
+				)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
+				if (e.response != null && e.response.status === 409) {
+					setErrMsg('Вид конструкции уже существует')
+					return
+				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error', e)
 			}
 		}
 	}
@@ -477,7 +491,7 @@ const ConstructionData = ({
 					<Form.Control
 						id="valuation"
 						type="text"
-						placeholder="Введите расценку"
+						placeholder="Не введено"
 						autoComplete="off"
 						className="auto-width flex-grow"
 						defaultValue={selectedObject.valuation}

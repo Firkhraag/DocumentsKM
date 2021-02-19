@@ -16,6 +16,7 @@ namespace DocumentsKM.Tests
         private readonly Mock<ISubnodeRepo> _mockSubnodeRepo = new Mock<ISubnodeRepo>();
         private readonly Mock<IDepartmentRepo> _mockDepartmentRepo = new Mock<IDepartmentRepo>();
         private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
+        private readonly Mock<IEstimateTaskRepo> _mockEstimateTaskRepo = new Mock<IEstimateTaskRepo>();
         private readonly Mock<ISpecificationService> _mockSpecificationService = new Mock<ISpecificationService>();
         private readonly IMarkService _service;
         private readonly Random _rnd = new Random();
@@ -86,6 +87,7 @@ namespace DocumentsKM.Tests
                 _mockSubnodeRepo.Object,
                 _mockDepartmentRepo.Object,
                 _mockEmployeeRepo.Object,
+                _mockEstimateTaskRepo.Object,
                 _mockSpecificationService.Object);
         }
 

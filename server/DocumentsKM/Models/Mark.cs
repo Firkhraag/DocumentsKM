@@ -34,10 +34,12 @@ namespace DocumentsKM.Models
         // Гл_спец
         [ForeignKey("ChiefSpecialistId")]
         public virtual Employee ChiefSpecialist { get; set; }
+        public int? ChiefSpecialistId { get; set; }
 
         // Рук_гр 
         [ForeignKey("GroupLeaderId")]
         public virtual Employee GroupLeader { get; set; }
+        public int? GroupLeaderId { get; set; }
 
         // Гл_стр 
         [ForeignKey("MainBuilderId")]

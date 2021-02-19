@@ -12,6 +12,7 @@ import StandardConstruction from '../../model/StandardConstruction'
 import { useMark } from '../../store/MarkStore'
 import ConstructionTable from '../Construction/ConstructionTable'
 import StandardConstructionTable from '../StandardConstruction/StandardConstructionTable'
+import ErrorMsg from '../ErrorMsg/ErrorMsg'
 
 type SpecificationDataProps = {
 	specification: Specification
@@ -32,6 +33,7 @@ const SpecificationData = ({
 	const mark = useMark()
 
 	const [selectedObject, setSelectedObject] = useState(specification)
+	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
 		if (mark != null && mark.id != null && selectedObject == null) {
@@ -50,12 +52,23 @@ const SpecificationData = ({
 
 	const onChangeButtonClick = async () => {
 		try {
-			await httpClient.patch(`/specifications/${selectedObject.id}`, {
-				note: selectedObject.note,
-			})
+			const object = {
+				note:
+					selectedObject.note === specification.note
+						? undefined
+						: selectedObject.note,
+			}
+			if (!Object.values(object).some((x) => x !== undefined)) {
+				setErrMsg('Изменения осутствуют')
+				return
+			}
+			await httpClient.patch(
+				`/specifications/${selectedObject.id}`,
+				object
+			)
 			history.push('/specifications')
 		} catch (e) {
-			console.log('Error')
+			setErrMsg('Произошла ошибка')
 		}
 	}
 
@@ -81,8 +94,6 @@ const SpecificationData = ({
 					</Form.Group>
 					<Form.Group>
 						<Form.Check
-							// ref={refs[index]}
-							// id={`is${s.id}`}
 							name="currentRelease"
 							type="radio"
 							style={{ pointerEvents: 'none' }}
@@ -103,6 +114,9 @@ const SpecificationData = ({
 						onBlur={onNoteChange}
 					/>
 				</Form.Group>
+
+				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+
 				<Button
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"

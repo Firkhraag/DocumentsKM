@@ -121,7 +121,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 					marks: marksResponse.data,
 				})
 			} catch (e) {
-				console.log('Failed to fetch the data')
+				setErrMsg('Произошла ошибка')
 			}
 			setSelectedObject({
 				...defaultSelectedObject,
@@ -180,7 +180,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 						project: v,
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -234,7 +234,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 						node: v,
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -298,7 +298,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 						subnode: v,
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -333,7 +333,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 			selectedObject.node == null ||
 			selectedObject.project == null
 		) {
-			setErrMsg('Пожалуйста, заполните необходимые поля')
+			setErrMsg('Пожалуйста, выберите марку')
 			return
 		}
 		const mark = selectedObject.mark
@@ -366,7 +366,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 			selectedObject.node == null ||
 			selectedObject.project == null
 		) {
-			setErrMsg('Пожалуйста, заполните необходимые поля')
+			setErrMsg('Пожалуйста, выберите подузел')
 			return
 		}
 		const subnode = selectedObject.subnode

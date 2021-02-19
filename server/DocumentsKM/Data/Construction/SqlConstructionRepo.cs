@@ -22,6 +22,14 @@ namespace DocumentsKM.Data
                     v => v.Type.Id).ToList();
         }
 
+        public IEnumerable<Construction> GetAllByMarkId(
+            int markId)
+        {
+            return _context.Constructions.Where(
+                v => v.Specification.Mark.Id == markId).OrderBy(
+                    v => v.Type.Id).ToList();
+        }
+
         public Construction GetById(int id, bool withEagerLoading = false)
         {
             if (withEagerLoading)

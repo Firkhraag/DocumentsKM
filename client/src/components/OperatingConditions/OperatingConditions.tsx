@@ -291,7 +291,6 @@ const OperatingConditions = () => {
 				history.push('/')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -299,55 +298,59 @@ const OperatingConditions = () => {
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
+				const object = {
+					safetyCoeff:
+						selectedObject.safetyCoeff ===
+						defaultSelectedObject.safetyCoeff
+							? undefined
+							: selectedObject.safetyCoeff,
+					temperature:
+						selectedObject.temperature ===
+						defaultSelectedObject.temperature
+							? undefined
+							: selectedObject.temperature,
+					envAggressivenessId:
+						selectedObject.envAggressiveness.id ===
+						defaultSelectedObject.envAggressiveness.id
+							? undefined
+							: selectedObject.envAggressiveness.id,
+					operatingAreaId:
+						selectedObject.operatingArea.id ===
+						defaultSelectedObject.operatingArea.id
+							? undefined
+							: selectedObject.operatingArea.id,
+					gasGroupId:
+						selectedObject.gasGroup.id ===
+						defaultSelectedObject.gasGroup.id
+							? undefined
+							: selectedObject.gasGroup.id,
+					constructionMaterialId:
+						selectedObject.constructionMaterial.id ===
+						defaultSelectedObject.constructionMaterial.id
+							? undefined
+							: selectedObject.constructionMaterial.id,
+					paintworkTypeId:
+						selectedObject.paintworkType.id ===
+						defaultSelectedObject.paintworkType.id
+							? undefined
+							: selectedObject.paintworkType.id,
+					highTensileBoltsTypeId:
+						selectedObject.highTensileBoltsType.id ===
+						defaultSelectedObject.highTensileBoltsType.id
+							? undefined
+							: selectedObject.highTensileBoltsType.id,
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
 				await httpClient.patch(
 					`/marks/${mark.id}/mark-operating-conditions`,
-					{
-						safetyCoeff:
-							selectedObject.safetyCoeff ===
-							defaultSelectedObject.safetyCoeff
-								? undefined
-								: selectedObject.safetyCoeff,
-						temperature:
-							selectedObject.temperature ===
-							defaultSelectedObject.temperature
-								? undefined
-								: selectedObject.temperature,
-						envAggressivenessId:
-							selectedObject.envAggressiveness.id ===
-							defaultSelectedObject.envAggressiveness.id
-								? undefined
-								: selectedObject.envAggressiveness.id,
-						operatingAreaId:
-							selectedObject.operatingArea.id ===
-							defaultSelectedObject.operatingArea.id
-								? undefined
-								: selectedObject.operatingArea.id,
-						gasGroupId:
-							selectedObject.gasGroup.id ===
-							defaultSelectedObject.gasGroup.id
-								? undefined
-								: selectedObject.gasGroup.id,
-						constructionMaterialId:
-							selectedObject.constructionMaterial.id ===
-							defaultSelectedObject.constructionMaterial.id
-								? undefined
-								: selectedObject.constructionMaterial.id,
-						paintworkTypeId:
-							selectedObject.paintworkType.id ===
-							defaultSelectedObject.paintworkType.id
-								? undefined
-								: selectedObject.paintworkType.id,
-						highTensileBoltsTypeId:
-							selectedObject.highTensileBoltsType.id ===
-							defaultSelectedObject.highTensileBoltsType.id
-								? undefined
-								: selectedObject.highTensileBoltsType.id,
-					}
+					object
 				)
 				history.push('/')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

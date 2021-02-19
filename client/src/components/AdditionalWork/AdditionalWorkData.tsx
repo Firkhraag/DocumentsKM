@@ -118,8 +118,11 @@ const AdditionalWorkData = ({
 				})
 				history.push('/additional-work')
 			} catch (e) {
+				if (e.response != null && e.response.status === 409) {
+					setErrMsg('Исполнитель уже существует')
+					return
+				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -127,30 +130,36 @@ const AdditionalWorkData = ({
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
+				const object = {
+					employeeId:
+						selectedObject.employee.id ===
+						additionalWork.employee.id
+							? undefined
+							: selectedObject.employee.id,
+					valuation:
+						selectedObject.valuation === additionalWork.valuation
+							? undefined
+							: selectedObject.valuation,
+					order:
+						selectedObject.metalOrder === additionalWork.metalOrder
+							? undefined
+							: selectedObject.metalOrder,
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
 				await httpClient.patch(
 					`/marks/${mark.id}/additional-work/${selectedObject.id}`,
-					{
-						employeeId:
-							selectedObject.employee.id ===
-							additionalWork.employee.id
-								? undefined
-								: selectedObject.employee.id,
-						valuation:
-							selectedObject.valuation ===
-							additionalWork.valuation
-								? undefined
-								: selectedObject.valuation,
-						order:
-							selectedObject.metalOrder ===
-							additionalWork.metalOrder
-								? undefined
-								: selectedObject.metalOrder,
-					}
+					object
 				)
 				history.push('/additional-work')
 			} catch (e) {
+				if (e.response != null && e.response.status === 409) {
+					setErrMsg('Исполнитель уже существует')
+					return
+				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

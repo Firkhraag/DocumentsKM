@@ -100,7 +100,6 @@ const OtherAttachedDocData = ({
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -108,7 +107,7 @@ const OtherAttachedDocData = ({
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-				await httpClient.patch(`/attached-docs/${selectedObject.id}`, {
+				const object = {
 					designation:
 						selectedObject.designation ===
 						otherAttachedDoc.designation
@@ -122,7 +121,15 @@ const OtherAttachedDocData = ({
 						selectedObject.note === otherAttachedDoc.note
 							? undefined
 							: selectedObject.note,
-				})
+				}
+				if (!Object.values(object).some((x) => x !== undefined)) {
+					setErrMsg('Изменения осутствуют')
+					return
+				}
+				await httpClient.patch(
+					`/attached-docs/${selectedObject.id}`,
+					object
+				)
 				history.push('/other-attached-docs')
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -132,7 +139,6 @@ const OtherAttachedDocData = ({
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}

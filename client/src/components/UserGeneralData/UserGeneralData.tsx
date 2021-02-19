@@ -110,7 +110,7 @@ const UserGeneralData = () => {
 						pointText: '',
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -180,7 +180,7 @@ const UserGeneralData = () => {
 			}
 			setPopup(defaultPopup)
 		} catch (e) {
-			console.log('Error')
+			setErrMsg('Произошла ошибка')
 		}
 	}
 
@@ -198,7 +198,6 @@ const UserGeneralData = () => {
 
 	const onUpdatePointButtonClick = async () => {
 		if (checkIfValid()) {
-			console.log(selectedObject.point.orderNum)
 			try {
 				await httpClient.patch(
 					`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${selectedObject.point.id}`,
@@ -251,7 +250,6 @@ const UserGeneralData = () => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -276,7 +274,6 @@ const UserGeneralData = () => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -322,7 +319,7 @@ const UserGeneralData = () => {
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Разделы</label>
 						<div className="flex-v general-data-selection mrg-top">
-							{optionsObject.sections.map((s) => {
+							{optionsObject.sections.map((s, index) => {
 								return (
 									<div
 										className={
@@ -336,7 +333,7 @@ const UserGeneralData = () => {
 										onClick={() => onSectionSelect(s.id)}
 										key={s.id}
 									>
-										<p className="no-bot-mrg">{s.name}</p>
+										<p className="no-bot-mrg">{(index + 1).toString() + '. ' + s.name}</p>
 									</div>
 								)
 							})}

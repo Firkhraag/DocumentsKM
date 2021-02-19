@@ -169,6 +169,8 @@ namespace DocumentsKM
             services.AddScoped<IAttachedDocService, AttachedDocService>();
             services.AddScoped<IAdditionalWorkService, AdditionalWorkService>();
 
+            services.AddScoped<IEstimateTaskService, EstimateTaskService>();
+
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
             services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
             services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
@@ -221,6 +223,8 @@ namespace DocumentsKM
 
             services.AddScoped<IAttachedDocRepo, SqlAttachedDocRepo>();
             services.AddScoped<IAdditionalWorkRepo, SqlAdditionalWorkRepo>();
+
+            services.AddScoped<IEstimateTaskRepo, SqlEstimateTaskRepo>();
 
             services.AddScoped<IGeneralDataSectionRepo, SqlGeneralDataSectionRepo>();
             services.AddScoped<IGeneralDataPointRepo, SqlGeneralDataPointRepo>();

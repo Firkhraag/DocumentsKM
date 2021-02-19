@@ -7,6 +7,8 @@ namespace DocumentsKM.Data
     {
         // Получить все виды конструкций по id выпуска спецификации
         IEnumerable<Construction> GetAllBySpecificationId(int specificationId);
+        // Получить все виды конструкций по id марки
+        IEnumerable<Construction> GetAllByMarkId(int markId);
         // Получить вид конструкции по id
         Construction GetById(int id, bool withEagerLoading = false);
         // Получить вид конструкции по unique key

@@ -9,6 +9,7 @@ import httpClient from '../../axios'
 import Department from '../../model/Department'
 import Employee from '../../model/Employee'
 import getFromOptions from '../../util/get-from-options'
+import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
 import { removeValueFromArray } from '../../util/array'
 import { reactSelectStyle } from '../../util/react-select-style'
@@ -17,6 +18,7 @@ const MarkApproval = () => {
 	const mark = useMark()
 	const history = useHistory()
 
+    const [defaultEmployeeIds, setDefaultEmployeeIds] = useState<number[]>([])
 	const [selectedObject, setSelectedObject] = useState({
 		departments: [] as Department[],
 		employees: [] as Employee[],
@@ -25,6 +27,8 @@ const MarkApproval = () => {
 		departments: [] as Department[],
 		employees: [[], [], [], [], [], [], []] as Employee[][],
 	})
+
+    const [errMsg, setErrMsg] = useState('')
 
 	const cachedEmployees = useState(new Map<number, Employee[]>())[0]
 	const employeesExcludedFromOptions = useState([] as number[])[0]
@@ -41,12 +45,11 @@ const MarkApproval = () => {
 					)
 					const markApprovals = markApprovalsResponse.data as Employee[]
 					for (let e of markApprovals) {
-						if (e != null) {
-							employeesExcludedFromOptions.push(e.id)
-						}
+                        employeesExcludedFromOptions.push(e.id)
+                        defaultEmployeeIds.push(e.id)
 					}
 					setSelectedObject({
-						departments: markApprovals.map((e) => e?.department),
+						departments: markApprovals.map((e) => e.department),
 						employees: markApprovals,
 					})
 
@@ -55,12 +58,12 @@ const MarkApproval = () => {
 						approvalSpecialist: Employee,
 						options: Employee[][]
 					) => {
-						const fetchedEmployeesResponse = await httpClient.get(
+						const employeesResponse = await httpClient.get(
 							`/departments/${approvalSpecialist.department.id}/mark-approval-employees`
 						)
 						options[
 							rowNumber
-						] = fetchedEmployeesResponse.data as Employee[]
+						] = employeesResponse.data as Employee[]
 					}
 					for (const [i, e] of markApprovals.entries()) {
 						if (e != null) {
@@ -124,19 +127,19 @@ const MarkApproval = () => {
 				})
 			} else {
 				try {
-					const fetchedEmployeesResponse = await httpClient.get(
+					const employeesResponse = await httpClient.get(
 						`/departments/${number}/mark-approval-employees`
 					)
-					cachedEmployees.set(v.id, fetchedEmployeesResponse.data)
+					cachedEmployees.set(v.id, employeesResponse.data)
 					optionsObject.employees[rowNumber] =
-						fetchedEmployeesResponse.data
+						employeesResponse.data
 					selectedObject.departments[rowNumber] = v
 					setSelectedObject({
 						...selectedObject,
 						departments: selectedObject.departments,
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -186,13 +189,19 @@ const MarkApproval = () => {
 					employeeIdsToSend.push(e.id)
 				}
 			}
+            const idsSet = [...new Set([...defaultEmployeeIds, ...employeeIdsToSend])]
+            if (idsSet.length == defaultEmployeeIds.length &&
+                idsSet.length == employeeIdsToSend.length) {
+                setErrMsg('Изменения осутствуют')
+                return
+            }
 			await httpClient.patch(
 				`/marks/${mark.id}/approvals`,
 				employeeIdsToSend
 			)
 			history.push('/')
 		} catch (e) {
-			console.log('Error')
+			setErrMsg('Произошла ошибка')
 		}
 	}
 
@@ -332,6 +341,7 @@ const MarkApproval = () => {
 						)
 					}
 				)}
+                <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 				<Button
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"

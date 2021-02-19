@@ -118,7 +118,7 @@ const MarkGeneralData = () => {
 						pointText: '',
 					})
 				} catch (e) {
-					console.log('Failed to fetch the data')
+					setErrMsg('Произошла ошибка')
 				}
 			}
 		}
@@ -173,12 +173,12 @@ const MarkGeneralData = () => {
 				}
 			}
 
-            var arr = [...optionsObject.points]
+			var arr = [...optionsObject.points]
 			arr.splice(row, 1)
 			setOptionsObject({
-                ...optionsObject,
-                points: arr,
-            })
+				...optionsObject,
+				points: arr,
+			})
 
 			if (selectedObject.point != null && selectedObject.point.id == id) {
 				setSelectedObject({
@@ -188,7 +188,7 @@ const MarkGeneralData = () => {
 			}
 			setPopup(defaultPopup)
 		} catch (e) {
-			console.log('Error', e)
+			setErrMsg('Произошла ошибка')
 		}
 	}
 
@@ -259,7 +259,6 @@ const MarkGeneralData = () => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -284,7 +283,6 @@ const MarkGeneralData = () => {
 					return
 				}
 				setErrMsg('Произошла ошибка')
-				console.log('Error')
 			}
 		}
 	}
@@ -292,21 +290,24 @@ const MarkGeneralData = () => {
 	const onDownloadButtonClick = async () => {
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/general-data`,
+				`/marks/${mark.id}/general-data-document`,
 				{
 					responseType: 'blob',
 				}
 			)
-
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', 'Общие данные.docx')
+			link.setAttribute('download', `${mark.code}_ОД.docx`)
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
 		} catch (e) {
-			console.log('Failed to download the file')
+            if (e.response != null && e.response.status === 404) {
+                setErrMsg('Пожалуйста, заполните условия эскплуатации у марки')
+                return
+            }
+			setErrMsg('Произошла ошибка')
 		}
 	}
 
@@ -389,7 +390,11 @@ const MarkGeneralData = () => {
 										onClick={() => onSectionSelect(s.id)}
 										key={s.id}
 									>
-										<p className="no-bot-mrg">{(index + 1).toString() + '. ' +s.name}</p>
+										<p className="no-bot-mrg">
+											{(index + 1).toString() +
+												'. ' +
+												s.name}
+										</p>
 									</div>
 								)
 							})}

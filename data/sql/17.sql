@@ -8,7 +8,6 @@ CREATE TABLE corrosion_protection_coating (
 	gr_group smallint NOT NULL,
 	lp_can  boolean NOT NULL,
 	priority smallint NOT NULL,
-	
 	UNIQUE(
 		lp_type, lp_group, lp_durability, lp_name
 	)

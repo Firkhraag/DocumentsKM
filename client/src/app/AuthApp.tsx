@@ -29,6 +29,7 @@ import AdditionalWorkTable from '../components/AdditionalWork/AdditionalWorkTabl
 import AdditionalWorkData from '../components/AdditionalWork/AdditionalWorkData'
 import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
 import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
+import EstimateTaskDocument from '../components/EstimateTask/EstimateTaskDocument'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
 import StandardConstruction from '../model/StandardConstruction'
@@ -446,10 +447,15 @@ const AuthApp = () => {
 									<GeneralData />
 								</div>
 							</Route>
-
 							<Route exact path="/user/general-data">
 								<div className="full-width div-container">
 									<UserGeneralData />
+								</div>
+							</Route>
+
+                            <Route exact path="/estimate-task">
+								<div className="full-width div-container">
+									<EstimateTaskDocument />
 								</div>
 							</Route>
 						</div>

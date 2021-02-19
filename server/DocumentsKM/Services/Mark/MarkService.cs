@@ -4,6 +4,7 @@ using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
 using System.Linq;
+using DocumentsKM.Helpers;
 
 namespace DocumentsKM.Services
 {
@@ -13,6 +14,7 @@ namespace DocumentsKM.Services
         private readonly ISubnodeRepo _subnodeRepo;
         private readonly IDepartmentRepo _departmentRepo;
         private readonly IEmployeeRepo _employeeRepo;
+        private readonly IEstimateTaskRepo _estimateTaskRepo;
         private readonly ISpecificationService _specificationService;
 
         public MarkService(
@@ -20,13 +22,14 @@ namespace DocumentsKM.Services
             ISubnodeRepo subnodeRepo,
             IDepartmentRepo departmentRepo,
             IEmployeeRepo employeeRepo,
+            IEstimateTaskRepo estimateTaskRepo,
             ISpecificationService specificationService)
         {
             _repository = markRepo;
             _subnodeRepo = subnodeRepo;
             _departmentRepo = departmentRepo;
             _employeeRepo = employeeRepo;
-
+            _estimateTaskRepo = estimateTaskRepo;
             _specificationService = specificationService;
         }
 
@@ -116,6 +119,14 @@ namespace DocumentsKM.Services
             
             _repository.Add(mark);
             _specificationService.Create(mark.Id);
+
+            _estimateTaskRepo.Add(new EstimateTask
+            {
+                Mark = mark,
+                TaskText = "Разработать сметную документацию к чертежам " + MarkHelper.MakeMarkName(
+                    subnode.Node.Project.BaseSeries, subnode.Node.Code, subnode.Code, mark.Code
+                ) + "\r\nСостав и объемы работ:",
+            });
         }
 
         public void Update(
@@ -188,7 +199,7 @@ namespace DocumentsKM.Services
             {
                 int chiefSpecialistId = mark.ChiefSpecialistId.GetValueOrDefault();
                 if (chiefSpecialistId == -1)
-                    foundMark.ChiefSpecialist = null;
+                    foundMark.ChiefSpecialistId = null;
                 else
                 {
                     var chiefSpecialist = _employeeRepo.GetById(chiefSpecialistId);
@@ -203,7 +214,7 @@ namespace DocumentsKM.Services
             {
                 int groupLeaderId = mark.GroupLeaderId.GetValueOrDefault();
                 if (groupLeaderId == -1)
-                    foundMark.GroupLeader = null;
+                    foundMark.GroupLeaderId = null;
                 else
                 {
                     var groupLeader = _employeeRepo.GetById(groupLeaderId);

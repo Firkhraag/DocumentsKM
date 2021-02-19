@@ -1,12 +1,9 @@
 CREATE TABLE bolt_lengths (
 	id smallserial PRIMARY KEY,
-	bolt_diameter_id smallint NOT NULL,
-	bolt_len smallint NOT NULL,
-	screw_len smallint NOT NULL,
-	bolt_weight real NOT NULL,
-	UNIQUE(
-		bolt_diameter_id, bolt_len,
-		screw_len, bolt_weight
-	),
-	CONSTRAINT bolt_diameter FOREIGN KEY(bolt_diameter_id) REFERENCES bolt_diameters(id)
+	diameter_id smallint NOT NULL,
+	length smallint NOT NULL,
+	screw_length smallint NOT NULL,
+	weight real NOT NULL,
+	UNIQUE(diameter_id, length),
+	CONSTRAINT diameter FOREIGN KEY(diameter_id) REFERENCES bolt_diameters(id)
 );
