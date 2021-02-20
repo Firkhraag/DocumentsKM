@@ -1,15 +1,102 @@
 using DocumentsKM.Models;
+using DocumentsKM.Data;
+using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
+using System;
+using DocumentsKM.Helpers;
+using DocumentFormat.OpenXml;
 
 namespace DocumentsKM.Services
 {
-    public static class GeneralDataDocument
+    public class GeneralDataDocumentService : IGeneralDataDocumentService
     {
-        public static void AppendToSheetTable(WordprocessingDocument document, List<Doc> docs)
+        private readonly int _departmentHeadPosId = 7;
+        private readonly int _sheetDocTypeId = 1;
+        
+        private readonly IMarkRepo _markRepo;
+        private readonly IMarkApprovalRepo _markApprovalRepo;
+        private readonly IEmployeeRepo _employeeRepo;
+        private readonly IDocRepo _docRepo;
+        private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
+        private readonly IMarkLinkedDocRepo _markLinkedDocRepo;
+        private readonly IAttachedDocRepo _attachedDocRepo;
+        private readonly IMarkOperatingConditionsRepo _markOperatingConditionsRepo;
+
+        public GeneralDataDocumentService(
+            IMarkRepo markRepo,
+            IMarkApprovalRepo markApprovalRepo,
+            IEmployeeRepo employeeRepo,
+            IDocRepo docRepo,
+            IMarkGeneralDataPointRepo markGeneralDataPointRepo,
+            IMarkLinkedDocRepo markLinkedDocRepo,
+            IAttachedDocRepo attachedDocRepo,
+            IMarkOperatingConditionsRepo markOperatingConditionsRepo)
+        {
+            _markRepo = markRepo;
+            _markApprovalRepo = markApprovalRepo;
+            _employeeRepo = employeeRepo;
+            _docRepo = docRepo;
+            _markGeneralDataPointRepo = markGeneralDataPointRepo;
+            _markLinkedDocRepo = markLinkedDocRepo;
+            _attachedDocRepo = attachedDocRepo;
+            _markOperatingConditionsRepo = markOperatingConditionsRepo;
+        }
+
+        public void PopulateDocument(int markId, MemoryStream memory)
+        {
+            var mark = _markRepo.GetById(markId);
+            if (mark == null)
+                throw new ArgumentNullException(nameof(mark));
+            var markApprovals = _markApprovalRepo.GetAllByMarkId(markId);
+            var subnode = mark.Subnode;
+            var node = subnode.Node;
+            var project = node.Project;
+
+            var departmentHeadArr = _employeeRepo.GetAllByDepartmentIdAndPosition(
+                mark.Department.Id,
+                _departmentHeadPosId);
+            if (departmentHeadArr.Count() != 1)
+                throw new ConflictException();
+            var departmentHead = departmentHeadArr.ToList()[0];
+
+            var opCond = _markOperatingConditionsRepo.GetByMarkId(markId);
+            if (opCond == null)
+                throw new ArgumentNullException(nameof(opCond));
+            var markGeneralDataPoints = _markGeneralDataPointRepo.GetAllByMarkId(
+                markId).OrderByDescending(
+                    v => v.Section.OrderNum).ThenByDescending(v => v.OrderNum);
+            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
+            {
+                var markName = MarkHelper.MakeMarkName(
+                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
+                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
+                    project.Name, node.Name, subnode.Name, mark.Name);
+                AppendList(wordDoc, markGeneralDataPoints, opCond);
+
+                AppendToSheetTable(wordDoc, sheets.ToList());
+                AppendToLinkedAndAttachedDocsTable(
+                    wordDoc,
+                    _markLinkedDocRepo.GetAllByMarkId(markId).ToList(),
+                    _attachedDocRepo.GetAllByMarkId(markId).ToList());
+                Word.AppendToBigFooterTable(
+                    wordDoc,
+                    markName,
+                    complexName,
+                    objectName,
+                    sheets.Count(),
+                    mark,
+                    markApprovals.ToList(),
+                    departmentHead);
+                Word.AppendToSmallFooterTable(wordDoc, markName);
+            }
+        }
+
+        private void AppendToSheetTable(WordprocessingDocument document, List<Doc> docs)
         {
             if (docs.Count() > 0)
             {
@@ -45,7 +132,7 @@ namespace DocumentsKM.Services
             }
         }
 
-        public static void AppendToLinkedAndAttachedDocsTable(
+        private void AppendToLinkedAndAttachedDocsTable(
             WordprocessingDocument document,
             List<MarkLinkedDoc> markLinkedDocs,
             List<AttachedDoc> attachedDocs)
@@ -113,7 +200,7 @@ namespace DocumentsKM.Services
             }
         }
 
-        public static void AppendList(
+        private void AppendList(
             WordprocessingDocument wordDoc,
             IEnumerable<MarkGeneralDataPoint> markGeneralDataPoints,
             MarkOperatingConditions markOperatingConditions)

@@ -1,16 +1,61 @@
 using DocumentsKM.Models;
+using DocumentsKM.Data;
+using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
 using System;
+using DocumentsKM.Helpers;
+using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml;
 
 namespace DocumentsKM.Services
 {
-    public static class BoltDocument
+    public class BoltDocumentService : IBoltDocumentService
     {
-        public static void AppendToTable(
+        private readonly IMarkRepo _markRepo;
+        private readonly IBoltLengthRepo _boltLengthRepo;
+        private readonly IConstructionBoltRepo _constructionBoltRepo;
+
+        public BoltDocumentService(
+            IMarkRepo markRepo,
+            IBoltLengthRepo boltLengthRepo,
+            IConstructionBoltRepo constructionBoltRepo)
+        {
+            _markRepo = markRepo;
+            _boltLengthRepo = boltLengthRepo;
+            _constructionBoltRepo = constructionBoltRepo;
+        }
+
+        public void PopulateDocument(int markId, MemoryStream memory)
+        {
+            var mark = _markRepo.GetById(markId);
+            if (mark == null)
+                throw new ArgumentNullException(nameof(mark));
+            var subnode = mark.Subnode;
+            var node = subnode.Node;
+            var project = node.Project;
+
+            var constructionBolts = _constructionBoltRepo.GetAllByMarkId(markId);
+            var boltLengths = new List<BoltLength> {};
+            foreach (var bolt in constructionBolts)
+            {
+                var arr = _boltLengthRepo.GetAllByDiameterId(bolt.Diameter.Id);
+                var bl = arr.Where(
+                    v => v.Length >= bolt.Packet + v.ScrewLength).Aggregate(
+                        (i1, i2) => i1.Length < i2.Length ? i1 : i2);
+                boltLengths.Add(bl);
+            }
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
+            {
+                var markName = MarkHelper.MakeMarkName(
+                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
+                AppendToTable(wordDoc, constructionBolts.ToList(), boltLengths);
+                Word.AppendToSmallFooterTable(wordDoc, markName);
+            }
+        }
+
+        private void AppendToTable(
             WordprocessingDocument document,
             List<ConstructionBolt> bolts,
             List<BoltLength> boltLengths)
@@ -66,7 +111,7 @@ namespace DocumentsKM.Services
             }
         }
 
-        private static void InsertThreeRows(
+        private void InsertThreeRows(
             List<TableCell> trCells,
             OpenXmlElement clonedFirstTr,
             Table t,

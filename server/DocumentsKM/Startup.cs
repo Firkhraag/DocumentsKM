@@ -174,7 +174,13 @@ namespace DocumentsKM
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
             services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
             services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
+
             services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IGeneralDataDocumentService, GeneralDataDocumentService>();
+            services.AddScoped<IConstructionDocumentService, ConstructionDocumentService>();
+            services.AddScoped<IBoltDocumentService, BoltDocumentService>();
+            services.AddScoped<IEstimateTaskDocumentService, EstimateTaskDocumentService>();
+            services.AddScoped<ISpecificationDocumentService, SpecificationDocumentService>();
         }
 
         private void injectScopedRepositories(IServiceCollection services)
