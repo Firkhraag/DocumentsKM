@@ -7,6 +7,7 @@ using System;
 using DocumentsKM.Helpers;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Services
 {
@@ -14,31 +15,54 @@ namespace DocumentsKM.Services
     {
         private readonly int _departmentHeadPosId = 7;
         private readonly int _sheetDocTypeId = 1;
+        private readonly int _paintingGeneralDataSectionId = 13;
         
         private readonly IMarkRepo _markRepo;
-        private readonly IMarkApprovalRepo _markApprovalRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IDocRepo _docRepo;
         private readonly IConstructionRepo _constructionRepo;
+        private readonly IConstructionElementRepo _constructionElementRepo;
+        private readonly IStandardConstructionRepo _standardConstructionRepo;
         private readonly IMarkOperatingConditionsRepo _markOperatingConditionsRepo;
         private readonly IEstimateTaskRepo _estimateTaskRepo;
+        private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
+
+        private class GroupedSteel
+        {
+            public string Name { set; get; }
+            public float Length { set; get; }
+            public float Weight { set; get; }
+            public float Area { set; get; }
+        }
+
+        private class ListText
+        {
+            public string Text { set; get; }
+            public int LevelNum { set; get; }
+            public bool IsBold { set; get; }
+            public bool WithSuperscript { set; get; }
+        }
 
         public EstimateTaskDocumentService(
             IMarkRepo markRepo,
-            IMarkApprovalRepo markApprovalRepo,
             IEmployeeRepo employeeRepo,
             IDocRepo docRepo,
             IConstructionRepo constructionRepo,
+            IConstructionElementRepo constructionElementRepo,
+            IStandardConstructionRepo standardConstructionRepo,
             IMarkOperatingConditionsRepo markOperatingConditionsRepo,
-            IEstimateTaskRepo estimateTaskRepo)
+            IEstimateTaskRepo estimateTaskRepo,
+            IMarkGeneralDataPointRepo markGeneralDataPointRepo)
         {
             _markRepo = markRepo;
-            _markApprovalRepo = markApprovalRepo;
             _employeeRepo = employeeRepo;
             _docRepo = docRepo;
             _constructionRepo = constructionRepo;
+            _constructionElementRepo = constructionElementRepo;
+            _standardConstructionRepo = standardConstructionRepo;
             _markOperatingConditionsRepo = markOperatingConditionsRepo;
             _estimateTaskRepo = estimateTaskRepo;
+            _markGeneralDataPointRepo = markGeneralDataPointRepo;
         }
 
         public void PopulateDocument(int markId, MemoryStream memory)
@@ -46,7 +70,6 @@ namespace DocumentsKM.Services
             var mark = _markRepo.GetById(markId);
             if (mark == null)
                 throw new ArgumentNullException(nameof(mark));
-            var markApprovals = _markApprovalRepo.GetAllByMarkId(markId);
             var subnode = mark.Subnode;
             var node = subnode.Node;
             var project = node.Project;
@@ -61,12 +84,22 @@ namespace DocumentsKM.Services
             var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
             // Вкл в состав спецификации
             var constructions = _constructionRepo.GetAllByMarkId(markId);
+            var standardConstructions = _standardConstructionRepo.GetAllByMarkId(markId);
             var opCond = _markOperatingConditionsRepo.GetByMarkId(markId);
             if (opCond == null)
                 throw new ArgumentNullException(nameof(opCond));
             var estTask = _estimateTaskRepo.GetByMarkId(markId);
             if (estTask == null)
                 throw new ArgumentNullException(nameof(estTask));
+            var markApprovals = new List<MarkApproval> {};
+            if (estTask.ApprovalEmployee != null)
+            {
+                markApprovals.Add(new MarkApproval
+                {
+                    MarkId = markId,
+                    Employee = estTask.ApprovalEmployee,
+                });
+            }
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
@@ -75,134 +108,287 @@ namespace DocumentsKM.Services
                 (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                     project.Name, node.Name, subnode.Name, mark.Name);
 
-                var arr = new List<Word.ListText>
+                AppendText(wordDoc, estTask.TaskText);
+
+                var arr = new List<ListText>
                 {
-                    new Word.ListText
+                    new ListText
                     {
                         Text = "Изготовление и монтаж конструкций",
                         LevelNum = 0,
                         IsBold = true,
+                        WithSuperscript = false,
                     },
-                    new Word.ListText
+                    new ListText
                     {
                         Text = "Дополнительно учитывать:",
                         LevelNum = 4,
                         IsBold = false,
+                        WithSuperscript = false,
                     },
-                    new Word.ListText
+                    new ListText
                     {
                         Text = $"коэффициент надежности по ответственности: {opCond.SafetyCoeff}",
                         LevelNum = 2,
                         IsBold = false,
+                        WithSuperscript = false,
                     },
-                    new Word.ListText
+                    new ListText
                     {
                         Text = $"среда: {opCond.EnvAggressiveness.Name}",
                         LevelNum = 2,
                         IsBold = false,
+                        WithSuperscript = false,
                     },
-                    new Word.ListText
+                    new ListText
                     {
                         Text = $"расчетная температура эксплуатации: {(opCond.Temperature < 0 ? ("минус " + -opCond.Temperature) : opCond.Temperature)}",
                         LevelNum = 2,
                         IsBold = false,
+                        WithSuperscript = false,
                     },
                     
                 };
                 AppendList(wordDoc, arr);
                 
-                arr = new List<Word.ListText> {};
+                arr = new List<ListText> {};
+                double overallInitialWeightSum = 0.0;
+                double overallAreaSum = 0.0;
                 foreach (var construction in constructions)
                 {
-                    arr.Add(new Word.ListText
+                    arr.Add(new ListText
                     {
                         Text = construction.Name,
                         LevelNum = 1,
                         IsBold = false,
+                        WithSuperscript = false,
                     });
                     if (construction.Valuation != null)
-                        arr.Add(new Word.ListText
+                        arr.Add(new ListText
                         {
                             Text = $"Расценка: {construction.Valuation}",
                             LevelNum = 5,
                             IsBold = false,
+                            WithSuperscript = false,
                         });
                     if (construction.StandardAlbumCode != null)
-                        arr.Add(new Word.ListText
+                        arr.Add(new ListText
                         {
                             Text = $"Шифр типового альбома конструкций: {construction.StandardAlbumCode}",
                             LevelNum = 5,
                             IsBold = false,
+                            WithSuperscript = false,
                         });
                     if (construction.NumOfStandardConstructions != 0)
-                        arr.Add(new Word.ListText
+                        arr.Add(new ListText
                         {
                             Text = $"Число типовых конструкций: {construction.NumOfStandardConstructions}",
                             LevelNum = 5,
                             IsBold = false,
+                            WithSuperscript = false,
                         });
                     if (construction.HasEdgeBlunting)
-                    arr.Add(new Word.ListText
+                    arr.Add(new ListText
                         {
                             Text = "Притупление кромок",
                             LevelNum = 5,
                             IsBold = false,
+                            WithSuperscript = false,
                         });
                     if (construction.HasDynamicLoad)
-                        arr.Add(new Word.ListText
+                        arr.Add(new ListText
                         {
                             Text = "Динамическая нагрузка",
                             LevelNum = 5,
                             IsBold = false,
+                            WithSuperscript = false,
                         });
                     if (construction.HasFlangedConnections)
-                        arr.Add(new Word.ListText
+                        arr.Add(new ListText
                         {
                             Text = "Фланцевые соединения",
                             LevelNum = 5,
                             IsBold = false,
+                            WithSuperscript = false,
                         });
                     if (construction.WeldingControl.Id > 1)
-                    {
-                        arr.Add(new Word.ListText
+                        arr.Add(new ListText
                         {
                             Text = $"Контроль плотности сварных швов {construction.WeldingControl.Name}",
                             LevelNum = 5,
                             IsBold = false,
+                            WithSuperscript = false,
+                        });
+                    var constructionElements = _constructionElementRepo.GetAllByConstructionId(construction.Id);
+                    if (constructionElements.Count() > 0)
+                    {
+                        var groupedSteel = constructionElements.Where(
+                            v => v.Steel != null).GroupBy(v => v.Steel).Select(
+                                v => new GroupedSteel
+                                {
+                                    Name = v.First().Steel.Name,
+                                    Length = v.Sum(v => v.Length),
+                                    Weight = v.Sum(v => v.Profile.Weight),
+                                    Area = v.Sum(v => v.Profile.Area),
+                                });
+                        arr.Add(new ListText
+                        {
+                            Text = "в том числе по маркам стали:",
+                            LevelNum = 5,
+                            IsBold = false,
+                            WithSuperscript = false,
+                        });
+                        double initialWeightSum = 0.0;
+                        double areaSum = 0.0;
+                        foreach (var s in groupedSteel)
+                        {
+                            var initialWeightValue = s.Weight * s.Length * 0.001;
+                            var initialWeightValueRounded = Math.Ceiling(initialWeightValue * 1000) / 1000;
+                            arr.Add(new ListText
+                            {
+                                Text = $"{s.Name} {initialWeightValueRounded} x 1.04 = {Math.Ceiling(initialWeightValueRounded * 1.04 * 1000) / 1000} т",
+                                LevelNum = 6,
+                                IsBold = false,
+                                WithSuperscript = false,
+                            });
+                            initialWeightSum += initialWeightValue;
+                            areaSum += s.Area * s.Length;
+                        }
+                        overallInitialWeightSum += initialWeightSum;
+                        var initialWeightSumRounded = Math.Ceiling(initialWeightSum * 1000) / 1000;
+                        arr.Add(new ListText
+                        {
+                            Text = $"Итого масса металла: {initialWeightSumRounded} x 1.04 = {Math.Ceiling(initialWeightSumRounded * 1.04 * 1000) / 1000} т",
+                            LevelNum = 5,
+                            IsBold = false,
+                            WithSuperscript = false,
+                        });
+                        overallAreaSum += areaSum;
+                        arr.Add(new ListText
+                        {
+                            Text = $"Площадь поверхности для окраски: {Math.Round(areaSum, 3)} x 100 м^2",
+                            LevelNum = 5,
+                            IsBold = false,
+                            WithSuperscript = true,
+                        });
+                        arr.Add(new ListText
+                        {
+                            Text = $"Относительная площадь окраски: {Math.Round(areaSum * 100 / (initialWeightSum * 1.04), 3)} м^2/т",
+                            LevelNum = 5,
+                            IsBold = false,
+                            WithSuperscript = true,
                         });
                     }
                 }
 
-                arr.Add(new Word.ListText
+                foreach (var standardConstruction in standardConstructions)
+                {
+                    arr.Add(new ListText
+                    {
+                        Text = $"{standardConstruction.Name}: {standardConstruction.Weight} т",
+                        LevelNum = 1,
+                        IsBold = false,
+                        WithSuperscript = false,
+                    });
+                }
+
+                arr.Add(new ListText
                 {
                     Text = "Окраска конструкций",
                     LevelNum = 0,
                     IsBold = true,
+                    WithSuperscript = false,
                 });
 
-                arr.Add(new Word.ListText
+                arr.Add(new ListText
                 {
-                    Text = "Масса металла для окраски",
+                    Text = $"Масса металла для окраски: {Math.Round(overallInitialWeightSum, 3)} x 1.04 = {Math.Round(Math.Round(overallInitialWeightSum, 3) * 1.04, 3)} т",
                     LevelNum = 4,
                     IsBold = false,
+                    WithSuperscript = false,
                 });
+                arr.Add(new ListText
+                {
+                    Text = $"Площадь поверхности для окраски: {Math.Round(overallAreaSum, 3)} x 100 м^2",
+                    LevelNum = 4,
+                    IsBold = false,
+                    WithSuperscript = true,
+                });
+
+                var points = _markGeneralDataPointRepo.GetAllByMarkAndSectionId(
+                    markId, _paintingGeneralDataSectionId);
+                for (int i = 1; i < points.Count(); i++)
+                {
+                    var pointText = points.ToList()[i].Text;
+                    if (pointText[0] == '#' && pointText[1] == ' ')
+                        pointText = pointText.Substring(2) + ".";
+                    else if (pointText[0] == '-' && pointText[1] == ' ')
+                        pointText = pointText.Substring(2) + ".";
+                    arr.Add(new ListText
+                    {
+                        Text = pointText,
+                        LevelNum = 3,
+                        IsBold = false,
+                        WithSuperscript = false,
+                    });
+                }
+                // arr.Add(new ListText
+                // {
+                //     Text = "Защита металлоконструкций от коррозии осуществляется окраской лакокрасочными материалами группы 1:",
+                //     LevelNum = 3,
+                //     IsBold = false,
+                //     WithSuperscript = false,
+                // });
+                // arr.Add(new ListText
+                // {
+                //     Text = "на заводе – грунтовкой",
+                //     LevelNum = 2,
+                //     IsBold = false,
+                //     WithSuperscript = false,
+                // });
+                // arr.Add(new ListText
+                // {
+                //     Text = "Узлы монтажной сборки с применением сварки.",
+                //     LevelNum = 3,
+                //     IsBold = false,
+                //     WithSuperscript = false,
+                // });
+                // arr.Add(new ListText
+                // {
+                //     Text = "на монтаже узлы сборки окрасить грунтовкой",
+                //     LevelNum = 2,
+                //     IsBold = false,
+                //     WithSuperscript = false,
+                // });
+                // arr.Add(new ListText
+                // {
+                //     Text = "Степень очистки поверхности стальных конструкций",
+                //     LevelNum = 3,
+                //     IsBold = false,
+                //     WithSuperscript = false,
+                // });
 
                 if (estTask.AdditionalText != null && estTask.AdditionalText != "")
                 {
-                    arr.Add(new Word.ListText
+                    arr.Add(new ListText
                     {
                         Text = "Дополнительно",
                         LevelNum = 0,
                         IsBold = true,
+                        WithSuperscript = false,
                     });
-                    arr.Add(new Word.ListText
+                    var split = estTask.AdditionalText.Split("\n");
+                    foreach (var splitText in split)
                     {
-                        Text = estTask.AdditionalText,
-                        LevelNum = 3,
-                        IsBold = false,
-                    });
+                        arr.Add(new ListText
+                        {
+                            Text = splitText,
+                            LevelNum = 3,
+                            IsBold = false,
+                            WithSuperscript = false,
+                        });
+                    }
                 }
-
                 AppendList(wordDoc, arr);
 
                 Word.AppendToBigFooterTable(
@@ -217,8 +403,21 @@ namespace DocumentsKM.Services
             }
         }
 
+        private void AppendText(WordprocessingDocument wordDoc, string text)
+        {
+            Body body = wordDoc.MainDocumentPart.Document.Body;
+            var p = body.GetFirstChild<Paragraph>();
+            var split = text.Split("\n");
+            foreach (var splitText in split)
+            {
+                var run = Word.GetTextElement(splitText, 26);
+                run.AppendChild(new Break());
+                p.AppendChild(run);
+            }
+        }
+
         private void AppendList(
-            WordprocessingDocument wordDoc, List<Word.ListText> arr)
+            WordprocessingDocument wordDoc, List<ListText> arr)
         {
             NumberingDefinitionsPart numberingPart = wordDoc.MainDocumentPart.NumberingDefinitionsPart;
             if (numberingPart == null)
@@ -336,9 +535,18 @@ namespace DocumentsKM.Services
             {
                 LevelIndex = 5
             };
+            var abstractLevel6 = new Level(
+                new LevelSuffix()
+                {
+                    Val = LevelSuffixValues.Space
+                })
+            {
+                LevelIndex = 6
+            };
 
             var abstractNum = new AbstractNum(
-                abstractLevel, abstractLevel1, abstractLevel2, abstractLevel3, abstractLevel4, abstractLevel5)
+                abstractLevel, abstractLevel1, abstractLevel2, abstractLevel3,
+                abstractLevel4, abstractLevel5, abstractLevel6)
             {
                 AbstractNumberId = abstractNumberId
             };
@@ -403,18 +611,45 @@ namespace DocumentsKM.Services
                         new NumberingLevelReference() { Val = 4 }, new NumberingId() { Val = numberId });
                     indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "1080" };
                 }
-                else
+                else if (arr[i].LevelNum == 5)
                 {
                     numberingProperties = new NumberingProperties(
                         new NumberingLevelReference() { Val = 5 }, new NumberingId() { Val = numberId });
                     indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "1800" };
+                }
+                else
+                {
+                    numberingProperties = new NumberingProperties(
+                        new NumberingLevelReference() { Val = 6 }, new NumberingId() { Val = numberId });
+                    indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "2400" };
                 }
 
                 var paragraphProperties = new ParagraphProperties(
                     numberingProperties, spacingBetweenLines, indentation);
                 var newPara = new Paragraph(paragraphProperties);
 
-                newPara.AppendChild(Word.GetTextElement(arr[i].Text, 26, false, false, arr[i].IsBold));
+                if (arr[i].WithSuperscript)
+                {
+                    var split = arr[i].Text.Split('^');
+                    if (split.Count() > 1)
+                    {
+                        for (int k = 0; k < split.Count(); k++)
+                        {
+                            if (k > 0)
+                                newPara.AppendChild(Word.GetTextElement(split[k][0].ToString(), 26, false, true));
+                            if (k == 0)
+                                newPara.AppendChild(Word.GetTextElement(split[k], 26));
+                            else
+                                if (split[k].Length > 1)
+                                    newPara.AppendChild(Word.GetTextElement(split[k].Substring(1), 26));
+                        }
+                    }
+                    else
+                        newPara.AppendChild(Word.GetTextElement(arr[i].Text, 26, false, false, arr[i].IsBold));
+                }
+                else
+                    newPara.AppendChild(Word.GetTextElement(arr[i].Text, 26, false, false, arr[i].IsBold));
+
                 body.AppendChild(newPara);
             }
         }

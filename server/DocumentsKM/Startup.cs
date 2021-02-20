@@ -120,11 +120,11 @@ namespace DocumentsKM
                     "personnel_exchange", "personnel_queue", "personnel.exchange"));
 
             // DI for application services
-            injectScopedServices(services);
-            injectScopedRepositories(services);
+            InjectScopedServices(services);
+            InjectScopedRepositories(services);
         }
 
-        private void injectScopedServices(IServiceCollection services)
+        private void InjectScopedServices(IServiceCollection services)
         {
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<INodeService, NodeService>();
@@ -183,7 +183,7 @@ namespace DocumentsKM
             services.AddScoped<ISpecificationDocumentService, SpecificationDocumentService>();
         }
 
-        private void injectScopedRepositories(IServiceCollection services)
+        private void InjectScopedRepositories(IServiceCollection services)
         {
             services.AddScoped<IProjectRepo, SqlProjectRepo>();
             services.AddScoped<INodeRepo, SqlNodeRepo>();

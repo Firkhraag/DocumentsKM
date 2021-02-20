@@ -20,6 +20,12 @@ namespace DocumentsKM.Data
                 v => v.Specification.Id == specificationId).ToList();
         }
 
+        public IEnumerable<StandardConstruction> GetAllByMarkId(int markId)
+        {
+            return _context.StandardConstructions.Where(
+                v => v.Specification.Mark.Id == markId).ToList();
+        }
+
         public StandardConstruction GetById(int id)
         {
             return _context.StandardConstructions.SingleOrDefault(v => v.Id == id);

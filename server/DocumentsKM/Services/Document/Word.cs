@@ -9,13 +9,6 @@ namespace DocumentsKM.Services
 {
     public static class Word
     {
-        public class ListText
-        {
-            public string Text { set; get; }
-            public int LevelNum { set; get; }
-            public bool IsBold { set; get; }
-        }
-        
         public static Run GetTextElement(
             string text,
             int fSize,
