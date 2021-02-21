@@ -102,6 +102,7 @@ public class TestWebApplicationFactory<TStartup>
         context.LinkedDocs.AddRange(TestData.linkedDocs);
         context.MarkLinkedDocs.AddRange(TestData.markLinkedDocs);
         context.MarkOperatingConditions.AddRange(TestData.markOperatingConditions);
+        context.EstimateTask.AddRange(TestData.estimateTask);
         context.AdditionalWork.AddRange(TestData.additionalWork);
 
         context.GeneralDataPoints.AddRange(TestData.generalDataPoints);

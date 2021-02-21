@@ -20,6 +20,7 @@ namespace DocumentsKM.Dtos
         public string StandardAlbumCode { get; set; }
 
         [Required]
+        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
         public int NumOfStandardConstructions { get; set; }
 
         [Required]
@@ -35,6 +36,7 @@ namespace DocumentsKM.Dtos
         public int WeldingControlId { get; set; }
 
         [Required]
+        [Range(0.0f, 10000.0f, ErrorMessage = "Value should be greater than or equal to 0")]
         public float PaintworkCoeff { get; set; }
 
         public ConstructionCreateRequest()

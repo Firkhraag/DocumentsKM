@@ -1113,6 +1113,25 @@ namespace DocumentsKM.Tests
             },
         };
 
+        public static readonly List<EstimateTask> estimateTask = new List<EstimateTask>
+        {
+            new EstimateTask
+            {
+                Mark = marks[0],
+                TaskText = "T1",
+            },
+            new EstimateTask
+            {
+                Mark = marks[1],
+                TaskText = "T2",
+            },
+            new EstimateTask
+            {
+                Mark = marks[2],
+                TaskText = "T3",
+            },
+        };
+
         public static readonly List<AdditionalWork> additionalWork = new List<AdditionalWork>
         {
             new AdditionalWork

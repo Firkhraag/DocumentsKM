@@ -2,7 +2,10 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using DocumentsKM.Dtos;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +13,6 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    // TBD: Create, Update, Delete
     public class SpecificationsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
@@ -55,6 +57,153 @@ namespace DocumentsKM.Tests
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        // ------------------------------------POST------------------------------------
+
+        [Fact]
+        public async Task Create_ShouldReturnCreated()
+        {
+            // Arrange
+            int markId = 4;
+            var endpoint = $"/api/marks/{markId}/specifications";
+
+            // Act
+            var response = await _httpClient.PostAsync(endpoint, null);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnNotFound_WhenWrongValues()
+        {
+            // Arrange
+            var endpoint = $"/api/marks/{999}/specifications";
+
+            // Act
+            var response = await _httpClient.PostAsync(endpoint, null);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = 4;
+            var endpoint = $"/api/marks/{markId}/specifications";
+
+            // Act
+            var response = await _authHttpClient.PostAsync(endpoint, null);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        // ------------------------------------PATCH------------------------------------
+
+        [Fact]
+        public async Task Update_ShouldReturnNoContent()
+        {
+            // Arrange
+            int id = 1;
+            var additionalWorkRequest = new SpecificationUpdateRequest
+            {
+                Note = "NewUpdate",
+            };
+            string json = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/specifications/{id}";
+
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNotFound_WhenWrongValues()
+        {
+            // Arrange
+            var additionalWorkRequest = new SpecificationUpdateRequest
+            {
+                Note = "NewUpdate",
+            };
+            string json = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/specifications/{999}";
+
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int id = 1;
+            var additionalWorkRequest = new SpecificationUpdateRequest
+            {
+                Note = "NewUpdate",
+            };
+            string json = JsonSerializer.Serialize(additionalWorkRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/specifications/{id}";
+
+            // Act
+            var response = await _authHttpClient.PatchAsync(endpoint, httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        // ------------------------------------DELETE------------------------------------
+
+        // [Fact]
+        // public async Task Delete_ShouldReturnNoContent()
+        // {
+        //     // Arrange
+        //     int id = 2;
+        //     var endpoint = $"/api/additional-work/{id}";
+
+        //     // Act
+        //     var response = await _httpClient.DeleteAsync(endpoint);
+
+        //     // Assert
+        //     Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        // }
+
+        // [Fact]
+        // public async Task Delete_ShouldReturnNotFound_WhenWrongId()
+        // {
+        //     // Arrange
+        //     var endpoint = $"/api/additional-work/{999}";
+
+        //     // Act
+        //     var response = await _httpClient.DeleteAsync(endpoint);
+
+        //     // Assert
+        //     Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        // }
+
+        [Fact]
+        public async Task Delete_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int id = 2;
+            var endpoint = $"/api/specifications/{id}";
+
+            // Act
+            var response = await _authHttpClient.DeleteAsync(endpoint);
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);

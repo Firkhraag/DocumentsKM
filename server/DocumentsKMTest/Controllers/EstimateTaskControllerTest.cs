@@ -9,7 +9,7 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class MarkOperatingConditionsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    public class EstimateTaskControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
@@ -17,7 +17,7 @@ namespace DocumentsKM.Tests
 
         private readonly int _maxMarkId = 2;
 
-        public MarkOperatingConditionsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        public EstimateTaskControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
@@ -34,8 +34,8 @@ namespace DocumentsKM.Tests
         public async Task GetByMarkId_ShouldReturnOK()
         {
             // Arrange
-            int markId = _rnd.Next(1, _maxMarkId);
-            var endpoint = $"/api/marks/{markId}/mark-operating-conditions";
+            int markId = 1;
+            var endpoint = $"/api/marks/{markId}/estimate-task";
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
@@ -49,7 +49,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int wrongId = 999;
-            var endpoint = $"/api/marks/{wrongId}/mark-operating-conditions";
+            var endpoint = $"/api/marks/{wrongId}/estimate-task";
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
@@ -63,7 +63,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int markId = _rnd.Next(1, _maxMarkId);
-            var endpoint = $"/api/marks/{markId}/mark-operating-conditions";
+            var endpoint = $"/api/marks/{markId}/estimate-task";
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);
