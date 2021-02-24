@@ -95,15 +95,15 @@ namespace DocumentsKM.Services
                     project.Name, node.Name, subnode.Name, mark.Name);
 
                 AppendToTable(wordDoc);   
-                Word.AppendToBigFooterTable(
+                Word.AppendToMediumFooterTable(
                     wordDoc,
                     markName,
                     complexName,
                     objectName,
                     sheets.Count(),
                     mark,
-                    markApprovals.ToList(),
                     departmentHead);
+                Word.AppendToSmallFooterTable(wordDoc, markName);
             }
         }
 

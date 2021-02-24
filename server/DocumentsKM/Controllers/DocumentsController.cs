@@ -91,7 +91,7 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        [HttpGet, Route("marks/{markId}/specification-document")]
+        [HttpGet, Route("marks/{markId}/spec-document")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetSpecificationDocument(int markId)
         {

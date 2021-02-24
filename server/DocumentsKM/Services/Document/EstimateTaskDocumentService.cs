@@ -400,6 +400,7 @@ namespace DocumentsKM.Services
                     mark,
                     markApprovals.ToList(),
                     departmentHead);
+                Word.AppendToSmallFooterTable(wordDoc, markName);
             }
         }
 

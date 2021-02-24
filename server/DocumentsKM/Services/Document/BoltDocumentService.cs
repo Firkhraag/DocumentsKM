@@ -52,6 +52,7 @@ namespace DocumentsKM.Services
                     project.BaseSeries, node.Code, subnode.Code, mark.Code);
                 AppendToTable(wordDoc, constructionBolts.ToList(), boltLengths);
                 Word.AppendToSmallFooterTable(wordDoc, markName);
+                Word.AppendToMainSmallFooterTable(wordDoc, markName);
             }
         }
 

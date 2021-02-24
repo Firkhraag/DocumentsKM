@@ -72,15 +72,15 @@ namespace DocumentsKM.Services
                 AppendConstructionToTable(wordDoc,
                     constructions.ToList(),
                     standardConstructions.ToList());
-                Word.AppendToBigFooterTable(
+                Word.AppendToMediumFooterTable(
                     wordDoc,
                     markName,
                     complexName,
                     objectName,
                     sheets.Count(),
                     mark,
-                    markApprovals.ToList(),
                     departmentHead);
+                Word.AppendToSmallFooterTable(wordDoc, markName);
             }
         }
 

@@ -53,6 +53,27 @@ const Home = () => {
 		}
 	}
 
+    const onSpecDocumentDownloadButtonClick = async () => {
+		try {
+			const response = await httpClient.get(
+				`/marks/${mark.id}/spec-document`,
+				{
+					responseType: 'blob',
+				}
+			)
+
+			const url = window.URL.createObjectURL(new Blob([response.data]))
+			const link = document.createElement('a')
+			link.href = url
+			link.setAttribute('download', `${mark.code}_СМ.docx`)
+			document.body.appendChild(link)
+			link.click()
+			link.remove()
+		} catch (e) {
+			console.log('Failed to download the file')
+		}
+	}
+
 	return (
 		<div>
 			<h2 className="home-cnt-header text-centered">Данные</h2>
@@ -184,14 +205,13 @@ const Home = () => {
 						Лист регистрации проекта
 					</Button>
 				</Link>
-				<Link to={mark != null ? `/metal-spec-doc` : '/'}>
-					<Button
-						variant="outline-secondary"
-						disabled={mark == null ? true : false}
-					>
-						Спецификация металла
-					</Button>
-				</Link>
+                <Button
+                    variant="outline-secondary"
+                    disabled={mark == null ? true : false}
+                    onClick={onSpecDocumentDownloadButtonClick}
+                >
+                    Спецификация металла
+                </Button>
 			</div>
 		</div>
 	)
