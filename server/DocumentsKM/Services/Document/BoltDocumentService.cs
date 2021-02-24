@@ -63,10 +63,9 @@ namespace DocumentsKM.Services
             if (bolts.Count() > 0)
             {
                 Body body = document.MainDocumentPart.Document.Body;
-                var t = body.Descendants<Table>().FirstOrDefault(
-                    tbl => tbl.InnerText.Contains("Наименование"));
+                var t = body.Descendants<Table>().FirstOrDefault();
 
-                var firstTr = t.Descendants<TableRow>().ToList()[1];
+                var firstTr = t.Descendants<TableRow>().ToList()[0];
                 var clonedFirstTr = firstTr.CloneNode(true);
                 var trCells = firstTr.Descendants<TableCell>().ToList();
 
@@ -147,10 +146,10 @@ namespace DocumentsKM.Services
 
             foreach (var cell in trCells)
             {
-                var c1 = cell.GetFirstChild<TableCellProperties>();
-                var c2 = c1.GetFirstChild<TableCellBorders>();
-                var c3 = c2.GetFirstChild<BottomBorder>();
-                c3.Size = 4;
+                var tcp = cell.GetFirstChild<TableCellProperties>();
+                var tcb = tcp.GetFirstChild<TableCellBorders>();
+                var bb = tcb.GetFirstChild<BottomBorder>();
+                bb.Size = 4;
             }
 
             if (num != 1)
@@ -172,12 +171,12 @@ namespace DocumentsKM.Services
 
             foreach (var cell in trCells)
             {
-                var c1 = cell.GetFirstChild<TableCellProperties>();
-                var c2 = c1.GetFirstChild<TableCellBorders>();
-                var c3 = c2.GetFirstChild<TopBorder>();
-                var c4 = c2.GetFirstChild<BottomBorder>();
-                c3.Size = 4;
-                c4.Size = 4;
+                var tcp = cell.GetFirstChild<TableCellProperties>();
+                var tcb = tcp.GetFirstChild<TableCellBorders>();
+                var tb = tcb.GetFirstChild<TopBorder>();
+                var bb = tcb.GetFirstChild<BottomBorder>();
+                tb.Size = 4;
+                bb.Size = 4;
             }
 
             t.Append(newTr);
@@ -198,10 +197,10 @@ namespace DocumentsKM.Services
 
             foreach (var cell in trCells)
             {
-                var c1 = cell.GetFirstChild<TableCellProperties>();
-                var c2 = c1.GetFirstChild<TableCellBorders>();
-                var c3 = c2.GetFirstChild<TopBorder>();
-                c3.Size = 4;
+                var tcp = cell.GetFirstChild<TableCellProperties>();
+                var tcb = tcp.GetFirstChild<TableCellBorders>();
+                var bb = tcb.GetFirstChild<TopBorder>();
+                bb.Size = 4;
             }
 
             t.Append(newTr);

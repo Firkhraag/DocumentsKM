@@ -31,10 +31,10 @@ namespace DocumentsKM.Data
             return _context.StandardConstructions.SingleOrDefault(v => v.Id == id);
         }
 
-        public StandardConstruction GetByUniqueKey(int specificationId)
+        public StandardConstruction GetByUniqueKey(int specificationId, string name)
         {
             return _context.StandardConstructions.SingleOrDefault(
-                v => (v.Specification.Id == specificationId));
+                v => (v.Specification.Id == specificationId && v.Name == name));
         }
 
         public void Add(StandardConstruction standardconstruction)

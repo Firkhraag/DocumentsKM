@@ -105,6 +105,14 @@ const AdditionalWorkData = ({
 			setErrMsg('Пожалуйста, введите заказ металла')
 			return false
 		}
+        if (selectedObject.valuation < 0 || selectedObject.valuation > 1000000) {
+			setErrMsg('Пожалуйста, введите правильный расчет')
+			return false
+		}
+        if (selectedObject.metalOrder < 0 || selectedObject.metalOrder > 1000000) {
+			setErrMsg('Пожалуйста, введите правильный заказ металла')
+			return false
+		}
 		return true
 	}
 

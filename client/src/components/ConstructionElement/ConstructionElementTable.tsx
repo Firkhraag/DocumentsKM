@@ -99,7 +99,7 @@ const ConstructionElementTable = ({
 								</td>
 								<td>{ce.profile.name}</td>
 								<td>{ce.steel.name}</td>
-								<td>{ce.profile.area}</td>
+								<td>{ce.length}</td>
 								<td
 									onClick={() => {
 										setConstructionElement(ce)

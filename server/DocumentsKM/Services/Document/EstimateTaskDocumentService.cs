@@ -285,7 +285,7 @@ namespace DocumentsKM.Services
                 {
                     arr.Add(new ListText
                     {
-                        Text = $"{standardConstruction.Name}: {standardConstruction.Weight} т",
+                        Text = $"{standardConstruction.Name}: {Math.Ceiling(standardConstruction.Weight * 1000) / 1000} т",
                         LevelNum = 1,
                         IsBold = false,
                         WithSuperscript = false,

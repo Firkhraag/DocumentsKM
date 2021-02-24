@@ -216,8 +216,8 @@ const ConstructionElementData = ({
 				await httpClient.post(
 					`/constructions/${constructionId}/elements`,
 					{
-						profileId: selectedObject.profile,
-						steelId: selectedObject.steel,
+						profileId: selectedObject.profile.id,
+						steelId: selectedObject.steel.id,
 						length: selectedObject.length,
 					}
 				)

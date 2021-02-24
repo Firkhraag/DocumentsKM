@@ -39,7 +39,7 @@ const DevelopingAttachedDocData = ({
 					id: -1,
 					num: 1,
 					numOfPages: 1,
-					form: 1.0,
+					form: 0.125,
 					name: '',
 					type: null,
 					creator: null,
@@ -104,13 +104,15 @@ const DevelopingAttachedDocData = ({
 	}
 
 	const onNumOfPagesChange = (event: React.FormEvent<HTMLInputElement>) => {
+        const v = parseInt(event.currentTarget.value)
 		setSelectedObject({
 			...selectedObject,
-			numOfPages: parseInt(event.currentTarget.value),
+			numOfPages: v,
+            form: Math.round(v * 0.125 * 1000) / 1000,
 		})
 	}
 
-	const onFormatChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onFormatChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			form: parseFloat(event.currentTarget.value),
@@ -195,6 +197,14 @@ const DevelopingAttachedDocData = ({
 		}
 		if (isNaN(selectedObject.form)) {
 			setErrMsg('Пожалуйста, введите формат прилагаемого документа')
+			return false
+		}
+        if (selectedObject.form < 0 || selectedObject.form > 1000000) {
+			setErrMsg('Пожалуйста, введите правильный формат')
+			return false
+		}
+        if (!isNaN(selectedObject.numOfPages) && (selectedObject.numOfPages < 0 || selectedObject.numOfPages > 1000000)) {
+			setErrMsg('Пожалуйста, введите правильное число листов')
 			return false
 		}
 		return true
@@ -364,12 +374,12 @@ const DevelopingAttachedDocData = ({
 						type="text"
 						placeholder="Введите формат"
 						autoComplete="off"
-						defaultValue={
+						value={
 							isNaN(selectedObject.form)
 								? ''
 								: selectedObject.form
 						}
-						onBlur={onFormatChange}
+						onChange={onFormatChange}
 					/>
 				</Form.Group>
 

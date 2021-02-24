@@ -106,7 +106,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	const onFormatChange = (event: React.FormEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
-			form: parseInt(event.currentTarget.value),
+			form: parseFloat(event.currentTarget.value),
 		})
 	}
 
@@ -184,6 +184,10 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 		}
 		if (isNaN(selectedObject.form)) {
 			setErrMsg('Пожалуйста, введите формат листа')
+			return false
+		}
+        if (selectedObject.form < 0 || selectedObject.form > 1000000) {
+			setErrMsg('Пожалуйста, введите правильный формат')
 			return false
 		}
 		return true

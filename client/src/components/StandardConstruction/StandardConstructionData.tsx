@@ -1,14 +1,17 @@
 // Global
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
 import StandardConstruction from '../../model/StandardConstruction'
+import StandardConstructionName from '../../model/StandardConstructionName'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
+import { reactSelectStyle } from '../../util/react-select-style'
 
 type StandardConstructionDataProps = {
 	standardConstruction: StandardConstruction
@@ -16,7 +19,7 @@ type StandardConstructionDataProps = {
 	specificationId: number
 }
 
-const standardConstructionData = ({
+const StandardConstructionData = ({
 	standardConstruction,
 	isCreateMode,
 	specificationId,
@@ -35,6 +38,7 @@ const standardConstructionData = ({
 			  }
 			: standardConstruction
 	)
+    const [nameOptions, setNameOptions] = useState([] as StandardConstructionName[])
 
 	const [errMsg, setErrMsg] = useState('')
 
@@ -44,6 +48,17 @@ const standardConstructionData = ({
 				history.push('/specifications')
 				return
 			}
+            const fetchData = async () => {
+				try {
+					const namesResponse = await httpClient.get(
+						`/standard-construction-names`
+					)
+					setNameOptions(namesResponse.data)
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
+			}
+			fetchData()
 		}
 	}, [mark])
 
@@ -52,6 +67,22 @@ const standardConstructionData = ({
 			...selectedObject,
 			name: event.currentTarget.value,
 		})
+	}
+
+    const onNameSelect = async (id: number) => {
+		let v = null
+		for (let el of nameOptions) {
+			if (el.id === id) {
+				v = el
+				break
+			}
+		}
+		if (v != null) {
+			setSelectedObject({
+				...selectedObject,
+				name: v.name,
+			})
+		}
 	}
 
 	const onNumChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -78,6 +109,22 @@ const standardConstructionData = ({
 	const checkIfValid = () => {
 		if (selectedObject.name === '') {
 			setErrMsg('Пожалуйста, введите наименование типовой конструкции')
+			return false
+		}
+        if (isNaN(selectedObject.num)) {
+			setErrMsg('Пожалуйста, введите количество элементов')
+			return false
+		}
+        if (isNaN(selectedObject.weight)) {
+			setErrMsg('Пожалуйста, введите общий вес типовой конструкции')
+			return false
+		}
+        if (selectedObject.num < 0 || selectedObject.num > 1000000) {
+			setErrMsg('Пожалуйста, введите правильное количество элементов')
+			return false
+		}
+        if (selectedObject.weight < 0 || selectedObject.weight > 1000000) {
+			setErrMsg('Пожалуйста, введите правильный общий вес')
 			return false
 		}
 		return true
@@ -168,6 +215,25 @@ const standardConstructionData = ({
 					/>
 				</Form.Group>
 
+                <Select
+					maxMenuHeight={250}
+					isClearable={true}
+					isSearchable={true}
+					placeholder="Типовые наименования"
+					noOptionsMessage={() => 'Наименования не найдены'}
+					onChange={(selectedOption) =>
+						onNameSelect((selectedOption as any)?.value)
+					}
+					value={null}
+					options={nameOptions.map((s) => {
+						return {
+							value: s.id,
+							label: s.name,
+						}
+					})}
+					styles={reactSelectStyle}
+				/>
+
 				<Form.Group className="mrg-top-2 flex-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
@@ -179,7 +245,7 @@ const standardConstructionData = ({
 					<Form.Control
 						id="num"
 						type="text"
-						placeholder="Не введено"
+						placeholder="Введите количество элементов"
 						autoComplete="off"
 						className="auto-width flex-grow"
 						defaultValue={
@@ -219,7 +285,7 @@ const standardConstructionData = ({
 					<Form.Control
 						id="weight"
 						type="text"
-						placeholder="Не введено"
+						placeholder="Введите вес"
 						autoComplete="off"
 						className="auto-width flex-grow"
 						defaultValue={
@@ -249,4 +315,4 @@ const standardConstructionData = ({
 	)
 }
 
-export default standardConstructionData
+export default StandardConstructionData

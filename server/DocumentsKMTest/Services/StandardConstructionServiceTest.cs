@@ -297,6 +297,15 @@ namespace DocumentsKM.Tests
                     Sheet = "S3",
                     Weight = 3.0f,
                 },
+                new StandardConstruction
+                {
+                    Id = 4,
+                    Specification = _specifications[0],
+                    Name = "N4",
+                    Num = 4,
+                    Sheet = "S4",
+                    Weight = 4.0f,
+                },
             };
 
             foreach (var sc in _standardConstructions)
@@ -337,16 +346,15 @@ namespace DocumentsKM.Tests
                     mock.GetAllBySpecificationId(specification.Id)).Returns(
                         _updateStandardConstructions.Where(v => v.Specification.Id == specification.Id));
 
-                // foreach (var standardConstruction in _standardConstructions)
-                // {
-                //     _repository.Setup(mock =>
-                //         mock.GetByUniqueKey(
-                //             specification.Id, standardConstruction.Name, standardConstruction.PaintworkCoeff)).Returns(
-                //                 _standardConstructions.SingleOrDefault(
-                //                     v => v.Specification.Id == specification.Id &&
-                //                         v.Name == standardConstruction.Name &&
-                //                             v.PaintworkCoeff == standardConstruction.PaintworkCoeff));
-                // }
+                foreach (var standardConstruction in _standardConstructions)
+                {
+                    _repository.Setup(mock =>
+                        mock.GetByUniqueKey(
+                            specification.Id, standardConstruction.Name)).Returns(
+                                _standardConstructions.SingleOrDefault(
+                                    v => v.Specification.Id == specification.Id &&
+                                        v.Name == standardConstruction.Name));
+                }
             }
             foreach (var mark in _marks)
             {
@@ -446,40 +454,29 @@ namespace DocumentsKM.Tests
             _repository.Verify(mock => mock.Add(It.IsAny<StandardConstruction>()), Times.Never);
         }
 
-        // [Fact]
-        // public void Create_ShouldFailWithConflict_WhenConflictValue()
-        // {
-        //     // Arrange
-        //     int typeId = _rnd.Next(1, _standardConstructionTypes.Count());
-        //     int subtypeId = _rnd.Next(1, _standardConstructionSubtypes.Count());
-        //     int weldingControlId = _rnd.Next(1, _weldingControl.Count());
+        [Fact]
+        public void Create_ShouldFailWithConflict_WhenConflictValue()
+        {
+            // Arrange
+            var specificationId = _standardConstructions[0].Specification.Id;
+            var name = _standardConstructions[0].Name;
 
-        //     var conflictSpecificationId = _standardConstructions[0].Specification.Id;
-        //     var conflictName = _standardConstructions[0].Name;
-        //     var conflictPaintworkCoeff = _standardConstructions[0].PaintworkCoeff;
+            var newStandardConstruction = new StandardConstruction
+            {
+                Name = name,
+                Num = 9,
+                Sheet = "NewCreate",
+                Weight = 9.0f,
+            };
 
-        //     var newstandardConstruction = new standardConstruction
-        //     {
-        //         Name = conflictName,
-        //         Valuation = "NewCreate",
-        //         NumOfStandardstandardConstructions = 0,
-        //         HasEdgeBlunting = true,
-        //         HasDynamicLoad = false,
-        //         HasFlangedConnections = true,
-        //         PaintworkCoeff = conflictPaintworkCoeff,
-        //     };
+            // Act & Assert
+            Assert.Throws<ConflictException>(
+                () => _service.Create(
+                    newStandardConstruction,
+                    specificationId));
 
-        //     // Act & Assert
-        //     Assert.Throws<ConflictException>(
-        //         () => _service.Create(
-        //             newstandardConstruction,
-        //             conflictSpecificationId,
-        //             typeId,
-        //             subtypeId,
-        //             weldingControlId));
-
-        //     _repository.Verify(mock => mock.Add(It.IsAny<standardConstruction>()), Times.Never);
-        // }
+            _repository.Verify(mock => mock.Add(It.IsAny<StandardConstruction>()), Times.Never);
+        }
 
         [Fact]
         public void Update_ShouldUpdateStandardConstruction()
@@ -532,26 +529,23 @@ namespace DocumentsKM.Tests
             _updateRepository.Verify(mock => mock.Update(It.IsAny<StandardConstruction>()), Times.Never);
         }
 
-        // [Fact]
-        // public void Update_ShouldFailWithConflict()
-        // {
-        //     // Arrange
-        //     var id = _standardConstructions[1].Id;
-        //     var conflictName = _standardConstructions[0].Name;
-        //     var conflictPaintworkCoeff = _standardConstructions[0].PaintworkCoeff;
+        [Fact]
+        public void Update_ShouldFailWithConflict()
+        {
+            // Arrange
+            var id = 4;
+            var conflictName = _standardConstructions[0].Name;
 
-        //     var newstandardConstructionRequest = new standardConstructionUpdateRequest
-        //     {
-        //         Name = conflictName,
-        //         PaintworkCoeff = conflictPaintworkCoeff,
-        //         Valuation = "NewUpdate",
-        //     };
+            var newStandardConstructionRequest = new StandardConstructionUpdateRequest
+            {
+                Name = conflictName,
+            };
 
-        //     // Act & Assert
-        //     Assert.Throws<ConflictException>(() => _service.Update(id, newstandardConstructionRequest));
+            // Act & Assert
+            Assert.Throws<ConflictException>(() => _service.Update(id, newStandardConstructionRequest));
 
-        //     _repository.Verify(mock => mock.Update(It.IsAny<standardConstruction>()), Times.Never);
-        // }
+            _repository.Verify(mock => mock.Update(It.IsAny<StandardConstruction>()), Times.Never);
+        }
 
         [Fact]
         public void Delete_ShouldDeleteStandardConstruction()

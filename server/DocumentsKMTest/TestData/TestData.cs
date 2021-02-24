@@ -1083,6 +1083,15 @@ namespace DocumentsKM.Tests
                 Sheet = "S3",
                 Weight = 3.0f,
             },
+            new StandardConstruction
+            {
+                Id = 4,
+                Specification = specifications[0],
+                Name = "N4",
+                Num = 4,
+                Sheet = "S4",
+                Weight = 4.0f,
+            },
         };
 
         public static readonly List<MarkOperatingConditions> markOperatingConditions = new List<MarkOperatingConditions>

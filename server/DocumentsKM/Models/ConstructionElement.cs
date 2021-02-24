@@ -21,7 +21,7 @@ namespace DocumentsKM.Models
         public virtual Steel Steel { get; set; }
 
         [Required]
-        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Length { get; set; }
     }
 }
