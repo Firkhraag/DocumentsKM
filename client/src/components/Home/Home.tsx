@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
+import { makeMarkName } from '../../util/make-name'
 // Style
 import './Home.css'
 
@@ -23,7 +24,12 @@ const Home = () => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', `${mark.code}_ВМП.docx`)
+			link.setAttribute('download', `${makeMarkName(
+                mark.subnode.node.project.baseSeries,
+                mark.subnode.node.code,
+                mark.subnode.code,
+                mark.code
+          )}_ВМП.docx`)
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
@@ -44,7 +50,12 @@ const Home = () => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', `${mark.code}_ВБ.docx`)
+			link.setAttribute('download', `${makeMarkName(
+                mark.subnode.node.project.baseSeries,
+                mark.subnode.node.code,
+                mark.subnode.code,
+                mark.code
+          )}_ВБ.docx`)
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
@@ -65,7 +76,12 @@ const Home = () => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', `${mark.code}_СМ.docx`)
+			link.setAttribute('download', `${makeMarkName(
+                mark.subnode.node.project.baseSeries,
+                mark.subnode.node.code,
+                mark.subnode.code,
+                mark.code
+          )}_СМ.docx`)
 			document.body.appendChild(link)
 			link.click()
 			link.remove()

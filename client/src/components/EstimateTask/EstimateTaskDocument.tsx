@@ -15,6 +15,7 @@ import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
+import { makeMarkName } from '../../util/make-name'
 
 const EstimateTaskDocument = () => {
 	const history = useHistory()
@@ -208,7 +209,12 @@ const EstimateTaskDocument = () => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', `${mark.code}_ЗдСМ.docx`)
+			link.setAttribute('download', `${makeMarkName(
+                mark.subnode.node.project.baseSeries,
+                mark.subnode.node.code,
+                mark.subnode.code,
+                mark.code
+          )}_ЗдСМ.docx`)
 			document.body.appendChild(link)
 			link.click()
 			link.remove()

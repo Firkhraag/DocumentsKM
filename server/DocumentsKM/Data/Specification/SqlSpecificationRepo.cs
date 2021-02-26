@@ -35,6 +35,12 @@ namespace DocumentsKM.Data
             return _context.Specifications.SingleOrDefault(v => v.Id == id);
         }
 
+        public Specification GetCurrentByMarkId(int markId)
+        {
+            return _context.Specifications.SingleOrDefault(
+                v => v.Mark.Id == markId && v.IsCurrent);
+        }
+
         public void Add(Specification specification)
         {
             _context.Specifications.Add(specification);

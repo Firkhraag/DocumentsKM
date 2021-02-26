@@ -76,8 +76,8 @@ namespace DocumentsKM.Services
                     project.BaseSeries, node.Code, subnode.Code, mark.Code);
                 (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                     project.Name, node.Name, subnode.Name, mark.Name);
+                    
                 AppendList(wordDoc, markGeneralDataPoints, opCond);
-
                 AppendToSheetTable(wordDoc, sheets.ToList());
                 AppendToLinkedAndAttachedDocsTable(
                     wordDoc,
@@ -103,31 +103,26 @@ namespace DocumentsKM.Services
                 Body body = document.MainDocumentPart.Document.Body;
                 var t = body.Descendants<Table>().FirstOrDefault(
                     tbl => tbl.InnerText.Contains("Лист"));
-
                 var firstTr = t.Descendants<TableRow>().ToList()[1];
                 var clonedFirstTr = firstTr.CloneNode(true);
-
                 var trCells = firstTr.Descendants<TableCell>().ToList();
-                trCells[0].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement("1", 26));
-                trCells[1].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(docs[0].Name, 26));
-                trCells[2].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(docs[0].Note, 26));
+                OpenXmlElement newTr = null;
 
-                for (int i = 1; i < docs.Count(); i++)
+                for (int i = 0; i < docs.Count(); i++)
                 {
-                    var newTr = clonedFirstTr.CloneNode(true);
-                    trCells = newTr.Descendants<TableCell>().ToList();
-
+                    if (i > 0)
+                    {
+                        newTr = clonedFirstTr.CloneNode(true);
+                        trCells = newTr.Descendants<TableCell>().ToList();
+                    }
                     trCells[0].GetFirstChild<Paragraph>().Append(
                         Word.GetTextElement((i + 1).ToString(), 26));
                     trCells[1].GetFirstChild<Paragraph>().Append(
                         Word.GetTextElement(docs[i].Name, 26));
                     trCells[2].GetFirstChild<Paragraph>().Append(
                         Word.GetTextElement(docs[i].Note, 26));
-
-                    t.Append(newTr);
+                    if (i > 0)
+                        t.Append(newTr);
                 }
             }
         }
@@ -148,11 +143,10 @@ namespace DocumentsKM.Services
             {
                 var trCells = firstTr.Descendants<TableCell>().ToList();
                 var p = trCells[1].GetFirstChild<Paragraph>();
-                var justification = new Justification
+                p.ParagraphProperties.Append(new Justification
                 {
                     Val = JustificationValues.Center,
-                };
-                p.ParagraphProperties.Append(justification);
+                });
                 p.Append(Word.GetTextElement("Ссылочные документы", 26, true));
 
                 for (int i = 0; i < markLinkedDocs.Count(); i++)
@@ -174,11 +168,10 @@ namespace DocumentsKM.Services
                 var newTr = clonedFirstTr.CloneNode(true);
                 var trCells = newTr.Descendants<TableCell>().ToList();
                 var p = trCells[1].GetFirstChild<Paragraph>();
-                var justification = new Justification
+                p.ParagraphProperties.Append(new Justification
                 {
                     Val = JustificationValues.Center,
-                };
-                p.ParagraphProperties.Append(justification);
+                });
 
                 p.Append(Word.GetTextElement("Прилагаемые документы", 26, true));
                 t.Append(newTr);
@@ -430,45 +423,6 @@ namespace DocumentsKM.Services
                 }
                 else
                     newPara.AppendChild(Word.GetTextElement(pointText, 26));
-                // if (pointText.Contains('^'))
-                // {
-                //     var split = pointText.Split("^2");
-                //     if (split.Count() > 1)
-                //     {
-                //         for (int k = 0; k < split.Count(); k++)
-                //         {
-                //             if (k > 0)
-                //             {
-                //                 newPara.AppendChild(Word.GetTextElement("2", 26, false, true));
-                //             }
-                //             newPara.AppendChild(Word.GetTextElement(split[k], 26));
-                //         }
-                //         // var split2 = s.Split("^3");
-                //         // if (s.Count() > 1)
-                //         // {
-                            
-                //         // }
-                //     }
-                //     else
-                //     {
-                //         split = pointText.Split("^3");
-                //         if (split.Count() > 1)
-                //         {
-                //             for (int k = 0; k < split.Count(); k++)
-                //             {
-                //                 if (k > 0)
-                //                 {
-                //                     newPara.AppendChild(Word.GetTextElement("3", 26, false, true));
-                //                 }
-                //                 newPara.AppendChild(Word.GetTextElement(split[k], 26));
-                //             }
-                //         }
-                //         else
-                //             newPara.AppendChild(Word.GetTextElement(pointText, 26));
-                //     }
-                // }
-                // else
-                //     newPara.AppendChild(Word.GetTextElement(pointText, 26));
                 body.PrependChild(newPara);
             }
         }

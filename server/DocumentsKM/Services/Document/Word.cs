@@ -80,12 +80,12 @@ namespace DocumentsKM.Services
             var trCells = trArr[0].Descendants<TableCell>().ToList();
             var tc = trCells[firstPartColumnIndexToFill];
             var p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(markFullCodeName, 22));
+            p.Append(GetTextElement(markFullCodeName, 28));
 
             trCells = trArr[2].Descendants<TableCell>().ToList();
             tc = trCells[firstPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(complexName, 22));
+            p.Append(GetTextElement(complexName, 24));
 
             trCells = trArr[5].Descendants<TableCell>().ToList();
 
@@ -167,7 +167,6 @@ namespace DocumentsKM.Services
             string markFullCodeName,
             string complexName,
             string objectName,
-            int sheetsCount,
             Mark mark,
             Employee departmentHead)
         {
@@ -182,12 +181,12 @@ namespace DocumentsKM.Services
             var trCells = trArr[0].Descendants<TableCell>().ToList();
             var tc = trCells[firstPartColumnIndexToFill];
             var p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(markFullCodeName, 22));
+            p.Append(GetTextElement(markFullCodeName, 28));
 
             trCells = trArr[2].Descendants<TableCell>().ToList();
             tc = trCells[firstPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(complexName, 22));
+            p.Append(GetTextElement(complexName, 24));
 
             trCells = trArr[5].Descendants<TableCell>().ToList();
 
@@ -208,30 +207,25 @@ namespace DocumentsKM.Services
                 p.Append(GetTextElement(mark.ChiefSpecialist.Name, 22));
             }
 
-            tc = trCells.LastOrDefault();
-            p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(sheetsCount.ToString(), 22));
+            // trCells = trArr[7].Descendants<TableCell>().ToList();
+            // tc = trCells[1];
+            // p = tc.GetFirstChild<Paragraph>();
+            // p.Append(GetTextElement("E4", 22));
 
-            trCells = trArr[7].Descendants<TableCell>().ToList();
-            tc = trCells[1];
-            p = tc.GetFirstChild<Paragraph>();
-
-            p.Append(GetTextElement(departmentHead.Name, 22));
-
-            trCells = trArr[8].Descendants<TableCell>().ToList();
-            tc = trCells[1];
-            p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(mark.Subnode.Node.ChiefEngineer.Name, 22));
-
-            // trCells = trArr[9].Descendants<TableCell>().ToList();
+            // trCells = trArr[8].Descendants<TableCell>().ToList();
             // tc = trCells[1];
             // p = tc.GetFirstChild<Paragraph>();
             // p.Append(GetTextElement("E5", 22));
 
-            // trCells = trArr[10].Descendants<TableCell>().ToList();
+            // trCells = trArr[9].Descendants<TableCell>().ToList();
             // tc = trCells[1];
             // p = tc.GetFirstChild<Paragraph>();
             // p.Append(GetTextElement("E6", 22));
+
+            trCells = trArr[10].Descendants<TableCell>().ToList();
+            tc = trCells[1];
+            p = tc.GetFirstChild<Paragraph>();
+            p.Append(GetTextElement(departmentHead.Name, 22));
         }
 
         public static void AppendToSmallFooterTable(WordprocessingDocument document, string markName)
@@ -245,7 +239,7 @@ namespace DocumentsKM.Services
             var firstTrCells = firstTr.Descendants<TableCell>().ToList();
             var tc = firstTrCells[columnIndexToFill];
             var p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(markName, 26));
+            p.Append(GetTextElement(markName, 28));
         }
 
         public static void AppendToMainSmallFooterTable(WordprocessingDocument document, string markName)
@@ -259,7 +253,29 @@ namespace DocumentsKM.Services
             var firstTrCells = firstTr.Descendants<TableCell>().ToList();
             var tc = firstTrCells[columnIndexToFill];
             var p = tc.GetFirstChild<Paragraph>();
-            p.Append(Word.GetTextElement(markName, 26));
+            p.Append(Word.GetTextElement(markName, 28));
+        }
+
+        public static void MakeBordersThin(
+            List<TableCell> trCells,
+            bool isBottom = true,
+            bool isTop = true)
+        {
+            foreach (var cell in trCells)
+            {
+                var tcp = cell.GetFirstChild<TableCellProperties>();
+                var tcb = tcp.GetFirstChild<TableCellBorders>();
+                if (isBottom)
+                {
+                    var bb = tcb.GetFirstChild<BottomBorder>();
+                    bb.Size = 4;
+                }
+                if (isTop)
+                {
+                    var tb = tcb.GetFirstChild<TopBorder>();
+                    tb.Size = 4;
+                }
+            }
         }
     }
 }

@@ -65,21 +65,17 @@ namespace DocumentsKM.Services
             {
                 Body body = document.MainDocumentPart.Document.Body;
                 var t = body.Descendants<Table>().FirstOrDefault();
-
                 var firstTr = t.Descendants<TableRow>().ToList()[0];
                 var clonedFirstTr = firstTr.CloneNode(true);
                 var trCells = firstTr.Descendants<TableCell>().ToList();
 
-                InsertThreeRows(trCells, clonedFirstTr, t, 1, bolts[0], boltLengths[0]);
-
-                for (int i = 1; i < bolts.Count(); i++)
+                for (int i = 0; i < bolts.Count(); i++)
                 {
                     InsertThreeRows(trCells, clonedFirstTr, t, i + 1, bolts[i], boltLengths[i]);
                 }
 
                 var newTr = clonedFirstTr.CloneNode(true);
                 trCells = newTr.Descendants<TableCell>().ToList();
-
                 trCells[1].GetFirstChild<Paragraph>().Append(
                     Word.GetTextElement("Всего", 24));
 
@@ -89,7 +85,7 @@ namespace DocumentsKM.Services
                     sum += Math.Ceiling(bolts[i].Num * boltLengths[i].Weight * 10) / 10;
                 }
                 trCells[7].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(sum.ToString(), 24));
+                    Word.GetTextElement(Math.Round(sum, 1).ToString(), 24));
 
                 sum = 0.0;
                 for (var i = 0; i < bolts.Count(); i++)
@@ -97,7 +93,7 @@ namespace DocumentsKM.Services
                     sum += Math.Ceiling(bolts[i].NutNum * bolts[i].Diameter.NutWeight * 10) / 10;
                 }
                 trCells[8].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(sum.ToString(), 24));
+                    Word.GetTextElement(Math.Round(sum, 1).ToString(), 24));
 
                 sum = 0.0;
                 for (var i = 0; i < bolts.Count(); i++)
@@ -105,8 +101,7 @@ namespace DocumentsKM.Services
                     sum += Math.Ceiling(bolts[i].WasherNum * bolts[i].Diameter.WasherWeight * 10) / 10;
                 }
                 trCells[9].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(sum.ToString(), 24));
-
+                    Word.GetTextElement(Math.Round(sum, 1).ToString(), 24));
                 t.Append(newTr);
             }
         }
@@ -126,7 +121,6 @@ namespace DocumentsKM.Services
                 newTr = clonedFirstTr.CloneNode(true);
                 trCells = newTr.Descendants<TableCell>().ToList();
             }
-
             trCells[0].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(num.ToString(), 24));
             trCells[1].GetFirstChild<Paragraph>().Append(
@@ -144,22 +138,13 @@ namespace DocumentsKM.Services
             trCells[7].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(
                     (Math.Ceiling(bolt.Num * boltLength.Weight * 10) / 10).ToString(), 24));
-
-            foreach (var cell in trCells)
-            {
-                var tcp = cell.GetFirstChild<TableCellProperties>();
-                var tcb = tcp.GetFirstChild<TableCellBorders>();
-                var bb = tcb.GetFirstChild<BottomBorder>();
-                bb.Size = 4;
-            }
-
+            Word.MakeBordersThin(trCells, true, false);
             if (num != 1)
                 t.Append(newTr);
 
             // Гайка
             newTr = clonedFirstTr.CloneNode(true);
             trCells = newTr.Descendants<TableCell>().ToList();
-
             trCells[1].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement($"Гайки по {bolt.Diameter.NutTechSpec}", 24));
             trCells[3].GetFirstChild<Paragraph>().Append(
@@ -169,23 +154,12 @@ namespace DocumentsKM.Services
             trCells[8].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(
                     (Math.Ceiling(bolt.NutNum * bolt.Diameter.NutWeight * 10) / 10).ToString(), 24));
-
-            foreach (var cell in trCells)
-            {
-                var tcp = cell.GetFirstChild<TableCellProperties>();
-                var tcb = tcp.GetFirstChild<TableCellBorders>();
-                var tb = tcb.GetFirstChild<TopBorder>();
-                var bb = tcb.GetFirstChild<BottomBorder>();
-                tb.Size = 4;
-                bb.Size = 4;
-            }
-
+            Word.MakeBordersThin(trCells);
             t.Append(newTr);
 
             // Шайба
             newTr = clonedFirstTr.CloneNode(true);
             trCells = newTr.Descendants<TableCell>().ToList();
-
             trCells[1].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement($"Шайбы по {bolt.Diameter.WasherTechSpec}", 24));
             trCells[3].GetFirstChild<Paragraph>().Append(
@@ -195,15 +169,7 @@ namespace DocumentsKM.Services
             trCells[9].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(
                     (Math.Ceiling(bolt.WasherNum * bolt.Diameter.WasherWeight * 10) / 10).ToString(), 24));
-
-            foreach (var cell in trCells)
-            {
-                var tcp = cell.GetFirstChild<TableCellProperties>();
-                var tcb = tcp.GetFirstChild<TableCellBorders>();
-                var bb = tcb.GetFirstChild<TopBorder>();
-                bb.Size = 4;
-            }
-
+            Word.MakeBordersThin(trCells, false);
             t.Append(newTr);
         }
     }

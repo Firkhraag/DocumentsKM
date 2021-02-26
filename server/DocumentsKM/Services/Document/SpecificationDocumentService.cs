@@ -7,65 +7,37 @@ using System.Collections.Generic;
 using System;
 using DocumentsKM.Helpers;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml;
 
 namespace DocumentsKM.Services
 {
     public class SpecificationDocumentService : ISpecificationDocumentService
     {
         private readonly int _departmentHeadPosId = 7;
-        private readonly int _sheetDocTypeId = 1;
         
         private readonly IMarkRepo _markRepo;
-        private readonly IMarkApprovalRepo _markApprovalRepo;
         private readonly IEmployeeRepo _employeeRepo;
-
-        private readonly IDocRepo _docRepo;
-        private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
-        private readonly IMarkLinkedDocRepo _markLinkedDocRepo;
-        private readonly IAttachedDocRepo _attachedDocRepo;
-
-        private readonly IBoltDiameterRepo _boltDiameterRepo;
-        private readonly IBoltLengthRepo _boltLengthRepo;
-        private readonly IConstructionBoltRepo _constructionBoltRepo;
-
+        private readonly ISpecificationRepo _specificationRepo;
         private readonly IConstructionRepo _constructionRepo;
-        private readonly IMarkOperatingConditionsRepo _markOperatingConditionsRepo;
-        private readonly IEstimateTaskRepo _estimateTaskRepo;
+        private readonly IConstructionElementRepo _constructionElementRepo;
+
+        private class GroupedElement
+        {
+            public string Name { set; get; }
+        }
 
         public SpecificationDocumentService(
             IMarkRepo markRepo,
-            IMarkApprovalRepo markApprovalRepo,
             IEmployeeRepo employeeRepo,
-
-            IDocRepo docRepo,
-            IMarkGeneralDataPointRepo markGeneralDataPointRepo,
-            IMarkLinkedDocRepo markLinkedDocRepo,
-            IAttachedDocRepo attachedDocRepo,
-            
-            IBoltDiameterRepo boltDiameterRepo,
-            IBoltLengthRepo boltLengthRepo,
-            IConstructionBoltRepo constructionBoltRepo,
-            
+            ISpecificationRepo specificationRepo,
             IConstructionRepo constructionRepo,
-            IMarkOperatingConditionsRepo markOperatingConditionsRepo,
-            IEstimateTaskRepo estimateTaskRepo)
+            IConstructionElementRepo constructionElementRepo)
         {
             _markRepo = markRepo;
-            _markApprovalRepo = markApprovalRepo;
             _employeeRepo = employeeRepo;
-
-            _docRepo = docRepo;
-            _markGeneralDataPointRepo = markGeneralDataPointRepo;
-            _markLinkedDocRepo = markLinkedDocRepo;
-            _attachedDocRepo = attachedDocRepo;
-
-            _boltDiameterRepo = boltDiameterRepo;
-            _boltLengthRepo = boltLengthRepo;
-            _constructionBoltRepo = constructionBoltRepo;
-
+            _specificationRepo = specificationRepo;
             _constructionRepo = constructionRepo;
-            _markOperatingConditionsRepo = markOperatingConditionsRepo;
-            _estimateTaskRepo = estimateTaskRepo;
+            _constructionElementRepo = constructionElementRepo;
         }
 
         public void PopulateDocument(int markId, MemoryStream memory)
@@ -73,7 +45,6 @@ namespace DocumentsKM.Services
             var mark = _markRepo.GetById(markId);
             if (mark == null)
                 throw new ArgumentNullException(nameof(mark));
-            var markApprovals = _markApprovalRepo.GetAllByMarkId(markId);
             var subnode = mark.Subnode;
             var node = subnode.Node;
             var project = node.Project;
@@ -85,7 +56,7 @@ namespace DocumentsKM.Services
                 throw new ConflictException();
             var departmentHead = departmentHeadArr.ToList()[0];
 
-            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+            var currentSpec = _specificationRepo.GetCurrentByMarkId(markId);
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
@@ -94,13 +65,12 @@ namespace DocumentsKM.Services
                 (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                     project.Name, node.Name, subnode.Name, mark.Name);
 
-                AppendToTable(wordDoc);   
+                AppendToTable(wordDoc, currentSpec.Id);   
                 Word.AppendToMediumFooterTable(
                     wordDoc,
                     markName,
                     complexName,
                     objectName,
-                    sheets.Count(),
                     mark,
                     departmentHead);
                 Word.AppendToSmallFooterTable(wordDoc, markName);
@@ -108,30 +78,100 @@ namespace DocumentsKM.Services
         }
 
         private void AppendToTable(
-            WordprocessingDocument document)
+            WordprocessingDocument document,
+            int currentSpecId)
         {
-            // if (specifications.Count() > 0)
-            if (1 > 0)
+            // Вкл в спецификацию
+            var constructions = _constructionRepo.GetAllBySpecificationId(
+                currentSpecId).ToList();
+            if (constructions.Count() > 0)
             {
                 Body body = document.MainDocumentPart.Document.Body;
                 var t = body.Descendants<Table>().FirstOrDefault();
-
                 var firstTr = t.Descendants<TableRow>().ToList()[0];
                 var clonedFirstTr = firstTr.CloneNode(true);
                 var trCells = firstTr.Descendants<TableCell>().ToList();
+                var secondTr = t.Descendants<TableRow>().ToList()[1];
+                var clonedSecondTr = secondTr.CloneNode(true);
+                OpenXmlElement newTr = null;
 
-                trCells[0].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement("1", 24));
-                trCells[1].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement("1", 24));
-                trCells[2].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement("1", 24));
-                trCells[3].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement("1", 24));
-                trCells[4].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement("1", 24));
-                trCells[5].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement("1", 24));
+                for (int i = 0; i < constructions.Count(); i++)
+                {
+                    if (i > 0)
+                    {
+                        newTr = clonedFirstTr.CloneNode(true);
+                        trCells = newTr.Descendants<TableCell>().ToList();
+                    }
+                    trCells[0].GetFirstChild<Paragraph>().Append(
+                        Word.GetTextElement(constructions[i].Name, 24));
+                    if (i > 0)
+                        t.Append(newTr);
+
+                    var groupedConstructionElements = _constructionElementRepo.GetAllByConstructionId(
+                        constructions[i].Id).GroupBy(v => v.Profile.Id).Select(
+                            v => new GroupedElement
+                            {
+                                Name = v.First().Profile.Class.Name,
+                                // Form = g.Sum(v => v.Form),
+                            }).ToList();
+
+                    for (int j = 0; j < groupedConstructionElements.Count(); j++)
+                    {
+                        if (i == 0 && j == 0)
+                            trCells = secondTr.Descendants<TableCell>().ToList();
+                        else
+                        {
+                            newTr = clonedSecondTr.CloneNode(true);
+                            trCells = newTr.Descendants<TableCell>().ToList();
+                        }
+                        trCells[0].GetFirstChild<Paragraph>().Append(
+                            Word.GetTextElement(groupedConstructionElements[j].Name, 24));
+                        Word.MakeBordersThin(trCells);
+                        trCells[0].GetFirstChild<TableCellProperties>().Append(new VerticalMerge
+                        {
+                            Val = MergedCellValues.Restart,
+                        });
+                        if (i != 0 || j != 0)
+                            t.Append(newTr);
+
+                        newTr = clonedSecondTr.CloneNode(true);
+                        trCells = newTr.Descendants<TableCell>().ToList();
+                        Word.MakeBordersThin(trCells);
+                        trCells[0].GetFirstChild<TableCellProperties>().Append(new VerticalMerge {});
+                        t.Append(newTr);
+
+                        newTr = clonedSecondTr.CloneNode(true);
+                        trCells = newTr.Descendants<TableCell>().ToList();
+                        trCells[0].GetFirstChild<Paragraph>().Append(
+                            Word.GetTextElement("Всего профиля:", 24));
+                        Word.MakeBordersThin(trCells);
+                        t.Append(newTr);
+                    }
+
+                    newTr = clonedSecondTr.CloneNode(true);
+                    trCells = newTr.Descendants<TableCell>().ToList();
+                    trCells[0].GetFirstChild<Paragraph>().Append(
+                        Word.GetTextElement("Итого масса металла:", 24));
+                    Word.MakeBordersThin(trCells);
+                    t.Append(newTr);
+
+                    newTr = clonedSecondTr.CloneNode(true);
+                    trCells = newTr.Descendants<TableCell>().ToList();
+                    var p = trCells[0].GetFirstChild<Paragraph>();
+                    p.Append(Word.GetTextElement(
+                            "Итого развернутая площадь поверхности конструкций, 100 м", 24));
+                    p.Append(Word.GetTextElement("2", 24, false, true));
+                    p.Append(Word.GetTextElement(":", 24));
+                    Word.MakeBordersThin(trCells);
+                    t.Append(newTr);
+
+                    newTr = clonedSecondTr.CloneNode(true);
+                    trCells = newTr.Descendants<TableCell>().ToList();
+                    trCells[0].GetFirstChild<Paragraph>().Append(
+                        Word.GetTextElement("В том числе по маркам:", 24));
+                    Word.MakeBordersThin(trCells, false);
+                    t.Append(newTr);
+                }
             }
         }
     }

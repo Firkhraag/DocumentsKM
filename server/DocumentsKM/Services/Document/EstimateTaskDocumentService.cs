@@ -34,7 +34,6 @@ namespace DocumentsKM.Services
             public float Weight { set; get; }
             public float Area { set; get; }
         }
-
         private class ListText
         {
             public string Text { set; get; }
@@ -332,41 +331,6 @@ namespace DocumentsKM.Services
                         WithSuperscript = false,
                     });
                 }
-                // arr.Add(new ListText
-                // {
-                //     Text = "Защита металлоконструкций от коррозии осуществляется окраской лакокрасочными материалами группы 1:",
-                //     LevelNum = 3,
-                //     IsBold = false,
-                //     WithSuperscript = false,
-                // });
-                // arr.Add(new ListText
-                // {
-                //     Text = "на заводе – грунтовкой",
-                //     LevelNum = 2,
-                //     IsBold = false,
-                //     WithSuperscript = false,
-                // });
-                // arr.Add(new ListText
-                // {
-                //     Text = "Узлы монтажной сборки с применением сварки.",
-                //     LevelNum = 3,
-                //     IsBold = false,
-                //     WithSuperscript = false,
-                // });
-                // arr.Add(new ListText
-                // {
-                //     Text = "на монтаже узлы сборки окрасить грунтовкой",
-                //     LevelNum = 2,
-                //     IsBold = false,
-                //     WithSuperscript = false,
-                // });
-                // arr.Add(new ListText
-                // {
-                //     Text = "Степень очистки поверхности стальных конструкций",
-                //     LevelNum = 3,
-                //     IsBold = false,
-                //     WithSuperscript = false,
-                // });
 
                 if (estTask.AdditionalText != null && estTask.AdditionalText != "")
                 {
@@ -580,7 +544,6 @@ namespace DocumentsKM.Services
             for (var i = 0; i < arr.Count(); i++)
             {
                 var spacingBetweenLines = new SpacingBetweenLines() { After = "120", Line = "240" };
-                // var indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "720" };
                 var indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "1160" };
 
                 NumberingProperties numberingProperties;
@@ -637,19 +600,23 @@ namespace DocumentsKM.Services
                         for (int k = 0; k < split.Count(); k++)
                         {
                             if (k > 0)
-                                newPara.AppendChild(Word.GetTextElement(split[k][0].ToString(), 26, false, true));
+                                newPara.AppendChild(
+                                    Word.GetTextElement(split[k][0].ToString(), 26, false, true));
                             if (k == 0)
                                 newPara.AppendChild(Word.GetTextElement(split[k], 26));
                             else
                                 if (split[k].Length > 1)
-                                    newPara.AppendChild(Word.GetTextElement(split[k].Substring(1), 26));
+                                    newPara.AppendChild(
+                                        Word.GetTextElement(split[k].Substring(1), 26));
                         }
                     }
                     else
-                        newPara.AppendChild(Word.GetTextElement(arr[i].Text, 26, false, false, arr[i].IsBold));
+                        newPara.AppendChild(
+                            Word.GetTextElement(arr[i].Text, 26, false, false, arr[i].IsBold));
                 }
                 else
-                    newPara.AppendChild(Word.GetTextElement(arr[i].Text, 26, false, false, arr[i].IsBold));
+                    newPara.AppendChild(
+                        Word.GetTextElement(arr[i].Text, 26, false, false, arr[i].IsBold));
 
                 body.AppendChild(newPara);
             }
