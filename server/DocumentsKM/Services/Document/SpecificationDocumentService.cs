@@ -130,6 +130,7 @@ namespace DocumentsKM.Services
                 var num = 1;
                 for (int i = 0; i < constructions.Count(); i++)
                 {
+                    var steelMap = new Dictionary<string, double> {};
                     if (i > 0)
                     {
                         newTr = clonedFirstTr.CloneNode(true);
@@ -230,6 +231,11 @@ namespace DocumentsKM.Services
                                     t.Append(newTr);
                             }
 
+                            if (steelMap.ContainsKey(steelArr[k].Name))
+                                steelMap[steelArr[k].Name] += profileSum;
+                            else
+                                steelMap.Add(steelArr[k].Name, profileSum);
+
                             newTr = clonedSecondTr.CloneNode(true);
                             trCells = newTr.Descendants<TableCell>().ToList();
                             Word.MakeBordersThin(trCells);
@@ -288,26 +294,30 @@ namespace DocumentsKM.Services
                     Word.MakeBordersThin(trCells);
                     t.Append(newTr);
 
-                    newTr = clonedSecondTr.CloneNode(true);
-                    trCells = newTr.Descendants<TableCell>().ToList();
-                    trCells[0].GetFirstChild<Paragraph>().Append(
-                        Word.GetTextElement("В том числе по маркам:", 24));
-                    trCells[3].GetFirstChild<Paragraph>().Append(
-                        Word.GetTextElement(num.ToString(), 24));
-                    trCells[5].GetFirstChild<Paragraph>().Append(
-                            Word.GetTextElement("1111", 24));
-                    num++;
-                    Word.MakeBordersThin(trCells, false);
-                    t.Append(newTr);
+                    var n = 0;
+                    foreach (var steel in steelMap)
+                    {
+                        newTr = clonedSecondTr.CloneNode(true);
+                        trCells = newTr.Descendants<TableCell>().ToList();
+                        if (n == 0)
+                            trCells[0].GetFirstChild<Paragraph>().Append(
+                                Word.GetTextElement("В том числе по маркам:", 24));
+                        trCells[1].GetFirstChild<Paragraph>().Append(
+                            Word.GetTextElement(steel.Key, 24));
+                        trCells[3].GetFirstChild<Paragraph>().Append(
+                            Word.GetTextElement(num.ToString(), 24));
+                        trCells[5].GetFirstChild<Paragraph>().Append(
+                                Word.GetTextElement(steel.Value.ToStringWithComma(), 24));
+                        num++;
+                        if (n == steelMap.Count() - 1)
+                            Word.MakeBordersThin(trCells, false);
+                        else
+                            Word.MakeBordersThin(trCells);
+                        t.Append(newTr);
+                        n++;
+                    }
                 }
             }
-        }
-
-        private void InsertTwoRows(
-            WordprocessingDocument document,
-            int currentSpecId)
-        {
-
         }
     }
 }
