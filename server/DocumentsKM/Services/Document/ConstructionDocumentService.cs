@@ -129,7 +129,7 @@ namespace DocumentsKM.Services
                     if (weight > 0)
                     {
                         p = trCells[0].GetFirstChild<Paragraph>();
-                        p.Append(Word.GetTextElement(weight.ToString(), 24));
+                        p.Append(Word.GetTextElement(weight.ToStringWithComma(), 24));
                     }
 
                     var localSum = 0.0;
@@ -151,12 +151,12 @@ namespace DocumentsKM.Services
                         if (weight > 0)
                         {
                             p = trCells[k].GetFirstChild<Paragraph>();
-                            p.Append(Word.GetTextElement(weight.ToString(), 24));
+                            p.Append(Word.GetTextElement(weight.ToStringWithComma(), 24));
                         }
                     }
 
                     p = trCells[11].GetFirstChild<Paragraph>();
-                    p.Append(Word.GetTextElement(Math.Round(localSum * 1.01 * 1.03, 3).ToString(), 24));
+                    p.Append(Word.GetTextElement(Math.Round(localSum * 1.01 * 1.03, 3).ToStringWithComma(), 24));
                     if (i > 0)
                         t.Append(newTr);
                 }
@@ -170,7 +170,7 @@ namespace DocumentsKM.Services
 
                     p = trCells[1].GetFirstChild<Paragraph>();
                     p.Append(Word.GetTextElement(
-                        (Math.Ceiling(standardConstructions[i].Weight * 1000) / 1000).ToString(), 24));
+                        (Math.Ceiling(standardConstructions[i].Weight * 1000) / 1000).ToStringWithComma(), 24));
                     t.Append(newTr);
                 }
 
@@ -187,12 +187,12 @@ namespace DocumentsKM.Services
                     if (sums[k] > 0)
                     {
                         p = trCells[k].GetFirstChild<Paragraph>();
-                        p.Append(Word.GetTextElement(Math.Round(sums[k], 3).ToString(), 24));
+                        p.Append(Word.GetTextElement(Math.Round(sums[k], 3).ToStringWithComma(), 24));
                     }
                 }
 
                 p = trCells[11].GetFirstChild<Paragraph>();
-                p.Append(Word.GetTextElement(Math.Round(sums.Skip(1).Sum() * 1.01 * 1.03, 3).ToString(), 24));
+                p.Append(Word.GetTextElement(Math.Round(sums.Skip(1).Sum() * 1.01 * 1.03, 3).ToStringWithComma(), 24));
                 t.Append(lastTr);
             }
         }

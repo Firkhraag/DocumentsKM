@@ -14,12 +14,10 @@ namespace DocumentsKM.Services
     public class EstimateTaskDocumentService : IEstimateTaskDocumentService
     {
         private readonly int _departmentHeadPosId = 7;
-        private readonly int _sheetDocTypeId = 1;
         private readonly int _paintingGeneralDataSectionId = 13;
         
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
-        private readonly IDocRepo _docRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IConstructionElementRepo _constructionElementRepo;
         private readonly IStandardConstructionRepo _standardConstructionRepo;
@@ -45,7 +43,6 @@ namespace DocumentsKM.Services
         public EstimateTaskDocumentService(
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
-            IDocRepo docRepo,
             IConstructionRepo constructionRepo,
             IConstructionElementRepo constructionElementRepo,
             IStandardConstructionRepo standardConstructionRepo,
@@ -55,7 +52,6 @@ namespace DocumentsKM.Services
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
-            _docRepo = docRepo;
             _constructionRepo = constructionRepo;
             _constructionElementRepo = constructionElementRepo;
             _standardConstructionRepo = standardConstructionRepo;
@@ -80,7 +76,6 @@ namespace DocumentsKM.Services
                 throw new ConflictException();
             var departmentHead = departmentHeadArr.ToList()[0];
 
-            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
             // Вкл в состав спецификации
             var constructions = _constructionRepo.GetAllByMarkId(markId);
             var standardConstructions = _standardConstructionRepo.GetAllByMarkId(markId);
@@ -241,38 +236,52 @@ namespace DocumentsKM.Services
                         double areaSum = 0.0;
                         foreach (var s in groupedSteel)
                         {
-                            var initialWeightValue = s.Weight * s.Length * 0.001;
-                            var initialWeightValueRounded = Math.Ceiling(initialWeightValue * 1000) / 1000;
+                            // var initialWeightValue = s.Weight * s.Length * 0.001;
+                            // var initialWeightValueRounded = Math.Ceiling(initialWeightValue * 1000) / 1000;
+                            var initialWeightValueRounded = Math.Ceiling(
+                                s.Weight * s.Length) / 1000;
+                            var finalWeightValueRounded = Math.Ceiling(
+                                initialWeightValueRounded * 1040) / 1000;
                             arr.Add(new ListText
                             {
-                                Text = $"{s.Name} {initialWeightValueRounded} x 1.04 = {Math.Ceiling(initialWeightValueRounded * 1.04 * 1000) / 1000} т",
+                                // Text = $"{s.Name} {initialWeightValueRounded} x 1,04 = {Math.Ceiling(initialWeightValueRounded * 1.04 * 1000) / 1000} т",
+                                Text = $"{s.Name} {initialWeightValueRounded.ToStringWithComma()} x 1,04 = {finalWeightValueRounded.ToStringWithComma()} т",
                                 LevelNum = 6,
                                 IsBold = false,
                                 WithSuperscript = false,
                             });
-                            initialWeightSum += initialWeightValue;
+                            // initialWeightSum += initialWeightValue;
+                            initialWeightSum += initialWeightValueRounded;
                             areaSum += s.Area * s.Length;
                         }
                         overallInitialWeightSum += initialWeightSum;
-                        var initialWeightSumRounded = Math.Ceiling(initialWeightSum * 1000) / 1000;
+                        var initialWeightSumRounded = Math.Ceiling(
+                            initialWeightSum * 1000) / 1000;
+                        var finalWeightSumRounded = Math.Ceiling(
+                            initialWeightSumRounded * 1040) / 1000;
                         arr.Add(new ListText
                         {
-                            Text = $"Итого масса металла: {initialWeightSumRounded} x 1.04 = {Math.Ceiling(initialWeightSumRounded * 1.04 * 1000) / 1000} т",
+                            // Text = $"Итого масса металла: {initialWeightSumRounded} x 1,04 = {Math.Ceiling(initialWeightSumRounded * 1.04 * 1000) / 1000} т",
+                            Text = $"Итого масса металла: {initialWeightSumRounded.ToStringWithComma()} x 1,04 = {finalWeightSumRounded.ToStringWithComma()} т",
                             LevelNum = 5,
                             IsBold = false,
                             WithSuperscript = false,
                         });
-                        overallAreaSum += areaSum;
+                        var areaSumRounded = Math.Round(areaSum, 3);
+                        // overallAreaSum += areaSum;
+                        overallAreaSum += areaSumRounded;
                         arr.Add(new ListText
                         {
-                            Text = $"Площадь поверхности для окраски: {Math.Round(areaSum, 3)} x 100 м^2",
+                            // Text = $"Площадь поверхности для окраски: {Math.Round(areaSum, 3).ToStringWithComma()} x 100 м^2",
+                            Text = $"Площадь поверхности для окраски: {areaSumRounded.ToStringWithComma()} x 100 м^2",
                             LevelNum = 5,
                             IsBold = false,
                             WithSuperscript = true,
                         });
                         arr.Add(new ListText
                         {
-                            Text = $"Относительная площадь окраски: {Math.Round(areaSum * 100 / (initialWeightSum * 1.04), 3)} м^2/т",
+                            // Text = $"Относительная площадь окраски: {Math.Round(areaSum * 100 / (initialWeightSum * 1.04), 3).ToStringWithComma()} м^2/т",
+                            Text = $"Относительная площадь окраски: {Math.Round(areaSumRounded * 100 / (initialWeightSumRounded * 1.04), 1).ToStringWithComma()} м^2/т",
                             LevelNum = 5,
                             IsBold = false,
                             WithSuperscript = true,
@@ -284,7 +293,7 @@ namespace DocumentsKM.Services
                 {
                     arr.Add(new ListText
                     {
-                        Text = $"{standardConstruction.Name}: {Math.Ceiling(standardConstruction.Weight * 1000) / 1000} т",
+                        Text = $"{standardConstruction.Name}: {(Math.Ceiling(standardConstruction.Weight * 1000) / 1000).ToStringWithComma()} т",
                         LevelNum = 1,
                         IsBold = false,
                         WithSuperscript = false,
@@ -299,16 +308,21 @@ namespace DocumentsKM.Services
                     WithSuperscript = false,
                 });
 
+                var overallInitialWeightSumRounded = Math.Ceiling(
+                    overallInitialWeightSum * 1000) / 1000;
+                var overallFinalWeightSumRounded = Math.Ceiling(
+                    overallInitialWeightSumRounded * 1040) / 1000;
                 arr.Add(new ListText
                 {
-                    Text = $"Масса металла для окраски: {Math.Round(overallInitialWeightSum, 3)} x 1.04 = {Math.Round(Math.Round(overallInitialWeightSum, 3) * 1.04, 3)} т",
+                    // Text = $"Масса металла для окраски: {Math.Round(overallInitialWeightSum, 3)} x 1,04 = {Math.Round(Math.Round(overallInitialWeightSum, 3) * 1.04, 3)} т",
+                    Text = $"Масса металла для окраски: {overallInitialWeightSumRounded.ToStringWithComma()} x 1,04 = {overallFinalWeightSumRounded.ToStringWithComma()} т",
                     LevelNum = 4,
                     IsBold = false,
                     WithSuperscript = false,
                 });
                 arr.Add(new ListText
                 {
-                    Text = $"Площадь поверхности для окраски: {Math.Round(overallAreaSum, 3)} x 100 м^2",
+                    Text = $"Площадь поверхности для окраски: {Math.Round(overallAreaSum, 3).ToStringWithComma()} x 100 м^2",
                     LevelNum = 4,
                     IsBold = false,
                     WithSuperscript = true,
@@ -360,7 +374,7 @@ namespace DocumentsKM.Services
                     markName,
                     complexName,
                     objectName,
-                    sheets.Count(),
+                    -1,
                     mark,
                     markApprovals.ToList(),
                     departmentHead);

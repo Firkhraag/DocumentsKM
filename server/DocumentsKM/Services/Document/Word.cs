@@ -14,14 +14,17 @@ namespace DocumentsKM.Services
             int fSize,
             bool isUnderlined = false,
             bool isSuperscript = false,
-            bool isBold = false)
+            bool isBold = false,
+            bool isItalic = true)
         {
             Run run = new Run();
             RunProperties runProperties = run.AppendChild(new RunProperties());
-            Italic italic = new Italic();
-            italic.Val = OnOffValue.FromBoolean(true);
             FontSize fontSize = new FontSize() { Val = fSize.ToString() };
-            runProperties.AppendChild(italic);
+            if (isItalic)
+                runProperties.AppendChild(new Italic()
+                {
+                    Val = OnOffValue.FromBoolean(true),
+                });
             runProperties.AppendChild(fontSize);
             RunFonts font = new RunFonts()
             {
@@ -106,9 +109,12 @@ namespace DocumentsKM.Services
                 p.Append(GetTextElement(mark.ChiefSpecialist.Name, 22));
             }
 
-            tc = trCells.LastOrDefault();
-            p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(sheetsCount.ToString(), 22));
+            if (sheetsCount != -1)
+            {
+                tc = trCells.LastOrDefault();
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(GetTextElement(sheetsCount.ToString(), 22));
+            }
 
             trCells = trArr[7].Descendants<TableCell>().ToList();
             tc = trCells[1];

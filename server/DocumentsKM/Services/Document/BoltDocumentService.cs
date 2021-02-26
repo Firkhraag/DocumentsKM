@@ -85,7 +85,7 @@ namespace DocumentsKM.Services
                     sum += Math.Ceiling(bolts[i].Num * boltLengths[i].Weight * 10) / 10;
                 }
                 trCells[7].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(Math.Round(sum, 1).ToString(), 24));
+                    Word.GetTextElement(Math.Round(sum, 1).ToStringWithComma(), 24));
 
                 sum = 0.0;
                 for (var i = 0; i < bolts.Count(); i++)
@@ -93,7 +93,7 @@ namespace DocumentsKM.Services
                     sum += Math.Ceiling(bolts[i].NutNum * bolts[i].Diameter.NutWeight * 10) / 10;
                 }
                 trCells[8].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(Math.Round(sum, 1).ToString(), 24));
+                    Word.GetTextElement(Math.Round(sum, 1).ToStringWithComma(), 24));
 
                 sum = 0.0;
                 for (var i = 0; i < bolts.Count(); i++)
@@ -101,7 +101,7 @@ namespace DocumentsKM.Services
                     sum += Math.Ceiling(bolts[i].WasherNum * bolts[i].Diameter.WasherWeight * 10) / 10;
                 }
                 trCells[9].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(Math.Round(sum, 1).ToString(), 24));
+                    Word.GetTextElement(Math.Round(sum, 1).ToStringWithComma(), 24));
                 t.Append(newTr);
             }
         }
@@ -128,7 +128,7 @@ namespace DocumentsKM.Services
             trCells[2].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(bolt.Diameter.Diameter.ToString(), 24));
             trCells[3].GetFirstChild<Paragraph>().Append(
-                Word.GetTextElement(bolt.Diameter.StrengthClass, 24));
+                Word.GetTextElement(bolt.Diameter.StrengthClass.ToStringWithComma(), 24));
             trCells[4].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(bolt.Packet.ToString(), 24));
             trCells[5].GetFirstChild<Paragraph>().Append(
@@ -137,7 +137,7 @@ namespace DocumentsKM.Services
                 Word.GetTextElement(bolt.Num.ToString(), 24));
             trCells[7].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(
-                    (Math.Ceiling(bolt.Num * boltLength.Weight * 10) / 10).ToString(), 24));
+                    (Math.Ceiling(bolt.Num * boltLength.Weight * 10) / 10).ToStringWithComma(), 24));
             Word.MakeBordersThin(trCells, true, false);
             if (num != 1)
                 t.Append(newTr);
@@ -153,7 +153,7 @@ namespace DocumentsKM.Services
                 Word.GetTextElement(bolt.NutNum.ToString(), 24));
             trCells[8].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(
-                    (Math.Ceiling(bolt.NutNum * bolt.Diameter.NutWeight * 10) / 10).ToString(), 24));
+                    (Math.Ceiling(bolt.NutNum * bolt.Diameter.NutWeight * 10) / 10).ToStringWithComma(), 24));
             Word.MakeBordersThin(trCells);
             t.Append(newTr);
 
@@ -168,7 +168,7 @@ namespace DocumentsKM.Services
                 Word.GetTextElement(bolt.WasherNum.ToString(), 24));
             trCells[9].GetFirstChild<Paragraph>().Append(
                 Word.GetTextElement(
-                    (Math.Ceiling(bolt.WasherNum * bolt.Diameter.WasherWeight * 10) / 10).ToString(), 24));
+                    (Math.Ceiling(bolt.WasherNum * bolt.Diameter.WasherWeight * 10) / 10).ToStringWithComma(), 24));
             Word.MakeBordersThin(trCells, false);
             t.Append(newTr);
         }
