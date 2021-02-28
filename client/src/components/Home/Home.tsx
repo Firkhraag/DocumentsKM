@@ -183,6 +183,13 @@ const Home = () => {
 						Общие данные
 					</Button>
 				</Link>
+                <Button
+                    variant="outline-secondary"
+                    disabled={mark == null ? true : false}
+                    onClick={onSpecDocumentDownloadButtonClick}
+                >
+                    Спецификация металла
+                </Button>
 				<Button
 					variant="outline-secondary"
 					disabled={mark == null ? true : false}
@@ -205,6 +212,14 @@ const Home = () => {
 						Задание на смету
 					</Button>
 				</Link>
+                <Link to={mark != null ? `/project-registration` : '/'}>
+					<Button
+						variant="outline-secondary"
+						disabled={mark == null ? true : false}
+					>
+						Лист регистрации проекта
+					</Button>
+				</Link>
 				<Link to={mark != null ? `/set-doc` : '/'}>
 					<Button
 						variant="outline-secondary"
@@ -213,21 +228,6 @@ const Home = () => {
 						Комплект для расчета
 					</Button>
 				</Link>
-				<Link to={mark != null ? `/registration-doc` : '/'}>
-					<Button
-						variant="outline-secondary"
-						disabled={mark == null ? true : false}
-					>
-						Лист регистрации проекта
-					</Button>
-				</Link>
-                <Button
-                    variant="outline-secondary"
-                    disabled={mark == null ? true : false}
-                    onClick={onSpecDocumentDownloadButtonClick}
-                >
-                    Спецификация металла
-                </Button>
 			</div>
 		</div>
 	)

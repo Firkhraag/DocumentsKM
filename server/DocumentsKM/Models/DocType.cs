@@ -2,17 +2,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
 {
+    // Тип документа
     public class DocType
     {
-        // Тип_док
         [Key]
         public int Id { get; set; }
 
+        // Шифр
         [Required]
         [MaxLength(4)]
         public string Code { get; set; }
 
-        // название_док
+        // Название
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }

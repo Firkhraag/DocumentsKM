@@ -5,37 +5,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
+    // Выпуск спецификации
     public class Specification
     {
-        // Поз_выпуска
         [Key]
         public int Id { get; set; }
 
-        // Id_марки
+        // Марка
         [Required]
         [ForeignKey("MarkId")]
         public virtual Mark Mark { get; set; }
-        // public int MarkId { get; set; }
 
-        // выпуск
+        // Номер
         [Required]
         public int Num { get; set; }
 
-        // тек_выпуск
+        // Текущий
         [Required]
         public bool IsCurrent { get; set; }
 
-        // прим
+        // Примечание
         [MaxLength(255)]
         public string Note { get; set; }
 
-        // дата_созд
+        // Дата создания
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedDate { get; set; }
 
+        // Виды конструкций
         public virtual IList<Construction> Constructions { get; set; } = new List<Construction>();
 
+        // Типовые конструкции
         public virtual IList<StandardConstruction> StandardConstructions { get; set; } = new List<StandardConstruction>();
     }
 }

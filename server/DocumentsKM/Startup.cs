@@ -177,11 +177,12 @@ namespace DocumentsKM
             services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
 
             services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<ISpecificationDocumentService, SpecificationDocumentService>();
             services.AddScoped<IGeneralDataDocumentService, GeneralDataDocumentService>();
             services.AddScoped<IConstructionDocumentService, ConstructionDocumentService>();
             services.AddScoped<IBoltDocumentService, BoltDocumentService>();
             services.AddScoped<IEstimateTaskDocumentService, EstimateTaskDocumentService>();
-            services.AddScoped<ISpecificationDocumentService, SpecificationDocumentService>();
+            services.AddScoped<IProjectRegistrationDocumentService, ProjectRegistrationDocumentService>();
         }
 
         private void InjectScopedRepositories(IServiceCollection services)

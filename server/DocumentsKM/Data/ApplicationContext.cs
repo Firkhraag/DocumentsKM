@@ -95,7 +95,6 @@ namespace DocumentsKM.Data
 
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
         public DbSet<CorrProtVariant> CorrProtVariants { get; set; }
-        public DbSet<MarkDesignation> MarkDesignations { get; set; }
         public DbSet<DocType> DocTypes { get; set; }
         public DbSet<SheetName> SheetNames { get; set; }
 

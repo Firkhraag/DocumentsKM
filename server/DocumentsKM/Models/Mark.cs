@@ -4,53 +4,54 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
+    // Марка
     public class Mark
     {
-        // Id_Марки
         [Key]
         public int Id { get; set; }
 
-        // ОА_Подузел
+        // Подузел
         [Required]
         [ForeignKey("SubnodeId")]
         public virtual Subnode Subnode { get; set; }
-        // public int SubnodeId { get; set; }
 
-        // КодМарки
+        // Код
         [Required]
         [MaxLength(40)]
         public string Code { get; set; }
 
-        // НазвМарки
+        // Название
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
 
-        // Код_отд
+        // Отдел
         [Required]
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
-        // Гл_спец
+        // Главный специалист
         [ForeignKey("ChiefSpecialistId")]
         public virtual Employee ChiefSpecialist { get; set; }
         public int? ChiefSpecialistId { get; set; }
 
-        // Рук_гр 
+        // Руководитель группы
         [ForeignKey("GroupLeaderId")]
         public virtual Employee GroupLeader { get; set; }
         public int? GroupLeaderId { get; set; }
 
-        // Гл_стр 
+        // Главный строитель
         [ForeignKey("MainBuilderId")]
         public virtual Employee MainBuilder { get; set; }
 
-        // Дата_ред
+        // Дата редактирования
         public DateTime? EditedDate { get; set; }
 
+        // Тут где-то ГИП, где-то начальник отдела
         public int? Signed1Id { get; set; }
         public int? Signed2Id { get; set; }
 
+        // Дата выдачи
         public DateTime? IssuedDate { get; set; }
 
         public int? NumOfVolumes { get; set; }

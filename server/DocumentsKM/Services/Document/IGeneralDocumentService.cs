@@ -9,8 +9,9 @@ namespace DocumentsKM.Services
     }
 
     public interface IGeneralDataDocumentService : IGeneralDocumentService {}
+    public interface ISpecificationDocumentService : IGeneralDocumentService {}
     public interface IConstructionDocumentService : IGeneralDocumentService {}
     public interface IBoltDocumentService : IGeneralDocumentService {}
     public interface IEstimateTaskDocumentService : IGeneralDocumentService {}
-    public interface ISpecificationDocumentService : IGeneralDocumentService {}
+    public interface IProjectRegistrationDocumentService : IGeneralDocumentService {}
 }
