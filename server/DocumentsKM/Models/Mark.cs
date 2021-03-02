@@ -51,6 +51,7 @@ namespace DocumentsKM.Models
         public int? Signed1Id { get; set; }
         public int? Signed2Id { get; set; }
 
+        // !!! Change to IssueDate
         // Дата выдачи
         public DateTime? IssuedDate { get; set; }
 

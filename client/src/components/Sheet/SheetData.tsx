@@ -186,8 +186,12 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 			setErrMsg('Пожалуйста, введите формат листа')
 			return false
 		}
-        if (selectedObject.form < 0 || selectedObject.form > 1000000) {
+		if (selectedObject.form < 0 || selectedObject.form > 1000000) {
 			setErrMsg('Пожалуйста, введите правильный формат')
+			return false
+		}
+		if (selectedObject.creator == null) {
+			setErrMsg('Пожалуйста, выберите разработчика')
 			return false
 		}
 		return true
@@ -200,7 +204,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 					name: selectedObject.name,
 					form: selectedObject.form,
 					typeId: basicSheetDocTypeId,
-					creatorId: selectedObject.creator?.id,
+					creatorId: selectedObject.creator.id,
 					inspectorId: selectedObject.inspector?.id,
 					normContrId: selectedObject.normContr?.id,
 					note: selectedObject.note,
@@ -224,10 +228,10 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						selectedObject.form === sheet.form
 							? undefined
 							: selectedObject.form,
-					creatorId: getNullableFieldValue(
-						selectedObject.creator,
-						sheet.creator
-					),
+					creatorId:
+						selectedObject.creator.id === sheet.creator.id
+							? undefined
+							: selectedObject.creator.id,
 					inspectorId: getNullableFieldValue(
 						selectedObject.inspector,
 						sheet.inspector

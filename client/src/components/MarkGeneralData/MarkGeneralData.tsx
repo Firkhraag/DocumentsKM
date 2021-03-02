@@ -308,6 +308,7 @@ const MarkGeneralData = () => {
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
+            setErrMsg('')
 		} catch (e) {
             if (e.response != null && e.response.status === 404) {
                 setErrMsg('Пожалуйста, заполните условия эскплуатации у марки')

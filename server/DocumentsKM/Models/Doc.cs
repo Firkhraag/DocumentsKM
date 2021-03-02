@@ -34,9 +34,10 @@ namespace DocumentsKM.Models
         public float Form { get; set; }
 
         // Разработал
+        [Required]
         [ForeignKey("CreatorId")]
         public virtual Employee Creator { get; set; }
-        public int? CreatorId { get; set; }
+        public int CreatorId { get; set; }
 
         // Проверил
         [ForeignKey("InspectorId")]

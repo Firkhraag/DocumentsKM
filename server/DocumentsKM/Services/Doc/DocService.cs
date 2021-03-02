@@ -49,7 +49,7 @@ namespace DocumentsKM.Services
             Doc doc,
             int markId,
             int docTypeId,
-            int? creatorId,
+            int creatorId,
             int? inspectorId,
             int? normContrId)
         {
@@ -74,13 +74,10 @@ namespace DocumentsKM.Services
             }
             doc.Num = maxNum + 1;
 
-            if (creatorId != null)
-            {
-                var creator = _employeeRepo.GetById(creatorId.GetValueOrDefault());
-                if (creator == null)
-                    throw new ArgumentNullException(nameof(creator));
-                doc.Creator = creator;
-            }
+            var creator = _employeeRepo.GetById(creatorId);
+            if (creator == null)
+                throw new ArgumentNullException(nameof(creator));
+            doc.Creator = creator;
             if (inspectorId != null)
             {
                 var inspector = _employeeRepo.GetById(inspectorId.GetValueOrDefault());
@@ -140,16 +137,11 @@ namespace DocumentsKM.Services
             }
             if (doc.CreatorId != null)
             {
-                var creatorId = doc.CreatorId.GetValueOrDefault();
-                if (creatorId == -1)
-                    foundDoc.CreatorId = null;
-                else
-                {
-                    var creator = _employeeRepo.GetById(creatorId);
-                    if (creator == null)
-                        throw new ArgumentNullException(nameof(creator));
-                    foundDoc.Creator = creator;
-                }
+                var creator = _employeeRepo.GetById(
+                    doc.CreatorId.GetValueOrDefault());
+                if (creator == null)
+                    throw new ArgumentNullException(nameof(creator));
+                foundDoc.Creator = creator;
             }
             if (doc.InspectorId != null)
             {

@@ -104,11 +104,11 @@ const DevelopingAttachedDocData = ({
 	}
 
 	const onNumOfPagesChange = (event: React.FormEvent<HTMLInputElement>) => {
-        const v = parseInt(event.currentTarget.value)
+		const v = parseInt(event.currentTarget.value)
 		setSelectedObject({
 			...selectedObject,
 			numOfPages: v,
-            form: Math.round(v * 0.125 * 1000) / 1000,
+			form: Math.round(v * 0.125 * 1000) / 1000,
 		})
 	}
 
@@ -199,12 +199,20 @@ const DevelopingAttachedDocData = ({
 			setErrMsg('Пожалуйста, введите формат прилагаемого документа')
 			return false
 		}
-        if (selectedObject.form < 0 || selectedObject.form > 1000000) {
+		if (selectedObject.form < 0 || selectedObject.form > 1000000) {
 			setErrMsg('Пожалуйста, введите правильный формат')
 			return false
 		}
-        if (!isNaN(selectedObject.numOfPages) && (selectedObject.numOfPages < 0 || selectedObject.numOfPages > 1000000)) {
+		if (
+			!isNaN(selectedObject.numOfPages) &&
+			(selectedObject.numOfPages < 0 ||
+				selectedObject.numOfPages > 1000000)
+		) {
 			setErrMsg('Пожалуйста, введите правильное число листов')
+			return false
+		}
+		if (selectedObject.creator == null) {
+			setErrMsg('Пожалуйста, выберите разработчика')
 			return false
 		}
 		return true
@@ -218,7 +226,7 @@ const DevelopingAttachedDocData = ({
 					name: selectedObject.name,
 					numOfPages: selectedObject.numOfPages,
 					form: selectedObject.form,
-					creatorId: selectedObject.creator?.id,
+					creatorId: selectedObject.creator.id,
 					inspectorId: selectedObject.inspector?.id,
 					normContrId: selectedObject.normContr?.id,
 					note: selectedObject.note,
@@ -251,10 +259,11 @@ const DevelopingAttachedDocData = ({
 						selectedObject.form === developingAttachedDoc.form
 							? undefined
 							: selectedObject.form,
-					creatorId: getNullableFieldValue(
-						selectedObject.creator,
-						developingAttachedDoc.creator
-					),
+					creatorId:
+						selectedObject.creator.id ===
+						developingAttachedDoc.creator.id
+							? undefined
+							: selectedObject.creator.id,
 					inspectorId: getNullableFieldValue(
 						selectedObject.inspector,
 						developingAttachedDoc.inspector

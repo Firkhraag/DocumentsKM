@@ -15,7 +15,9 @@ namespace DocumentsKM.Dtos
         [Required]
         public int TypeId { get; set; }
 
-        public int? CreatorId { get; set; }
+        [Required]
+        public int CreatorId { get; set; }
+
         public int? InspectorId { get; set; }
         public int? NormContrId { get; set; }
 
@@ -29,7 +31,6 @@ namespace DocumentsKM.Dtos
 
         public DocCreateRequest()
         {
-            CreatorId = null;
             InspectorId = null;
             NormContrId = null;
         }

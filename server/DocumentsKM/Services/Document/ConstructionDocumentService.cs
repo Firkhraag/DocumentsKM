@@ -80,6 +80,7 @@ namespace DocumentsKM.Services
             List<Construction> constructions,
             List<StandardConstruction> standardConstructions)
         {
+            const double multiplier = 1.04;
             if (constructions.Count() > 0)
             {
                 var sums = new List<double> {};
@@ -124,7 +125,7 @@ namespace DocumentsKM.Services
                         trCells = secondTr.Descendants<TableCell>().ToList();
 
                     var weight = Math.Ceiling(constructionElements.Where(
-                        v => v.Steel.Strength > 1).Sum(v => v.Profile.Weight * v.Length * 0.001) * 1000) / 1000;
+                        v => v.Steel.Strength > 1).Sum(v => v.Profile.Weight * v.Length)) / 1000;
                     sums[0] += weight;
                     if (weight > 0)
                     {
@@ -141,11 +142,11 @@ namespace DocumentsKM.Services
                         if (k == 10)
                             weight = Math.Ceiling(constructionElements.Where(
                                 v => v.Profile.Type.Id == typeId || v.Profile.Type.Id == 7).Sum(
-                                    v => v.Profile.Weight * v.Length * 0.001) * 1000) / 1000;
+                                    v => v.Profile.Weight * v.Length)) / 1000;
                         else
                             weight = Math.Ceiling(constructionElements.Where(
                                 v => v.Profile.Type.Id == typeId).Sum(
-                                    v => v.Profile.Weight * v.Length * 0.001) * 1000) / 1000;
+                                    v => v.Profile.Weight * v.Length)) / 1000;
                         sums[k] += weight;
                         localSum += weight;
                         if (weight > 0)
@@ -156,11 +157,12 @@ namespace DocumentsKM.Services
                     }
 
                     p = trCells[11].GetFirstChild<Paragraph>();
-                    p.Append(Word.GetTextElement(Math.Round(localSum * 1.01 * 1.03, 3).ToStringWithComma(), 24));
+                    p.Append(Word.GetTextElement(Math.Round(localSum * multiplier, 3).ToStringWithComma(), 24));
                     if (i > 0)
                         t.Append(newTr);
                 }
 
+                var standardConstWeightSum = 0.0;
                 for (int i = 0; i < standardConstructions.Count(); i++)
                 {
                     newTr = clonedThirdTr.CloneNode(true);
@@ -172,6 +174,8 @@ namespace DocumentsKM.Services
                     p.Append(Word.GetTextElement(
                         (Math.Ceiling(standardConstructions[i].Weight * 1000) / 1000).ToStringWithComma(), 24));
                     t.Append(newTr);
+
+                    standardConstWeightSum += standardConstructions[i].Weight;
                 }
 
                 var lastTr = clonedFirstTr.CloneNode(true);
@@ -192,7 +196,7 @@ namespace DocumentsKM.Services
                 }
 
                 p = trCells[11].GetFirstChild<Paragraph>();
-                p.Append(Word.GetTextElement(Math.Round(sums.Skip(1).Sum() * 1.01 * 1.03, 3).ToStringWithComma(), 24));
+                p.Append(Word.GetTextElement(Math.Round(sums.Skip(1).Sum() * multiplier + standardConstWeightSum, 3).ToStringWithComma(), 24));
                 t.Append(lastTr);
             }
         }
