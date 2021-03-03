@@ -17,7 +17,7 @@ namespace DocumentsKM.Services
             Doc doc,
             int markId,
             int docTypeId,
-            int? creatorId,
+            int creatorId,
             int? inspectorId,
             int? normContrId);
         // Изменить документ

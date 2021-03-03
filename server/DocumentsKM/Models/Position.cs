@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
 {
+    // Должность
     public class Position
     {
-        // КодДолжности
         [Key]
         public int Id { get; set; }
 
-        // НазваниеДолжности
+        // Название
         [Required]
         [MaxLength(20)]
         public string Name { get; set; }

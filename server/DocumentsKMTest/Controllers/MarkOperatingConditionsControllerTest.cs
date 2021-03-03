@@ -1,12 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentsKM.Dtos;
-using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,27 +42,6 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            var foundMarkOperatingConditions = TestData.markOperatingConditions.SingleOrDefault(
-                v => v.Mark.Id == markId);
-            var markOperatingConditions = new MarkOperatingConditionsResponse
-            {
-                SafetyCoeff = foundMarkOperatingConditions.SafetyCoeff,
-                EnvAggressiveness = foundMarkOperatingConditions.EnvAggressiveness,
-                Temperature = foundMarkOperatingConditions.Temperature,
-                OperatingArea = foundMarkOperatingConditions.OperatingArea,
-                GasGroup = foundMarkOperatingConditions.GasGroup,
-                ConstructionMaterial = foundMarkOperatingConditions.ConstructionMaterial,
-                PaintworkType = foundMarkOperatingConditions.PaintworkType,
-                HighTensileBoltsType = foundMarkOperatingConditions.HighTensileBoltsType,
-            };
-            var options = new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            JsonSerializer.Deserialize<MarkOperatingConditionsResponse>(
-                responseBody, options).Should().BeEquivalentTo(markOperatingConditions);
         }
 
         [Fact]

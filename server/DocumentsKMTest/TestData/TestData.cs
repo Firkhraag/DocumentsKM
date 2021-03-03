@@ -1083,6 +1083,15 @@ namespace DocumentsKM.Tests
                 Sheet = "S3",
                 Weight = 3.0f,
             },
+            new StandardConstruction
+            {
+                Id = 4,
+                Specification = specifications[0],
+                Name = "N4",
+                Num = 4,
+                Sheet = "S4",
+                Weight = 4.0f,
+            },
         };
 
         public static readonly List<MarkOperatingConditions> markOperatingConditions = new List<MarkOperatingConditions>
@@ -1110,6 +1119,25 @@ namespace DocumentsKM.Tests
                 ConstructionMaterial = constructionMaterials[0],
                 PaintworkType = paintworkTypes[1],
                 HighTensileBoltsType = highTensileBoltsTypes[0],
+            },
+        };
+
+        public static readonly List<EstimateTask> estimateTask = new List<EstimateTask>
+        {
+            new EstimateTask
+            {
+                Mark = marks[0],
+                TaskText = "T1",
+            },
+            new EstimateTask
+            {
+                Mark = marks[1],
+                TaskText = "T2",
+            },
+            new EstimateTask
+            {
+                Mark = marks[2],
+                TaskText = "T3",
             },
         };
 

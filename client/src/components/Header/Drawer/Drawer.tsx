@@ -19,7 +19,6 @@ const Drawer = ({ isShown, hide }: DrawerProps) => {
 
 	return !isShown ? null : (
 		<div className="side-drawer white-bg absolute border-radius shadow p-3 mb-5 bg-white rounded">
-			<h2 className="text-centered bold">{user.name}</h2>
 			<Button
 				variant="secondary"
 				onClick={() => {

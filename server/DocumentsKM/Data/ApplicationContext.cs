@@ -86,6 +86,7 @@ namespace DocumentsKM.Data
         public DbSet<Doc> Docs { get; set; }
         public DbSet<Specification> Specifications { get; set; }
         public DbSet<Construction> Constructions { get; set; }
+        public DbSet<StandardConstructionName> StandardConstructionNames { get; set; }
         public DbSet<StandardConstruction> StandardConstructions { get; set; }
         public DbSet<BoltDiameter> BoltDiameters { get; set; }
         public DbSet<BoltLength> BoltLengths { get; set; }
@@ -94,7 +95,6 @@ namespace DocumentsKM.Data
 
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
         public DbSet<CorrProtVariant> CorrProtVariants { get; set; }
-        public DbSet<MarkDesignation> MarkDesignations { get; set; }
         public DbSet<DocType> DocTypes { get; set; }
         public DbSet<SheetName> SheetNames { get; set; }
 

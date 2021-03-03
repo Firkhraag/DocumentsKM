@@ -30,6 +30,45 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
+        public void GetAllByMarkId_ShouldReturnMarkGeneralDataPoints()
+        {
+            // Arrange
+            var context = GetContext(TestData.markGeneralDataPoints);
+            var repo = new SqlMarkGeneralDataPointRepo(context);
+
+            var markId = _rnd.Next(1, _maxMarkId);
+
+            // Act
+            var markGeneralDataPoints = repo.GetAllByMarkId(markId);
+
+            // Assert
+            Assert.Equal(TestData.markGeneralDataPoints.Where(
+                v => v.Mark.Id == markId).OrderBy(
+                    v => v.Section.Id).ThenBy(
+                        v => v.OrderNum), markGeneralDataPoints);
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void GetAllByMarkId_ShouldReturnEmptyArray_WhenWrongMarkOrSectionId()
+        {
+            // Arrange
+            var context = GetContext(TestData.markGeneralDataPoints);
+            var repo = new SqlMarkGeneralDataPointRepo(context);
+
+            // Act
+            var markGeneralDataPoints = repo.GetAllByMarkId(999);
+
+            // Assert
+            Assert.Empty(markGeneralDataPoints);
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
         public void GetAllByMarkAndSectionId_ShouldReturnMarkGeneralDataPoints()
         {
             // Arrange
@@ -59,15 +98,13 @@ namespace DocumentsKM.Tests
             var repo = new SqlMarkGeneralDataPointRepo(context);
 
             var markId = _rnd.Next(1, _maxMarkId);
-            var wrongMarkId = 999;
             var sectionId = _rnd.Next(1, _maxSectionId);
-            var wrongSectionId = 999;
 
             // Act
             var markGeneralDataPoints1 = repo.GetAllByMarkAndSectionId(
-                wrongMarkId, sectionId);
+                999, sectionId);
             var markGeneralDataPoints2 = repo.GetAllByMarkAndSectionId(
-                markId, wrongSectionId);
+                markId, 999);
 
             // Assert
             Assert.Empty(markGeneralDataPoints1);

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
+    // Согласование марки
     public class MarkApproval
     {
         [Key]
@@ -14,7 +15,7 @@ namespace DocumentsKM.Models
         public virtual Mark Mark { get; set; }
         public int MarkId { get; set; }
 
-        // Исп
+        // Сотрудник
         [Required]
         [ForeignKey("EmployeeId")]
         public virtual Employee Employee { get; set; }

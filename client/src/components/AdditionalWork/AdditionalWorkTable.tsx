@@ -110,22 +110,22 @@ const AdditionalWorkTable = ({
 						return (
 							<tr key={index}>
 								<td>{v.employee.name}</td>
-								<td>{v.valuation}</td>
+								<td>{v.valuation === 0 ? '' : v.valuation}</td>
 								<td>
-									{Math.round(
+									{v.valuation === 0 ? '' : Math.round(
 										v.valuation * valuationCoeff * 1000
 									) / 1000}
 								</td>
-								<td>{v.metalOrder}</td>
+								<td>{v.metalOrder === 0 ? '' : v.metalOrder}</td>
 								<td>
-									{Math.round(
+									{v.metalOrder === 0 ? '' : Math.round(
 										v.metalOrder * orderCoeff * 1000
 									) / 1000}
 								</td>
-								<td>{v.drawingsCompleted}</td>
-								<td>{v.drawingsCheck}</td>
+								<td>{v.drawingsCompleted < 0.0000001 ? '' : v.drawingsCompleted}</td>
+								<td>{v.drawingsCheck < 0.0000001 ? '' : v.drawingsCheck}</td>
 								<td>
-									{Math.round(
+									{v.drawingsCheck < 0.0000001 ? '' : Math.round(
 										v.drawingsCheck * valuationCoeff * 1000
 									) / 1000}
 								</td>

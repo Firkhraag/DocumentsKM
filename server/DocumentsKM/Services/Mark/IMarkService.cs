@@ -1,5 +1,6 @@
 using DocumentsKM.Dtos;
 using DocumentsKM.Models;
+using System;
 using System.Collections.Generic;
 
 namespace DocumentsKM.Services
@@ -21,5 +22,9 @@ namespace DocumentsKM.Services
             int? groupLeaderId);
         // Изменить марку
         void Update(int id, MarkUpdateRequest mark);
+        // Обновить дату выдачи проекта на текущую
+        void UpdateIssueDate(Mark mark);
+        // Обновить дату выдачи проекта
+        void UpdateIssueDate(Mark mark, DateTime date);
     }
 }

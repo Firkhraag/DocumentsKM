@@ -39,6 +39,8 @@ const OtherAttachedDocData = ({
 			  }
 			: otherAttachedDoc
 	)
+
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -84,6 +86,7 @@ const OtherAttachedDocData = ({
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/attached-docs`, {
@@ -97,14 +100,18 @@ const OtherAttachedDocData = ({
 					setErrMsg(
 						'Прилагаемый документ с таким обозначением уже существует'
 					)
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -124,6 +131,7 @@ const OtherAttachedDocData = ({
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(
@@ -136,10 +144,13 @@ const OtherAttachedDocData = ({
 					setErrMsg(
 						'Прилагаемый документ с таким обозначением уже существует'
 					)
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -197,6 +208,7 @@ const OtherAttachedDocData = ({
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{isCreateMode
 						? 'Добавить прилагаемый документ'

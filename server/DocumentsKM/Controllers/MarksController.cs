@@ -61,11 +61,23 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("subnodes/{subnodeId}/new-mark-code")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<string> GetNewMarkCode(int subnodeId)
         {
             var code = _service.GetNewMarkCode(subnodeId);
             return Ok(code);
+        }
+
+        [HttpGet, Route("marks/{markId}/issue-date")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult GetMarkIssueDate(int markId)
+        {
+            var mark = _service.GetById(markId);
+            if (mark != null)
+            {
+                return Ok(new { IssueDate = mark.IssueDate });
+            }
+            return NotFound();
         }
 
         [HttpPost, Route("marks")]

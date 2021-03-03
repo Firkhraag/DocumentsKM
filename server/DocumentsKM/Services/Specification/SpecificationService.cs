@@ -67,15 +67,9 @@ namespace DocumentsKM.Services
 
             if (specification.IsCurrent == true)
             {
-                var specs = _repository.GetAllByMarkId(foundSpecification.Mark.Id);
-                foreach (var spec in specs)
-                {
-                    if (spec.IsCurrent)
-                    {
-                        spec.IsCurrent = false;
-                        _repository.Update(spec);
-                    }
-                }
+                var spec = _repository.GetCurrentByMarkId(foundSpecification.Mark.Id);
+                spec.IsCurrent = false;
+                _repository.Update(spec);
                 foundSpecification.IsCurrent = true;
             }
             if (specification.Note != null)

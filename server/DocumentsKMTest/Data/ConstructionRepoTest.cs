@@ -451,7 +451,8 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(_constructions.Where(
-                v => v.Specification.Id == specificationId), constructions);
+                v => v.Specification.Id == specificationId).OrderBy(
+                    v => v.Type.Id), constructions);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -469,6 +470,27 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Empty(constructions);
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void GetAllByMarkId_ShouldReturnConstructions()
+        {
+            // Arrange
+            var context = GetContext();
+            var repo = new SqlConstructionRepo(context);
+
+            var markId = _rnd.Next(1, 3);
+
+            // Act
+            var constructions = repo.GetAllByMarkId(markId);
+
+            // Assert
+            Assert.Equal(_constructions.Where(
+                v => v.Specification.Mark.Id == markId).OrderBy(
+                    v => v.Type.Id), constructions);
 
             context.Database.EnsureDeleted();
             context.Dispose();

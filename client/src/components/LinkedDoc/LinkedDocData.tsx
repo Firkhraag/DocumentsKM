@@ -46,9 +46,9 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 			: markLinkedDoc
 	)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
-
 	const cachedDocs = useState(new Map<number, LinkedDoc[]>())[0]
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -178,6 +178,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/mark-linked-docs`, {
@@ -188,14 +189,18 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Данный ссылочный документ уже добавлен к марке')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -211,6 +216,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(
@@ -221,10 +227,13 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Данный ссылочный документ уже добавлен к марке')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -357,6 +366,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 								? onCreateButtonClick
 								: onChangeButtonClick
 						}
+						disabled={processIsRunning}
 					>
 						{isCreateMode
 							? 'Добавить ссылочный документ'

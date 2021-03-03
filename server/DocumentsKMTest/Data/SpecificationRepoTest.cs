@@ -96,6 +96,25 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
+        public void GetCurrentByMarkId_ShouldReturnSpecification()
+        {
+            // Arrange
+            var context = GetContext(TestData.specifications);
+            var repo = new SqlSpecificationRepo(context);
+
+            int markId = _rnd.Next(1, _maxMarkId);
+
+            // Act
+            var specification = repo.GetCurrentByMarkId(markId);
+
+            // Assert
+            Assert.Equal(TestData.specifications.SingleOrDefault(
+                v => v.Mark.Id == markId && v.IsCurrent), specification);
+
+            context.Database.EnsureDeleted();
+        }
+
+        [Fact]
         public void Add_ShouldAddSpecification()
         {
             // Arrange

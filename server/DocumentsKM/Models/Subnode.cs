@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
+    // Подузел
     public class Subnode
     {
-        // Подузел
         [Key]
         public int Id { get; set; }
 
@@ -14,12 +14,12 @@ namespace DocumentsKM.Models
         [ForeignKey("NodeId")]
         public virtual Node Node { get; set; }
 
-        // КодПодуз
+        // Код
         [Required]
         [MaxLength(10)]
         public string Code { get; set; }
 
-        // НазвПодузла
+        // Название
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }

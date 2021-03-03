@@ -9,6 +9,8 @@ namespace DocumentsKM.Data
         IEnumerable<Specification> GetAllByMarkId(int markId);
         // Получить выпуск спецификации по id
         Specification GetById(int id, bool withEagerLoading = false);
+        // Получить текущий выпуск спецификации по id марки
+        Specification GetCurrentByMarkId(int markId);
         // Добавить новый выпуск спецификации
         void Add(Specification specification);
         // Изменить выпуск спецификации

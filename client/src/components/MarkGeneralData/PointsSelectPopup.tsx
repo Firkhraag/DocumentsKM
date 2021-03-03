@@ -9,6 +9,7 @@ import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import { useMark } from '../../store/MarkStore'
 import { useUser } from '../../store/UserStore'
+import ErrorMsg from '../ErrorMsg/ErrorMsg'
 
 type IOptionsObject = {
 	sections: GeneralDataSection[]
@@ -43,6 +44,9 @@ const PointsSelectPopup = ({
 
 	const [points, setPoints] = useState<GeneralDataPoint[]>([])
 	const [selectedPoints, setSelectedPoints] = useState<GeneralDataPoint[]>([])
+
+	const [processIsRunning, setProcessIsRunning] = useState(false)
+	const [errMsg, setErrMsg] = useState('')
 
 	const refs = useState([] as React.MutableRefObject<undefined>[])[0]
 
@@ -91,6 +95,7 @@ const PointsSelectPopup = ({
 	}
 
 	const onSaveButtonClick = async () => {
+		setProcessIsRunning(true)
 		try {
 			const addedPointsResponse = await httpClient.patch(
 				`/users/${user.id}/marks/${mark.id}/general-data-sections/${sectionId}/general-data-points`,
@@ -103,7 +108,8 @@ const PointsSelectPopup = ({
 			optionsObject.points = addedPointsResponse.data
 			close()
 		} catch (e) {
-			console.log('Error')
+			setErrMsg('Произошла ошибка')
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -135,11 +141,13 @@ const PointsSelectPopup = ({
 					})}
 				</div>
 			</div>
+			<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 			<div className="flex btns-mrg full-width mrg-top-2">
 				<Button
 					variant="secondary"
 					className="flex-grow"
 					onClick={onSaveButtonClick}
+					disabled={processIsRunning}
 				>
 					ОК
 				</Button>

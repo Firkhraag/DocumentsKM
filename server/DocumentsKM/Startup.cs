@@ -120,11 +120,11 @@ namespace DocumentsKM
                     "personnel_exchange", "personnel_queue", "personnel.exchange"));
 
             // DI for application services
-            injectScopedServices(services);
-            injectScopedRepositories(services);
+            InjectScopedServices(services);
+            InjectScopedRepositories(services);
         }
 
-        private void injectScopedServices(IServiceCollection services)
+        private void InjectScopedServices(IServiceCollection services)
         {
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<INodeService, NodeService>();
@@ -141,6 +141,7 @@ namespace DocumentsKM
             services.AddScoped<IWeldingControlService, WeldingControlService>();
             services.AddScoped<ISpecificationService, SpecificationService>();
             services.AddScoped<IStandardConstructionService, StandardConstructionService>();
+            services.AddScoped<IStandardConstructionNameService, StandardConstructionNameService>();
             services.AddScoped<IConstructionService, ConstructionService>();
             services.AddScoped<IBoltDiameterService, BoltDiameterService>();
             services.AddScoped<IConstructionBoltService, ConstructionBoltService>();
@@ -174,10 +175,17 @@ namespace DocumentsKM
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
             services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
             services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
+
             services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<ISpecificationDocumentService, SpecificationDocumentService>();
+            services.AddScoped<IGeneralDataDocumentService, GeneralDataDocumentService>();
+            services.AddScoped<IConstructionDocumentService, ConstructionDocumentService>();
+            services.AddScoped<IBoltDocumentService, BoltDocumentService>();
+            services.AddScoped<IEstimateTaskDocumentService, EstimateTaskDocumentService>();
+            services.AddScoped<IProjectRegistrationDocumentService, ProjectRegistrationDocumentService>();
         }
 
-        private void injectScopedRepositories(IServiceCollection services)
+        private void InjectScopedRepositories(IServiceCollection services)
         {
             services.AddScoped<IProjectRepo, SqlProjectRepo>();
             services.AddScoped<INodeRepo, SqlNodeRepo>();
@@ -194,6 +202,7 @@ namespace DocumentsKM
             services.AddScoped<IWeldingControlRepo, SqlWeldingControlRepo>();
             services.AddScoped<ISpecificationRepo, SqlSpecificationRepo>();
             services.AddScoped<IStandardConstructionRepo, SqlStandardConstructionRepo>();
+            services.AddScoped<IStandardConstructionNameRepo, SqlStandardConstructionNameRepo>();
             services.AddScoped<IConstructionRepo, SqlConstructionRepo>();
             services.AddScoped<IBoltDiameterRepo, SqlBoltDiameterRepo>();
             services.AddScoped<IBoltLengthRepo, SqlBoltLengthRepo>();

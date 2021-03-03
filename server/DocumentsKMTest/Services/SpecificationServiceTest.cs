@@ -299,6 +299,13 @@ namespace DocumentsKM.Tests
                         _marks.SingleOrDefault(v => v.Id == mark.Id));
 
                 _repository.Setup(mock =>
+                    mock.GetCurrentByMarkId(mark.Id)).Returns(
+                        _specifications.SingleOrDefault(v => v.Mark.Id == mark.Id && v.IsCurrent));
+                _updateRepository.Setup(mock =>
+                    mock.GetCurrentByMarkId(mark.Id)).Returns(
+                        _updateSpecifications.SingleOrDefault(v => v.Mark.Id == mark.Id && v.IsCurrent));
+
+                _repository.Setup(mock =>
                     mock.GetAllByMarkId(mark.Id)).Returns(
                         _specifications.Where(v => v.Mark.Id == mark.Id));
                 _updateRepository.Setup(mock =>

@@ -395,54 +395,49 @@ namespace DocumentsKM.Tests
             context.Dispose();
         }
 
-        // [Fact]
-        // public void GetByUniqueKey_ShouldReturnstandardConstruction()
-        // {
-        //     // Arrange
-        //     var context = GetContext();
-        //     var repo = new SqlStandardConstructionRepo(context);
+        [Fact]
+        public void GetByUniqueKey_ShouldReturnstandardConstruction()
+        {
+            // Arrange
+            var context = GetContext();
+            var repo = new SqlStandardConstructionRepo(context);
 
-        //     var specificationId = _standardConstructions[0].Specification.Id;
-        //     var name = _standardConstructions[0].Name;
-        //     var paintworkCoeff = _standardConstructions[0].PaintworkCoeff;
+            var specificationId = _standardConstructions[0].Specification.Id;
+            var name = _standardConstructions[0].Name;
 
-        //     // Act
-        //     var standardConstruction = repo.GetByUniqueKey(
-        //         specificationId, name, paintworkCoeff);
+            // Act
+            var standardConstruction = repo.GetByUniqueKey(specificationId, name);
 
-        //     // Assert
-        //     Assert.Equal(_standardConstructions.SingleOrDefault(
-        //         v => v.Specification.Id == specificationId &&
-        //             v.Name == name && v.PaintworkCoeff == paintworkCoeff), standardConstruction);
+            // Assert
+            Assert.Equal(_standardConstructions.SingleOrDefault(
+                v => v.Specification.Id == specificationId &&
+                    v.Name == name), standardConstruction);
 
-        //     context.Database.EnsureDeleted();
-        //     context.Dispose();
-        // }
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
 
-        // [Fact]
-        // public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
-        // {
-        //     // Arrange
-        //     var context = GetContext();
-        //     var repo = new SqlStandardConstructionRepo(context);
+        [Fact]
+        public void GetByUniqueKey_ShouldReturnNull_WhenWrongKey()
+        {
+            // Arrange
+            var context = GetContext();
+            var repo = new SqlStandardConstructionRepo(context);
 
-        //     var specificationId = _standardConstructions[0].Specification.Id;
-        //     var name = _standardConstructions[0].Name;
-        //     var paintworkCoeff = _standardConstructions[0].PaintworkCoeff;
+            var specificationId = _standardConstructions[0].Specification.Id;
+            var name = _standardConstructions[0].Name;
 
-        //     // Act
-        //     var additionalWork1 = repo.GetByUniqueKey(999, name, paintworkCoeff);
-        //     var additionalWork2 = repo.GetByUniqueKey(specificationId, "NotFound", paintworkCoeff);
-        //     var additionalWork3 = repo.GetByUniqueKey(specificationId, name, -1);
+            // Act
+            var additionalWork1 = repo.GetByUniqueKey(999, name);
+            var additionalWork2 = repo.GetByUniqueKey(specificationId, "NotFound");
 
-        //     // Assert
-        //     Assert.Null(additionalWork1);
-        //     Assert.Null(additionalWork2);
-        //     Assert.Null(additionalWork3);
+            // Assert
+            Assert.Null(additionalWork1);
+            Assert.Null(additionalWork2);
 
-        //     context.Database.EnsureDeleted();
-        //     context.Dispose();
-        // }
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
 
         [Fact]
         public void Add_ShouldAddstandardConstruction()

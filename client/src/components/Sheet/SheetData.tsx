@@ -52,6 +52,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -106,7 +107,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	const onFormatChange = (event: React.FormEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
-			form: parseInt(event.currentTarget.value),
+			form: parseFloat(event.currentTarget.value),
 		})
 	}
 
@@ -186,17 +187,26 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 			setErrMsg('Пожалуйста, введите формат листа')
 			return false
 		}
+		if (selectedObject.form < 0 || selectedObject.form > 1000000) {
+			setErrMsg('Пожалуйста, введите правильный формат')
+			return false
+		}
+		if (selectedObject.creator == null) {
+			setErrMsg('Пожалуйста, выберите разработчика')
+			return false
+		}
 		return true
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/docs`, {
 					name: selectedObject.name,
 					form: selectedObject.form,
 					typeId: basicSheetDocTypeId,
-					creatorId: selectedObject.creator?.id,
+					creatorId: selectedObject.creator.id,
 					inspectorId: selectedObject.inspector?.id,
 					normContrId: selectedObject.normContr?.id,
 					note: selectedObject.note,
@@ -204,11 +214,15 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				history.push('/sheets')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -220,10 +234,10 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						selectedObject.form === sheet.form
 							? undefined
 							: selectedObject.form,
-					creatorId: getNullableFieldValue(
-						selectedObject.creator,
-						sheet.creator
-					),
+					creatorId:
+						selectedObject.creator.id === sheet.creator.id
+							? undefined
+							: selectedObject.creator.id,
 					inspectorId: getNullableFieldValue(
 						selectedObject.inspector,
 						sheet.inspector
@@ -239,13 +253,17 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(`/docs/${selectedObject.id}`, object)
 				history.push('/sheets')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -445,6 +463,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{isCreateMode
 						? 'Создать лист основного комплекта'

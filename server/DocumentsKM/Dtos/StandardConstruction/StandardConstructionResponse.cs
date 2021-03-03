@@ -6,6 +6,6 @@ namespace DocumentsKM.Dtos
         public string Name { get; set; }
         public int? Num { get; set; }
         public string Sheet { get; set; }
-        public float? Weight { get; set; }
+        public float Weight { get; set; }
     }
 }

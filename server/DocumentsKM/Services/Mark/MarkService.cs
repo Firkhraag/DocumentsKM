@@ -183,7 +183,6 @@ namespace DocumentsKM.Services
                 if (department == null)
                     throw new ArgumentNullException(nameof(department));
                 foundMark.Department = department;
-                // To Do: Check employees
             }
             if (mark.MainBuilderId != null)
             {
@@ -227,7 +226,20 @@ namespace DocumentsKM.Services
             }
             foundMark.EditedDate = DateTime.Now;
             _repository.Update(foundMark);
+        }
 
+        public void UpdateIssueDate(Mark mark)
+        {
+            mark.IssueDate = DateTime.Now;
+            mark.EditedDate = DateTime.Now;
+            _repository.Update(mark);
+        }
+
+        public void UpdateIssueDate(Mark mark, DateTime date)
+        {
+            mark.IssueDate = date;
+            mark.EditedDate = DateTime.Now;
+            _repository.Update(mark);
         }
     }
 }

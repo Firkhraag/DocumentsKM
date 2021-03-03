@@ -153,9 +153,9 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 								<td>
 									{s.createdDate == null
 										? ''
-										: new Date(
-												s.createdDate
-										  ).toLocaleDateString()}
+										: new Date(s.createdDate)
+												.toLocaleDateString()
+												.replace(/\//g, '.')}
 								</td>
 								<td className="spec-note-col-width">
 									{s.note}

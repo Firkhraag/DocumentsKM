@@ -37,10 +37,10 @@ namespace DocumentsKM.Services
             if (foundSpecification == null)
                 throw new ArgumentNullException(nameof(foundSpecification));
 
-            // var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
-            //     specificationId, standardconstruction.Name, standardconstruction.PaintworkCoeff);
-            // if (uniqueConstraintViolationCheck != null)
-            //     throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
+                specificationId, standardConstruction.Name);
+            if (uniqueConstraintViolationCheck != null)
+                throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
             standardConstruction.Specification = foundSpecification;
 
@@ -62,7 +62,14 @@ namespace DocumentsKM.Services
                 throw new ArgumentNullException(nameof(foundStandardConstruction));
 
             if (standardConstruction.Name != null)
+            {
                 foundStandardConstruction.Name = standardConstruction.Name;
+
+                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
+                    foundStandardConstruction.Specification.Id, standardConstruction.Name);
+                if (uniqueConstraintViolationCheck != null)
+                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+            }
             if (standardConstruction.Num != null)
                 foundStandardConstruction.Num = standardConstruction.Num.GetValueOrDefault();
             if (standardConstruction.Sheet != null)

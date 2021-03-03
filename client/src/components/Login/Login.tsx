@@ -15,6 +15,8 @@ const Login = () => {
 		login: '',
 		password: '',
 	})[0]
+
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	const onLoginChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -25,6 +27,7 @@ const Login = () => {
 	}
 
 	const onButtonClick = async () => {
+		setProcessIsRunning(true)
 		try {
 			await authMethods.login(inputValues.login, inputValues.password)
 		} catch (e) {
@@ -32,6 +35,7 @@ const Login = () => {
 				e.message = 'Неверный логин или пароль'
 			}
 			setErrMsg(e.message)
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -65,6 +69,7 @@ const Login = () => {
 						variant="secondary"
 						className="btn-mrg-top full-width"
 						onClick={onButtonClick}
+						disabled={processIsRunning}
 					>
 						Войти
 					</Button>

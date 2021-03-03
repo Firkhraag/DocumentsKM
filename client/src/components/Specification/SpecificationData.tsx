@@ -33,6 +33,8 @@ const SpecificationData = ({
 	const mark = useMark()
 
 	const [selectedObject, setSelectedObject] = useState(specification)
+
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -51,6 +53,7 @@ const SpecificationData = ({
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		try {
 			const object = {
 				note:
@@ -60,6 +63,7 @@ const SpecificationData = ({
 			}
 			if (!Object.values(object).some((x) => x !== undefined)) {
 				setErrMsg('Изменения осутствуют')
+				setProcessIsRunning(false)
 				return
 			}
 			await httpClient.patch(
@@ -69,6 +73,7 @@ const SpecificationData = ({
 			history.push('/specifications')
 		} catch (e) {
 			setErrMsg('Произошла ошибка')
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -121,6 +126,7 @@ const SpecificationData = ({
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
 					onClick={onChangeButtonClick}
+					disabled={processIsRunning}
 				>
 					Сохранить изменения
 				</Button>

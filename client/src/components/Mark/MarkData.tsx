@@ -39,6 +39,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 	const [selectedObject, setSelectedObject] = useState<Mark>(null)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	const cachedMainEmployees = useState(new Map<number, any>())[0]
@@ -277,6 +278,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const response = await httpClient.post('/marks', {
@@ -308,17 +310,20 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Марка с таким кодом уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
 		if (checkIfValid()) {
 			try {
-                const object = {
+				const object = {
 					code:
 						selectedObject.code === mark.code
 							? undefined
@@ -346,6 +351,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(`/marks/${selectedObject.id}`, object)
@@ -354,10 +360,13 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Марка с таким кодом уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -689,6 +698,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 								? onCreateButtonClick
 								: onChangeButtonClick
 						}
+						disabled={processIsRunning}
 					>
 						{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
 					</Button>

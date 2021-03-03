@@ -14,7 +14,7 @@ namespace DocumentsKM.Dtos
         public int? GroupLeaderId { get; set; }
         public int? MainBuilderId { get; set; }
 
-         public MarkUpdateRequest()
+        public MarkUpdateRequest()
         {
             SubnodeId = null;
             Code = null;

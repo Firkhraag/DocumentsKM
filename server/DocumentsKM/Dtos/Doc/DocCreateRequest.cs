@@ -9,19 +9,21 @@ namespace DocumentsKM.Dtos
         public string Name { get; set; }
 
         [Required]
-        [Range(0.0f, 10000.0f, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Form { get; set; }
 
         [Required]
         public int TypeId { get; set; }
 
-        public int? CreatorId { get; set; }
+        [Required]
+        public int CreatorId { get; set; }
+
         public int? InspectorId { get; set; }
         public int? NormContrId { get; set; }
 
-        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
         public int? ReleaseNum { get; set; }
-        [Range(0, 10000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
         public int? NumOfPages { get; set; }
 
         [MaxLength(255)]
@@ -29,7 +31,6 @@ namespace DocumentsKM.Dtos
 
         public DocCreateRequest()
         {
-            CreatorId = null;
             InspectorId = null;
             NormContrId = null;
         }

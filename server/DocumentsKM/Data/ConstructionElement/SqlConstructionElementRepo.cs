@@ -21,6 +21,13 @@ namespace DocumentsKM.Data
                 v => v.Construction.Id == constructionId).ToList();
         }
 
+        public IEnumerable<ConstructionElement> GetAllBySpecificationId(
+            int specificationId)
+        {
+            return _context.ConstructionElements.Where(
+                v => v.Construction.Specification.Id == specificationId).ToList();
+        }
+
         public ConstructionElement GetById(int id)
         {
             return _context.ConstructionElements.SingleOrDefault(v => v.Id == id);

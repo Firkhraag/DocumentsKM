@@ -1,4 +1,5 @@
 using System;
+using DocumentsKM.Dtos;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,11 +13,14 @@ namespace DocumentsKM.Controllers
     public class GeneralDataDocController : ControllerBase
     {
         private readonly IDocumentService _service;
+        private readonly IMarkService _markService;
 
         public GeneralDataDocController(
-            IDocumentService documentService)
+            IDocumentService documentService,
+            IMarkService markService)
         {
             _service = documentService;
+            _markService = markService;
         }
 
         [HttpGet, Route("marks/{markId}/general-data-document")]
@@ -30,6 +34,24 @@ namespace DocumentsKM.Controllers
                     file,
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     "Общие данные.docx");
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet, Route("marks/{markId}/spec-document")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetSpecificationDocument(int markId)
+        {
+            try
+            {
+                var file = _service.GetSpecificationDocument(markId);
+                return File(
+                    file,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "Спецификация металла.docx");
             }
             catch (ArgumentNullException)
             {
@@ -91,17 +113,25 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        [HttpGet, Route("marks/{markId}/specification-document")]
+        [HttpPost, Route("marks/{markId}/project-reg")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetSpecificationDocument(int markId)
+        public IActionResult GetProjectRegistrationDocument(
+            int markId, [FromBody] MarkIssueDateRequest issueDateRequest)
         {
             try
             {
-                var file = _service.GetSpecificationDocument(markId);
+                var mark = _markService.GetById(markId);
+                if (issueDateRequest.IssueDate != null)
+                    _markService.UpdateIssueDate(
+                        mark, issueDateRequest.IssueDate.GetValueOrDefault());
+                else
+                    if (mark.IssueDate == null)
+                        _markService.UpdateIssueDate(mark);
+                var file = _service.GetProjectRegistrationDocument(markId);
                 return File(
                     file,
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    "Спецификация металла.docx");
+                    "Лист регистрации проекта.docx");
             }
             catch (ArgumentNullException)
             {
