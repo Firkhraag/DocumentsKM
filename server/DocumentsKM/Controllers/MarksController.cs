@@ -75,7 +75,7 @@ namespace DocumentsKM.Controllers
             var mark = _service.GetById(markId);
             if (mark != null)
             {
-                return Ok(new { IssueDate = mark.IssuedDate });
+                return Ok(new { IssueDate = mark.IssueDate });
             }
             return NotFound();
         }

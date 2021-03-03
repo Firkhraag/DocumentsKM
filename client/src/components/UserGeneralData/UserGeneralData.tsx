@@ -30,6 +30,7 @@ const UserGeneralData = () => {
 		sections: [] as GeneralDataSection[],
 		points: [] as GeneralDataPoint[],
 	})
+	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
 
 	let createBtnDisabled = false
 	if (
@@ -41,9 +42,8 @@ const UserGeneralData = () => {
 		createBtnDisabled = true
 	}
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
-
-	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -154,6 +154,7 @@ const UserGeneralData = () => {
 	}
 
 	const onDeleteClick = async (row: number, id: number) => {
+		setProcessIsRunning(true)
 		try {
 			await httpClient.delete(
 				`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${id}`
@@ -168,9 +169,9 @@ const UserGeneralData = () => {
 			var arr = [...optionsObject.points]
 			arr.splice(row, 1)
 			setOptionsObject({
-                ...optionsObject,
-                points: arr,
-            })
+				...optionsObject,
+				points: arr,
+			})
 
 			if (selectedObject.point != null && selectedObject.point.id == id) {
 				setSelectedObject({
@@ -182,6 +183,7 @@ const UserGeneralData = () => {
 		} catch (e) {
 			setErrMsg('Произошла ошибка')
 		}
+		setProcessIsRunning(false)
 	}
 
 	const checkIfValid = () => {
@@ -197,6 +199,7 @@ const UserGeneralData = () => {
 	}
 
 	const onUpdatePointButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.patch(
@@ -247,14 +250,16 @@ const UserGeneralData = () => {
 			} catch (e) {
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
 			}
 		}
+		setProcessIsRunning(false)
 	}
 
 	const onCreatePointButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const response = await httpClient.post(
@@ -271,11 +276,12 @@ const UserGeneralData = () => {
 			} catch (e) {
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
 			}
 		}
+		setProcessIsRunning(false)
 	}
 
 	return (
@@ -333,7 +339,11 @@ const UserGeneralData = () => {
 										onClick={() => onSectionSelect(s.id)}
 										key={s.id}
 									>
-										<p className="no-bot-mrg">{(index + 1).toString() + '. ' + s.name}</p>
+										<p className="no-bot-mrg">
+											{(index + 1).toString() +
+												'. ' +
+												s.name}
+										</p>
 									</div>
 								)
 							})}
@@ -448,44 +458,52 @@ const UserGeneralData = () => {
 						className="auto-width flex-grow"
 					/>
 				</Form.Group>
-				<Form.Group className="flex-cent-v">
-					<Form.Label
-						className="bold no-bot-mrg"
-						htmlFor="orderNum"
-						style={{ marginRight: '2.9em' }}
-					>
-						Номер пункта
-					</Form.Label>
-					<Select
-						inputId="orderNum"
-						maxMenuHeight={250}
-						isSearchable={true}
-						placeholder=""
-						noOptionsMessage={() => 'Номер не найден'}
-						className="num-field-width"
-						isDisabled={selectedObject.point == null ? true : false}
-						onChange={(selectedOption) =>
-							onPointNumChange((selectedOption as any)?.value)
-						}
-						value={
-							selectedObject.point == null
-								? null
-								: {
-										value: selectedObject.point.id,
-										label: selectedObject.point.orderNum,
-								  }
-						}
-						options={[
-							...Array(optionsObject.points.length).keys(),
-						].map((v) => {
-							return {
-								value: v + 1,
-								label: v + 1,
+				<div className="space-between">
+					<Form.Group className="flex-cent-v">
+						<Form.Label
+							className="bold no-bot-mrg"
+							htmlFor="orderNum"
+							style={{ marginRight: '2.9em' }}
+						>
+							Номер пункта
+						</Form.Label>
+						<Select
+							inputId="orderNum"
+							maxMenuHeight={250}
+							isSearchable={true}
+							placeholder=""
+							noOptionsMessage={() => 'Номер не найден'}
+							className="num-field-width"
+							isDisabled={
+								selectedObject.point == null ? true : false
 							}
-						})}
-						styles={reactSelectStyle}
-					/>
-				</Form.Group>
+							onChange={(selectedOption) =>
+								onPointNumChange((selectedOption as any)?.value)
+							}
+							value={
+								selectedObject.point == null
+									? null
+									: {
+											value: selectedObject.point.id,
+											label:
+												selectedObject.point.orderNum,
+									  }
+							}
+							options={[
+								...Array(optionsObject.points.length).keys(),
+							].map((v) => {
+								return {
+									value: v + 1,
+									label: v + 1,
+								}
+							})}
+							styles={reactSelectStyle}
+						/>
+					</Form.Group>
+					<div style={{ marginTop: '1rem' }}>
+						<span className="bold">Символы:</span> °C –
+					</div>
+				</div>
 				<Form.Group className="no-bot-mrg mrg-top-2">
 					<Form.Label className="bold" htmlFor="text">
 						Содержание пункта
@@ -505,7 +523,11 @@ const UserGeneralData = () => {
 						variant="secondary"
 						className="flex-grow"
 						onClick={onUpdatePointButtonClick}
-						disabled={selectedObject.point == null ? true : false}
+						disabled={
+							selectedObject.point == null || processIsRunning
+								? true
+								: false
+						}
 					>
 						Сохранить изменения
 					</Button>
@@ -513,7 +535,9 @@ const UserGeneralData = () => {
 						variant="secondary"
 						className="flex-grow mrg-left"
 						onClick={onCreatePointButtonClick}
-						disabled={createBtnDisabled ? true : false}
+						disabled={
+							createBtnDisabled || processIsRunning ? true : false
+						}
 					>
 						Добавить новый пункт
 					</Button>

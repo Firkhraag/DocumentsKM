@@ -63,9 +63,10 @@ const ConstructionData = ({
 		subtypes: [] as ConstructionSubtype[],
 		weldingControl: [] as WeldingControl[],
 	})
-
-	const [errMsg, setErrMsg] = useState('')
 	const cachedSubtypes = useState(new Map<number, ConstructionSubtype[]>())[0]
+
+	const [processIsRunning, setProcessIsRunning] = useState(false)
+	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -283,6 +284,7 @@ const ConstructionData = ({
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(
@@ -310,14 +312,18 @@ const ConstructionData = ({
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Вид конструкции уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -375,6 +381,7 @@ const ConstructionData = ({
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(
@@ -385,10 +392,13 @@ const ConstructionData = ({
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Вид конструкции уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -649,6 +659,7 @@ const ConstructionData = ({
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{isCreateMode
 						? 'Добавить вид конструкции'

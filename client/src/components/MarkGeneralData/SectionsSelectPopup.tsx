@@ -8,6 +8,7 @@ import httpClient from '../../axios'
 import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import { useMark } from '../../store/MarkStore'
+import ErrorMsg from '../ErrorMsg/ErrorMsg'
 
 type IOptionsObject = {
 	sections: GeneralDataSection[]
@@ -43,6 +44,9 @@ const SectionsSelectPopup = ({
 	const [selectedSections, setSelectedSections] = useState<
 		GeneralDataSection[]
 	>([])
+
+	const [processIsRunning, setProcessIsRunning] = useState(false)
+	const [errMsg, setErrMsg] = useState('')
 
 	const refs = useState([] as React.MutableRefObject<undefined>[])[0]
 
@@ -91,6 +95,7 @@ const SectionsSelectPopup = ({
 	}
 
 	const onSaveButtonClick = async () => {
+		setProcessIsRunning(true)
 		try {
 			await httpClient.patch(
 				`/marks/${mark.id}/general-data-points`,
@@ -108,7 +113,8 @@ const SectionsSelectPopup = ({
 			})
 			close()
 		} catch (e) {
-			console.log('Error')
+			setErrMsg('Произошла ошибка')
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -140,11 +146,13 @@ const SectionsSelectPopup = ({
 					})}
 				</div>
 			</div>
+			<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 			<div className="flex btns-mrg full-width mrg-top-2">
 				<Button
 					variant="secondary"
 					className="flex-grow"
 					onClick={onSaveButtonClick}
+					disabled={processIsRunning}
 				>
 					ОК
 				</Button>

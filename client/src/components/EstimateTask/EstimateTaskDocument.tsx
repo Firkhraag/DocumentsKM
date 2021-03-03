@@ -27,14 +27,17 @@ const EstimateTaskDocument = () => {
 	] = useState<EstimateTask>(null)
 
 	const [selectedObject, setSelectedObject] = useState<EstimateTask>(null)
-    const [selectedDepartment, setSelectedDepartment] = useState<Department>(null)
+	const [selectedDepartment, setSelectedDepartment] = useState<Department>(
+		null
+	)
 
 	const [optionsObject, setOptionsObject] = useState({
 		departments: [] as Department[],
 		employees: [] as Employee[],
 	})
-
 	const cachedEmployees = useState(new Map<number, Employee[]>())[0]
+
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -57,7 +60,9 @@ const EstimateTaskDocument = () => {
 						`/marks/${mark.id}/estimate-task`
 					)
 					setSelectedObject(estimateTaskResponse.data)
-                    setSelectedDepartment(estimateTaskResponse.data.approvalEmployee?.department)
+					setSelectedDepartment(
+						estimateTaskResponse.data.approvalEmployee?.department
+					)
 					setDefaultSelectedObject(estimateTaskResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data')
@@ -90,10 +95,10 @@ const EstimateTaskDocument = () => {
 				employees: [],
 			})
 			setSelectedDepartment(null)
-            setSelectedObject({
-                ...selectedObject,
-                approvalEmployee: null,
-            })
+			setSelectedObject({
+				...selectedObject,
+				approvalEmployee: null,
+			})
 			return
 		}
 		const v = getFromOptions(
@@ -107,11 +112,11 @@ const EstimateTaskDocument = () => {
 					...optionsObject,
 					employees: cachedEmployees.get(v.id),
 				})
-                setSelectedDepartment(v)
-                setSelectedObject({
-                    ...selectedObject,
-                    approvalEmployee: null,
-                })
+				setSelectedDepartment(v)
+				setSelectedObject({
+					...selectedObject,
+					approvalEmployee: null,
+				})
 			} else {
 				try {
 					const employeesResponse = await httpClient.get(
@@ -123,10 +128,10 @@ const EstimateTaskDocument = () => {
 						employees: employeesResponse.data,
 					})
 					setSelectedDepartment(v)
-                    setSelectedObject({
-                        ...selectedObject,
-                        approvalEmployee: null,
-                    })
+					setSelectedObject({
+						...selectedObject,
+						approvalEmployee: null,
+					})
 				} catch (e) {
 					setErrMsg('Произошла ошибка')
 				}
@@ -137,9 +142,9 @@ const EstimateTaskDocument = () => {
 	const onEmployeeSelect = (id: number) => {
 		if (id == null) {
 			setSelectedObject({
-                ...selectedObject,
-                approvalEmployee: null,
-            })
+				...selectedObject,
+				approvalEmployee: null,
+			})
 			return
 		}
 		const v = getFromOptions(
@@ -149,9 +154,9 @@ const EstimateTaskDocument = () => {
 		)
 		if (v != null) {
 			setSelectedObject({
-                ...selectedObject,
-                approvalEmployee: v,
-            })
+				...selectedObject,
+				approvalEmployee: v,
+			})
 		}
 	}
 
@@ -164,6 +169,7 @@ const EstimateTaskDocument = () => {
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -184,20 +190,25 @@ const EstimateTaskDocument = () => {
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(
 					`/marks/${mark.id}/estimate-task`,
 					object
 				)
-                history.push('/')
+				history.push('/')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onDownloadButtonClick = async () => {
+		setProcessIsRunning(true)
 		try {
 			const response = await httpClient.get(
 				`/marks/${mark.id}/estimate-task-document`,
@@ -209,22 +220,26 @@ const EstimateTaskDocument = () => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', `${makeMarkName(
-                mark.subnode.node.project.baseSeries,
-                mark.subnode.node.code,
-                mark.subnode.code,
-                mark.code
-          )}_ЗдСМ.docx`)
+			link.setAttribute(
+				'download',
+				`${makeMarkName(
+					mark.subnode.node.project.baseSeries,
+					mark.subnode.node.code,
+					mark.subnode.code,
+					mark.code
+				)}_ЗдСМ.docx`
+			)
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
-            setErrMsg('')
+			history.push('/')
 		} catch (e) {
-            if (e.response != null && e.response.status === 404) {
-                setErrMsg('Пожалуйста, заполните условия эскплуатации у марки')
-                return
-            }
-			setErrMsg('Произошла ошибка')
+			if (e.response != null && e.response.status === 404) {
+				setErrMsg('Пожалуйста, заполните условия эскплуатации у марки')
+			} else {
+				setErrMsg('Произошла ошибка')
+			}
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -313,8 +328,11 @@ const EstimateTaskDocument = () => {
 							selectedObject.approvalEmployee == null
 								? null
 								: {
-										value: selectedObject.approvalEmployee.id,
-										label: selectedObject.approvalEmployee.name,
+										value:
+											selectedObject.approvalEmployee.id,
+										label:
+											selectedObject.approvalEmployee
+												.name,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
@@ -331,6 +349,7 @@ const EstimateTaskDocument = () => {
 					variant="secondary"
 					className="full-width btn-mrg-top-2"
 					onClick={onChangeButtonClick}
+					disabled={processIsRunning}
 				>
 					Сохранить изменения
 				</Button>
@@ -338,6 +357,7 @@ const EstimateTaskDocument = () => {
 					variant="secondary"
 					className="full-width btn-mrg-top-2"
 					onClick={onDownloadButtonClick}
+					disabled={processIsRunning}
 				>
 					Скачать документ
 				</Button>

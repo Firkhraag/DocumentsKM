@@ -42,6 +42,7 @@ const OperatingConditions = () => {
 		highTensileBoltsTypes: [] as HighTensileBoltsType[],
 	})
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 	const [isCreateMode, setCreateMode] = useState(false)
 
@@ -270,6 +271,7 @@ const OperatingConditions = () => {
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(
@@ -291,11 +293,15 @@ const OperatingConditions = () => {
 				history.push('/')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -342,6 +348,7 @@ const OperatingConditions = () => {
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(
@@ -351,7 +358,10 @@ const OperatingConditions = () => {
 				history.push('/')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -668,6 +678,7 @@ const OperatingConditions = () => {
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{'Сохранить изменения'}
 				</Button>

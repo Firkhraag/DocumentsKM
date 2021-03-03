@@ -7,13 +7,11 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
-import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import ConstructionBolt from '../../model/ConstructionBolt'
 import BoltDiameter from '../../model/BoltDiameter'
 import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
-import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
 
 type ConstructionBoltDataProps = {
@@ -45,6 +43,8 @@ const ConstructionBoltData = ({
 			: constructionBolt
 	)
 	const [optionsObject, setOptionsObject] = useState([] as BoltDiameter[])
+
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -132,6 +132,7 @@ const ConstructionBoltData = ({
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(
@@ -150,14 +151,18 @@ const ConstructionBoltData = ({
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Болт уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -185,6 +190,7 @@ const ConstructionBoltData = ({
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(
@@ -197,10 +203,13 @@ const ConstructionBoltData = ({
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Болт уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -347,6 +356,7 @@ const ConstructionBoltData = ({
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{isCreateMode
 						? 'Добавить высокопрочный болт'

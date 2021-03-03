@@ -230,14 +230,14 @@ namespace DocumentsKM.Services
 
         public void UpdateIssueDate(Mark mark)
         {
-            mark.IssuedDate = DateTime.Now;
+            mark.IssueDate = DateTime.Now;
             mark.EditedDate = DateTime.Now;
             _repository.Update(mark);
         }
 
         public void UpdateIssueDate(Mark mark, DateTime date)
         {
-            mark.IssuedDate = date;
+            mark.IssueDate = date;
             mark.EditedDate = DateTime.Now;
             _repository.Update(mark);
         }

@@ -52,6 +52,7 @@ const DevelopingAttachedDocData = ({
 	)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -219,6 +220,7 @@ const DevelopingAttachedDocData = ({
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/docs`, {
@@ -234,11 +236,13 @@ const DevelopingAttachedDocData = ({
 				history.push('/developing-attached-docs')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -279,12 +283,14 @@ const DevelopingAttachedDocData = ({
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(`/docs/${selectedObject.id}`, object)
 				history.push('/developing-attached-docs')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
 		}
 	}
@@ -526,6 +532,7 @@ const DevelopingAttachedDocData = ({
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{isCreateMode
 						? 'Создать разрабатываемый прилагаемый документ'

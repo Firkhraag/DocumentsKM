@@ -38,8 +38,11 @@ const StandardConstructionData = ({
 			  }
 			: standardConstruction
 	)
-    const [nameOptions, setNameOptions] = useState([] as StandardConstructionName[])
+	const [nameOptions, setNameOptions] = useState(
+		[] as StandardConstructionName[]
+	)
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -48,7 +51,7 @@ const StandardConstructionData = ({
 				history.push('/specifications')
 				return
 			}
-            const fetchData = async () => {
+			const fetchData = async () => {
 				try {
 					const namesResponse = await httpClient.get(
 						`/standard-construction-names`
@@ -62,14 +65,14 @@ const StandardConstructionData = ({
 		}
 	}, [mark])
 
-	const onNameChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+	const onNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			name: event.currentTarget.value,
 		})
 	}
 
-    const onNameSelect = async (id: number) => {
+	const onNameSelect = async (id: number) => {
 		let v = null
 		for (let el of nameOptions) {
 			if (el.id === id) {
@@ -111,19 +114,19 @@ const StandardConstructionData = ({
 			setErrMsg('Пожалуйста, введите наименование типовой конструкции')
 			return false
 		}
-        if (isNaN(selectedObject.num)) {
+		if (isNaN(selectedObject.num)) {
 			setErrMsg('Пожалуйста, введите количество элементов')
 			return false
 		}
-        if (isNaN(selectedObject.weight)) {
+		if (isNaN(selectedObject.weight)) {
 			setErrMsg('Пожалуйста, введите общий вес типовой конструкции')
 			return false
 		}
-        if (selectedObject.num < 0 || selectedObject.num > 1000000) {
+		if (selectedObject.num < 0 || selectedObject.num > 1000000) {
 			setErrMsg('Пожалуйста, введите правильное количество элементов')
 			return false
 		}
-        if (selectedObject.weight < 0 || selectedObject.weight > 1000000) {
+		if (selectedObject.weight < 0 || selectedObject.weight > 1000000) {
 			setErrMsg('Пожалуйста, введите правильный общий вес')
 			return false
 		}
@@ -131,6 +134,7 @@ const StandardConstructionData = ({
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(
@@ -146,14 +150,18 @@ const StandardConstructionData = ({
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Типовая конструкция уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -176,6 +184,7 @@ const StandardConstructionData = ({
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(
@@ -186,10 +195,13 @@ const StandardConstructionData = ({
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Типовая конструкция уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -210,12 +222,12 @@ const StandardConstructionData = ({
 						style={{ resize: 'none' }}
 						placeholder="Введите наименование"
 						autoComplete="off"
-						defaultValue={selectedObject.name}
-						onBlur={onNameChange}
+						value={selectedObject.name}
+						onChange={onNameChange}
 					/>
 				</Form.Group>
 
-                <Select
+				<Select
 					maxMenuHeight={250}
 					isClearable={true}
 					isSearchable={true}
@@ -305,6 +317,7 @@ const StandardConstructionData = ({
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{isCreateMode
 						? 'Добавить типовую конструкцию'

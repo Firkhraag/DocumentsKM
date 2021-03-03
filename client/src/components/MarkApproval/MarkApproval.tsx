@@ -18,7 +18,7 @@ const MarkApproval = () => {
 	const mark = useMark()
 	const history = useHistory()
 
-    const [defaultEmployeeIds, setDefaultEmployeeIds] = useState<number[]>([])
+	const [defaultEmployeeIds, setDefaultEmployeeIds] = useState<number[]>([])
 	const [selectedObject, setSelectedObject] = useState({
 		departments: [] as Department[],
 		employees: [] as Employee[],
@@ -28,7 +28,8 @@ const MarkApproval = () => {
 		employees: [[], [], [], [], [], [], []] as Employee[][],
 	})
 
-    const [errMsg, setErrMsg] = useState('')
+	const [processIsRunning, setProcessIsRunning] = useState(false)
+	const [errMsg, setErrMsg] = useState('')
 
 	const cachedEmployees = useState(new Map<number, Employee[]>())[0]
 	const employeesExcludedFromOptions = useState([] as number[])[0]
@@ -45,8 +46,8 @@ const MarkApproval = () => {
 					)
 					const markApprovals = markApprovalsResponse.data as Employee[]
 					for (let e of markApprovals) {
-                        employeesExcludedFromOptions.push(e.id)
-                        defaultEmployeeIds.push(e.id)
+						employeesExcludedFromOptions.push(e.id)
+						defaultEmployeeIds.push(e.id)
 					}
 					setSelectedObject({
 						departments: markApprovals.map((e) => e.department),
@@ -131,8 +132,7 @@ const MarkApproval = () => {
 						`/departments/${number}/mark-approval-employees`
 					)
 					cachedEmployees.set(v.id, employeesResponse.data)
-					optionsObject.employees[rowNumber] =
-						employeesResponse.data
+					optionsObject.employees[rowNumber] = employeesResponse.data
 					selectedObject.departments[rowNumber] = v
 					setSelectedObject({
 						...selectedObject,
@@ -182,6 +182,7 @@ const MarkApproval = () => {
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		try {
 			const employeeIdsToSend = [] as number[]
 			for (let e of selectedObject.employees) {
@@ -189,12 +190,17 @@ const MarkApproval = () => {
 					employeeIdsToSend.push(e.id)
 				}
 			}
-            const idsSet = [...new Set([...defaultEmployeeIds, ...employeeIdsToSend])]
-            if (idsSet.length == defaultEmployeeIds.length &&
-                idsSet.length == employeeIdsToSend.length) {
-                setErrMsg('Изменения осутствуют')
-                return
-            }
+			const idsSet = [
+				...new Set([...defaultEmployeeIds, ...employeeIdsToSend]),
+			]
+			if (
+				idsSet.length == defaultEmployeeIds.length &&
+				idsSet.length == employeeIdsToSend.length
+			) {
+				setErrMsg('Изменения осутствуют')
+				setProcessIsRunning(false)
+				return
+			}
 			await httpClient.patch(
 				`/marks/${mark.id}/approvals`,
 				employeeIdsToSend
@@ -202,6 +208,7 @@ const MarkApproval = () => {
 			history.push('/')
 		} catch (e) {
 			setErrMsg('Произошла ошибка')
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -341,11 +348,12 @@ const MarkApproval = () => {
 						)
 					}
 				)}
-                <ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 				<Button
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
 					onClick={onChangeButtonClick}
+					disabled={processIsRunning}
 				>
 					Сохранить изменения
 				</Button>

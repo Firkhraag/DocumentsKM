@@ -14,4 +14,5 @@ namespace DocumentsKM.Services
     public interface IBoltDocumentService : IGeneralDocumentService {}
     public interface IEstimateTaskDocumentService : IGeneralDocumentService {}
     public interface IProjectRegistrationDocumentService : IGeneralDocumentService {}
+    public interface ISetDocumentService : IGeneralDocumentService {}
 }

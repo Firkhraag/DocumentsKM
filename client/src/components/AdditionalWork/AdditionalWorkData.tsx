@@ -40,6 +40,7 @@ const AdditionalWorkData = ({
 	)
 	const [employees, setEmployees] = useState([] as Employee[])
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -105,11 +106,17 @@ const AdditionalWorkData = ({
 			setErrMsg('Пожалуйста, введите заказ металла')
 			return false
 		}
-        if (selectedObject.valuation < 0 || selectedObject.valuation > 1000000) {
+		if (
+			selectedObject.valuation < 0 ||
+			selectedObject.valuation > 1000000
+		) {
 			setErrMsg('Пожалуйста, введите правильный расчет')
 			return false
 		}
-        if (selectedObject.metalOrder < 0 || selectedObject.metalOrder > 1000000) {
+		if (
+			selectedObject.metalOrder < 0 ||
+			selectedObject.metalOrder > 1000000
+		) {
 			setErrMsg('Пожалуйста, введите правильный заказ металла')
 			return false
 		}
@@ -117,25 +124,30 @@ const AdditionalWorkData = ({
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/additional-work`, {
 					employeeId: selectedObject.employee.id,
 					valuation: selectedObject.valuation,
-					order: selectedObject.metalOrder,
+					metalOrder: selectedObject.metalOrder,
 				})
 				history.push('/additional-work')
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Исполнитель уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -148,27 +160,31 @@ const AdditionalWorkData = ({
 						selectedObject.valuation === additionalWork.valuation
 							? undefined
 							: selectedObject.valuation,
-					order:
+					metalOrder:
 						selectedObject.metalOrder === additionalWork.metalOrder
 							? undefined
 							: selectedObject.metalOrder,
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(
-					`/marks/${mark.id}/additional-work/${selectedObject.id}`,
+					`/additional-work/${selectedObject.id}`,
 					object
 				)
 				history.push('/additional-work')
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Исполнитель уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -269,6 +285,7 @@ const AdditionalWorkData = ({
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{isCreateMode
 						? 'Добавить исполнителя'

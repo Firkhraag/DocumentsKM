@@ -125,7 +125,7 @@ namespace DocumentsKM.Controllers
                     _markService.UpdateIssueDate(
                         mark, issueDateRequest.IssueDate.GetValueOrDefault());
                 else
-                    if (mark.IssuedDate == null)
+                    if (mark.IssueDate == null)
                         _markService.UpdateIssueDate(mark);
                 var file = _service.GetProjectRegistrationDocument(markId);
                 return File(

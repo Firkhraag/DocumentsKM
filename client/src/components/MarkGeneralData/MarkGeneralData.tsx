@@ -1,5 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -21,6 +22,7 @@ import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 import { makeMarkName } from '../../util/make-name'
 
 const MarkGeneralData = () => {
+	const history = useHistory()
 	const mark = useMark()
 	const setPopup = useSetPopup()
 
@@ -33,12 +35,12 @@ const MarkGeneralData = () => {
 		sections: [] as GeneralDataSection[],
 		points: [] as GeneralDataPoint[],
 	})
+	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
 
 	const [isSectionsSelectionShown, setSectionsSelectionShown] = useState(
 		false
 	)
 	const [isPointsSelectionShown, setPointsSelectionShown] = useState(false)
-	const cachedPoints = useState(new Map<number, GeneralDataPoint[]>())[0]
 
 	let createBtnDisabled = false
 	if (
@@ -50,6 +52,7 @@ const MarkGeneralData = () => {
 		createBtnDisabled = true
 	}
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -163,6 +166,7 @@ const MarkGeneralData = () => {
 	}
 
 	const onDeleteClick = async (row: number, id: number) => {
+		setProcessIsRunning(true)
 		try {
 			await httpClient.delete(
 				`/marks/${mark.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${id}`
@@ -191,6 +195,7 @@ const MarkGeneralData = () => {
 		} catch (e) {
 			setErrMsg('Произошла ошибка')
 		}
+		setProcessIsRunning(false)
 	}
 
 	const checkIfValid = () => {
@@ -206,6 +211,7 @@ const MarkGeneralData = () => {
 	}
 
 	const onUpdatePointButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.patch(
@@ -257,14 +263,16 @@ const MarkGeneralData = () => {
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
 			}
 		}
+		setProcessIsRunning(false)
 	}
 
 	const onCreatePointButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const response = await httpClient.post(
@@ -281,14 +289,16 @@ const MarkGeneralData = () => {
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
-					return
+				} else {
+					setErrMsg('Произошла ошибка')
 				}
-				setErrMsg('Произошла ошибка')
 			}
 		}
+		setProcessIsRunning(false)
 	}
 
 	const onDownloadButtonClick = async () => {
+		setProcessIsRunning(true)
 		try {
 			const response = await httpClient.get(
 				`/marks/${mark.id}/general-data-document`,
@@ -299,22 +309,26 @@ const MarkGeneralData = () => {
 			const url = window.URL.createObjectURL(new Blob([response.data]))
 			const link = document.createElement('a')
 			link.href = url
-			link.setAttribute('download', `${makeMarkName(
-                mark.subnode.node.project.baseSeries,
-                mark.subnode.node.code,
-                mark.subnode.code,
-                mark.code
-          )}_ОД.docx`)
+			link.setAttribute(
+				'download',
+				`${makeMarkName(
+					mark.subnode.node.project.baseSeries,
+					mark.subnode.node.code,
+					mark.subnode.code,
+					mark.code
+				)}_ОД.docx`
+			)
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
-            setErrMsg('')
+			history.push('/')
 		} catch (e) {
-            if (e.response != null && e.response.status === 404) {
-                setErrMsg('Пожалуйста, заполните условия эскплуатации у марки')
-                return
-            }
-			setErrMsg('Произошла ошибка')
+			if (e.response != null && e.response.status === 404) {
+				setErrMsg('Пожалуйста, заполните условия эскплуатации у марки')
+			} else {
+				setErrMsg('Произошла ошибка')
+			}
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -501,14 +515,6 @@ const MarkGeneralData = () => {
 						</div>
 					</div>
 
-					{/* <Button
-						variant="secondary"
-						className="btn-mrg-top-2 full-width"
-                        onClick={onCreatePointButtonClick}
-                        disabled={selectedObject.section == null ? true : false}
-					>
-						Просмотр
-					</Button> */}
 					<Button
 						variant="secondary"
 						className="btn-mrg-top-2 full-width"
@@ -536,44 +542,52 @@ const MarkGeneralData = () => {
 						readOnly={true}
 					/>
 				</Form.Group>
-				<Form.Group className="flex-cent-v">
-					<Form.Label
-						className="bold no-bot-mrg"
-						htmlFor="orderNum"
-						style={{ marginRight: '2.9em' }}
-					>
-						Номер пункта
-					</Form.Label>
-					<Select
-						inputId="orderNum"
-						maxMenuHeight={250}
-						isSearchable={true}
-						placeholder=""
-						noOptionsMessage={() => 'Номер не найден'}
-						className="num-field-width"
-						isDisabled={selectedObject.point == null ? true : false}
-						onChange={(selectedOption) =>
-							onPointNumChange((selectedOption as any)?.value)
-						}
-						value={
-							selectedObject.point == null
-								? null
-								: {
-										value: selectedObject.point.id,
-										label: selectedObject.point.orderNum,
-								  }
-						}
-						options={[
-							...Array(optionsObject.points.length).keys(),
-						].map((v) => {
-							return {
-								value: v + 1,
-								label: v + 1,
+				<div className="space-between">
+					<Form.Group className="flex-cent-v">
+						<Form.Label
+							className="bold no-bot-mrg"
+							htmlFor="orderNum"
+							style={{ marginRight: '2.9em' }}
+						>
+							Номер пункта
+						</Form.Label>
+						<Select
+							inputId="orderNum"
+							maxMenuHeight={250}
+							isSearchable={true}
+							placeholder=""
+							noOptionsMessage={() => 'Номер не найден'}
+							className="num-field-width"
+							isDisabled={
+								selectedObject.point == null ? true : false
 							}
-						})}
-						styles={reactSelectStyle}
-					/>
-				</Form.Group>
+							onChange={(selectedOption) =>
+								onPointNumChange((selectedOption as any)?.value)
+							}
+							value={
+								selectedObject.point == null
+									? null
+									: {
+											value: selectedObject.point.id,
+											label:
+												selectedObject.point.orderNum,
+									  }
+							}
+							options={[
+								...Array(optionsObject.points.length).keys(),
+							].map((v) => {
+								return {
+									value: v + 1,
+									label: v + 1,
+								}
+							})}
+							styles={reactSelectStyle}
+						/>
+					</Form.Group>
+					<div style={{ marginTop: '1rem' }}>
+						<span className="bold">Символы:</span> °C –
+					</div>
+				</div>
 				<Form.Group className="no-bot-mrg mrg-top-2">
 					<Form.Label className="bold" htmlFor="text">
 						Содержание пункта
@@ -593,7 +607,11 @@ const MarkGeneralData = () => {
 						variant="secondary"
 						className="flex-grow"
 						onClick={onUpdatePointButtonClick}
-						disabled={selectedObject.point == null ? true : false}
+						disabled={
+							selectedObject.point == null || processIsRunning
+								? true
+								: false
+						}
 					>
 						Сохранить изменения
 					</Button>
@@ -601,16 +619,18 @@ const MarkGeneralData = () => {
 						variant="secondary"
 						className="flex-grow mrg-left"
 						onClick={onCreatePointButtonClick}
-						disabled={createBtnDisabled ? true : false}
+						disabled={
+							createBtnDisabled || processIsRunning ? true : false
+						}
 					>
 						Добавить новый пункт
 					</Button>
 				</div>
-
 				<Button
 					variant="secondary"
 					className="full-width btn-mrg-top-2"
 					onClick={onDownloadButtonClick}
+					disabled={processIsRunning}
 				>
 					Скачать документ
 				</Button>

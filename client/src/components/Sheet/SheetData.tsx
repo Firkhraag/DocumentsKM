@@ -52,6 +52,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
+	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
@@ -198,6 +199,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 	}
 
 	const onCreateButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				await httpClient.post(`/marks/${mark.id}/docs`, {
@@ -212,11 +214,15 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				history.push('/sheets')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
 	const onChangeButtonClick = async () => {
+		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
 				const object = {
@@ -247,13 +253,17 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
+					setProcessIsRunning(false)
 					return
 				}
 				await httpClient.patch(`/docs/${selectedObject.id}`, object)
 				history.push('/sheets')
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
+				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -453,6 +463,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
+					disabled={processIsRunning}
 				>
 					{isCreateMode
 						? 'Создать лист основного комплекта'

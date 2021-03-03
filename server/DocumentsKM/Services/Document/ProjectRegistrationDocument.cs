@@ -68,7 +68,7 @@ namespace DocumentsKM.Services
                 ReplaceText(wordDoc, "D", mark.Subnode.Node.ChiefEngineer.Name);
                 ReplaceText(wordDoc, "E", mark.GroupLeader.Name);
                 ReplaceText(
-                    wordDoc, "F", mark.IssuedDate.GetValueOrDefault().ToString("dd.MM.yyyy"));
+                    wordDoc, "F", mark.IssueDate.GetValueOrDefault().ToString("dd.MM.yyyy"));
                 ReplaceText(wordDoc, "G", FindWeight(constructions, standardConstructions).ToStringWithComma());
                 AppendToSheetsTable(wordDoc, sheets);
                 AppendToDocsTable(wordDoc, docs);

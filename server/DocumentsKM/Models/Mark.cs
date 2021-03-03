@@ -51,27 +51,14 @@ namespace DocumentsKM.Models
         public int? Signed1Id { get; set; }
         public int? Signed2Id { get; set; }
 
-        // !!! Change to IssueDate
         // Дата выдачи
-        public DateTime? IssuedDate { get; set; }
+        public DateTime? IssueDate { get; set; }
 
         public int? NumOfVolumes { get; set; }
-        public float? SafetyCoeff { get; set; }
-        public float? OperatingTemp { get; set; }
-        public int? OperatingZone { get; set; }
-        public int? GasGroup { get; set; }
-        public int? Aggressiveness { get; set; }
-        public int? Material { get; set; }
         public string PaintworkType { get; set; }
         public string Note { get; set; }
         public int? FireHazardCategoryId { get; set; }
-        public int? HighTensileBolts { get; set; }
         public Boolean? P_transport { get; set; }
         public Boolean? P_site { get; set; }
-        public Boolean? Xcnd { get; set; }
-        public string Text_3d_estimate { get; set; }
-        public string AddVolumes { get; set; }
-        public float? VmpWeight { get; set; }
-        public int? Impl_3d_estimate { get; set; }
     }
 }

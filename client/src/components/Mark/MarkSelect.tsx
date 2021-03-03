@@ -5,14 +5,13 @@ import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-// Components
-import ErrorMsg from '../ErrorMsg/ErrorMsg'
 // Util
 import Project from '../../model/Project'
 import Node from '../../model/Node'
 import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
 import httpClient from '../../axios'
+import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { makeMarkName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
