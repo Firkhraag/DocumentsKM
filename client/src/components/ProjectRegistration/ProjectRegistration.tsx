@@ -62,7 +62,7 @@ const ProjectRegistration = () => {
 		if (moment(date, 'DD.MM.YYYY', true).isValid()) {
 			try {
 				const response = await httpClient.post(
-					`/marks/${mark.id}/project-reg`,
+					`/marks/${mark.id}/project-reg-document`,
 					{
 						issueDate:
 							date === defaultDate

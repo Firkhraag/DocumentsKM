@@ -113,7 +113,7 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        [HttpPost, Route("marks/{markId}/project-reg")]
+        [HttpPost, Route("marks/{markId}/project-reg-document")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetProjectRegistrationDocument(
             int markId, [FromBody] MarkIssueDateRequest issueDateRequest)
@@ -132,6 +132,42 @@ namespace DocumentsKM.Controllers
                     file,
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     "Лист регистрации проекта.docx");
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet, Route("marks/{markId}/estimation-document-title")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetEstimationDocumentTitle(int markId)
+        {
+            try
+            {
+                var file = _service.GetEstimationDocumentTitle(markId);
+                return File(
+                    file,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "Комплект для расчета, титульник.docx");
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet, Route("marks/{markId}/estimation-document-pages")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetEstimationDocumentPages(int markId)
+        {
+            try
+            {
+                var file = _service.GetEstimationDocumentPages(markId);
+                return File(
+                    file,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "Комплект для расчета.docx");
             }
             catch (ArgumentNullException)
             {

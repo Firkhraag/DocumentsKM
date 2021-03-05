@@ -2,16 +2,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
 {
-    // Not used now
-    // Степень очистки антикоррозионной защиты
-    public class CorrProtCleaningDegree
+    // Стойкость лакокрасочных покрытий
+    public class PaintworkFastness
     {
         [Key]
         public int Id { get; set; }
 
         // Название
         [Required]
-        [MaxLength(100)]
+        [MaxLength(2)]
         public string Name { get; set; }
     }
 }

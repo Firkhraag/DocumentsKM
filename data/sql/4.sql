@@ -1,4 +1,4 @@
-CREATE TABLE primer_corrosion_protection (
+CREATE TABLE primer (
 	id smallserial PRIMARY KEY,
 	group_num smallint NOT NULL,
 	name varchar(255) NOT NULL,

@@ -183,6 +183,8 @@ namespace DocumentsKM
             services.AddScoped<IBoltDocumentService, BoltDocumentService>();
             services.AddScoped<IEstimateTaskDocumentService, EstimateTaskDocumentService>();
             services.AddScoped<IProjectRegistrationDocumentService, ProjectRegistrationDocumentService>();
+            services.AddScoped<IEstimationTitleDocumentService, EstimationTitleDocumentService>();
+            services.AddScoped<IEstimationPagesDocumentService, EstimationPagesDocumentService>();
         }
 
         private void InjectScopedRepositories(IServiceCollection services)

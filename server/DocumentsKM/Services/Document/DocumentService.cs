@@ -12,6 +12,8 @@ namespace DocumentsKM.Services
         private readonly IBoltDocumentService _boltDocumentService;
         private readonly IEstimateTaskDocumentService _estimateTaskDocumentService;
         private readonly IProjectRegistrationDocumentService _projectRegistrationDocumentService;
+        private readonly IEstimationTitleDocumentService _estimationTitleDocumentService;
+        private readonly IEstimationPagesDocumentService _estimationPagesDocumentService;
 
         public DocumentService(
             IGeneralDataDocumentService generalDataDocumentService,
@@ -19,7 +21,9 @@ namespace DocumentsKM.Services
             IConstructionDocumentService constructionDocumentService,
             IBoltDocumentService boltDocumentService,
             IEstimateTaskDocumentService estimateTaskDocumentService,
-            IProjectRegistrationDocumentService projectRegistrationDocumentService)
+            IProjectRegistrationDocumentService projectRegistrationDocumentService,
+            IEstimationTitleDocumentService estimationTitleDocumentService,
+            IEstimationPagesDocumentService estimationPagesDocumentService)
         {
             _generalDataDocumentService = generalDataDocumentService;
             _specificationDocumentService = specificationDocumentService;
@@ -27,6 +31,8 @@ namespace DocumentsKM.Services
             _boltDocumentService = boltDocumentService;
             _estimateTaskDocumentService = estimateTaskDocumentService;
             _projectRegistrationDocumentService = projectRegistrationDocumentService;
+            _estimationTitleDocumentService = estimationTitleDocumentService;
+            _estimationPagesDocumentService = estimationPagesDocumentService;
         }
 
         public MemoryStream GetGeneralDataDocument(int markId)
@@ -97,6 +103,22 @@ namespace DocumentsKM.Services
                 mainPart.Document.Save();
             }
             return documentStream;
+        }
+
+        public MemoryStream GetEstimationDocumentTitle(int markId)
+        {
+            var memory = GetStreamFromTemplate("D:\\Dev\\Gipromez\\word\\template_estimation_title.docx");
+            _estimationTitleDocumentService.PopulateDocument(markId, memory);
+            memory.Seek(0, SeekOrigin.Begin);
+            return memory;
+        }
+
+        public MemoryStream GetEstimationDocumentPages(int markId)
+        {
+            var memory = GetStreamFromTemplate("D:\\Dev\\Gipromez\\word\\template_estimation_pages.docx");
+            _estimationPagesDocumentService.PopulateDocument(markId, memory);
+            memory.Seek(0, SeekOrigin.Begin);
+            return memory;
         }
     }
 }

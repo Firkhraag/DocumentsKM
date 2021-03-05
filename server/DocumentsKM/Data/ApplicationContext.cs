@@ -93,8 +93,12 @@ namespace DocumentsKM.Data
         public DbSet<ConstructionBolt> ConstructionBolts { get; set; }
         public DbSet<ConstructionElement> ConstructionElements { get; set; }
 
+        public DbSet<PaintworkFastness> PaintworkFastness { get; set; }
+        public DbSet<Primer> Primer { get; set; }
         public DbSet<CorrProtCleaningDegree> CorrProtCleaningDegrees { get; set; }
         public DbSet<CorrProtVariant> CorrProtVariants { get; set; }
+        public DbSet<CorrProtMethod> CorrProtMethods { get; set; }
+        public DbSet<CorrProtCoating> CorrProtCoatings { get; set; }
         public DbSet<DocType> DocTypes { get; set; }
         public DbSet<SheetName> SheetNames { get; set; }
 

@@ -16,5 +16,9 @@ namespace DocumentsKM.Services
         MemoryStream GetEstimateTaskDocument(int markId);
         // Получить лист регистрации проекта
         MemoryStream GetProjectRegistrationDocument(int markId);
+        // Получить титульный лист комплекта для рассчета
+        MemoryStream GetEstimationDocumentTitle(int markId);
+        // Получить страницы комплекта для рассчета
+        MemoryStream GetEstimationDocumentPages(int markId);
     }
 }
