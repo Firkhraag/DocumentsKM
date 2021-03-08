@@ -13,9 +13,10 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<Primer> GetAll()
+        public Primer GetByGroup(int group)
         {
-            return _context.Primer.ToList();
+            return _context.Primer.FirstOrDefault(v =>
+                v.GroupNum == group);
         }
     }
 }

@@ -3,9 +3,11 @@ using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
 {
-    public interface ICorrProtVariantRepo
+    public interface ICorrProtMethodRepo
     {
-        // Получить все варианты антикоррозионной защиты
-        IEnumerable<CorrProtVariant> GetAll();
+        // Получить способ антикоррозионной защиты по id условий эксплуатации
+        CorrProtMethod GetByAggressivenessAndMaterialId(
+            int envAggressivenessId,
+            int constructionMaterialId);
     }
 }

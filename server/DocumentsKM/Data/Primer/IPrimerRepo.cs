@@ -5,7 +5,7 @@ namespace DocumentsKM.Data
 {
     public interface IPrimerRepo
     {
-        // Получить всю грунтовку
-        IEnumerable<Primer> GetAll();
+        // Получить грунтовку по группе
+        Primer GetByGroup(int group);
     }
 }

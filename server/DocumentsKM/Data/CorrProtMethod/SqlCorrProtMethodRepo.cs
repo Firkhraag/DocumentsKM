@@ -13,9 +13,13 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<CorrProtMethod> GetAll()
+        public CorrProtMethod GetByAggressivenessAndMaterialId(
+            int envAggressivenessId,
+            int constructionMaterialId)
         {
-            return _context.CorrProtMethods.ToList();
+            return _context.CorrProtMethods.FirstOrDefault(
+                v => v.EnvAggressiveness.Id == envAggressivenessId &&
+                v.ConstructionMaterial.Id == constructionMaterialId);
         }
     }
 }
