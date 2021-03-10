@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom'
 // Other
 import { MarkProvider } from '../store/MarkStore'
 import { PopupProvider } from '../store/PopupStore'
+import { ScrollProvider } from '../store/ScrollStore'
 import Header from '../components/Header/Header'
 import Popup from '../components/Popup/Popup'
 import Home from '../components/Home/Home'
@@ -70,6 +71,7 @@ const AuthApp = () => {
 	return (
 		<MarkProvider>
 			<PopupProvider>
+			<ScrollProvider>
 				<Switch>
 					<React.Fragment>
 						<Header />
@@ -467,6 +469,7 @@ const AuthApp = () => {
 						</div>
 					</React.Fragment>
 				</Switch>
+            </ScrollProvider>
 			</PopupProvider>
 		</MarkProvider>
 	)

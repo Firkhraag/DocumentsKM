@@ -11,6 +11,7 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import ConstructionBolt from '../../model/ConstructionBolt'
 import BoltDiameter from '../../model/BoltDiameter'
 import { useMark } from '../../store/MarkStore'
+import { useSetScroll } from '../../store/ScrollStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 
@@ -29,6 +30,7 @@ const ConstructionBoltData = ({
 }: ConstructionBoltDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
+	const setScroll = useSetScroll()
 
 	const [selectedObject, setSelectedObject] = useState<ConstructionBolt>(
 		isCreateMode
@@ -145,6 +147,7 @@ const ConstructionBoltData = ({
 						washerNum: selectedObject.washerNum,
 					}
 				)
+                setScroll(4);
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
@@ -197,6 +200,7 @@ const ConstructionBoltData = ({
 					`/construction-bolts/${selectedObject.id}`,
 					object
 				)
+                setScroll(4)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)

@@ -13,6 +13,7 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
 import { useMark, useSetMark } from '../../store/MarkStore'
+import { useUser } from '../../store/UserStore'
 import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
@@ -34,6 +35,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
 	const setMark = useSetMark()
+	const user = useUser()
 
 	const [departmentHead, setDepartmentHead] = useState<Employee>(null)
 	const [selectedObject, setSelectedObject] = useState<Mark>(null)
@@ -281,7 +283,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				const response = await httpClient.post('/marks', {
+				const response = await httpClient.post(`/users/${user.id}/marks`, {
 					code: selectedObject.code,
 					name: selectedObject.name,
 					subnodeId: selectedObject.subnode.id,

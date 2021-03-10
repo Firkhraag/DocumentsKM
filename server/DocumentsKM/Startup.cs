@@ -185,6 +185,8 @@ namespace DocumentsKM
             services.AddScoped<IProjectRegistrationDocumentService, ProjectRegistrationDocumentService>();
             services.AddScoped<IEstimationTitleDocumentService, EstimationTitleDocumentService>();
             services.AddScoped<IEstimationPagesDocumentService, EstimationPagesDocumentService>();
+
+            services.AddScoped<ICorrProtGeneralDataPointService, CorrProtGeneralDataPointService>();
         }
 
         private void InjectScopedRepositories(IServiceCollection services)
@@ -240,6 +242,12 @@ namespace DocumentsKM
             services.AddScoped<IGeneralDataSectionRepo, SqlGeneralDataSectionRepo>();
             services.AddScoped<IGeneralDataPointRepo, SqlGeneralDataPointRepo>();
             services.AddScoped<IMarkGeneralDataPointRepo, SqlMarkGeneralDataPointRepo>();
+
+            services.AddScoped<ICorrProtVariantRepo, SqlCorrProtVariantRepo>();
+            services.AddScoped<ICorrProtMethodRepo, SqlCorrProtMethodRepo>();
+            services.AddScoped<ICorrProtCoatingRepo, SqlCorrProtCoatingRepo>();
+            services.AddScoped<ICorrProtCleaningDegreeRepo, SqlCorrProtCleaningDegreeRepo>();
+            services.AddScoped<IPrimerRepo, SqlPrimerRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

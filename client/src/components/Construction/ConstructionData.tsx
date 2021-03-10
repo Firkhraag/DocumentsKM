@@ -15,6 +15,7 @@ import ConstructionBolt from '../../model/ConstructionBolt'
 import ConstructionElement from '../../model/ConstructionElement'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
+import { useScroll, useSetScroll } from '../../store/ScrollStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 import getNullableFieldValue from '../../util/get-field-value'
@@ -39,6 +40,8 @@ const ConstructionData = ({
 }: ConstructionDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
+	const scroll = useScroll()
+	const setScroll = useSetScroll()
 
 	const [selectedObject, setSelectedObject] = useState<Construction>(
 		isCreateMode
@@ -104,6 +107,13 @@ const ConstructionData = ({
 				}
 			}
 			fetchData()
+            if (scroll === 0) {
+                window.scrollTo(0, 0)
+            }
+            // console.log(scroll)
+            // console.log(document.body.scrollHeight)
+            // window.scrollTo(0, scroll)
+            // setScroll(0)
 		}
 	}, [mark])
 
@@ -617,6 +627,7 @@ const ConstructionData = ({
 						id="edgeBlunting"
 						type="checkbox"
 						className="checkmark"
+                        defaultChecked={selectedObject.hasEdgeBlunting}
 						onChange={onEdgeBluntingCheck}
 					/>
 				</Form.Group>
@@ -632,6 +643,7 @@ const ConstructionData = ({
 						id="dynamicLoad"
 						type="checkbox"
 						className="checkmark"
+                        defaultChecked={selectedObject.hasDynamicLoad}
 						onChange={onDynamicLoadCheck}
 					/>
 				</Form.Group>
@@ -647,6 +659,7 @@ const ConstructionData = ({
 						id="flangedConnections"
 						type="checkbox"
 						className="checkmark"
+                        defaultChecked={selectedObject.hasFlangedConnections}
 						onChange={onFlangedConnectionsCheck}
 					/>
 				</Form.Group>

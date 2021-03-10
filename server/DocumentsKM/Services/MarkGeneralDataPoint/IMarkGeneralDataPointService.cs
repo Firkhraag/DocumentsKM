@@ -26,5 +26,7 @@ namespace DocumentsKM.Services
         void Delete(int id, int markId, int sectionId);
         // Получить разделы общих указаний по id марки
         IEnumerable<GeneralDataSection> GetSectionsByMarkId(int markId);
+        // Добавить пункты общих указаний пользователя к марке
+        void AddDefaultPoints(int userId, Mark mark);
     }
 }

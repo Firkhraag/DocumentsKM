@@ -22,6 +22,8 @@ import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 import { makeMarkName } from '../../util/make-name'
 
 const MarkGeneralData = () => {
+    const corrProtSectionId = 13
+
 	const history = useHistory()
 	const mark = useMark()
 	const setPopup = useSetPopup()
@@ -94,6 +96,14 @@ const MarkGeneralData = () => {
 			selectedObject.section
 		)
 		if (v != null) {
+            var pText = ''
+            if (id == corrProtSectionId) {
+                const pointText = await httpClient.get(
+                    `/marks/${mark.id}/corr-prot-point`
+                )
+                pText = pointText.data.result
+            }
+
 			if (cachedPoints.has(v.id)) {
 				setOptionsObject({
 					...optionsObject,
@@ -103,7 +113,7 @@ const MarkGeneralData = () => {
 					...selectedObject,
 					section: v,
 					point: null,
-					pointText: '',
+					pointText: pText,
 				})
 			} else {
 				try {
@@ -119,7 +129,7 @@ const MarkGeneralData = () => {
 						...selectedObject,
 						section: v,
 						point: null,
-						pointText: '',
+						pointText: pText,
 					})
 				} catch (e) {
 					setErrMsg('Произошла ошибка')
@@ -354,8 +364,10 @@ const MarkGeneralData = () => {
 					)}
 					close={() => setPointsSelectionShown(false)}
 					optionsObject={optionsObject}
+					setOptionsObject={setOptionsObject}
 					selectedObject={selectedObject}
 					setSelectedObject={setSelectedObject}
+                    cachedPoints={cachedPoints}
 				/>
 			) : null}
 			<h1 className="text-centered">Состав общих указаний марки</h1>

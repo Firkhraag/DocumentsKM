@@ -247,5 +247,21 @@ namespace DocumentsKM.Services
         {
             return _repository.GetSectionsByMarkId(markId);
         }
+
+        public void AddDefaultPoints(int userId, Mark mark)
+        {
+            var points = _generalDataPointRepo.GetAllByUserId(userId);
+            var markPoints = points.Select(v => new MarkGeneralDataPoint()
+            {
+                Mark = mark,
+                Section = v.Section,
+                Text = v.Text,
+                OrderNum = v.OrderNum,
+            });
+            foreach (var point in markPoints)
+            {
+                _repository.Add(point);
+            }
+        }
     }
 }

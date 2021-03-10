@@ -27,8 +27,10 @@ type PopupProps = {
 	defaultSelectedPointTexts: string[]
 	close: () => void
 	optionsObject: IOptionsObject
+	setOptionsObject: (optionsObject: IOptionsObject) => void
 	selectedObject: ISelectionObject
 	setSelectedObject: (selectedObject: ISelectionObject) => void
+    cachedPoints: Map<number, GeneralDataPoint[]>
 }
 
 const PointsSelectPopup = ({
@@ -36,8 +38,10 @@ const PointsSelectPopup = ({
 	defaultSelectedPointTexts,
 	close,
 	optionsObject,
+    setOptionsObject,
 	selectedObject,
 	setSelectedObject,
+	cachedPoints,
 }: PopupProps) => {
 	const mark = useMark()
 	const user = useUser()
@@ -105,7 +109,12 @@ const PointsSelectPopup = ({
 				...selectedObject,
 				point: null,
 			})
-			optionsObject.points = addedPointsResponse.data
+            cachedPoints.delete(sectionId)
+			// optionsObject.points = addedPointsResponse.data
+            setOptionsObject({
+                ...optionsObject,
+                points:  addedPointsResponse.data,
+            })
 			close()
 		} catch (e) {
 			setErrMsg('Произошла ошибка')

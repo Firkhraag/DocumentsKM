@@ -44,7 +44,8 @@ namespace DocumentsKM.Services
             var refreshToken = generateRefreshToken();
             // Сохраняем refresh token в кэш
             await _cacheService.SetCacheValueAsync(refreshToken, foundUser.Id.ToString(), _appSettings.TokensRedisDbNumber);
-            return new UserResponse(foundUser.Id, foundUser.Employee.Name, accessToken, refreshToken);
+            // return new UserResponse(foundUser.Id, foundUser.Employee.Name, accessToken, refreshToken);
+            return new UserResponse(foundUser.Id, foundUser.Employee, accessToken, refreshToken);
         }
 
         public async Task<UserResponse> RefreshToken(string token)
@@ -70,7 +71,8 @@ namespace DocumentsKM.Services
 
             // Если успешно, то заменяем старый access token новым
             var accessToken = generateAccessToken(user);
-            return new UserResponse(user.Id, user.Employee.Name, accessToken, token);
+            // return new UserResponse(user.Id, user.Employee.Name, accessToken, token);
+            return new UserResponse(user.Id, user.Employee, accessToken, token);
         }
 
         public async Task<bool> RevokeToken(string token)

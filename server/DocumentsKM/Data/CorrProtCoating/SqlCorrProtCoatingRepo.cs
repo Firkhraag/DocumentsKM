@@ -18,10 +18,11 @@ namespace DocumentsKM.Data
             int paintworkTypeId,
             int paintworkGroup)
         {
-           return _context.CorrProtCoatings.FirstOrDefault(v =>
-                v.PaintworkFastness.Id == paintworkFastnessId &&
-                v.PaintworkType.Id == paintworkTypeId &&
-                v.PaintworkGroup == paintworkGroup);
+           return _context.CorrProtCoatings.OrderByDescending(
+                v => v.Priority).FirstOrDefault(v =>
+                    v.PaintworkFastness.Id == paintworkFastnessId &&
+                    v.PaintworkType.Id == paintworkTypeId &&
+                    v.PaintworkGroup == paintworkGroup);
         }
     }
 }

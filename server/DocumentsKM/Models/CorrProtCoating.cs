@@ -30,8 +30,7 @@ namespace DocumentsKM.Models
         public string Name { get; set; }
 
         // Число слоев
-        [Required]
-        public int PaintworkNumOfLayers { get; set; }
+        public int? PaintworkNumOfLayers { get; set; }
 
         // Группа грунтовки
         [Required]

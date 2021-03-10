@@ -11,6 +11,7 @@ import { Files } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
+import { useScroll, useSetScroll } from '../../store/ScrollStore'
 import Construction from '../../model/Construction'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
@@ -30,8 +31,14 @@ const ConstructionTable = ({
 	const mark = useMark()
 	const history = useHistory()
 	const setPopup = useSetPopup()
+    const scroll = useScroll()
+	const setScroll = useSetScroll()
 
-	const [constructions, setConstructions] = useState([] as Construction[])
+	// const [constructions, setConstructions] = useState([] as Construction[])
+	const [constructionsState, setConstructionsState] = useState({
+        constructions: [] as Construction[],
+        isPopulated: false,
+    })
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -39,26 +46,44 @@ const ConstructionTable = ({
 				history.push('/specifications')
 				return
 			}
+            if (constructionsState.isPopulated) {
+                if (scroll === 1) {
+                    window.scrollTo(0, 800)
+                } else if (scroll === 2) {
+                    window.scrollTo(0, 9999)
+                }
+                setScroll(0)
+                return
+            }
 			const fetchData = async () => {
 				try {
 					const constructionResponse = await httpClient.get(
 						`/specifications/${specificationId}/constructions`
 					)
-					setConstructions(constructionResponse.data)
+					// setConstructions(constructionResponse.data)
+					setConstructionsState({
+                        constructions: constructionResponse.data,
+                        isPopulated: true,
+                    })
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
 			}
 			fetchData()
 		}
-	}, [mark])
+	}, [mark, constructionsState])
 
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/constructions/${id}`)
-			var arr = [...constructions]
+			// var arr = [...constructions]
+			var arr = [...constructionsState.constructions]
 			arr.splice(row, 1)
-			setConstructions(arr)
+			// setConstructions(arr)
+			setConstructionsState({
+                ...constructionsState,
+                constructions: arr,
+            })
 			if (copiedConstruction != null && id == copiedConstruction.id) {
 				setCopiedConstruction(null)
 			}
@@ -76,9 +101,14 @@ const ConstructionTable = ({
 					id: copiedConstruction.id,
 				}
 			)
-			var arr = [...constructions, copiedConstruction]
+			// var arr = [...constructions, copiedConstruction]
+			var arr = [...constructionsState.constructions]
 			arr.sort((v) => v.type.id)
-			setConstructions(arr)
+			// setConstructions(arr)
+			setConstructionsState({
+                ...constructionsState,
+                constructions: arr,
+            })
 		} catch (e) {
 			console.log('Error', e)
 		}
@@ -102,7 +132,7 @@ const ConstructionTable = ({
 				<ClipboardPlus
 					onClick={
 						copiedConstruction == null ||
-						constructions
+						constructionsState.constructions
 							.map((v) => v.id)
 							.includes(copiedConstruction.id)
 							? null
@@ -133,7 +163,7 @@ const ConstructionTable = ({
 					</tr>
 				</thead>
 				<tbody>
-					{constructions.map((c, index) => {
+					{constructionsState.constructions.map((c, index) => {
 						return (
 							<tr key={index}>
 								<td>{index + 1}</td>

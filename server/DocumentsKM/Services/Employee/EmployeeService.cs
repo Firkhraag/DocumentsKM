@@ -40,8 +40,8 @@ namespace DocumentsKM.Services
             var departmentHeadArr = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
                 departmentHeadPosId);
-            if (departmentHeadArr.Count() != 1)
-                throw new ConflictException();
+            // if (departmentHeadArr.Count() != 1)
+            //     throw new ConflictException();
             var departmentHead = departmentHeadArr.ToList()[0];
             var chiefSpecialists = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,

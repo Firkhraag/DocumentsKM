@@ -36,7 +36,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		setUser({
 			id: -1,
 			login: '',
-			name: '',
+			employee: null,
 		})
 		localStorage.removeItem('selectedMarkId')
 		// localStorage.removeItem('recentMarkIds')
@@ -51,7 +51,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 				setUser({
 					id: -1,
 					login: '',
-					name: '',
+					employee: null,
 				})
 				localStorage.removeItem('selectedMarkId')
 				// localStorage.removeItem('recentMarkIds')

@@ -145,6 +145,7 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnCreated()
         {
             // Arrange
+            var userId = 1;
             var subnodeId = 1;
             var departmentId = 1;
             var mainBuilderId = 1;
@@ -158,7 +159,7 @@ namespace DocumentsKM.Tests
             };
             string json = JsonSerializer.Serialize(markRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
 
             // Act
             var response = await _httpClient.PostAsync(endpoint, httpContent);
@@ -171,6 +172,7 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
         {
             // Arrange
+            var userId = 1;
             var subnodeId = 1;
             var departmentId = 1;
             var mainBuilderId = 1;
@@ -194,7 +196,7 @@ namespace DocumentsKM.Tests
                 },
             };
 
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
             foreach (var wrongMarkRequest in wrongMarkRequests)
             {
                 var json = JsonSerializer.Serialize(wrongMarkRequest);
@@ -212,6 +214,7 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnNotFound_WhenWrongValues()
         {
             // Arrange
+            var userId = 1;
             var subnodeId = 1;
             var departmentId = 1;
             var mainBuilderId = 1;
@@ -271,7 +274,7 @@ namespace DocumentsKM.Tests
                 },
             };
 
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
             foreach (var wrongMarkRequest in wrongMarkRequests)
             {
                 var json = JsonSerializer.Serialize(wrongMarkRequest);
@@ -289,6 +292,7 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnConflict_WhenEmployeesAndDepartmentDontMatchOrConflictValues()
         {
             // Arrange
+            var userId = 1;
             var subnodeId = 1;
             var departmentId = 1;
             var chiefSpecialistId = 1;
@@ -319,7 +323,7 @@ namespace DocumentsKM.Tests
                 },
             };
 
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
             foreach (var wrongMarkRequest in wrongMarkRequests)
             {
                 var json = JsonSerializer.Serialize(wrongMarkRequest);
@@ -337,6 +341,7 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
+            var userId = 1;
             var subnodeId = 1;
             var departmentId = 1;
             var mainBuilderId = 1;
@@ -350,7 +355,7 @@ namespace DocumentsKM.Tests
             };
             string json = JsonSerializer.Serialize(markRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
 
             // Act
             var response = await _authHttpClient.PostAsync(endpoint, httpContent);

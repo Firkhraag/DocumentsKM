@@ -15,8 +15,9 @@ namespace DocumentsKM.Data
 
         public Primer GetByGroup(int group)
         {
-            return _context.Primer.FirstOrDefault(v =>
-                v.GroupNum == group);
+            return _context.Primer.OrderByDescending(
+                v => v.Priority).FirstOrDefault(v =>
+                    v.GroupNum == group);
         }
     }
 }

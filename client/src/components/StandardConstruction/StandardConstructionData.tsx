@@ -11,6 +11,7 @@ import StandardConstruction from '../../model/StandardConstruction'
 import StandardConstructionName from '../../model/StandardConstructionName'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
+import { useSetScroll } from '../../store/ScrollStore'
 import { reactSelectStyle } from '../../util/react-select-style'
 
 type StandardConstructionDataProps = {
@@ -26,6 +27,7 @@ const StandardConstructionData = ({
 }: StandardConstructionDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
+    const setScroll = useSetScroll()
 
 	const [selectedObject, setSelectedObject] = useState<StandardConstruction>(
 		isCreateMode
@@ -146,6 +148,7 @@ const StandardConstructionData = ({
 						weight: selectedObject.weight,
 					}
 				)
+                setScroll(2)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -191,6 +194,7 @@ const StandardConstructionData = ({
 					`/standard-constructions/${selectedObject.id}`,
 					object
 				)
+                setScroll(2)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {

@@ -23,6 +23,16 @@ const Drawer = ({ isShown, hide }: DrawerProps) => {
 				variant="secondary"
 				onClick={() => {
 					hide()
+					history.push('/user/default-values')
+				}}
+				className="full-width btn-mrg-top"
+			>
+				По умолчанию
+			</Button>
+            <Button
+				variant="secondary"
+				onClick={() => {
+					hide()
 					history.push('/user/general-data')
 				}}
 				className="full-width btn-mrg-top"

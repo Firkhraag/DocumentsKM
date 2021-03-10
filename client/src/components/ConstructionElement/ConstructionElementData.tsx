@@ -14,6 +14,7 @@ import ProfileType from '../../model/ProfileType'
 import Steel from '../../model/Steel'
 import Profile from '../../model/Profile'
 import { useMark } from '../../store/MarkStore'
+import { useSetScroll } from '../../store/ScrollStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 
@@ -32,6 +33,7 @@ const ConstructionElementData = ({
 }: ConstructionElementDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
+    const setScroll = useSetScroll()
 
 	const profileType8Name = 'тонколистовая сталь'
 	const profileType6Name = 'толстолистовая сталь'
@@ -222,6 +224,7 @@ const ConstructionElementData = ({
 						length: selectedObject.length,
 					}
 				)
+                setScroll(3)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
@@ -262,6 +265,7 @@ const ConstructionElementData = ({
 					`/construction-elements/${selectedObject.id}`,
 					object
 				)
+                setScroll(3)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)

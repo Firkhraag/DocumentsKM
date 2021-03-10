@@ -156,8 +156,12 @@ namespace DocumentsKM.Services
                         }
                     }
 
-                    p = trCells[11].GetFirstChild<Paragraph>();
-                    p.Append(Word.GetTextElement(Math.Round(localSum * multiplier, 3).ToStringWithComma(), 24));
+                    if (localSum > 0.000001)
+                    {
+                        p = trCells[11].GetFirstChild<Paragraph>();
+                        p.Append(Word.GetTextElement(Math.Round(localSum * multiplier, 3).ToStringWithComma(), 24));
+                    }
+                    
                     if (i > 0)
                         t.Append(newTr);
                 }

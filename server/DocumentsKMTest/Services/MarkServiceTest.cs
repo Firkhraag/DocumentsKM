@@ -18,6 +18,7 @@ namespace DocumentsKM.Tests
         private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
         private readonly Mock<IEstimateTaskRepo> _mockEstimateTaskRepo = new Mock<IEstimateTaskRepo>();
         private readonly Mock<ISpecificationService> _mockSpecificationService = new Mock<ISpecificationService>();
+        private readonly Mock<IMarkGeneralDataPointService> _mockMarkGeneralDataPointService = new Mock<IMarkGeneralDataPointService>();
         private readonly IMarkService _service;
         private readonly Random _rnd = new Random();
         private readonly List<Mark> _marks = new List<Mark> { };
@@ -88,7 +89,8 @@ namespace DocumentsKM.Tests
                 _mockDepartmentRepo.Object,
                 _mockEmployeeRepo.Object,
                 _mockEstimateTaskRepo.Object,
-                _mockSpecificationService.Object);
+                _mockSpecificationService.Object,
+                _mockMarkGeneralDataPointService.Object);
         }
 
         [Fact]
@@ -133,6 +135,7 @@ namespace DocumentsKM.Tests
         public void Create_ShouldCreateMark()
         {
             // Arrange
+            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
             int departmentId = _rnd.Next(1, TestData.departments.Count());
             int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
@@ -162,6 +165,7 @@ namespace DocumentsKM.Tests
 
             // Act
             _service.Create(newMark,
+                userId,
                 subnodeId,
                 departmentId,
                 mainBuilderId,
@@ -181,6 +185,7 @@ namespace DocumentsKM.Tests
         public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
+            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
             int departmentId = _rnd.Next(1, TestData.departments.Count());
             int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
@@ -211,6 +216,7 @@ namespace DocumentsKM.Tests
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 null,
+                userId,
                 subnodeId,
                 departmentId,
                 mainBuilderId,
@@ -218,6 +224,7 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 999,
                 departmentId,
                 mainBuilderId,
@@ -225,6 +232,7 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 subnodeId,
                 999,
                 mainBuilderId,
@@ -232,6 +240,7 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 subnodeId,
                 departmentId,
                 999,
@@ -239,6 +248,7 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 subnodeId,
                 departmentId,
                 mainBuilderId,
@@ -246,6 +256,7 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 subnodeId,
                 departmentId,
                 mainBuilderId,
@@ -258,6 +269,7 @@ namespace DocumentsKM.Tests
         public void Create_ShouldFailWithConflict_WhenConflictValue()
         {
             // Arrange
+            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = _marks[0].Subnode.Id;
             var conflictCode = _marks[0].Code;
             int departmentId = _rnd.Next(1, TestData.departments.Count());
@@ -288,6 +300,7 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Create(newMark,
+                userId,
                 subnodeId,
                 departmentId,
                 mainBuilderId,

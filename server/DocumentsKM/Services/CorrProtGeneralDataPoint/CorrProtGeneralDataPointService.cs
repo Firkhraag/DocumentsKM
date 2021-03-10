@@ -3,7 +3,7 @@ using DocumentsKM.Data;
 
 namespace DocumentsKM.Services
 {
-    public class CorrProtGeneralDataPointService
+    public class CorrProtGeneralDataPointService : ICorrProtGeneralDataPointService
     {
         private string protectionString = "";
         private string paintworkString = "";
@@ -34,7 +34,13 @@ namespace DocumentsKM.Services
             _primerRepo = primerRepo;
         }
 
-        public void FirstStep(int markId)
+        public string GetWholeString(int markId)
+        {
+            Process(markId);
+            return protectionString + "\n" + paintworkString + "\n" + installationString + "\n" + factoryString + "\n" + cleaningString;
+        }
+
+        public void Process(int markId)
         {
             var conditions = _markOperatingConditionsRepo.GetByMarkId(markId);
             var corrProtMethod = _corrProtMethodRepo.GetByAggressivenessAndMaterialId(
@@ -46,10 +52,10 @@ namespace DocumentsKM.Services
                 return;
             }
             protectionString = "# Защита металлоконструкций от коррозии осуществляется " + corrProtMethod.Name;
-            SecondStep(conditions);
+            NextStep(conditions);
         }
 
-        public void SecondStep(MarkOperatingConditions conditions)
+        public void NextStep(MarkOperatingConditions conditions)
         {
             var corrProtVariant = _corrProtVariantRepo.GetByOperatingConditionIds(
                 conditions.EnvAggressiveness.Id,

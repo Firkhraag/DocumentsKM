@@ -16,6 +16,7 @@ namespace DocumentsKM.Services
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IEstimateTaskRepo _estimateTaskRepo;
         private readonly ISpecificationService _specificationService;
+        private readonly IMarkGeneralDataPointService _markGeneralDataPointService;
 
         public MarkService(
             IMarkRepo markRepo,
@@ -23,7 +24,8 @@ namespace DocumentsKM.Services
             IDepartmentRepo departmentRepo,
             IEmployeeRepo employeeRepo,
             IEstimateTaskRepo estimateTaskRepo,
-            ISpecificationService specificationService)
+            ISpecificationService specificationService,
+            IMarkGeneralDataPointService markGeneralDataPointService)
         {
             _repository = markRepo;
             _subnodeRepo = subnodeRepo;
@@ -31,6 +33,7 @@ namespace DocumentsKM.Services
             _employeeRepo = employeeRepo;
             _estimateTaskRepo = estimateTaskRepo;
             _specificationService = specificationService;
+            _markGeneralDataPointService = markGeneralDataPointService;
         }
 
         public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
@@ -69,6 +72,7 @@ namespace DocumentsKM.Services
 
         public void Create(
             Mark mark,
+            int userId,
             int subnodeId,
             int departmentId,
             int mainBuilderId,
@@ -125,8 +129,10 @@ namespace DocumentsKM.Services
                 Mark = mark,
                 TaskText = "Разработать сметную документацию к чертежам " + MarkHelper.MakeMarkName(
                     subnode.Node.Project.BaseSeries, subnode.Node.Code, subnode.Code, mark.Code
-                ) + "\r\nСостав и объемы работ:",
+                ) + "\nСостав и объемы работ:",
             });
+
+            _markGeneralDataPointService.AddDefaultPoints(userId, mark);
         }
 
         public void Update(
