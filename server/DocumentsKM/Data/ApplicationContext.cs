@@ -121,6 +121,8 @@ namespace DocumentsKM.Data
         public DbSet<GeneralDataPoint> GeneralDataPoints { get; set; }
         public DbSet<MarkGeneralDataPoint> MarkGeneralDataPoints { get; set; }
 
+        public DbSet<DefaultValues> DefaultValues { get; set; }
+
         public DbSet<EstimateTask> EstimateTask { get; set; }
     }
 }

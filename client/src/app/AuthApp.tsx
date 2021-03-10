@@ -32,6 +32,7 @@ import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
 import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import EstimateTaskDocument from '../components/EstimateTask/EstimateTaskDocument'
 import ProjectRegistration from '../components/ProjectRegistration/ProjectRegistration'
+import DefaultValuesData from '../components/DefaultValues/DefaultValuesData'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
 import StandardConstruction from '../model/StandardConstruction'
@@ -453,6 +454,12 @@ const AuthApp = () => {
 							<Route exact path="/user/general-data">
 								<div className="full-width div-container">
 									<UserGeneralData />
+								</div>
+							</Route>
+
+                            <Route exact path="/user/default-values">
+								<div className="full-width div-container">
+									<DefaultValuesData />
 								</div>
 							</Route>
 
