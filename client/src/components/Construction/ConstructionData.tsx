@@ -110,10 +110,6 @@ const ConstructionData = ({
             if (scroll === 0) {
                 window.scrollTo(0, 0)
             }
-            // console.log(scroll)
-            // console.log(document.body.scrollHeight)
-            // window.scrollTo(0, scroll)
-            // setScroll(0)
 		}
 	}, [mark])
 

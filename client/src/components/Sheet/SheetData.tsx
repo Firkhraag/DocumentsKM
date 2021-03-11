@@ -12,6 +12,7 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Doc from '../../model/Doc'
 import SheetName from '../../model/SheetName'
 import { useMark } from '../../store/MarkStore'
+import { useUser } from '../../store/UserStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
@@ -32,6 +33,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 
 	const history = useHistory()
 	const mark = useMark()
+	const user = useUser()
 
 	const [selectedObject, setSelectedObject] = useState<Doc>(
 		isCreateMode
@@ -73,6 +75,17 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						sheetNames: sheetNamesResponse.data,
 						employees: employeesResponse.data,
 					})
+                    if (isCreateMode) {
+                        const defaultValuesResponse = await httpClient.get(
+                            `/users/${user.id}/default-values`
+                        )
+                        setSelectedObject({
+                            ...selectedObject,
+                            creator: defaultValuesResponse.data.creator,
+                            inspector: defaultValuesResponse.data.inspector,
+                            normContr: defaultValuesResponse.data.normContr,
+                        })
+                    }
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}

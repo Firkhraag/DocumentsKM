@@ -74,6 +74,15 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 						groupLeader: null,
 						mainBuilder: null,
 					})
+                    if (isCreateMode) {
+                        const defaultValuesResponse = await httpClient.get(
+                            `/users/${user.id}/default-values`
+                        )
+                        setSelectedObject({
+                            ...selectedObject,
+                            department: defaultValuesResponse.data.department,
+                        })
+                    }
 				} catch (e) {
 					console.log('Failed to fetch departments')
 				}

@@ -29,7 +29,7 @@ const Drawer = ({ isShown, hide }: DrawerProps) => {
 			>
 				По умолчанию
 			</Button>
-            <Button
+			<Button
 				variant="secondary"
 				onClick={() => {
 					hide()

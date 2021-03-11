@@ -33,7 +33,7 @@ const ConstructionElementData = ({
 }: ConstructionElementDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
-    const setScroll = useSetScroll()
+	const setScroll = useSetScroll()
 
 	const profileType8Name = 'тонколистовая сталь'
 	const profileType6Name = 'толстолистовая сталь'
@@ -224,7 +224,7 @@ const ConstructionElementData = ({
 						length: selectedObject.length,
 					}
 				)
-                setScroll(3)
+				setScroll(3)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
@@ -265,7 +265,7 @@ const ConstructionElementData = ({
 					`/construction-elements/${selectedObject.id}`,
 					object
 				)
-                setScroll(3)
+				setScroll(3)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)

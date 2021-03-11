@@ -50,7 +50,7 @@ const ConstructionBoltTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/construction-bolts/${id}`)
-            var arr = [...constructionBolts]
+			var arr = [...constructionBolts]
 			arr.splice(row, 1)
 			setConstructionBolts(arr)
 			setPopup(defaultPopup)

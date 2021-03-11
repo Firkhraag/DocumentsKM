@@ -18,7 +18,8 @@ namespace DocumentsKM.Data
             int constructionId)
         {
             return _context.ConstructionElements.Where(
-                v => v.Construction.Id == constructionId).ToList();
+                v => v.Construction.Id == constructionId).OrderBy(
+                    v => v.Id).ToList();
         }
 
         public IEnumerable<ConstructionElement> GetAllBySpecificationId(

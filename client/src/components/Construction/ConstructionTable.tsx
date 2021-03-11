@@ -34,7 +34,6 @@ const ConstructionTable = ({
     const scroll = useScroll()
 	const setScroll = useSetScroll()
 
-	// const [constructions, setConstructions] = useState([] as Construction[])
 	const [constructionsState, setConstructionsState] = useState({
         constructions: [] as Construction[],
         isPopulated: false,
@@ -60,7 +59,6 @@ const ConstructionTable = ({
 					const constructionResponse = await httpClient.get(
 						`/specifications/${specificationId}/constructions`
 					)
-					// setConstructions(constructionResponse.data)
 					setConstructionsState({
                         constructions: constructionResponse.data,
                         isPopulated: true,
@@ -76,10 +74,8 @@ const ConstructionTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/constructions/${id}`)
-			// var arr = [...constructions]
 			var arr = [...constructionsState.constructions]
 			arr.splice(row, 1)
-			// setConstructions(arr)
 			setConstructionsState({
                 ...constructionsState,
                 constructions: arr,
@@ -101,10 +97,8 @@ const ConstructionTable = ({
 					id: copiedConstruction.id,
 				}
 			)
-			// var arr = [...constructions, copiedConstruction]
 			var arr = [...constructionsState.constructions]
 			arr.sort((v) => v.type.id)
-			// setConstructions(arr)
 			setConstructionsState({
                 ...constructionsState,
                 constructions: arr,

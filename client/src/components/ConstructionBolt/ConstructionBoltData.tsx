@@ -147,7 +147,7 @@ const ConstructionBoltData = ({
 						washerNum: selectedObject.washerNum,
 					}
 				)
-                setScroll(4);
+				setScroll(4)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
@@ -200,7 +200,7 @@ const ConstructionBoltData = ({
 					`/construction-bolts/${selectedObject.id}`,
 					object
 				)
-                setScroll(4)
+				setScroll(4)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
