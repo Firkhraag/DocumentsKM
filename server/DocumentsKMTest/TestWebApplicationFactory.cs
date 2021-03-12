@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
-using AutoMapper;
 using DocumentsKM.Data;
-using DocumentsKM.Helpers;
 using DocumentsKM.Tests;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -11,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
 
 public class TestWebApplicationFactory<TStartup>
     : WebApplicationFactory<TStartup> where TStartup: class
@@ -23,10 +20,6 @@ public class TestWebApplicationFactory<TStartup>
             var descriptor = services.SingleOrDefault(
                 d => d.ServiceType ==
                     typeof(DbContextOptions<ApplicationContext>));
-            services.Remove(descriptor);
-
-            descriptor = services.FirstOrDefault(
-                d => d.ServiceType == typeof(ConnectionFactory));
             services.Remove(descriptor);
 
             services.RemoveAll(typeof(IHostedService));

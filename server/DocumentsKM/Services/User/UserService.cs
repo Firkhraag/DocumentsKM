@@ -17,16 +17,16 @@ namespace DocumentsKM.Services
     {
         private readonly IUserRepo _repository;
         private readonly AppSettings _appSettings;
-        private readonly ICacheService _cacheService;
+        // private readonly ICacheService _cacheService;
 
         public UserService(
             IUserRepo userRepo,
-            IOptions<AppSettings> appSettings,
-            ICacheService cacheService)
+            IOptions<AppSettings> appSettings)
+            // ICacheService cacheService)
         {
             _repository = userRepo;
             _appSettings = appSettings.Value;
-            _cacheService = cacheService;
+            // _cacheService = cacheService;
         }
 
         public async Task<UserResponse> Authenticate(UserRequest user)
@@ -42,28 +42,28 @@ namespace DocumentsKM.Services
             // Если все в порядке, создаем access и refresh tokens
             var accessToken = generateAccessToken(foundUser);
             var refreshToken = generateRefreshToken();
-            // Сохраняем refresh token в кэш
-            await _cacheService.SetCacheValueAsync(refreshToken, foundUser.Id.ToString(), _appSettings.TokensRedisDbNumber);
-            // return new UserResponse(foundUser.Id, foundUser.Employee.Name, accessToken, refreshToken);
+            // // Сохраняем refresh token в кэш
+            // await _cacheService.SetCacheValueAsync(refreshToken, foundUser.Id.ToString(), _appSettings.TokensRedisDbNumber);
             return new UserResponse(foundUser.Id, foundUser.Employee, accessToken, refreshToken);
         }
 
         public async Task<UserResponse> RefreshToken(string token)
         {
-            // Ищем, имеется ли пользователь с данным токеном в хранилище
-            var idStr = await _cacheService.GetCacheValueAsync(token, _appSettings.TokensRedisDbNumber);
-            // Значение не найдено
-            if (idStr == null) return null;
+            // // Ищем, имеется ли пользователь с данным токеном в хранилище
+            // var idStr = await _cacheService.GetCacheValueAsync(token, _appSettings.TokensRedisDbNumber);
+            // // Значение не найдено
+            // if (idStr == null) return null;
 
-            int id;
-            try
-            {
-                id = Int32.Parse(idStr);
-            }
-            catch (FormatException)
-            {
-                return null;
-            }
+            // int id;
+            // try
+            // {
+            //     id = Int32.Parse(idStr);
+            // }
+            // catch (FormatException)
+            // {
+            //     return null;
+            // }
+            int id = 1;
             // Ищем пользователя
             var user = _repository.GetById(id);
             // Пользователь не найден
@@ -77,27 +77,29 @@ namespace DocumentsKM.Services
 
         public async Task<bool> RevokeToken(string token)
         {
-            // Ищем, имеется ли пользователь с данным токеном в хранилище
-            var idStr = await _cacheService.GetCacheValueAsync(token, _appSettings.TokensRedisDbNumber);
-            // Значение не найдено
-            if (idStr == null) return false;
+            // // Ищем, имеется ли пользователь с данным токеном в хранилище
+            // var idStr = await _cacheService.GetCacheValueAsync(token, _appSettings.TokensRedisDbNumber);
+            // // Значение не найдено
+            // if (idStr == null) return false;
 
-            int id;
-            try
-            {
-                id = Int32.Parse(idStr);
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+            // int id;
+            // try
+            // {
+            //     id = Int32.Parse(idStr);
+            // }
+            // catch (FormatException)
+            // {
+            //     return false;
+            // }
+            int id = 1;
             // Ищем пользователя
             var user = _repository.GetById(id);
             // Пользователь не найден
             if (user == null) return false;
 
-            // Если успешно, то удаляем refresh token
-            return await _cacheService.RemoveCacheKeyAsync(token, _appSettings.TokensRedisDbNumber);
+            // // Если успешно, то удаляем refresh token
+            // return await _cacheService.RemoveCacheKeyAsync(token, _appSettings.TokensRedisDbNumber);
+            return true;
         }
 
         //------------------------HELPERS------------------------

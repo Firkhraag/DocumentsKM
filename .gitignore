@@ -1,11 +1,15 @@
 .vscode
 .docker
 
+data/*.csv
+
 node_modules/
 public/
 
 bin/
 obj/
 logs/
+
+.ipynb_checkpoints/
 
 coverage.cobertura.xml
