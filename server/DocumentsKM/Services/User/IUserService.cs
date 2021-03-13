@@ -6,10 +6,16 @@ namespace DocumentsKM.Services
     public interface IUserService
     {
         // Аутентифицировать пользователя
-        Task<UserResponse> Authenticate(UserRequest user);
+        UserResponse Authenticate(UserRequest user);
         // Обновить токен
-        Task<UserResponse> RefreshToken(string token);
+        UserResponse RefreshToken(string token);
         // Отозвать токен
-        Task<bool> RevokeToken(string token);
+        bool RevokeToken(string token);
+        // // Аутентифицировать пользователя
+        // Task<UserResponse> Authenticate(UserRequest user);
+        // // Обновить токен
+        // Task<UserResponse> RefreshToken(string token);
+        // // Отозвать токен
+        // Task<bool> RevokeToken(string token);
     }
 }

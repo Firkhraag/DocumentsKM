@@ -4,7 +4,8 @@
 data/*.csv
 
 node_modules/
-public/
+
+server/DocumentsKM/ClientApp/dist/
 
 bin/
 obj/

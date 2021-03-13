@@ -29,7 +29,8 @@ namespace DocumentsKM.Services
             // _cacheService = cacheService;
         }
 
-        public async Task<UserResponse> Authenticate(UserRequest user)
+        // public async Task<UserResponse> Authenticate(UserRequest user)
+        public UserResponse Authenticate(UserRequest user)
         {
             // Ищем пользователя с данным логином
             var foundUser = _repository.GetByLogin(user.Login);
@@ -47,7 +48,8 @@ namespace DocumentsKM.Services
             return new UserResponse(foundUser.Id, foundUser.Employee, accessToken, refreshToken);
         }
 
-        public async Task<UserResponse> RefreshToken(string token)
+        // public async Task<UserResponse> RefreshToken(string token)
+        public UserResponse RefreshToken(string token)
         {
             // // Ищем, имеется ли пользователь с данным токеном в хранилище
             // var idStr = await _cacheService.GetCacheValueAsync(token, _appSettings.TokensRedisDbNumber);
@@ -75,7 +77,8 @@ namespace DocumentsKM.Services
             return new UserResponse(user.Id, user.Employee, accessToken, token);
         }
 
-        public async Task<bool> RevokeToken(string token)
+        // public async Task<bool> RevokeToken(string token)
+        public bool RevokeToken(string token)
         {
             // // Ищем, имеется ли пользователь с данным токеном в хранилище
             // var idStr = await _cacheService.GetCacheValueAsync(token, _appSettings.TokensRedisDbNumber);

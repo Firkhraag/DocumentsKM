@@ -102,6 +102,13 @@ namespace DocumentsKM
 
             services.AddAutoMapper(typeof(Startup));
 
+            // SPA
+            services.AddSpaStaticFiles(configuration => 
+            {
+                // configuration.RootPath = "../../public";
+                configuration.RootPath = "ClientApp/dist";
+            });
+
             // services.AddSingleton<IConnectionMultiplexer>(x =>
             //     ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
             // services.AddSingleton<ICacheService, RedisCacheService>();
@@ -255,8 +262,6 @@ namespace DocumentsKM
             app.UseHttpsRedirection();
 
             // Logger
-            // app.UseMiddleware<RequestResponseLoggingMiddleware>();
-            // app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
@@ -267,6 +272,14 @@ namespace DocumentsKM
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
             });
         }
     }

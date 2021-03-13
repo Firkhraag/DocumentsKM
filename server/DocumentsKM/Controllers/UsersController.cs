@@ -24,9 +24,11 @@ namespace DocumentsKM.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login([FromBody] UserRequest user)
+        // public async Task<IActionResult> Login([FromBody] UserRequest user)
+        public IActionResult Login([FromBody] UserRequest user)
         {
-            var res = await _service.Authenticate(user);
+            // var res = await _service.Authenticate(user);
+            var res = _service.Authenticate(user);
             if (res == null)
                 return BadRequest(
                     new { message = "Неверный логин или пароль" });
@@ -37,12 +39,14 @@ namespace DocumentsKM.Controllers
         [HttpPost("refresh-token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> RefreshToken()
+        // public async Task<IActionResult> RefreshToken()
+        public IActionResult RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
                 return Unauthorized();
-            var res = await _service.RefreshToken(refreshToken);
+            // var res = await _service.RefreshToken(refreshToken);
+            var res = _service.RefreshToken(refreshToken);
             if (res == null)
                 return Unauthorized(new { message = "Неверный токен" });
             return Ok(res);
@@ -51,12 +55,14 @@ namespace DocumentsKM.Controllers
         [Authorize]
         [HttpPost("logout")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Logout()
+        // public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             var token = Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(token))
                 return NoContent();
-            var res = await _service.RevokeToken(token);
+            // var res = await _service.RevokeToken(token);
+            var res = _service.RevokeToken(token);
             if (!res)
                 return NoContent();
             setTokenCookie("", -1);

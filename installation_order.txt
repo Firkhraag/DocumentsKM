@@ -1,9 +1,0 @@
-
-1)  cd client
-    npm install
-
-2)  cd server
-    cd DocumentsKMTest
-    dotnet test
-
-3)  pip install psycopg2
