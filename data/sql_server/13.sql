@@ -1,5 +1,5 @@
 CREATE TABLE mark_approvals (
-	id serial PRIMARY KEY,
+	id int identity(1, 1) PRIMARY KEY,
 	mark_id int,
 	employee_id int,
 	UNIQUE (mark_id, employee_id),

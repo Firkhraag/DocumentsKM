@@ -1,0 +1,20 @@
+CREATE TABLE constructions (
+	id int identity(1, 1) PRIMARY KEY,
+	specification_id int NOT NULL,
+	name varchar(255) NOT NULL,
+	type_id smallint NOT NULL,
+	subtype_id smallint,
+	valuation varchar(10),
+	standard_album_code varchar(20),
+	num_of_standard_constructions smallint NOT NULL,
+	has_edge_blunting boolean NOT NULL,
+	has_dynamic_load boolean NOT NULL,
+	has_flanged_connections boolean NOT NULL,
+	welding_control_id smallint NOT NULL,
+	paintwork_coeff real NOT NULL,
+	UNIQUE (specification_id, name, paintwork_coeff),
+	CONSTRAINT fk_specification FOREIGN KEY(specification_id) REFERENCES specifications(id),
+	CONSTRAINT fk_type FOREIGN KEY(type_id) REFERENCES construction_types(id),
+	CONSTRAINT fk_subtype FOREIGN KEY(subtype_id) REFERENCES construction_subtypes(id),
+	CONSTRAINT fk_welding_control FOREIGN KEY(welding_control_id) REFERENCES welding_control(id)
+);

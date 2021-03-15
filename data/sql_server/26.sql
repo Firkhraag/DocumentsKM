@@ -1,5 +1,5 @@
 CREATE TABLE employees (
-	id serial PRIMARY KEY,
+	id int identity(1, 1) PRIMARY KEY,
 	position_id smallint NOT NULL,
 	fullname varchar(255) NOT NULL,
 	department_id smallint NOT NULL,

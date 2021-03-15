@@ -17,13 +17,7 @@ namespace DocumentsKM
                 {
                     Login = "1",
                     Password = BCrypt.Net.BCrypt.HashPassword("1"),
-                    EmployeeId = 11,
-                },
-                new User
-                {
-                    Login = "2",
-                    Password = BCrypt.Net.BCrypt.HashPassword("2"),
-                    EmployeeId = 27,
+                    EmployeeId = 173,
                 },
             };
             if (!ctx.Users.Any())
@@ -40,12 +34,6 @@ namespace DocumentsKM
                     User = users[0],
                     DepartmentId = 1,
                     CreatorId = users[0].EmployeeId,
-                },
-                new DefaultValues
-                {
-                    User = users[1],
-                    DepartmentId = 4,
-                    CreatorId = users[1].EmployeeId,
                 },
             };
             if (!ctx.DefaultValues.Any())

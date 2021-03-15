@@ -1,0 +1,9 @@
+CREATE TABLE mark_linked_docs (
+	id smallint identity(1, 1) PRIMARY KEY,
+	mark_id int,
+	linked_doc_id smallint,
+	note varchar(50),
+	UNIQUE(mark_id, linked_doc_id),
+	CONSTRAINT fk_mark FOREIGN KEY(mark_id) REFERENCES marks(id),
+	CONSTRAINT fk_linked_doc FOREIGN KEY(linked_doc_id) REFERENCES linked_docs(id)
+);

@@ -2,8 +2,11 @@
 .docker
 
 data/*.csv
+data/*.json
 
 node_modules/
+
+secrets.json
 
 server/DocumentsKM/ClientApp/dist/
 

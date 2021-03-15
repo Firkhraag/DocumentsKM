@@ -102,6 +102,11 @@ namespace DocumentsKM
 
             services.AddAutoMapper(typeof(Startup));
 
+            // Http client for api requests
+            services.AddHttpClient();
+
+            services.AddHostedService<FetchService>();
+
             // SPA
             services.AddSpaStaticFiles(configuration => 
             {
