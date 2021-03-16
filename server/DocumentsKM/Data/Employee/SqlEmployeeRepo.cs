@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data
 {
@@ -42,6 +43,24 @@ namespace DocumentsKM.Data
         public Employee GetById(int id)
         {
             return _context.Employees.SingleOrDefault(v => v.Id == id);
+        }
+
+        public void Add(Employee employee)
+        {
+            _context.Employees.Add(employee);
+            _context.SaveChanges();
+        }
+
+        public void Update(Employee employee)
+        {
+            _context.Entry(employee).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public void Delete(Employee employee)
+        {
+            _context.Employees.Remove(employee);
+            _context.SaveChanges();
         }
     }
 }

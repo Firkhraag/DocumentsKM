@@ -4,6 +4,6 @@ Create Table MarkLinkedDocs (
 	LinkedDocId Smallint,
 	Note Varchar(50),
 	Unique(MarkId, LinkedDocId),
-	Constraint FkMark Foreign Key(MarkId) References Marks(Id),
-	Constraint FkLinkedDoc Foreign Key(LinkedDocId) References LinkedDocs(Id)
+	Constraint FK_Mark_MarkLinkedDoc Foreign Key(MarkId) References Marks(Id),
+	Constraint FK_LinkedDoc_MarkLinkedDoc Foreign Key(LinkedDocId) References LinkedDocs(Id)
 );

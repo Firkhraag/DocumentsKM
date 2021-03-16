@@ -3,7 +3,7 @@ Create Table Nodes (
 	Code Varchar(10) Not Null,
 	Name Varchar(255) Not Null,
 	ProjectId Smallint Not Null,
-	ChiefEngineerId Smallint Not Null,
-	Constraint FkProject Foreign Key(ProjectId) References Projects(Id),
-	Constraint FkEmployee Foreign Key(ChiefEngineerId) References Employees(Id)
+	ChiefEngineerId Int Not Null,
+	Constraint FK_Project_Node Foreign Key(ProjectId) References Projects(Id),
+	Constraint FK_Employee_Node Foreign Key(ChiefEngineerId) References Employees(Id)
 );

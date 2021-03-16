@@ -3,15 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
-    // Сотрудника
+    // Сотрудник
     public class Employee
     {
         [Key]
         public int Id { get; set; }
 
-        // Имя
+        // Полное имя
         [Required]
-        [MaxLength(50)]
+        [MaxLength(255)]
+        public string Fullname { get; set; }
+
+        // Фамилия
+        [Required]
+        [MaxLength(80)]
         public string Name { get; set; }
 
         // Отдел

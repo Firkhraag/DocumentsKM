@@ -4,5 +4,5 @@ Create Table LinkedDocs (
 	TypeId Smallint Not Null,
 	Designation Varchar(40) Not Null,
 	Name Varchar(255) Not Null Unique,
-	Constraint FkLinkedDocType Foreign Key(TypeId) References LinkedDocTypes(Id)
+	Constraint FK_LinkedDocType_LinkedDoc Foreign Key(TypeId) References LinkedDocTypes(Id)
 );

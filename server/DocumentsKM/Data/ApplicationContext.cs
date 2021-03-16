@@ -8,7 +8,6 @@ namespace DocumentsKM.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> opt) : base(opt) {}
 
-        // Postgres перевод PascalCase в snake_case
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -21,10 +20,11 @@ namespace DocumentsKM.Data
             builder.Entity<MarkApproval>().HasIndex(
                 e => new { e.MarkId, e.EmployeeId }).IsUnique();
 
-            // Unique constrains
-            builder.Entity<User>()
-                .HasIndex(e => e.Login)
-                .IsUnique();
+            // // Unique constrains
+            // builder.Entity<User>()
+            //     .HasIndex(e => e.Login)
+            //     .IsUnique();
+
             // builder.Entity<Entity>()
             //     .HasIndex(e => e.BaseSeries)
             //     .IsUnique();
@@ -32,33 +32,6 @@ namespace DocumentsKM.Data
 
             // Default datetime
             // builder.Entity<Mark>().Property(e => e.EditedDate).HasDefaultValueSql("now()");
-
-            foreach(var entity in builder.Model.GetEntityTypes())
-            {
-                entity.SetTableName(entity.GetTableName().ToSnakeCase());
-
-                foreach(var property in entity.GetProperties())
-                {
-                    property.SetColumnName(property.GetColumnName(
-                        StoreObjectIdentifier.Table(entity.GetTableName(), property.DeclaringEntityType.GetSchema())
-                    ).ToSnakeCase());
-                }
-
-                foreach(var key in entity.GetKeys())
-                {
-                    key.SetName(key.GetName().ToSnakeCase());
-                }
-
-                foreach(var key in entity.GetForeignKeys())
-                {
-                   key.SetConstraintName(key.GetConstraintName().ToSnakeCase());
-                }
-
-                foreach(var index in entity.GetIndexes())
-                {
-                    index.SetDatabaseName(index.GetDatabaseName().ToSnakeCase());
-                }
-            }
         }
 
         // Other services data

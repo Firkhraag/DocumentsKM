@@ -3,10 +3,10 @@ Create Table GeneralDataPoints (
 	SectionId Smallint Not Null,
 	Title Varchar(80) Not Null,
 	Text Varchar,
-	DoNotCut Boolean Not Null,
+	DoNotCut Bit Not Null,
 	FixedPoint Smallint Not Null,
 	OrderNum Smallint Not Null,
 	TableName Varchar(10),
 	Unique(SectionId, OrderNum),
-	Constraint FkSection Foreign Key(SectionId) References GeneralDataSections(Id)
+	Constraint FK_GeneralDataSection_GeneralDataPoint Foreign Key(SectionId) References GeneralDataSections(Id)
 );

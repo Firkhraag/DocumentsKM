@@ -16,11 +16,11 @@ Create Table CorrProtVariants (
 		OperatingAreaId, GasGroupId, EnvAggressivenessId,
 		ConstructionMaterialId, PaintworkTypeId, PaintworkGroup
 	),
-	Constraint FkOperatingArea Foreign Key(OperatingAreaId) References OperatingAreas(Id),
-	Constraint FkGasGroup Foreign Key(GasGroupId) References GasGroups(Id),
-	Constraint FkEnvAggressiveness Foreign Key(EnvAggressivenessId) References EnvAggressiveness(Id),
-	Constraint FkConstructionMaterial Foreign Key(ConstructionMaterialId) References ConstructionMaterials(Id),
-	Constraint FkPaintworkType Foreign Key(PaintworkTypeId) References PaintworkTypes(Id),
-	Constraint FkPaintworkFastness Foreign Key(PaintworkFastnessId) References PaintworkFastness(Id),
-	Constraint FkCleaningDegree Foreign Key(CleaningDegreeId) References CorrProtCleaningDegrees(Id)
+	Constraint FK_OperatingArea_CorrProtVariant Foreign Key(OperatingAreaId) References OperatingAreas(Id),
+	Constraint FK_GasGroup_CorrProtVariant Foreign Key(GasGroupId) References GasGroups(Id),
+	Constraint FK_EnvAggressiveness_CorrProtVariant Foreign Key(EnvAggressivenessId) References EnvAggressiveness(Id),
+	Constraint FK_ConstructionMaterial_CorrProtVariant Foreign Key(ConstructionMaterialId) References ConstructionMaterials(Id),
+	Constraint FK_PaintworkType_CorrProtVariant Foreign Key(PaintworkTypeId) References PaintworkTypes(Id),
+	Constraint FK_PaintworkFastness_CorrProtVariant Foreign Key(PaintworkFastnessId) References PaintworkFastness(Id),
+	Constraint FK_CleaningDegree_CorrProtVariant Foreign Key(CleaningDegreeId) References CorrProtCleaningDegrees(Id)
 );

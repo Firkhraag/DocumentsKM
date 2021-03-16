@@ -12,9 +12,9 @@ Create Table Docs (
 	NumOfPages Smallint Not Null Default 0,
 	Note Varchar(255),
 	Unique (MarkId, Num, TypeId),
-	Constraint FkMark Foreign Key(MarkId) References Marks(Id),
-	Constraint FkCreator Foreign Key(CreatorId) References Employees(Id),
-	Constraint FkInspector Foreign Key(InspectorId) References Employees(Id),
-	Constraint FkNormContr Foreign Key(NormContrId) References Employees(Id),
-	Constraint FkDocType Foreign Key(TypeId) References DocTypes(Id)
+	Constraint FK_Mark_Doc Foreign Key(MarkId) References Marks(Id),
+	Constraint FK_Creator_Doc Foreign Key(CreatorId) References Employees(Id),
+	Constraint FK_Inspector_Doc Foreign Key(InspectorId) References Employees(Id),
+	Constraint FK_NormContr_Doc Foreign Key(NormContrId) References Employees(Id),
+	Constraint FK_DocType_Doc Foreign Key(TypeId) References DocTypes(Id)
 );

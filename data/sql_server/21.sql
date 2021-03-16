@@ -5,5 +5,5 @@ Create Table BoltLengths (
 	ScrewLength Smallint Not Null,
 	Weight Real Not Null,
 	Unique(DiameterId, Length),
-	Constraint Diameter Foreign Key(DiameterId) References BoltDiameters(Id)
+	Constraint FK_BoltDiameter_BoltLength Foreign Key(DiameterId) References BoltDiameters(Id)
 );

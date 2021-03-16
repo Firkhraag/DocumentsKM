@@ -12,5 +12,8 @@ namespace DocumentsKM.Services
         // Получить всех главных сотрудников для марки
         (Employee, IEnumerable<Employee>, IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentId(
             int departmentId);
+
+        // Обновить сотрудников
+        void UpdateAll(List<Employee> employeesFetched);
     }
 }

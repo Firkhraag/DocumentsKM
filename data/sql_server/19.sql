@@ -7,6 +7,6 @@ Create Table CorrProtMethods (
 	Unique(
 		EnvAggressivenessId, ConstructionMaterialId, Name
 	),
-	Constraint FkEnvAggressiveness Foreign Key(EnvAggressivenessId) References EnvAggressiveness(Id),
-	Constraint FkConstructionMaterial Foreign Key(ConstructionMaterialId) References ConstructionMaterials(Id)
+	Constraint FK_EnvAggressiveness_CorrProtMethod Foreign Key(EnvAggressivenessId) References EnvAggressiveness(Id),
+	Constraint FK_ConstructionMaterial_CorrProtMethod Foreign Key(ConstructionMaterialId) References ConstructionMaterials(Id)
 );

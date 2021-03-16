@@ -5,6 +5,6 @@ Create Table MarkGeneralDataPoints (
 	Text Varchar Not Null,
 	OrderNum Smallint Not Null,
 	Unique(MarkId, SectionId, Text),
-	Constraint FkMark Foreign Key(MarkId) References Marks(Id),
-	Constraint FkSection Foreign Key(SectionId) References GeneralDataSections(Id)
+	Constraint FK_Mark_MarkGeneralDataPoint Foreign Key(MarkId) References Marks(Id),
+	Constraint FK_GeneralDataSection_MarkGeneralDataPoint Foreign Key(SectionId) References GeneralDataSections(Id)
 );

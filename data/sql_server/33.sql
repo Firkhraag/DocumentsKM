@@ -7,6 +7,6 @@ Create Table Profiles (
 	Area Real Not Null,
 	TypeId Smallint Not Null,
 	Unique(ClassId, Name, Symbol),
-	Constraint FkClass Foreign Key(ClassId) References ProfileClasses(Id),
-	Constraint FkType Foreign Key(TypeId) References ProfileTypes(Id)
+	Constraint FK_ProfileClass_Profile Foreign Key(ClassId) References ProfileClasses(Id),
+	Constraint FK_ProfileType_Profile Foreign Key(TypeId) References ProfileTypes(Id)
 );

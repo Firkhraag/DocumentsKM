@@ -15,12 +15,12 @@ Create Table Marks (
 	PaintworkType Varchar(4),
 	Note Varchar(255),
 	FireHazardCategoryId Smallint,
-	PTransport Boolean,
-	PSite Boolean,
+	PTransport Bit,
+	PSite Bit,
 	Unique (Code, SubnodeId),
-	Constraint FkSubnode Foreign Key(SubnodeId) References Subnodes(Id),
-	Constraint FkChiefSpecialist Foreign Key(ChiefSpecialistId) References Employees(Id),
-	Constraint FkGroupLeader Foreign Key(GroupLeaderId) References Employees(Id),
-	Constraint FkMainBuilder Foreign Key(MainBuilderId) References Employees(Id),
-	Constraint FkFireHazardCategory Foreign Key(FireHazardCategoryId) References FireHazardCategories(Id)
+	Constraint FK_Subnode_Mark Foreign Key(MarkId) References Marks(Id),
+	Constraint FK_ChiefSpecialist_Mark Foreign Key(ChiefSpecialistId) References Employees(Id),
+	Constraint FK_GroupLeader_Mark Foreign Key(GroupLeaderId) References Employees(Id),
+	Constraint FK_MainBuilder_Mark Foreign Key(MainBuilderId) References Employees(Id),
+	Constraint FK_FireHazardCategory_Mark Foreign Key(FireHazardCategoryId) References FireHazardCategories(Id)
 );

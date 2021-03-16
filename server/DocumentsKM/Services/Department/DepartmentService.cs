@@ -23,7 +23,7 @@ namespace DocumentsKM.Services
 
         public void UpdateAll(List<DepartmentFetched> departmentsFetched)
         {
-            // Log.Information(departmentsFetched.ToList()[2].Reduction);
+            
             Log.Information(departmentsFetched.Count().ToString());
         }
     }

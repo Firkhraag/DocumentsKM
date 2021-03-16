@@ -3,8 +3,8 @@ Create Table Specifications (
 	MarkId Int Not Null,
 	Num Smallint Not Null,
 	CreatedDate Timestamp Not Null Default Now(),
-	IsCurrent Boolean Not Null Default True,
+	IsCurrent Bit Not Null Default True,
 	Note Varchar(255),
 	Unique (MarkId, Num),
-	Constraint FkMark Foreign Key(MarkId) References Marks(Id)
+	Constraint FK_Mark_Specification Foreign Key(MarkId) References Marks(Id)
 );

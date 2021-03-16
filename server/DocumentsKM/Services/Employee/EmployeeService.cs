@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System.Linq;
+using Serilog;
 
 namespace DocumentsKM.Services
 {
@@ -53,6 +54,11 @@ namespace DocumentsKM.Services
                 departmentId,
                 mainBuilderPosId);
             return (departmentHead, chiefSpecialists, groupLeaders, mainBuilders);
+        }
+
+        public void UpdateAll(List<Employee> employeesFetched)
+        {
+            Log.Information(employeesFetched.Count().ToString());
         }
     }
 }

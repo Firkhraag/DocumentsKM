@@ -3,5 +3,5 @@ Create Table Subnodes (
 	NodeId Smallint Not Null,
 	Code Varchar(10) Not Null,
 	Name Varchar(255) Not Null,
-	Constraint FkNode Foreign Key(NodeId) References Nodes(Id)
+	Constraint FK_Node_Subnode Foreign Key(NodeId) References Nodes(Id)
 );

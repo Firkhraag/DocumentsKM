@@ -5,6 +5,6 @@ Create Table GeneralDataPoints (
 	Text Varchar Not Null,
 	OrderNum Smallint Not Null,
 	Unique(UserId, SectionId, Text),
-	Constraint FkUser Foreign Key(UserId) References Users(Id),
-	Constraint FkSection Foreign Key(SectionId) References GeneralDataSections(Id)
+	Constraint FK_User_GeneralDataPoint Foreign Key(UserId) References Users(Id),
+	Constraint FK_GeneralDataSection_GeneralDataPoint Foreign Key(SectionId) References GeneralDataSections(Id)
 );

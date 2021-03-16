@@ -17,5 +17,11 @@ namespace DocumentsKM.Data
             int departmentNumber, int posId);
         // Получить сотрудника по id
         Employee GetById(int id);
+        // Добавить сотрудника
+        void Add(Employee employee);
+        // Обновить сотрудника
+        void Update(Employee employee);
+        // Удалить сотрудника
+        void Delete(Employee employee);
     }
 }

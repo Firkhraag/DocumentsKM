@@ -4,7 +4,7 @@ Create Table ConstructionElements (
 	ProfileId Int Not Null,
 	SteelId Smallint Not Null,
 	Length Real Not Null,
-	Constraint FkConstruction Foreign Key(ConstructionId) References Constructions(Id),
-	Constraint FkProfile Foreign Key(ProfileId) References Profiles(Id),
-	Constraint FkSteel Foreign Key(SteelId) References Steel(Id)
+	Constraint FK_Construction_ConstructionElement Foreign Key(ConstructionId) References Constructions(Id),
+	Constraint FK_Profile_ConstructionElement Foreign Key(ProfileId) References Profiles(Id),
+	Constraint FK_Steel_ConstructionElement Foreign Key(SteelId) References Steel(Id)
 );

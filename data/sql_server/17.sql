@@ -6,11 +6,11 @@ Create Table CorrProtCoatings (
 	Name Varchar(255) Not Null,
 	PaintworkNumOfLayers Smallint,
 	PrimerGroup Smallint Not Null,
-	CanBePainted Boolean Not Null,
+	CanBePainted Bit Not Null,
 	Priority Smallint Not Null,
 	Unique(
 		PaintworkTypeId, PaintworkGroup, PaintworkFastnessId, Name
 	),
-	Constraint FkPaintworkType Foreign Key(PaintworkTypeId) References PaintworkTypes(Id),
-	Constraint FkPaintworkFastness Foreign Key(PaintworkFastnessId) References PaintworkFastness(Id)
+	Constraint FK_PaintworkType_CorrProtCoating Foreign Key(PaintworkTypeId) References PaintworkTypes(Id),
+	Constraint FK_PaintworkFastness_CorrProtCoating Foreign Key(PaintworkFastnessId) References PaintworkFastness(Id)
 );

@@ -3,9 +3,9 @@ Create Table GeneralGuidancePoints (
 	MarkId Int Not Null,
 	Point Smallint Not Null,
 	Text Varchar,
-	Include Boolean Not Null,
-	Original Boolean Not Null,
-	DoNotCut Boolean Not Null,
+	Include Bit Not Null,
+	Original Bit Not Null,
+	DoNotCut Bit Not Null,
 	PointType Smallint Not Null Default 0,
 	Unique(MarkId, Point)
 );

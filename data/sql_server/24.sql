@@ -4,5 +4,5 @@ Create Table ConstructionSubtypes (
 	Name Varchar(255) Not Null,
 	Valuation Varchar(10) Not Null,
 	Unique(TypeId, Name, Valuation),
-	Constraint FkType Foreign Key(TypeId) References ConstructionTypes(Id)
+	Constraint FK_ConstructionType_ConstructionSubtype Foreign Key(TypeId) References ConstructionTypes(Id)
 );

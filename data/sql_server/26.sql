@@ -2,7 +2,8 @@ Create Table Employees (
 	Id Int Identity(1, 1) Primary Key,
 	PositionId Smallint Not Null,
 	Fullname Varchar(255) Not Null,
+	Name Varchar(80) Not Null,
 	DepartmentId Smallint Not Null,
-	Constraint FkPosition Foreign Key(PositionId) References Positions(Id),
-	Constraint FkDepartment Foreign Key(DepartmentId) References Departments(Id)
+	Constraint FK_Position_Employee Foreign Key(PositionId) References Positions(Id),
+	Constraint FK_Department_Employee Foreign Key(DepartmentId) References Departments(Id)
 );

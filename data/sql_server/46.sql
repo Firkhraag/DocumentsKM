@@ -7,14 +7,14 @@ Create Table Constructions (
 	Valuation Varchar(10),
 	StandardAlbumCode Varchar(20),
 	NumOfStandardConstructions Smallint Not Null,
-	HasEdgeBlunting Boolean Not Null,
-	HasDynamicLoad Boolean Not Null,
-	HasFlangedConnections Boolean Not Null,
+	HasEdgeBlunting Bit Not Null,
+	HasDynamicLoad Bit Not Null,
+	HasFlangedConnections Bit Not Null,
 	WeldingControlId Smallint Not Null,
 	PaintworkCoeff Real Not Null,
 	Unique (SpecificationId, Name, PaintworkCoeff),
-	Constraint FkSpecification Foreign Key(SpecificationId) References Specifications(Id),
-	Constraint FkType Foreign Key(TypeId) References ConstructionTypes(Id),
-	Constraint FkSubtype Foreign Key(SubtypeId) References ConstructionSubtypes(Id),
-	Constraint FkWeldingControl Foreign Key(WeldingControlId) References WeldingControl(Id)
+	Constraint FK_Specification_Construction Foreign Key(SpecificationId) References Specifications(Id),
+	Constraint FK_ConstructionType_Construction Foreign Key(TypeId) References ConstructionTypes(Id),
+	Constraint FK_ConstructionSubtype_Construction Foreign Key(SubtypeId) References ConstructionSubtypes(Id),
+	Constraint FK_WeldingControl_Construction Foreign Key(WeldingControlId) References WeldingControl(Id)
 );

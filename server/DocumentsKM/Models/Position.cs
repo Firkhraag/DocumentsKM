@@ -10,7 +10,7 @@ namespace DocumentsKM.Models
 
         // Название
         [Required]
-        [MaxLength(20)]
+        [MaxLength(80)]
         public string Name { get; set; }
     }
 }

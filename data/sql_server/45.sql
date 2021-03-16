@@ -7,6 +7,6 @@ Create Table ConstructionBolts (
 	NutNum Smallint Not Null,
 	WasherNum Smallint Not Null,
 	Unique (ConstructionId, DiameterId),
-	Constraint FkConstruction Foreign Key(ConstructionId) References Constructions(Id),
-	Constraint FkDiameter Foreign Key(DiameterId) References BoltDiameters(Id)
+	Constraint FK_Construction_ConstructionBolt Foreign Key(ConstructionId) References Constructions(Id),
+	Constraint FK_BoltDiameter_ConstructionBolt Foreign Key(DiameterId) References BoltDiameters(Id)
 );

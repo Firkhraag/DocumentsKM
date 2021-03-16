@@ -6,5 +6,5 @@ Create Table StandardConstructions (
 	Sheet Varchar(255),
 	Weight Real Not Null,
 	Unique (SpecificationId, Name),
-	Constraint FkSpecification Foreign Key(SpecificationId) References Specifications(Id)
+	Constraint FK_Specification_StandardConstruction Foreign Key(SpecificationId) References Specifications(Id)
 );
