@@ -1,12 +1,12 @@
-CREATE TABLE profiles (
-	id smallint identity(1, 1) PRIMARY KEY,
-	class_id smallint NOT NULL,
-	name varchar(30) NOT NULL,
-	symbol varchar(2),
-	weight real NOT NULL,
-	area real NOT NULL,
-	type_id smallint NOT NULL,
-	UNIQUE(class_id, name, symbol),
-	CONSTRAINT fk_class FOREIGN KEY(class_id) REFERENCES profile_classes(id),
-	CONSTRAINT fk_type FOREIGN KEY(type_id) REFERENCES profile_types(id)
+Create Table Profiles (
+	Id Smallint Identity(1, 1) Primary Key,
+	ClassId Smallint Not Null,
+	Name Varchar(30) Not Null,
+	Symbol Varchar(2),
+	Weight Real Not Null,
+	Area Real Not Null,
+	TypeId Smallint Not Null,
+	Unique(ClassId, Name, Symbol),
+	Constraint FkClass Foreign Key(ClassId) References ProfileClasses(Id),
+	Constraint FkType Foreign Key(TypeId) References ProfileTypes(Id)
 );

@@ -1,8 +1,8 @@
-CREATE TABLE attached_docs (
-	id int identity(1, 1) PRIMARY KEY,
-	mark_id int NOT NULL,
-	designation varchar(100) NOT NULL,
-	name varchar(200) NOT NULL,
-	note varchar(50),
-	UNIQUE(mark_id, designation)
+Create Table AttachedDocs (
+	Id Int Identity(1, 1) Primary Key,
+	MarkId Int Not Null,
+	Designation Varchar(100) Not Null,
+	Name Varchar(200) Not Null,
+	Note Varchar(50),
+	Unique(MarkId, Designation)
 );

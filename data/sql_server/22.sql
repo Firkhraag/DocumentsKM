@@ -1,4 +1,4 @@
-CREATE TABLE construction_types (
-	id smallint identity(1, 1) PRIMARY KEY,
-	name varchar(255) UNIQUE NOT NULL
+Create Table ConstructionTypes (
+	Id Smallint Identity(1, 1) Primary Key,
+	Name Varchar(255) Unique Not Null
 );

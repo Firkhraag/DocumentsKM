@@ -1,6 +1,6 @@
-CREATE TABLE departments (
-	id smallint identity(1, 1) PRIMARY KEY,
-	code varchar(6) NOT NULL UNIQUE,
-	name varchar(255) NOT NULL UNIQUE,
-	short_name varchar(50) NOT NULL UNIQUE
+Create Table Departments (
+	Id Smallint Identity(1, 1) Primary Key,
+	Code Varchar(6) Not Null Unique,
+	Name Varchar(255) Not Null Unique,
+	ShortName Varchar(50) Not Null Unique
 );

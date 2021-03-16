@@ -1,8 +1,8 @@
-CREATE TABLE construction_subtypes (
-	id smallint identity(1, 1) PRIMARY KEY,
-	type_id smallint NOT NULL,
-	name varchar(255) NOT NULL,
-	valuation varchar(10) NOT NULL,
-	UNIQUE(type_id, name, valuation),
-	CONSTRAINT fk_type FOREIGN KEY(type_id) REFERENCES construction_types(id)
+Create Table ConstructionSubtypes (
+	Id Smallint Identity(1, 1) Primary Key,
+	TypeId Smallint Not Null,
+	Name Varchar(255) Not Null,
+	Valuation Varchar(10) Not Null,
+	Unique(TypeId, Name, Valuation),
+	Constraint FkType Foreign Key(TypeId) References ConstructionTypes(Id)
 );

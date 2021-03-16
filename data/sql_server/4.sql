@@ -1,8 +1,8 @@
-CREATE TABLE primer (
-	id smallint identity(1, 1) PRIMARY KEY,
-	group_num smallint NOT NULL,
-	name varchar(255) NOT NULL,
-	can_be_primed boolean NOT NULL,
-	priority smallint NOT NULL DEFAULT 0,
-	UNIQUE(group_num, name)
+Create Table Primer (
+	Id Smallint Identity(1, 1) Primary Key,
+	GroupNum Smallint Not Null,
+	Name Varchar(255) Not Null,
+	CanBePrimed Boolean Not Null,
+	Priority Smallint Not Null Default 0,
+	Unique(GroupNum, Name)
 );

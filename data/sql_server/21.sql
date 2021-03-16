@@ -1,9 +1,9 @@
-CREATE TABLE bolt_lengths (
-	id smallint identity(1, 1) PRIMARY KEY,
-	diameter_id smallint NOT NULL,
-	length smallint NOT NULL,
-	screw_length smallint NOT NULL,
-	weight real NOT NULL,
-	UNIQUE(diameter_id, length),
-	CONSTRAINT diameter FOREIGN KEY(diameter_id) REFERENCES bolt_diameters(id)
+Create Table BoltLengths (
+	Id Smallint Identity(1, 1) Primary Key,
+	DiameterId Smallint Not Null,
+	Length Smallint Not Null,
+	ScrewLength Smallint Not Null,
+	Weight Real Not Null,
+	Unique(DiameterId, Length),
+	Constraint Diameter Foreign Key(DiameterId) References BoltDiameters(Id)
 );

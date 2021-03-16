@@ -1,8 +1,8 @@
-CREATE TABLE general_data_sections (
-	id smallint identity(1, 1) PRIMARY KEY,
-	title varchar(255) NOT NULL UNIQUE,
-	short_title varchar(50) NOT NULL UNIQUE,
-	print boolean NOT NULL,
-	order_num smallint NOT NULL,
-	multiple_points boolean NOT NULL
+Create Table GeneralDataSections (
+	Id Smallint Identity(1, 1) Primary Key,
+	Title Varchar(255) Not Null Unique,
+	ShortTitle Varchar(50) Not Null Unique,
+	Print Boolean Not Null,
+	OrderNum Smallint Not Null,
+	MultiplePoints Boolean Not Null
 );

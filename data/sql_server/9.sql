@@ -1,5 +1,5 @@
-CREATE TABLE mark_designations (
-	id smallint identity(1, 1) PRIMARY KEY,
-	designation varchar(4) NOT NULL UNIQUE,
-	name varchar(50) NOT NULL UNIQUE
+Create Table MarkDesignations (
+	Id Smallint Identity(1, 1) Primary Key,
+	Designation Varchar(4) Not Null Unique,
+	Name Varchar(50) Not Null Unique
 );

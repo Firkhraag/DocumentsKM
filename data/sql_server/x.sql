@@ -1,5 +1,5 @@
-CREATE TABLE doc_types (
-	id smallint identity(1, 1) PRIMARY KEY,
-	code varchar(4) NOT NULL UNIQUE,
-	name varchar(100) NOT NULL UNIQUE
+Create Table DocTypes (
+	Id Smallint Identity(1, 1) Primary Key,
+	Code Varchar(4) Not Null Unique,
+	Name Varchar(100) Not Null Unique
 );

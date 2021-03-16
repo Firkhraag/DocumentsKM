@@ -1,6 +1,6 @@
-CREATE TABLE fire_hazard_categories (
-	id smallint identity(1, 1) PRIMARY KEY,
-	category varchar(1) NOT NULL UNIQUE,
-	name varchar(30) NOT NULL,
-	description varchar(255)
+Create Table FireHazardCategories (
+	Id Smallint Identity(1, 1) Primary Key,
+	Category Varchar(1) Not Null Unique,
+	Name Varchar(30) Not Null,
+	Description Varchar(255)
 );

@@ -1,7 +1,7 @@
-CREATE TABLE users (
-	id smallint identity(1, 1) PRIMARY KEY,
-	login varchar(255) NOT NULL,
-	password varchar(255) NOT NULL,
-	employee_id smallint NOT NULL,
-	CONSTRAINT fk_employee FOREIGN KEY(employee_id) REFERENCES employees(id)
+Create Table Users (
+	Id Smallint Identity(1, 1) Primary Key,
+	Login Varchar(255) Not Null,
+	Password Varchar(255) Not Null,
+	EmployeeId Smallint Not Null,
+	Constraint FkEmployee Foreign Key(EmployeeId) References Employees(Id)
 );

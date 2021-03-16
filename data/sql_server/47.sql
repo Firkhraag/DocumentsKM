@@ -1,10 +1,10 @@
-CREATE TABLE standard_constructions (
-	id smallint identity(1, 1) PRIMARY KEY,
-	specification_id int NOT NULL,
-	name varchar(255) NOT NULL,
-	num smallint NOT NULL,
-	sheet varchar(255),
-	weight real NOT NULL,
-	UNIQUE (specification_id, name),
-	CONSTRAINT fk_specification FOREIGN KEY(specification_id) REFERENCES specifications(id)
+Create Table StandardConstructions (
+	Id Smallint Identity(1, 1) Primary Key,
+	SpecificationId Int Not Null,
+	Name Varchar(255) Not Null,
+	Num Smallint Not Null,
+	Sheet Varchar(255),
+	Weight Real Not Null,
+	Unique (SpecificationId, Name),
+	Constraint FkSpecification Foreign Key(SpecificationId) References Specifications(Id)
 );

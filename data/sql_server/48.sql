@@ -1,10 +1,10 @@
-CREATE TABLE construction_elements (
-	id int identity(1, 1) PRIMARY KEY,
-	construction_id int NOT NULL,
-	profile_id int NOT NULL,
-	steel_id smallint NOT NULL,
-	length real NOT NULL,
-	CONSTRAINT fk_construction FOREIGN KEY(construction_id) REFERENCES constructions(id),
-	CONSTRAINT fk_profile FOREIGN KEY(profile_id) REFERENCES profiles(id),
-	CONSTRAINT fk_steel FOREIGN KEY(steel_id) REFERENCES steel(id)
+Create Table ConstructionElements (
+	Id Int Identity(1, 1) Primary Key,
+	ConstructionId Int Not Null,
+	ProfileId Int Not Null,
+	SteelId Smallint Not Null,
+	Length Real Not Null,
+	Constraint FkConstruction Foreign Key(ConstructionId) References Constructions(Id),
+	Constraint FkProfile Foreign Key(ProfileId) References Profiles(Id),
+	Constraint FkSteel Foreign Key(SteelId) References Steel(Id)
 );

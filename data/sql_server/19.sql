@@ -1,12 +1,12 @@
-CREATE TABLE corr_prot_methods (
-	id smallint identity(1, 1) PRIMARY KEY,
-	env_aggressiveness_id smallint NOT NULL,
-	construction_material_id smallint NOT NULL,
-	name varchar(255) NOT NULL,
-	status smallint NOT NULL,
-	UNIQUE(
-		env_aggressiveness_id, construction_material_id, name
+Create Table CorrProtMethods (
+	Id Smallint Identity(1, 1) Primary Key,
+	EnvAggressivenessId Smallint Not Null,
+	ConstructionMaterialId Smallint Not Null,
+	Name Varchar(255) Not Null,
+	Status Smallint Not Null,
+	Unique(
+		EnvAggressivenessId, ConstructionMaterialId, Name
 	),
-	CONSTRAINT fk_env_aggressiveness FOREIGN KEY(env_aggressiveness_id) REFERENCES env_aggressiveness(id),
-	CONSTRAINT fk_construction_material FOREIGN KEY(construction_material_id) REFERENCES construction_materials(id)
+	Constraint FkEnvAggressiveness Foreign Key(EnvAggressivenessId) References EnvAggressiveness(Id),
+	Constraint FkConstructionMaterial Foreign Key(ConstructionMaterialId) References ConstructionMaterials(Id)
 );

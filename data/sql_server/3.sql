@@ -1,10 +1,10 @@
-CREATE TABLE specifications (
-	id int identity(1, 1) PRIMARY KEY,
-	mark_id int NOT NULL,
-	num smallint NOT NULL,
-	created_date timestamp NOT NULL DEFAULT NOW(),
-	is_current boolean NOT NULL DEFAULT true,
-	note varchar(255),
-	UNIQUE (mark_id, num),
-	CONSTRAINT fk_mark FOREIGN KEY(mark_id) REFERENCES marks(id)
+Create Table Specifications (
+	Id Int Identity(1, 1) Primary Key,
+	MarkId Int Not Null,
+	Num Smallint Not Null,
+	CreatedDate Timestamp Not Null Default Now(),
+	IsCurrent Boolean Not Null Default True,
+	Note Varchar(255),
+	Unique (MarkId, Num),
+	Constraint FkMark Foreign Key(MarkId) References Marks(Id)
 );

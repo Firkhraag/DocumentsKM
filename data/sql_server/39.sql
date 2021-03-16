@@ -1,8 +1,8 @@
-CREATE TABLE linked_docs (
-	id smallint identity(1, 1) PRIMARY KEY,
-	code varchar(4) NOT NULL UNIQUE,
-	type_id smallint NOT NULL,
-	designation varchar(40) NOT NULL,
-	name varchar(255) NOT NULL UNIQUE,
-	CONSTRAINT fk_linked_doc_type FOREIGN KEY(type_id) REFERENCES linked_doc_types(id)
+Create Table LinkedDocs (
+	Id Smallint Identity(1, 1) Primary Key,
+	Code Varchar(4) Not Null Unique,
+	TypeId Smallint Not Null,
+	Designation Varchar(40) Not Null,
+	Name Varchar(255) Not Null Unique,
+	Constraint FkLinkedDocType Foreign Key(TypeId) References LinkedDocTypes(Id)
 );

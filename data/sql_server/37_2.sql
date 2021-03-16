@@ -1,5 +1,5 @@
-CREATE TABLE general_data_sections (
-	id smallint identity(1, 1) PRIMARY KEY,
-	name varchar(255) NOT NULL UNIQUE,
-	order_num smallint NOT NULL UNIQUE
+Create Table GeneralDataSections (
+	Id Smallint Identity(1, 1) Primary Key,
+	Name Varchar(255) Not Null Unique,
+	OrderNum Smallint Not Null Unique
 );

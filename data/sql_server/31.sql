@@ -1,6 +1,6 @@
-CREATE TABLE oz_paintings (
-	id smallint identity(1, 1) PRIMARY KEY,
-	name varchar(100) UNIQUE NOT NULL,
-	short_name varchar(30) UNIQUE NOT NULL,
-	include boolean NOT NULL
+Create Table OzPaintings (
+	Id Smallint Identity(1, 1) Primary Key,
+	Name Varchar(100) Unique Not Null,
+	ShortName Varchar(30) Unique Not Null,
+	Include Boolean Not Null
 );

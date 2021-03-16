@@ -1,17 +1,17 @@
-CREATE TABLE bolt_diameters (
-	id smallint identity(1, 1) PRIMARY KEY,
-	diameter smallint NOT NULL,
-	nut_weight real NOT NULL,
-	washer_steel varchar(50) NOT NULL,
-	washer_weight real NOT null,
-	washer_thickness smallint NOT NULL,
-	bolt_tech_spec varchar(50) NOT NULL,
-	strength_class varchar(50) NOT NULL,
-	nut_tech_spec varchar(50) NOT NULL,
-	washer_tech_spec varchar(50) NOT NULL,
-	UNIQUE(
-		diameter, nut_weight, washer_steel, washer_weight,
-		washer_thickness, bolt_tech_spec, strength_class,
-		nut_tech_spec, washer_tech_spec
+Create Table BoltDiameters (
+	Id Smallint Identity(1, 1) Primary Key,
+	Diameter Smallint Not Null,
+	NutWeight Real Not Null,
+	WasherSteel Varchar(50) Not Null,
+	WasherWeight Real Not Null,
+	WasherThickness Smallint Not Null,
+	BoltTechSpec Varchar(50) Not Null,
+	StrengthClass Varchar(50) Not Null,
+	NutTechSpec Varchar(50) Not Null,
+	WasherTechSpec Varchar(50) Not Null,
+	Unique(
+		Diameter, NutWeight, WasherSteel, WasherWeight,
+		WasherThickness, BoltTechSpec, StrengthClass,
+		NutTechSpec, WasherTechSpec
 	)
 );

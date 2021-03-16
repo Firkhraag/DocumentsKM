@@ -1,17 +1,17 @@
-CREATE TABLE construction_elements (
-	id int identity(1, 1) PRIMARY KEY,
-	construction_id int NOT NULL,
-	profile_class_id smallint NOT NULL,
-	profile_name varchar(30) NOT NULL,
-	symbol varchar(2) NOT NULL,
-	weight real NOT NULL,
-	surface_area real NOT NULL,
-	profile_type_id smallint NOT NULL,
-	steel_id smallint NOT NULL,
-	length real NOT NULL,
-	status smallint NOT NULL,
-	CONSTRAINT fk_construction FOREIGN KEY(construction_id) REFERENCES constructions(id),
-	CONSTRAINT fk_profile_class FOREIGN KEY(profile_class_id) REFERENCES profile_classes(id),
-	CONSTRAINT fk_profile_type FOREIGN KEY(profile_type_id) REFERENCES profile_types(id),
-	CONSTRAINT fk_steel FOREIGN KEY(steel_id) REFERENCES steel(id)
+Create Table ConstructionElements (
+	Id Int Identity(1, 1) Primary Key,
+	ConstructionId Int Not Null,
+	ProfileClassId Smallint Not Null,
+	ProfileName Varchar(30) Not Null,
+	Symbol Varchar(2) Not Null,
+	Weight Real Not Null,
+	SurfaceArea Real Not Null,
+	ProfileTypeId Smallint Not Null,
+	SteelId Smallint Not Null,
+	Length Real Not Null,
+	Status Smallint Not Null,
+	Constraint FkConstruction Foreign Key(ConstructionId) References Constructions(Id),
+	Constraint FkProfileClass Foreign Key(ProfileClassId) References ProfileClasses(Id),
+	Constraint FkProfileType Foreign Key(ProfileTypeId) References ProfileTypes(Id),
+	Constraint FkSteel Foreign Key(SteelId) References Steel(Id)
 );

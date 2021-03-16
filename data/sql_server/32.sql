@@ -1,8 +1,8 @@
-CREATE TABLE oz_painting_thickness (
-	id smallint identity(1, 1) PRIMARY KEY,
-	lim smallint NOT NULL,
-	metal_thickness real NOT NULL,
-	oz_thickness real NOT NULL,
-	oz_expenditure real NOT NULL,
-	UNIQUE(lim, metal_thickness)
+Create Table OzPaintingThickness (
+	Id Smallint Identity(1, 1) Primary Key,
+	Lim Smallint Not Null,
+	MetalThickness Real Not Null,
+	OzThickness Real Not Null,
+	OzExpenditure Real Not Null,
+	Unique(Lim, MetalThickness)
 );

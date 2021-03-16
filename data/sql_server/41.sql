@@ -1,6 +1,6 @@
-CREATE TABLE steel (
-	id smallint identity(1, 1) PRIMARY KEY,
-	name varchar(255) NOT NULL UNIQUE,
-	standard varchar(50) NOT NULL,
-	strength smallint
+Create Table Steel (
+	Id Smallint Identity(1, 1) Primary Key,
+	Name Varchar(255) Not Null Unique,
+	Standard Varchar(50) Not Null,
+	Strength Smallint
 );

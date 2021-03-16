@@ -1,8 +1,8 @@
-CREATE TABLE additional_work (
-	id int identity(1, 1) PRIMARY KEY,
-	mark_id int NOT NULL,
-	employee_id int NOT NULL,
-	valuation smallint NOT NULL,
-	metal_order smallint NOT NULL,
-	UNIQUE(mark_id, employee_id)
+Create Table AdditionalWork (
+	Id Int Identity(1, 1) Primary Key,
+	MarkId Int Not Null,
+	EmployeeId Int Not Null,
+	Valuation Smallint Not Null,
+	MetalOrder Smallint Not Null,
+	Unique(MarkId, EmployeeId)
 );

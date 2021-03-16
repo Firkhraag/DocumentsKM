@@ -1,8 +1,8 @@
-CREATE TABLE mark_approvals (
-	id int identity(1, 1) PRIMARY KEY,
-	mark_id int,
-	employee_id int,
-	UNIQUE (mark_id, employee_id),
-	CONSTRAINT fk_mark FOREIGN KEY(mark_id) REFERENCES marks(id),
-	CONSTRAINT fk_employee FOREIGN KEY(employee_id) REFERENCES employees(id)
+Create Table MarkApprovals (
+	Id Int Identity(1, 1) Primary Key,
+	MarkId Int,
+	EmployeeId Int,
+	Unique (MarkId, EmployeeId),
+	Constraint FkMark Foreign Key(MarkId) References Marks(Id),
+	Constraint FkEmployee Foreign Key(EmployeeId) References Employees(Id)
 );
