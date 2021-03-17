@@ -30,7 +30,7 @@ namespace DocumentsKM
                 try
                 {
                     var context = services.GetRequiredService<ApplicationContext>();
-                    DbInitializer.Initialize(context);
+                    // DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {

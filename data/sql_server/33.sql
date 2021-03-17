@@ -1,5 +1,5 @@
 Create Table Profiles (
-	Id Smallint Identity(1, 1) Primary Key,
+	Id Int Identity(1, 1) Primary Key,
 	ClassId Smallint Not Null,
 	Name Varchar(30) Not Null,
 	Symbol Varchar(2),

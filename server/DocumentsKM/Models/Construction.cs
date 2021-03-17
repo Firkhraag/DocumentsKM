@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ namespace DocumentsKM.Models
     public class Construction
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Выпуск спецификации
         [Required]
@@ -28,7 +29,7 @@ namespace DocumentsKM.Models
         // Подвид
         [ForeignKey("SubtypeId")]
         public virtual ConstructionSubtype Subtype { get; set; }
-        public int? SubtypeId { get; set; }
+        public Int16? SubtypeId { get; set; }
 
         // Расценка
         [MaxLength(10)]
@@ -40,8 +41,8 @@ namespace DocumentsKM.Models
 
         // Количество типовых конструкций
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int NumOfStandardConstructions { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 NumOfStandardConstructions { get; set; }
 
         // Притупление кромок
         [Required]
@@ -62,7 +63,7 @@ namespace DocumentsKM.Models
 
         // Коэффициент окрашивания
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float PaintworkCoeff { get; set; }
 
         // Элементы вида конструкции

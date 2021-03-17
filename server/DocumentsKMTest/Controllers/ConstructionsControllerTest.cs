@@ -82,8 +82,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int specificationId = 1;
-            int typeId = 1;
-            int weldingControlId = 1;
+            short typeId = 1;
+            short weldingControlId = 1;
             var constructionRequest = new ConstructionCreateRequest
             {
                 Name = "NewCreate",
@@ -113,8 +113,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int specificationId = 2;
-            int typeId = 1;
-            int weldingControlId = 1;
+            short typeId = 1;
+            short weldingControlId = 1;
             var wrongConstructionRequests = new List<ConstructionCreateRequest>
             {
                 new ConstructionCreateRequest
@@ -177,8 +177,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int specificationId = 2;
-            int typeId = 1;
-            int weldingControlId = 1;
+            short typeId = 1;
+            short weldingControlId = 1;
             var wrongConstructionRequests = new List<CreateRequest>
             {
                 new CreateRequest
@@ -271,8 +271,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int specificationId = 1;
-            int typeId = 1;
-            int weldingControlId = 1;
+            short typeId = 1;
+            short weldingControlId = 1;
             var conflictName = TestData.constructions[0].Name;
             var conflictPaintworkCoeff = TestData.constructions[0].PaintworkCoeff;
             var constructionRequest = new ConstructionCreateRequest
@@ -304,8 +304,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int specificationId = 1;
-            int typeId = 1;
-            int weldingControlId = 1;
+            short typeId = 1;
+            short weldingControlId = 1;
             var constructionRequest = new ConstructionCreateRequest
             {
                 Name = "NewCreate",
@@ -337,8 +337,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 3;
-            int typeId = 3;
-            int weldingControlId = 3;
+            short typeId = 3;
+            short weldingControlId = 3;
             var constructionRequest = new ConstructionUpdateRequest
             {
                 Name = "NewUpdate",
@@ -484,8 +484,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 3;
-            int typeId = 3;
-            int weldingControlId = 3;
+            short typeId = 3;
+            short weldingControlId = 3;
             var constructionRequest = new ConstructionUpdateRequest
             {
                 Name = "NewUpdate",

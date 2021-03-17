@@ -1,6 +1,6 @@
 Create Table MarkGeneralDataPoints (
-	Id Smallint Identity(1, 1) Primary Key,
-	MarkId Smallint Not Null,
+	Id Int Identity(1, 1) Primary Key,
+	MarkId Int Not Null,
 	SectionId Smallint Not Null,
 	Text Varchar Not Null,
 	OrderNum Smallint Not Null,

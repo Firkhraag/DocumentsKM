@@ -291,12 +291,12 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int markId = 1;
-            int envAggressivenessId = _rnd.Next(1, TestData.envAggressiveness.Count());
-            int operatingAreaId = _rnd.Next(1, TestData.operatingAreas.Count());
-            int gasGroupId = _rnd.Next(1, TestData.gasGroups.Count());
-            int constructionMaterialId = _rnd.Next(1, TestData.constructionMaterials.Count());
-            int paintworkTypeId = _rnd.Next(1, TestData.paintworkTypes.Count());
-            int highTensileBoltsTypeId = _rnd.Next(1, TestData.highTensileBoltsTypes.Count());
+            short envAggressivenessId = (Int16)(_rnd.Next(1, TestData.envAggressiveness.Count()));
+            short operatingAreaId = (Int16)(_rnd.Next(1, TestData.operatingAreas.Count()));
+            short gasGroupId = (Int16)(_rnd.Next(1, TestData.gasGroups.Count()));
+            short constructionMaterialId = (Int16)(_rnd.Next(1, TestData.constructionMaterials.Count()));
+            short paintworkTypeId = (Int16)(_rnd.Next(1, TestData.paintworkTypes.Count()));
+            short highTensileBoltsTypeId = (Int16)(_rnd.Next(1, TestData.highTensileBoltsTypes.Count()));
 
             var markOperatingConditionsRequest = new MarkOperatingConditionsUpdateRequest
             {

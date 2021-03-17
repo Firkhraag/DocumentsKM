@@ -1,13 +1,13 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
 {
-    // Not used now
     // Степень очистки антикоррозионной защиты
     public class CorrProtCleaningDegree
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Название
         [Required]

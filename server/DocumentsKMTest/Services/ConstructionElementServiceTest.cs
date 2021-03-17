@@ -785,7 +785,7 @@ namespace DocumentsKM.Tests
             // Arrange
             int id = _rnd.Next(1, _updateConstructionElements.Count());
             int profileId = _rnd.Next(1, _profiles.Count());
-            int steelId = _rnd.Next(1, _steel.Count());
+            short steelId = (Int16)(_rnd.Next(1, _steel.Count()));
             var newFloatValue = 9.0f;
 
             var newConstructionElementRequest = new ConstructionElementUpdateRequest

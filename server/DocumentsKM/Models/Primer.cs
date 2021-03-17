@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
@@ -6,11 +7,11 @@ namespace DocumentsKM.Models
     public class Primer
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Номер группы
         [Required]
-        public int GroupNum { get; set; }
+        public Int16 GroupNum { get; set; }
 
         // Название
         [Required]
@@ -23,6 +24,7 @@ namespace DocumentsKM.Models
 
         // Приоритет
         [Required]
-        public int Priority { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Priority { get; set; }
     }
 }

@@ -70,7 +70,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int constructionId = 3;
-            int diameterId = 1;
+            short diameterId = 1;
             var constructionBoltRequest = new ConstructionBoltCreateRequest
             {
                 DiameterId = diameterId,
@@ -95,7 +95,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int constructionId = 1;
-            int diameterId = 3;
+            short diameterId = 3;
             var wrongConstructionBoltRequests = new List<ConstructionBoltCreateRequest>
             {
                 new ConstructionBoltCreateRequest
@@ -151,7 +151,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int constructionId = 1;
-            int diameterId = 3;
+            short diameterId = 3;
             var constructionBoltRequest = new ConstructionBoltCreateRequest
             {
                 DiameterId = diameterId,
@@ -189,7 +189,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int constructionId = 3;
-            int diameterId = 2;
+            short diameterId = 2;
             var constructionBoltRequest = new ConstructionBoltCreateRequest
             {
                 DiameterId = diameterId,
@@ -214,7 +214,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int constructionId = 1;
-            int diameterId = 3;
+            short diameterId = 3;
             var constructionBoltRequest = new ConstructionBoltCreateRequest
             {
                 DiameterId = diameterId,
@@ -241,7 +241,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int diameterId = 3;
+            short diameterId = 3;
             var constructionBoltRequest = new ConstructionBoltUpdateRequest
             {
                 DiameterId = diameterId,
@@ -333,7 +333,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 3;
-            int diameterId = 3;
+            short diameterId = 3;
             var constructionBoltRequest = new ConstructionBoltUpdateRequest
             {
                 DiameterId = diameterId,

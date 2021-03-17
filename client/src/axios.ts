@@ -6,9 +6,8 @@ const httpClient = axios.create({
 	timeout: 3000,
 })
 
-let tokenValue = ''
-
 httpClient.interceptors.request.use((config) => {
+    const tokenValue = localStorage.getItem('token')
 	config.headers.Authorization = `Bearer ${tokenValue}`
 	return config
 })
@@ -16,17 +15,8 @@ httpClient.interceptors.request.use((config) => {
 httpClient.interceptors.response.use(
 	(response) => {
 		const originalRequest = response.config
-		if (
-			(originalRequest.url === '/users/refresh-token' ||
-				originalRequest.url === '/users/login') &&
-			response.status === 200
-		) {
-			tokenValue = response.data.accessToken
-		} else if (
-			originalRequest.url === '/users/logout' &&
-			response.status === 204
-		) {
-			tokenValue = ''
+		if (originalRequest.url === '/users/login' && response.status === 200) {
+            localStorage.setItem('token', response.data.token)
 		}
 		return response
 	},
@@ -34,15 +24,8 @@ httpClient.interceptors.response.use(
 		if (error.response == null || error.response.status === 500) {
 			return Promise.reject(new Error('Ошибка сети'))
 		}
-
-		const originalRequest = error.config
-		if (
-			error.response.status === 401 &&
-			originalRequest.url !== '/users/refresh-token'
-		) {
-			const response = await httpClient.post('/users/refresh-token')
-			tokenValue = response.data.accessToken
-			return httpClient(originalRequest)
+        if (error.response.status === 401) {
+			localStorage.removeItem('token')
 		}
 		return Promise.reject(error)
 	}

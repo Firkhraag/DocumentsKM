@@ -668,7 +668,7 @@ namespace DocumentsKM.Tests
             int id = _rnd.Next(1, _updateConstructions.Count());
             var newStringValue = "NewUpdate";
             var newBoolValue = true;
-            var newIntValue = 99;
+            short newIntValue = 99;
 
             var newConstructionRequest = new ConstructionUpdateRequest
             {

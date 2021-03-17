@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
@@ -6,7 +7,7 @@ namespace DocumentsKM.Models
     public class AttachedDoc
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Марка
         [Required]

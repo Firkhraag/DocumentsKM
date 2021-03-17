@@ -7,7 +7,7 @@ namespace DocumentsKM.Models
     public class AdditionalWork
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Марка
         [Required]
@@ -19,12 +19,12 @@ namespace DocumentsKM.Models
 
         // Расчет
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int Valuation { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Valuation { get; set; }
 
         // Заказ металла
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int MetalOrder { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 MetalOrder { get; set; }
     }
 }

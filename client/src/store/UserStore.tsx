@@ -32,20 +32,19 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		}
 	}
 	const logout = async () => {
-		await httpClient.post('/users/logout')
+        localStorage.removeItem('token')
 		setUser({
 			id: -1,
 			login: '',
 			employee: null,
 		})
 		localStorage.removeItem('selectedMarkId')
-		// localStorage.removeItem('recentMarkIds')
 	}
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await httpClient.post('/users/refresh-token')
+				const response = await httpClient.get('/users/me')
 				setUser(response.data)
 			} catch (e) {
 				setUser({
@@ -54,7 +53,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 					employee: null,
 				})
 				localStorage.removeItem('selectedMarkId')
-				// localStorage.removeItem('recentMarkIds')
 			}
 		}
 		fetchData()

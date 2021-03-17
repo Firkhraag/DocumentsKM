@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Dtos
@@ -5,14 +6,14 @@ namespace DocumentsKM.Dtos
     public class AdditionalWorkCreateRequest
     {
         [Required]
-        public int EmployeeId { get; set; }
+        public Int32 EmployeeId { get; set; }
 
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int Valuation { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Valuation { get; set; }
 
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int MetalOrder { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 MetalOrder { get; set; }
     }
 }

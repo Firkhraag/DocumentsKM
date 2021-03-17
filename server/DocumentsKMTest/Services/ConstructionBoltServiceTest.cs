@@ -722,7 +722,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _updateConstructionBolts.Count());
-            var newNumber = 6;
+            short newNumber = 6;
 
             var newConstructionBoltRequest = new ConstructionBoltUpdateRequest
             {
@@ -753,7 +753,7 @@ namespace DocumentsKM.Tests
             // Arrange
             int id = _rnd.Next(1, _updateConstructionBolts.Count());
             int wrongId = 999;
-            var newNumber = 6;
+            short newNumber = 6;
 
             var newConstructionBoltRequest = new ConstructionBoltUpdateRequest
             {
@@ -776,7 +776,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldFailWithConflict()
         {
             // Arrange
-            var conflictDiameterId = 2;
+            short conflictDiameterId = 2;
             var id = 1;
 
             var newConstructionBoltRequest = new ConstructionBoltUpdateRequest

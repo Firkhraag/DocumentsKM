@@ -1,14 +1,14 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
-    // Not used now
     // Методы антикоррозионной защиты
     public class CorrProtMethod
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Агрессивность среды
         [Required]
@@ -27,6 +27,7 @@ namespace DocumentsKM.Models
 
         // Статус
         [Required]
-        public int Status { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Status { get; set; }
     }
 }

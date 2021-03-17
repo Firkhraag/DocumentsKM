@@ -1,10 +1,11 @@
+using System;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Dtos
 {
     public class EmployeeFetched
     {
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         public string Fullname { get; set; }
 

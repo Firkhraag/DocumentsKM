@@ -43,8 +43,8 @@ namespace DocumentsKM.Services
             var newSpecification = new Specification
             {
                 Mark = foundMark,
-                Num = specifications.Count() == 0 ? 1 :
-                    specifications.Max(v => v.Num) + 1,
+                Num = (Int16)(specifications.Count() == 0 ? 1 :
+                    specifications.Max(v => v.Num) + 1),
                 IsCurrent = true,
             };
             _repository.Add(newSpecification);

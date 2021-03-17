@@ -189,7 +189,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _additionalWork.Count());
-            var newIntValue = 99;
+            short newIntValue = 99;
 
             var newAdditionalWorkRequest = new AdditionalWorkUpdateRequest
             {

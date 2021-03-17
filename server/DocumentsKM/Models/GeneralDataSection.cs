@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
@@ -6,7 +7,7 @@ namespace DocumentsKM.Models
     public class GeneralDataSection
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Название
         [Required]
@@ -15,6 +16,7 @@ namespace DocumentsKM.Models
 
         // Номер
         [Required]
-        public int OrderNum { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 OrderNum { get; set; }
     }
 }

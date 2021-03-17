@@ -1,13 +1,14 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Dtos
 {
     public class DefaultValuesUpdateRequest
     {
-        public int? DepartmentId { get; set; }
-        public int? CreatorId { get; set; }
-        public int? InspectorId { get; set; }
-        public int? NormContrId { get; set; }
+        public Int16? DepartmentId { get; set; }
+        public Int32? CreatorId { get; set; }
+        public Int32? InspectorId { get; set; }
+        public Int32? NormContrId { get; set; }
 
         public DefaultValuesUpdateRequest()
         {

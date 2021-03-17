@@ -110,7 +110,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int markId = 1;
-            int docTypeId = 1;
+            short docTypeId = 1;
             int creatorId = 1;
             int inspectorId = 2;
             int normContrId = 3;
@@ -142,7 +142,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int markId = 2;
-            int docTypeId = 1;
+            short docTypeId = 1;
             int creatorId = 1;
             int inspectorId = 2;
             int normContrId = 3;
@@ -217,7 +217,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int markId = 2;
-            int docTypeId = 1;
+            short docTypeId = 1;
             int creatorId = 1;
             int inspectorId = 2;
             int normContrId = 3;
@@ -325,7 +325,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int markId = 1;
-            int docTypeId = 1;
+            short docTypeId = 1;
             int creatorId = 1;
             int inspectorId = 2;
             int normContrId = 3;

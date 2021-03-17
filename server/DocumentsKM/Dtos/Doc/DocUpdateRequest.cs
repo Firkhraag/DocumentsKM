@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Dtos
@@ -6,18 +7,18 @@ namespace DocumentsKM.Dtos
     {
         [MaxLength(255)]
         public string Name { get; set; }
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float? Form { get; set; }
-        public int? CreatorId { get; set; }
-        public int? InspectorId { get; set; }
-        public int? NormContrId { get; set; }
+        public Int32? CreatorId { get; set; }
+        public Int32? InspectorId { get; set; }
+        public Int32? NormContrId { get; set; }
 
-        public int? TypeId { get; set; }
+        public Int16? TypeId { get; set; }
 
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int? ReleaseNum { get; set; }
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int? NumOfPages { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? ReleaseNum { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? NumOfPages { get; set; }
         [MaxLength(255)]
         public string Note { get; set; }
 

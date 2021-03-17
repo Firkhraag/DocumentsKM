@@ -58,7 +58,7 @@ namespace DocumentsKM.Services
             if (currentPoints.Count() == 0)
                 markGeneralDataPoint.OrderNum = 1;
             else
-                markGeneralDataPoint.OrderNum = currentPoints.Max(v => v.OrderNum) + 1;
+                markGeneralDataPoint.OrderNum = (Int16)(currentPoints.Max(v => v.OrderNum) + 1);
 
             _repository.Add(markGeneralDataPoint);
 
@@ -144,12 +144,12 @@ namespace DocumentsKM.Services
                     if (currentPoints.Count() == 0)
                         markGeneralDataPoint.OrderNum = 1;
                     else
-                        markGeneralDataPoint.OrderNum = currentPoints.Max(v => v.OrderNum) + 1;
+                        markGeneralDataPoint.OrderNum = (Int16)(currentPoints.Max(v => v.OrderNum) + 1);
                     _repository.Add(markGeneralDataPoint);
                     currentPoints.Add(markGeneralDataPoint);
                 }
             }
-            var num = 1;
+            short num = 1;
             foreach (var p in currentPoints)
             {
                 p.OrderNum = num;
@@ -193,22 +193,22 @@ namespace DocumentsKM.Services
             {
                 var orderNum = markGeneralDataPoint.OrderNum.GetValueOrDefault();
                 foundMarkGeneralDataPoint.OrderNum = orderNum;
-                var num = 1;
+                short num = 1;
                 foreach (var p in _repository.GetAllByMarkAndSectionId(markId, sectionId))
                 {
                     if (p.Id == id)
                         continue;
                     if (num == markGeneralDataPoint.OrderNum)
                     {
-                        num = num + 1;
+                        num = (Int16)(num + 1);
                         p.OrderNum = num;
                         _repository.Update(p);
-                        num = num + 1;
+                        num = (Int16)(num + 1);
                         continue;
                     }
                     p.OrderNum = num;
                     _repository.Update(p);
-                    num = num + 1;
+                    num = (Int16)(num + 1);
                 }
             }
 
@@ -233,7 +233,7 @@ namespace DocumentsKM.Services
             {
                 if (p.OrderNum > foundMarkGeneralDataPoint.OrderNum)
                 {
-                    p.OrderNum = p.OrderNum - 1;
+                    p.OrderNum = (Int16)(p.OrderNum - 1);
                     _repository.Update(p);
                 }
             }

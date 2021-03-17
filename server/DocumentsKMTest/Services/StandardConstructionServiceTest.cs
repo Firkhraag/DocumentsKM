@@ -484,7 +484,7 @@ namespace DocumentsKM.Tests
             // Arrange
             var id = _rnd.Next(1, _updateStandardConstructions.Count());
             var newStringValue = "NewUpdate";
-            var newIntValue = 99;
+            short newIntValue = 99;
             var newFloatValue = 9.0f;
 
             var newStandardConstructionRequest = new StandardConstructionUpdateRequest

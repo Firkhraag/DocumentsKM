@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,7 +9,7 @@ namespace DocumentsKM.Models
     public class CorrProtVariant
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Зона эксплуатации
         [Required]
@@ -35,26 +36,31 @@ namespace DocumentsKM.Models
         public virtual PaintworkType PaintworkType { get; set; }
 
         // Группа покраски
-        public int? PaintworkGroup { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PaintworkGroup { get; set; }
 
         // Стойкость
         [ForeignKey("PaintworkFastnessId")]
         public virtual PaintworkFastness PaintworkFastness { get; set; }
 
         // Число слоев
-        public int? PaintworkNumOfLayers { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PaintworkNumOfLayers { get; set; }
 
         // Толщина покраски
-        public int? PaintworkPrimerThickness { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PaintworkPrimerThickness { get; set; }
 
         // Количество слоев грунтовки
-        public int? PrimerNumOfLayers { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PrimerNumOfLayers { get; set; }
 
         // Степень очистки
         [ForeignKey("CleaningDegreeId")]
         public virtual CorrProtCleaningDegree CleaningDegree { get; set; }
 
         [Required]
-        public int Status { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Status { get; set; }
     }
 }

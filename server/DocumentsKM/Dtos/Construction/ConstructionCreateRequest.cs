@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Dtos
@@ -9,9 +10,9 @@ namespace DocumentsKM.Dtos
         public string Name { get; set; }
 
         [Required]
-        public int TypeId { get; set; }
+        public Int16 TypeId { get; set; }
 
-        public int? SubtypeId { get; set; }
+        public Int16? SubtypeId { get; set; }
 
         [MaxLength(10)]
         public string Valuation { get; set; }
@@ -20,8 +21,8 @@ namespace DocumentsKM.Dtos
         public string StandardAlbumCode { get; set; }
 
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int NumOfStandardConstructions { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 NumOfStandardConstructions { get; set; }
 
         [Required]
         public bool HasEdgeBlunting { get; set; }
@@ -33,10 +34,10 @@ namespace DocumentsKM.Dtos
         public bool HasFlangedConnections { get; set; }
 
         [Required]
-        public int WeldingControlId { get; set; }
+        public Int16 WeldingControlId { get; set; }
 
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float PaintworkCoeff { get; set; }
 
         public ConstructionCreateRequest()

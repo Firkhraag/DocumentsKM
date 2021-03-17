@@ -3,12 +3,13 @@ using DocumentsKM.Models;
 
 namespace DocumentsKM.Dtos
 {
-    public class UserResponse
+    public class UserTokenResponse
     {
         public Int16 Id { get; set; }
         public EmployeeDepartmentResponse Employee { get; set; }
+        public string Token { get; set; }
 
-        public UserResponse(short id, Employee employee)
+        public UserTokenResponse(short id, Employee employee, string token)
         {
             Id = id;
             Employee = new EmployeeDepartmentResponse
@@ -17,7 +18,8 @@ namespace DocumentsKM.Dtos
                 Name = employee.Name,
                 Department = employee.Department,
             };
+            Token = token;
         }
-        public UserResponse() {}
+        public UserTokenResponse() {}
     }
 }

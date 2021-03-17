@@ -1,14 +1,14 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
-    // Not used now
     // Покрытие антикоррозионной защиты
     public class CorrProtCoating
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Тип лакокрасочного материала
         [Required]
@@ -17,7 +17,8 @@ namespace DocumentsKM.Models
 
         // Группа покраски
         [Required]
-        public int PaintworkGroup { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 PaintworkGroup { get; set; }
 
         // Стойкость
         [Required]
@@ -30,11 +31,13 @@ namespace DocumentsKM.Models
         public string Name { get; set; }
 
         // Число слоев
-        public int? PaintworkNumOfLayers { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PaintworkNumOfLayers { get; set; }
 
         // Группа грунтовки
         [Required]
-        public int PrimerGroup { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 PrimerGroup { get; set; }
 
         // Можно красить
         [Required]
@@ -42,6 +45,7 @@ namespace DocumentsKM.Models
 
         // Приоритет
         [Required]
-        public int Priority { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Priority { get; set; }
     }
 }

@@ -11,7 +11,6 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
 
@@ -33,7 +32,7 @@ namespace DocumentsKM
             {
                 opt.AddPolicy("EnableCORS", builder =>
                 {
-                    builder.WithOrigins("http://localhost:8080")
+                    builder.WithOrigins("http://localhost:5000", "http://localhost:5001")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -52,7 +51,7 @@ namespace DocumentsKM
                 );
 
             // Add Swagger documentation
-            // URI: https://localhost:5001/swagger
+            // Local URI: https://localhost:5001/swagger
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc(
@@ -61,7 +60,7 @@ namespace DocumentsKM
                     {
                         Title = "DocumentsKM",
                         Version = "v1",
-                        Description = "Service is used for reading, creating and updating marks"
+                        Description = "Сервис марок КМ"
                     }
                 );
             });
@@ -88,16 +87,15 @@ namespace DocumentsKM
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    // Токен будет истекать точно в ExpirationTime
                     ClockSkew = TimeSpan.Zero
                 };
             });
 
-            // Подключение к базе данных Postgres
+            // Подключение к базе данных SqlServer
             services.AddDbContext<ApplicationContext>(
                 opt => opt.UseLazyLoadingProxies()
-                    .UseNpgsql(
-                        Configuration.GetConnectionString("PostgresConnection")
+                    .UseSqlServer(
+                        Configuration.GetConnectionString("SQLServerConnection")
                     ));
 
             services.AddAutoMapper(typeof(Startup));
@@ -110,13 +108,8 @@ namespace DocumentsKM
             // SPA
             services.AddSpaStaticFiles(configuration => 
             {
-                // configuration.RootPath = "../../public";
                 configuration.RootPath = "ClientApp/dist";
             });
-
-            // services.AddSingleton<IConnectionMultiplexer>(x =>
-            //     ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
-            // services.AddSingleton<ICacheService, RedisCacheService>();
 
             // DI for application services
             InjectScopedServices(services);

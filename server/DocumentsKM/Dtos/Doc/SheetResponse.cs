@@ -1,9 +1,11 @@
+using System;
+
 namespace DocumentsKM.Dtos
 {
     public class SheetResponse
     {
-        public int Id { get; set; }
-        public int Num { get; set; }
+        public Int32 Id { get; set; }
+        public Int16 Num { get; set; }
         public string Name { get; set; }
         public float Form { get; set; }
         public EmployeeBaseResponse Creator { get; set; }

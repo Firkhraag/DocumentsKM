@@ -414,21 +414,21 @@ namespace DocumentsKM.Tests
             {
                 Id = 1,
                 Login = "1",
-                Password = BCrypt.Net.BCrypt.HashPassword("1"),
+                Password = "1",
                 Employee = employees[0],
             },
             new User
             {
                 Id = 2,
                 Login = "2",
-                Password = BCrypt.Net.BCrypt.HashPassword("2"),
+                Password = "2",
                 Employee = employees[1],
             },
             new User
             {
                 Id = 3,
                 Login = "3",
-                Password = BCrypt.Net.BCrypt.HashPassword("3"),
+                Password = "3",
                 Employee = employees[2],
             },
         };

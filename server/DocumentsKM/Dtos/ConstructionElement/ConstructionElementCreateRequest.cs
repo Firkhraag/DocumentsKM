@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Dtos
@@ -5,13 +6,13 @@ namespace DocumentsKM.Dtos
     public class ConstructionElementCreateRequest
     {
         [Required]
-        public int ProfileId { get; set; }
+        public Int32 ProfileId { get; set; }
 
         [Required]
-        public int SteelId { get; set; }
+        public Int16 SteelId { get; set; }
 
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Length { get; set; }
     }
 }

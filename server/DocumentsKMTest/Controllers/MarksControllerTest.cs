@@ -146,8 +146,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             var userId = 1;
-            var subnodeId = 1;
-            var departmentId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
             var mainBuilderId = 1;
             var markRequest = new MarkCreateRequest
             {
@@ -173,8 +173,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             var userId = 1;
-            var subnodeId = 1;
-            var departmentId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
             var mainBuilderId = 1;
             var wrongMarkRequests = new List<MarkCreateRequest>
             {
@@ -215,8 +215,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             var userId = 1;
-            var subnodeId = 1;
-            var departmentId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
             var mainBuilderId = 1;
             var groupLeaderId = 1;
             var chiefSpecialistId = 1;
@@ -293,8 +293,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             var userId = 1;
-            var subnodeId = 1;
-            var departmentId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
             var chiefSpecialistId = 1;
             var groupLeaderId = 2;
             var mainBuilderId = 3;
@@ -342,8 +342,8 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             var userId = 1;
-            var subnodeId = 1;
-            var departmentId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
             var mainBuilderId = 1;
             var markRequest = new MarkCreateRequest
             {

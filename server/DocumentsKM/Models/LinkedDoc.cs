@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +8,7 @@ namespace DocumentsKM.Models
     public class LinkedDoc
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Шифр
         [Required]

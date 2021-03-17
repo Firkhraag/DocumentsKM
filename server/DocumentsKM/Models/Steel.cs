@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
@@ -6,7 +7,7 @@ namespace DocumentsKM.Models
     public class Steel
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Наименование
         [Required]
@@ -19,6 +20,7 @@ namespace DocumentsKM.Models
         public string Standard { get; set; }
 
         // Прочность
-        public int? Strength { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? Strength { get; set; }
     }
 }
