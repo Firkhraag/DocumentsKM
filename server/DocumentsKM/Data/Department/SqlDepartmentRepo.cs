@@ -16,7 +16,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Department> GetAll()
         {
-            return _context.Departments.ToList();
+            return _context.Departments.Where(v => v.IsActive).ToList();
         }
 
         public Department GetById(int id)

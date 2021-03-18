@@ -16,31 +16,24 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Employee> GetAll()
         {
-            return _context.Employees.ToList();
+            return _context.Employees.Where(v => v.IsActive).OrderBy(
+                v => v.Position.Id).ToList();
         }
 
         public IEnumerable<Employee> GetAllByDepartmentId(int departmentId)
         {
             return _context.Employees.Where(
-                v => v.Department.Id == departmentId).OrderBy(
+                v => v.Department.Id == departmentId && v.IsActive).OrderBy(
                     v => v.Position.Id).ToList();
         }
 
-        // public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
-        //     int departmentId,
-        //     int[] posIds)
-        // {
-        //     return _context.Employees.Where(v => (v.Department.Id == departmentId) &&
-        //         (posIds.Contains(v.Position.Id))).OrderBy(
-        //             v => v.Position.Id).ToList();
-        // }
-         public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
+        public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
             int departmentId,
             int minPosId,
             int maxPosId)
         {
-            return _context.Employees.Where(v => (v.Department.Id == departmentId) &&
-                (v.Position.Id >= minPosId) && (v.Position.Id <= maxPosId)).OrderBy(
+            return _context.Employees.Where(v => v.Department.Id == departmentId &&
+                v.Position.Id >= minPosId && v.Position.Id <= maxPosId && v.IsActive).OrderBy(
                     v => v.Position.Id).ToList();
         }
 
@@ -49,8 +42,8 @@ namespace DocumentsKM.Data
             int posId)
         {
             return _context.Employees.Where(
-                v => (v.Department.Id == departmentId) &&
-                    (v.Position.Id == posId)).OrderBy(
+                v => v.Department.Id == departmentId &&
+                    v.Position.Id == posId && v.IsActive).OrderBy(
                         v => v.Position.Id).ToList();
         }
 
@@ -59,8 +52,8 @@ namespace DocumentsKM.Data
             int posId)
         {
             return _context.Employees.FirstOrDefault(
-                v => (v.Department.Id == departmentId) &&
-                    (v.Position.Id == posId));
+                v => v.Department.Id == departmentId &&
+                    v.Position.Id == posId && v.IsActive);
         }
 
         public Employee GetById(int id)

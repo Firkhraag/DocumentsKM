@@ -11,11 +11,17 @@ namespace DocumentsKM.Tests
             {
                 Id = 1,
                 Name = "D1",
+                IsActive = true,
             },
             new Department
             {
                 Id = 2,
-                Name = "D2",
+                IsActive = true,
+            },
+            new Department
+            {
+                Id = 3,
+                IsActive = false,
             },
         };
 
@@ -66,6 +72,7 @@ namespace DocumentsKM.Tests
                 Name = "E1",
                 Department = departments[0],
                 Position = positions[0],
+                IsActive = true,
             },
             new Employee
             {
@@ -73,6 +80,7 @@ namespace DocumentsKM.Tests
                 Name = "E2",
                 Department = departments[1],
                 Position = positions[1],
+                IsActive = true,
             },
             new Employee
             {
@@ -80,6 +88,7 @@ namespace DocumentsKM.Tests
                 Name = "E3",
                 Department = departments[0],
                 Position = positions[2],
+                IsActive = true,
             },
             new Employee
             {
@@ -87,6 +96,7 @@ namespace DocumentsKM.Tests
                 Name = "E4",
                 Department = departments[1],
                 Position = positions[1],
+                IsActive = true,
             },
             new Employee
             {
@@ -94,6 +104,7 @@ namespace DocumentsKM.Tests
                 Name = "E5",
                 Department = departments[0],
                 Position = positions[4],
+                IsActive = true,
             },
             new Employee
             {
@@ -101,6 +112,7 @@ namespace DocumentsKM.Tests
                 Name = "E6",
                 Department = departments[1],
                 Position = positions[4],
+                IsActive = true,
             },
             new Employee
             {
@@ -108,6 +120,7 @@ namespace DocumentsKM.Tests
                 Name = "E7",
                 Department = departments[0],
                 Position = positions[5],
+                IsActive = true,
             },
             new Employee
             {
@@ -115,6 +128,15 @@ namespace DocumentsKM.Tests
                 Name = "E8",
                 Department = departments[1],
                 Position = positions[6],
+                IsActive = true,
+            },
+            new Employee
+            {
+                Id = 9,
+                Name = "E9",
+                Department = departments[0],
+                Position = positions[0],
+                IsActive = false,
             },
         };
 

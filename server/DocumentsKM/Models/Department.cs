@@ -23,5 +23,8 @@ namespace DocumentsKM.Models
         [Required]
         [MaxLength(50)]
         public string ShortName { get; set; }
+
+        [Required]
+        public bool IsActive { get; set; }
     }
 }

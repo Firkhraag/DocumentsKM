@@ -28,5 +28,8 @@ namespace DocumentsKM.Models
         // Должность
         [ForeignKey("PositionId")]
         public virtual Position Position { get; set; }
+
+        [Required]
+        public bool IsActive { get; set; }
     }
 }

@@ -43,65 +43,81 @@ public class FetchService : IHostedService
 
     public async Task OnGet()
     {
-        const string baseUrl = Secrets.PERSONNEL_URL;
-        var client = _clientFactory.CreateClient();
-
-        Log.Information("Fetching departments");
-        var departmentUrl = baseUrl + "department";
-        var departmentRequest = new HttpRequestMessage(HttpMethod.Get, departmentUrl);
-        departmentRequest.Headers.Add("Accept", "application/json");
-        var response = await client.SendAsync(departmentRequest);
-        if (response.IsSuccessStatusCode)
+        using (var scope = _serviceScopeFactory.CreateScope())
         {
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            var departments = await JsonSerializer.DeserializeAsync<IEnumerable<DepartmentFetched>>(responseStream);
-            using (var scope = _serviceScopeFactory.CreateScope())
+            // Personnel
+            const string baseUrl = Secrets.PERSONNEL_URL;
+            var client = _clientFactory.CreateClient();
+
+            Log.Information("Fetching departments");
+            var departmentUrl = baseUrl + "department";
+            var departmentRequest = new HttpRequestMessage(HttpMethod.Get, departmentUrl);
+            departmentRequest.Headers.Add("Accept", "application/json");
+            var response = await client.SendAsync(departmentRequest);
+            if (response.IsSuccessStatusCode)
             {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                var departments = await JsonSerializer.DeserializeAsync<IEnumerable<DepartmentFetched>>(responseStream);
                 var departmentService = scope.ServiceProvider.GetRequiredService<IDepartmentService>();
                 departmentService.UpdateAll(departments.ToList());
             }
-        }
-        else
-            Log.Fatal("Error while fetching departments");
-        Log.Information("Departments were fetched successfully");
+            else
+                Log.Fatal("Error while fetching departments");
+            Log.Information("Departments were fetched successfully");
 
-        Log.Information("Fetching posts");
-        var postUrl = baseUrl + "post";
-        var postRequest = new HttpRequestMessage(HttpMethod.Get, postUrl);
-        postRequest.Headers.Add("Accept", "application/json");
-        response = await client.SendAsync(postRequest);
-        if (response.IsSuccessStatusCode)
-        {
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            var positions = await JsonSerializer.DeserializeAsync<IEnumerable<Position>>(responseStream);
-            using (var scope = _serviceScopeFactory.CreateScope())
+            Log.Information("Fetching posts");
+            var postUrl = baseUrl + "post";
+            var postRequest = new HttpRequestMessage(HttpMethod.Get, postUrl);
+            postRequest.Headers.Add("Accept", "application/json");
+            response = await client.SendAsync(postRequest);
+            if (response.IsSuccessStatusCode)
             {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                var positions = await JsonSerializer.DeserializeAsync<IEnumerable<Position>>(responseStream);
                 var positionService = scope.ServiceProvider.GetRequiredService<IPositionService>();
                 positionService.UpdateAll(positions.ToList());
             }
-        }
-        else
-            Log.Fatal("Error while fetching posts");
-        Log.Information("Posts were fetched successfully");
+            else
+                Log.Fatal("Error while fetching posts");
+            Log.Information("Posts were fetched successfully");
 
-        Log.Information("Fetching staffs");
-        var staffUrl = baseUrl + "staff";
-        var staffRequest = new HttpRequestMessage(HttpMethod.Get, staffUrl);
-        staffRequest.Headers.Add("Accept", "application/json");
-        response = await client.SendAsync(staffRequest);
-        if (response.IsSuccessStatusCode)
-        {
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            var employees = await JsonSerializer.DeserializeAsync<IEnumerable<EmployeeFetched>>(responseStream);
-            using (var scope = _serviceScopeFactory.CreateScope())
+            Log.Information("Fetching staffs");
+            var staffUrl = baseUrl + "staff";
+            var staffRequest = new HttpRequestMessage(HttpMethod.Get, staffUrl);
+            staffRequest.Headers.Add("Accept", "application/json");
+            response = await client.SendAsync(staffRequest);
+            if (response.IsSuccessStatusCode)
             {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                var employees = await JsonSerializer.DeserializeAsync<IEnumerable<EmployeeFetched>>(responseStream);
                 var employeeService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
                 employeeService.UpdateAll(employees.ToList());
             }
+            else
+                Log.Fatal("Error while fetching staff");
+            Log.Information("Staff was fetched successfully");
+
+            // Archive
+            var archiveService = scope.ServiceProvider.GetRequiredService<IArchiveService>();
+
+            Log.Information("Fetching projects");
+            var projects = archiveService.GetProjects();
+            var projectService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
+            projectService.UpdateAll(projects);
+            Log.Information("Projects were fetched successfully");
+
+            Log.Information("Fetching nodes");
+            var nodes = archiveService.GetNodes();
+            var nodeService = scope.ServiceProvider.GetRequiredService<INodeService>();
+            nodeService.UpdateAll(nodes);
+            Log.Information("Nodes were fetched successfully");
+
+            Log.Information("Fetching subnodes");
+            var subnodes = archiveService.GetNodes();
+            var subnodeService = scope.ServiceProvider.GetRequiredService<ISubnodeService>();
+            subnodeService.UpdateAll(subnodes);
+            Log.Information("Subnodes were fetched successfully");
         }
-        else
-            Log.Fatal("Error while fetching staff");
-        Log.Information("Staff was fetched successfully");
     }
 
     public virtual Task StartAsync(CancellationToken cancellationToken)
@@ -115,6 +131,7 @@ public class FetchService : IHostedService
         //         _nextRun = _crontabSchedule.GetNextOccurrence(DateTime.Now);
         //     }
         // }, cancellationToken);
+
         return Task.CompletedTask;
     }
 

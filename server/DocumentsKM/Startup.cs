@@ -180,6 +180,8 @@ namespace DocumentsKM
 
             services.AddScoped<ICorrProtGeneralDataPointService, CorrProtGeneralDataPointService>();
             services.AddScoped<IDefaultValuesService, DefaultValuesService>();
+
+            services.AddScoped<IArchiveService, ArchiveService>();
         }
 
         private void InjectScopedRepositories(IServiceCollection services)

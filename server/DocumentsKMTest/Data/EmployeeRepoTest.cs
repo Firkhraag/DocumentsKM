@@ -39,7 +39,7 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId), employees);
+                v => v.Department.Id == departmentId && v.IsActive), employees);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -77,7 +77,7 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId && v.Position.Id == positionId), employees);
+                v => v.Department.Id == departmentId && v.Position.Id == positionId && v.IsActive), employees);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -116,7 +116,7 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId && v.Position.Id >= 1 && v.Position.Id <= 2), employees);
+                v => v.Department.Id == departmentId && v.Position.Id >= 1 && v.Position.Id <= 2 && v.IsActive), employees);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -138,46 +138,6 @@ namespace DocumentsKM.Tests
             context.Database.EnsureDeleted();
             context.Dispose();
         }
-
-        // [Fact]
-        // public void GetAllByDepartmentIdAndPositions_ShouldReturnEmployees()
-        // {
-        //     // Arrange
-        //     var context = GetContext(TestData.employees);
-        //     var repo = new SqlEmployeeRepo(context);
-
-        //     var departmentId = _rnd.Next(1, TestData.departments.Count());
-        //     var positionIds = new int[] { 1, 2 };
-
-        //     // Act
-        //     var employees = repo.GetAllByDepartmentIdAndPositions(departmentId, positionIds);
-
-        //     // Assert
-        //     Assert.Equal(TestData.employees.Where(
-        //         v => v.Department.Id == departmentId && positionIds.Contains(v.Position.Id)), employees);
-
-        //     context.Database.EnsureDeleted();
-        //     context.Dispose();
-        // }
-
-        // [Fact]
-        // public void GetAllByDepartmentIdAndPositions_ShouldReturnEmptyArray_WhenWrongDepartmentId()
-        // {
-        //     // Arrange
-        //     var context = GetContext(TestData.employees);
-        //     var repo = new SqlEmployeeRepo(context);
-
-        //     var positionIds = new int[] { 1, 2 };
-
-        //     // Act
-        //     var employees = repo.GetAllByDepartmentIdAndPositions(999, positionIds);
-
-        //     // Assert
-        //     Assert.Empty(employees);
-
-        //     context.Database.EnsureDeleted();
-        //     context.Dispose();
-        // }
 
         [Fact]
         public void GetById_ShouldReturnEmployee()

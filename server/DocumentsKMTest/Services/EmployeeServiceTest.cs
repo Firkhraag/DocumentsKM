@@ -28,14 +28,14 @@ namespace DocumentsKM.Tests
             {
                 _mockEmployeeRepo.Setup(mock =>
                     mock.GetAllByDepartmentId(department.Id)).Returns(
-                        TestData.employees.Where(v => v.Department.Id == department.Id));
+                        TestData.employees.Where(v => v.Department.Id == department.Id && v.IsActive));
 
                 _mockEmployeeRepo.Setup(mock =>
                     mock.GetAllByDepartmentIdAndPositions(
                         department.Id, 1, 10)).Returns(
                             TestData.employees.Where(
                                 v => v.Department.Id == department.Id &&
-                                v.Position.Id >= 1 && v.Position.Id <= 10));
+                                v.Position.Id >= 1 && v.Position.Id <= 10 && v.IsActive));
 
                 foreach (var position in TestData.positions)
                 {
@@ -44,14 +44,14 @@ namespace DocumentsKM.Tests
                             department.Id, position.Id)).Returns(
                                 TestData.employees.Where(
                                     v => v.Department.Id == department.Id &&
-                                    v.Position.Id == position.Id));
+                                    v.Position.Id == position.Id && v.IsActive));
 
                     _mockEmployeeRepo.Setup(mock =>
                         mock.GetByDepartmentIdAndPosition(
                             department.Id, position.Id)).Returns(
                                 TestData.employees.FirstOrDefault(
                                     v => v.Department.Id == department.Id &&
-                                    v.Position.Id == position.Id));
+                                    v.Position.Id == position.Id && v.IsActive));
                 }
             }
 
@@ -78,7 +78,7 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId), returnedEmployees);
+                v => v.Department.Id == departmentId && v.IsActive), returnedEmployees);
         }
 
         [Fact]
@@ -102,7 +102,10 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId && v.Position.Id >= 1 && v.Position.Id <= 10), returnedEmployees);
+                v => v.Department.Id == departmentId &&
+                v.Position.Id >= 1 &&
+                v.Position.Id <= 10 &&
+                v.IsActive), returnedEmployees);
         }
 
         [Fact]
@@ -135,13 +138,22 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.FirstOrDefault(
-                v => v.Position.Id == departmentHeadPosId && v.Department.Id == departmentId), departmentHead);
+                v => v.Position.Id == departmentHeadPosId &&
+                v.Department.Id == departmentId &&
+                v.IsActive), departmentHead);
             Assert.Equal(TestData.employees.Where(
-                v => v.Position.Id == chiefSpecialistPosId && v.Department.Id == departmentId), chiefSpecialists);
+                v => v.Position.Id == chiefSpecialistPosId &&
+                v.Department.Id == departmentId &&
+                v.IsActive), chiefSpecialists);
             Assert.Equal(TestData.employees.Where(
-                v => v.Position.Id == groupLeaderPosId && v.Department.Id == departmentId), groupLeaders);
+                v => v.Position.Id == groupLeaderPosId &&
+                v.Department.Id == departmentId &&
+                v.IsActive), groupLeaders);
             Assert.Equal(TestData.employees.Where(
-                v => v.Position.Id >= minNormContrPos && v.Position.Id <= maxNormContrPos && v.Department.Id == departmentId), mainBuilders);
+                v => v.Position.Id >= minNormContrPos &&
+                v.Position.Id <= maxNormContrPos &&
+                v.Department.Id == departmentId &&
+                v.IsActive), mainBuilders);
         }
     }
 }
