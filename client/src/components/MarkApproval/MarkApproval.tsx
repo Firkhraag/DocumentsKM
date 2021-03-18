@@ -326,7 +326,7 @@ const MarkApproval = () => {
 														selectedObject
 															.employees[
 															rowNumber
-														].name,
+														].fullname,
 											  }
 									}
 									options={optionsObject.employees[rowNumber]
@@ -339,7 +339,7 @@ const MarkApproval = () => {
 										.map((e) => {
 											return {
 												value: e.id,
-												label: e.name,
+												label: e.fullname,
 											}
 										})}
 									styles={reactSelectStyle}

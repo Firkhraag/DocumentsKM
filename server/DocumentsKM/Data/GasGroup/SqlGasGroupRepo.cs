@@ -15,7 +15,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<GasGroup> GetAll()
         {
-            return _context.GasGroups.ToList();
+            return _context.GasGroups.OrderBy(v => v.Id).ToList();
         }
 
         public GasGroup GetById(int id)

@@ -13,7 +13,7 @@ namespace DocumentsKM.Dtos
         public Int16? DepartmentId { get; set; }
         public Int32? ChiefSpecialistId { get; set; }
         public Int32? GroupLeaderId { get; set; }
-        public Int32? MainBuilderId { get; set; }
+        public Int32? NormContrId { get; set; }
 
         public MarkUpdateRequest()
         {
@@ -23,7 +23,7 @@ namespace DocumentsKM.Dtos
             DepartmentId = null;
             ChiefSpecialistId = null;
             GroupLeaderId = null;
-            MainBuilderId = null;
+            NormContrId = null;
         }
     }
 }

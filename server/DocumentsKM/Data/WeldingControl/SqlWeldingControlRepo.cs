@@ -15,7 +15,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<WeldingControl> GetAll()
         {
-            return _context.WeldingControl.ToList();
+            return _context.WeldingControl.OrderBy(v => v.Id).ToList();
         }
 
         public WeldingControl GetById(int id)

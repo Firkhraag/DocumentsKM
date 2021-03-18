@@ -15,7 +15,7 @@ namespace DocumentsKM.Dtos
             Employee = new EmployeeDepartmentResponse
             {
                 Id = employee.Id,
-                Name = employee.Name,
+                Fullname = employee.Fullname,
                 Department = employee.Department,
             };
             Token = token;

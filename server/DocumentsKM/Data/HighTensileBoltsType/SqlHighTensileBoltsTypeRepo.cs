@@ -15,7 +15,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<HighTensileBoltsType> GetAll()
         {
-            return _context.HighTensileBoltsTypes.ToList();
+            return _context.HighTensileBoltsTypes.OrderBy(v => v.Id).ToList();
         }
 
         public HighTensileBoltsType GetById(int id)

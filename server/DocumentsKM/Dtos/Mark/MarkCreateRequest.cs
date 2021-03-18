@@ -23,12 +23,13 @@ namespace DocumentsKM.Dtos
         public Int32? GroupLeaderId { get; set; }
 
         [Required]
-        public Int32 MainBuilderId { get; set; }
+        public Int32? NormContrId { get; set; }
 
         public MarkCreateRequest()
         {
             ChiefSpecialistId = null;
             GroupLeaderId = null;
+            NormContrId = null;
         }
     }
 }

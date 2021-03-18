@@ -29,7 +29,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 		departments: [] as Department[],
 		chiefSpecialists: [] as Employee[],
 		groupLeaders: [] as Employee[],
-		mainBuilders: [] as Employee[],
+		normContrs: [] as Employee[],
 	}
 
 	const history = useHistory()
@@ -72,7 +72,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 						department: null,
 						chiefSpecialist: null,
 						groupLeader: null,
-						mainBuilder: null,
+						normContr: null,
 					})
                     if (isCreateMode) {
                         const defaultValuesResponse = await httpClient.get(
@@ -112,8 +112,8 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 									.chiefSpecialists,
 							groupLeaders:
 								fetchedMainEmployeesResponse.data.groupLeaders,
-							mainBuilders:
-								fetchedMainEmployeesResponse.data.mainBuilders,
+							normContrs:
+								fetchedMainEmployeesResponse.data.normContrs,
 						})
 						setDepartmentHead(
 							fetchedMainEmployeesResponse.data.departmentHead
@@ -152,7 +152,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 				department: null,
 				chiefSpecialist: null,
 				groupLeader: null,
-				mainBuilder: null,
+				normContr: null,
 			})
 		}
 		const v = getFromOptions(
@@ -168,14 +168,14 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 					chiefSpecialists: cachedMainEmployees.get(v.id)
 						.chiefSpecialists,
 					groupLeaders: cachedMainEmployees.get(v.id).groupLeaders,
-					mainBuilders: cachedMainEmployees.get(v.id).mainBuilders,
+					normContrs: cachedMainEmployees.get(v.id).normContrs,
 				})
 				setSelectedObject({
 					...selectedObject,
 					department: v,
 					chiefSpecialist: null,
 					groupLeader: null,
-					mainBuilder: null,
+					normContr: null,
 				})
 				setDepartmentHead(cachedMainEmployees.get(v.id).departmentHead)
 			} else {
@@ -191,14 +191,14 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 						departments: optionsObject.departments,
 						chiefSpecialists: fetchedMainEmployees.chiefSpecialists,
 						groupLeaders: fetchedMainEmployees.groupLeaders,
-						mainBuilders: fetchedMainEmployees.mainBuilders,
+						normContrs: fetchedMainEmployees.normContrs,
 					})
 					setSelectedObject({
 						...selectedObject,
 						department: v,
 						chiefSpecialist: null,
 						groupLeader: null,
-						mainBuilder: null,
+						normContr: null,
 					})
 					setDepartmentHead(fetchedMainEmployees.departmentHead)
 				} catch (e) {
@@ -248,22 +248,22 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 		}
 	}
 
-	const onMainBuilderSelect = (id: number) => {
+	const onNormContrSelect = (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
-				mainBuilder: null,
+				normContr: null,
 			})
 		}
 		const v = getFromOptions(
 			id,
-			optionsObject.mainBuilders,
-			selectedObject.mainBuilder
+			optionsObject.normContrs,
+			selectedObject.normContr
 		)
 		if (v != null) {
 			setSelectedObject({
 				...selectedObject,
-				mainBuilder: v,
+				normContr: v,
 			})
 		}
 	}
@@ -281,10 +281,6 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 			setErrMsg('Пожалуйста, выберите отдел')
 			return false
 		}
-		if (selectedObject.mainBuilder == null) {
-			setErrMsg('Пожалуйста, выберите главного строителя')
-			return false
-		}
 		return true
 	}
 
@@ -299,7 +295,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 					departmentId: selectedObject.department.id,
 					chiefSpecialistId: selectedObject.chiefSpecialist?.id,
 					groupLeaderId: selectedObject.groupLeader?.id,
-					mainBuilderId: selectedObject.mainBuilder.id,
+					normContrId: selectedObject.normContr.id,
 				})
 				localStorage.setItem('selectedMarkId', response.data.id)
 
@@ -355,10 +351,10 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 						selectedObject.groupLeader,
 						mark.groupLeader
 					),
-					mainBuilderId:
-						selectedObject.mainBuilder.id === mark.mainBuilder.id
-							? undefined
-							: selectedObject.mainBuilder.id,
+					normContrId: getNullableFieldValue(
+						selectedObject.normContr,
+						mark.normContr
+					),
 				}
 				if (!Object.values(object).some((x) => x !== undefined)) {
 					setErrMsg('Изменения осутствуют')
@@ -462,39 +458,37 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							readOnly={true}
 						/>
 					</Form.Group>
-					<Form.Group className="flex-cent-v">
+					<Form.Group className="space-between-cent-v">
 						<Form.Label
 							className="no-bot-mrg"
-							style={{ marginRight: '7.62em' }}
 						>
 							ГИП
 						</Form.Label>
 						<Form.Control
 							type="text"
-							className="auto-width flex-grow"
+							className="mark-data-input-width1"
 							value={
 								isCreateMode
 									? selectedObject.subnode.node.chiefEngineer
-											.name
-									: mark.subnode.node.chiefEngineer.name
+											.fullname
+									: mark.subnode.node.chiefEngineer.fullname
 							}
 							readOnly={true}
 						/>
 					</Form.Group>
-					<Form.Group className="flex-cent-v no-bot-mrg">
+					<Form.Group className="space-between-cent-v no-bot-mrg">
 						<Form.Label
 							className="no-bot-mrg"
-							style={{ marginRight: '1em' }}
 						>
 							Начальник отдела
 						</Form.Label>
 						<Form.Control
 							type="text"
-							className="auto-width flex-grow"
+							className="mark-data-input-width1"
 							value={
 								departmentHead == null
 									? ''
-									: departmentHead.name
+									: departmentHead.fullname
 							}
 							readOnly={true}
 						/>
@@ -574,11 +568,10 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 						/>
 					</Form.Group>
 
-					<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Group className="space-between-cent-v mrg-top-2">
 						<Form.Label
 							className="no-bot-mrg"
 							htmlFor="groupLeader"
-							style={{ marginRight: '1em' }}
 						>
 							Заведующий группы
 						</Form.Label>
@@ -589,7 +582,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							isSearchable={true}
 							placeholder="Выберите заведующего группы"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							className="auto-width flex-grow"
+							className="mark-data-input-width2"
 							onChange={(selectedOption) =>
 								onGroupLeaderSelect(
 									(selectedOption as any)?.value
@@ -602,24 +595,23 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 											value:
 												selectedObject.groupLeader.id,
 											label:
-												selectedObject.groupLeader.name,
+												selectedObject.groupLeader.fullname,
 									  }
 							}
 							options={optionsObject.groupLeaders.map((e) => {
 								return {
 									value: e.id,
-									label: e.name,
+									label: e.fullname,
 								}
 							})}
 							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
-					<Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Group className="space-between-cent-v mrg-top-2">
 						<Form.Label
 							className="no-bot-mrg"
 							htmlFor="chiefSpecialist"
-							style={{ marginRight: '1.15em' }}
 						>
 							Главный специалист
 						</Form.Label>
@@ -630,7 +622,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							isSearchable={true}
 							placeholder="Выберите главного специалиста"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							className="auto-width flex-grow"
+							className="mark-data-input-width2"
 							onChange={(selectedOption) =>
 								onChiefSpecialistSelect(
 									(selectedOption as any)?.value
@@ -645,54 +637,53 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 													.id,
 											label:
 												selectedObject.chiefSpecialist
-													.name,
+													.fullname,
 									  }
 							}
 							options={optionsObject.chiefSpecialists.map((e) => {
 								return {
 									value: e.id,
-									label: e.name,
+									label: e.fullname,
 								}
 							})}
 							styles={reactSelectStyle}
 						/>
 					</Form.Group>
 
-					<Form.Group className="flex-cent-v mrg-top-2 no-bot-mrg">
+					<Form.Group className="space-between-cent-v mrg-top-2 no-bot-mrg">
 						<Form.Label
 							className="no-bot-mrg"
-							htmlFor="mainBuilder"
-							style={{ marginRight: '1.3em' }}
+							htmlFor="normContr"
 						>
-							Главный строитель?
+							Нормоконтроль
 						</Form.Label>
 						<Select
-							inputId="mainBuilder"
+							inputId="normContr"
 							maxMenuHeight={250}
 							isClearable={true}
 							isSearchable={true}
-							placeholder="Выберите главного строителя"
+							placeholder="Выберите нормоконтролера"
 							noOptionsMessage={() => 'Сотрудники не найдены'}
-							className="auto-width flex-grow"
+							className="mark-data-input-width2"
 							onChange={(selectedOption) =>
-								onMainBuilderSelect(
+								onNormContrSelect(
 									(selectedOption as any)?.value
 								)
 							}
 							value={
-								selectedObject.mainBuilder == null
+								selectedObject.normContr == null
 									? null
 									: {
 											value:
-												selectedObject.mainBuilder.id,
+												selectedObject.normContr.id,
 											label:
-												selectedObject.mainBuilder.name,
+												selectedObject.normContr.fullname,
 									  }
 							}
-							options={optionsObject.mainBuilders.map((e) => {
+							options={optionsObject.normContrs.map((e) => {
 								return {
 									value: e.id,
-									label: e.name,
+									label: e.fullname,
 								}
 							})}
 							styles={reactSelectStyle}

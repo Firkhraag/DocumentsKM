@@ -181,7 +181,7 @@ namespace DocumentsKM.Tests
                 Code = "KM1",
                 Name = "Name 1",
                 Department = departments[0],
-                MainBuilder = employees[0],
+                NormContr = employees[0],
             },
             new Mark
             {
@@ -190,7 +190,7 @@ namespace DocumentsKM.Tests
                 Code = "KM2",
                 Name = "Name 2",
                 Department = departments[0],
-                MainBuilder = employees[1],
+                NormContr = employees[1],
             },
             new Mark
             {
@@ -199,7 +199,7 @@ namespace DocumentsKM.Tests
                 Code = "KM3",
                 Name = "Name 3",
                 Department = departments[1],
-                MainBuilder = employees[2],
+                NormContr = employees[2],
             },
             new Mark
             {
@@ -208,7 +208,7 @@ namespace DocumentsKM.Tests
                 Code = "KM4",
                 Name = "Name 4",
                 Department = departments[1],
-                MainBuilder = employees[2],
+                NormContr = employees[2],
             },
         };
 

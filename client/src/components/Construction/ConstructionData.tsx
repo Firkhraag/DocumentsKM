@@ -496,11 +496,10 @@ const ConstructionData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="valuation"
-						style={{ marginRight: '13.35em' }}
 					>
 						Расценка
 					</Form.Label>
@@ -509,17 +508,16 @@ const ConstructionData = ({
 						type="text"
 						placeholder="Не введено"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="construction-input-width"
 						defaultValue={selectedObject.valuation}
 						onBlur={onValuationChange}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="standardAlbumCode"
-						style={{ marginRight: '5.8em' }}
 					>
 						Шифр типового альбома
 					</Form.Label>
@@ -528,17 +526,16 @@ const ConstructionData = ({
 						type="text"
 						placeholder="Не введено"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="construction-input-width"
 						defaultValue={selectedObject.standardAlbumCode}
 						onBlur={onStandardAlbumCodeChange}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="numOfStandardConstructions"
-						style={{ marginRight: '4.15em' }}
 					>
 						Число типовых конструкций
 					</Form.Label>
@@ -547,17 +544,16 @@ const ConstructionData = ({
 						type="text"
 						placeholder="Не введено"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="construction-input-width"
 						defaultValue={selectedObject.numOfStandardConstructions}
 						onBlur={onNumOfStandardConstructionsChange}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="paintworkCoeff"
-						style={{ marginRight: '4.5em' }}
 					>
 						Коэффициент окрашивания
 					</Form.Label>
@@ -567,16 +563,15 @@ const ConstructionData = ({
 						placeholder="Не введено"
 						autoComplete="off"
 						defaultValue={selectedObject.paintworkCoeff}
-						className="auto-width flex-grow"
+						className="construction-input-width"
 						onBlur={onPaintworkCoeffChange}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="weldingControl"
-						style={{ marginRight: '1em' }}
 					>
 						Контроль плотности сварных швов
 					</Form.Label>
@@ -587,7 +582,7 @@ const ConstructionData = ({
 						isSearchable={true}
 						placeholder="Выберите контроль плотности"
 						noOptionsMessage={() => 'Контроль плотности не найден'}
-						className="auto-width flex-grow"
+						className="construction-input-width"
 						onChange={(selectedOption) =>
 							onWeldingControlSelect(
 								(selectedOption as any)?.value
@@ -612,49 +607,46 @@ const ConstructionData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						htmlFor="edgeBlunting"
-						style={{ marginRight: '7.6em' }}
 					>
 						Притупление кромок
 					</Form.Label>
 					<Form.Check
 						id="edgeBlunting"
 						type="checkbox"
-						className="checkmark"
+						className="checkmark construction-input-width"
                         defaultChecked={selectedObject.hasEdgeBlunting}
 						onChange={onEdgeBluntingCheck}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						htmlFor="dynamicLoad"
-						style={{ marginRight: '6.4em' }}
 					>
 						Динамическая нагрузка
 					</Form.Label>
 					<Form.Check
 						id="dynamicLoad"
 						type="checkbox"
-						className="checkmark"
+						className="checkmark construction-input-width"
                         defaultChecked={selectedObject.hasDynamicLoad}
 						onChange={onDynamicLoadCheck}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2 no-bot-mrg">
+				<Form.Group className="space-between-cent-v mrg-top-2 no-bot-mrg">
 					<Form.Label
 						htmlFor="flangedConnections"
-						style={{ marginRight: '6.4em' }}
 					>
 						Фланцевые соединения
 					</Form.Label>
 					<Form.Check
 						id="flangedConnections"
 						type="checkbox"
-						className="checkmark"
+						className="checkmark construction-input-width"
                         defaultChecked={selectedObject.hasFlangedConnections}
 						onChange={onFlangedConnectionsCheck}
 					/>

@@ -8,7 +8,7 @@ Create Table Marks (
 	Signed2Id Int,
 	ChiefSpecialistId Int,
 	GroupLeaderId Int,
-	MainBuilderId Int,
+	NormContrId Int,
 	IssueDate Date,
 	NumOfVolumes Smallint,
 	EditedDate Date,
@@ -21,6 +21,6 @@ Create Table Marks (
 	Constraint FK_Subnode_Mark Foreign Key(SubnodeId) References Subnodes(Id),
 	Constraint FK_ChiefSpecialist_Mark Foreign Key(ChiefSpecialistId) References Employees(Id),
 	Constraint FK_GroupLeader_Mark Foreign Key(GroupLeaderId) References Employees(Id),
-	Constraint FK_MainBuilder_Mark Foreign Key(MainBuilderId) References Employees(Id),
+	Constraint FK_NormContr_Mark Foreign Key(NormContrId) References Employees(Id),
 	Constraint FK_FireHazardCategory_Mark Foreign Key(FireHazardCategoryId) References FireHazardCategories(Id)
 );

@@ -38,6 +38,6 @@ namespace DocumentsKM.Models
         // Количество шайб
         [Required]
         [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int WasherNum { get; set; }
+        public Int16 WasherNum { get; set; }
     }
 }

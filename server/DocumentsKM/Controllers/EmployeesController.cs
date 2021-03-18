@@ -48,13 +48,13 @@ namespace DocumentsKM.Controllers
         public ActionResult<MarkMainEmployeesResponse> GetMarkMainEmployeesByDepartmentId(
             int departmentId)
         {
-            (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) = _service
+            (var departmentHead, var chiefSpecialists, var groupLeaders, var normContrs) = _service
                 .GetMarkMainEmployeesByDepartmentId(departmentId);
             return Ok(new MarkMainEmployeesResponse(
                 _mapper.Map<EmployeeBaseResponse>(departmentHead),
                 _mapper.Map<IEnumerable<EmployeeBaseResponse>>(chiefSpecialists),
                 _mapper.Map<IEnumerable<EmployeeBaseResponse>>(groupLeaders),
-                _mapper.Map<IEnumerable<EmployeeBaseResponse>>(mainBuilders)));
+                _mapper.Map<IEnumerable<EmployeeBaseResponse>>(normContrs)));
         }
     }
 }

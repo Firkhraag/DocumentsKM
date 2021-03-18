@@ -96,9 +96,9 @@ namespace DocumentsKM.Controllers
                     userId,
                     markRequest.SubnodeId,
                     markRequest.DepartmentId,
-                    markRequest.MainBuilderId,
                     markRequest.ChiefSpecialistId,
-                    markRequest.GroupLeaderId);
+                    markRequest.GroupLeaderId,
+                    markRequest.NormContrId);
             }
             catch (ArgumentNullException)
             {

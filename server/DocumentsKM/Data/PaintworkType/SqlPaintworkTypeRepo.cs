@@ -15,7 +15,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<PaintworkType> GetAll()
         {
-            return _context.PaintworkTypes.ToList();
+            return _context.PaintworkTypes.OrderBy(v => v.Id).ToList();
         }
 
         public PaintworkType GetById(int id)

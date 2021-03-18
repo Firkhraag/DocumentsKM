@@ -40,9 +40,10 @@ namespace DocumentsKM.Models
         public virtual Employee GroupLeader { get; set; }
         public Int32? GroupLeaderId { get; set; }
 
-        // Главный строитель
-        [ForeignKey("MainBuilderId")]
-        public virtual Employee MainBuilder { get; set; }
+        // Нормоконтролер
+        [ForeignKey("NormContrId")]
+        public virtual Employee NormContr { get; set; }
+        public Int32? NormContrId { get; set; }
 
         // Дата редактирования
         public DateTime? EditedDate { get; set; }

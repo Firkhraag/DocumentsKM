@@ -236,7 +236,7 @@ namespace DocumentsKM.Services
 
                 sum = 0.0;
                 trCells[0].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(additionalWork[i].Employee.Name, 22));
+                    Word.GetTextElement(additionalWork[i].Employee.Fullname, 22));
                 if (Math.Abs(additionalWork[i].DrawingsCompleted) > 0.0000001)
                 {
                     sum += additionalWork[i].DrawingsCompleted;

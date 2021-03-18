@@ -47,10 +47,11 @@ namespace DocumentsKM.Services
             var groupLeaders = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
                 _appSettings.GroupLeaderPosId);
-            var mainBuilders = _repository.GetAllByDepartmentIdAndPosition(
+            var normContrs = _repository.GetAllByDepartmentIdAndPositions(
                 departmentId,
-                _appSettings.MainBuilderPosId);
-            return (departmentHead, chiefSpecialists, groupLeaders, mainBuilders);
+                _appSettings.ApprovalMinPosId,
+                _appSettings.ApprovalMaxPosId);
+            return (departmentHead, chiefSpecialists, groupLeaders, normContrs);
         }
 
         public void UpdateAll(List<EmployeeFetched> employeesFetched)

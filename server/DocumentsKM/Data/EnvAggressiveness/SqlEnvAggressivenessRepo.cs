@@ -15,7 +15,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<EnvAggressiveness> GetAll()
         {
-            return _context.EnvAggressiveness.ToList();
+            return _context.EnvAggressiveness.OrderBy(v => v.Id).ToList();
         }
 
         public EnvAggressiveness GetById(int id)

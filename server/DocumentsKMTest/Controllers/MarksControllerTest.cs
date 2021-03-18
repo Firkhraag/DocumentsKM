@@ -148,14 +148,14 @@ namespace DocumentsKM.Tests
             var userId = 1;
             short subnodeId = 1;
             short departmentId = 1;
-            var mainBuilderId = 1;
+            var normContrId = 1;
             var markRequest = new MarkCreateRequest
             {
                 SubnodeId = subnodeId,
                 Code = "NewCreate",
                 Name = "NewCreate",
                 DepartmentId = departmentId,
-                MainBuilderId = mainBuilderId,
+                NormContrId = normContrId,
             };
             string json = JsonSerializer.Serialize(markRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
@@ -175,7 +175,7 @@ namespace DocumentsKM.Tests
             var userId = 1;
             short subnodeId = 1;
             short departmentId = 1;
-            var mainBuilderId = 1;
+            var normContrId = 1;
             var wrongMarkRequests = new List<MarkCreateRequest>
             {
                 new MarkCreateRequest
@@ -184,7 +184,7 @@ namespace DocumentsKM.Tests
                     Code = "",
                     Name = "NewCreate",
                     DepartmentId = departmentId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -192,7 +192,7 @@ namespace DocumentsKM.Tests
                     Code = "NewCreate",
                     Name = "",
                     DepartmentId = departmentId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
             };
 
@@ -217,7 +217,7 @@ namespace DocumentsKM.Tests
             var userId = 1;
             short subnodeId = 1;
             short departmentId = 1;
-            var mainBuilderId = 1;
+            var normContrId = 1;
             var groupLeaderId = 1;
             var chiefSpecialistId = 1;
             var wrongMarkRequests = new List<MarkCreateRequest>
@@ -230,7 +230,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -240,7 +240,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = 999,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -250,7 +250,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = 999,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -260,7 +260,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = 999,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                  new MarkCreateRequest
                 {
@@ -270,7 +270,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = 999,
+                    NormContrId = 999,
                 },
             };
 
@@ -297,7 +297,7 @@ namespace DocumentsKM.Tests
             short departmentId = 1;
             var chiefSpecialistId = 1;
             var groupLeaderId = 2;
-            var mainBuilderId = 3;
+            var normContrId = 3;
 
             var wrongMarkRequests = new List<MarkCreateRequest>
             {
@@ -309,7 +309,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -319,7 +319,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
             };
 
@@ -344,14 +344,14 @@ namespace DocumentsKM.Tests
             var userId = 1;
             short subnodeId = 1;
             short departmentId = 1;
-            var mainBuilderId = 1;
+            var normContrId = 1;
             var markRequest = new MarkCreateRequest
             {
                 SubnodeId = subnodeId,
                 Code = "NewCreate",
                 Name = "NewCreate",
                 DepartmentId = departmentId,
-                MainBuilderId = mainBuilderId,
+                NormContrId = normContrId,
             };
             string json = JsonSerializer.Serialize(markRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
@@ -454,7 +454,7 @@ namespace DocumentsKM.Tests
                     Id = id,
                     Body = new MarkUpdateRequest
                     {
-                        MainBuilderId = 999,
+                        NormContrId = 999,
                     },
                 },
             };

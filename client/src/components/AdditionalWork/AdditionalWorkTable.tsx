@@ -74,7 +74,7 @@ const AdditionalWorkTable = ({
 			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
 					<tr>
-						<th rowSpan={3} style={{ verticalAlign: 'middle' }}>
+						<th rowSpan={3} style={{ verticalAlign: 'middle' }} className="add-work-name-col-width">
 							Исполнитель
 						</th>
 						<th colSpan={4}>Дополнительные проектные работы</th>
@@ -91,7 +91,7 @@ const AdditionalWorkTable = ({
 					<tr>
 						<th colSpan={2}>Расчет конструкций</th>
 						<th colSpan={2}>Заказ металла</th>
-						<th rowSpan={2} style={{ verticalAlign: 'middle' }}>
+						<th rowSpan={2} style={{ verticalAlign: 'middle' }} className="completed-num-col-width">
 							Выполн. чертежей
 						</th>
 						<th colSpan={2}>Проверка чертежей</th>
@@ -109,7 +109,7 @@ const AdditionalWorkTable = ({
 					{additionalWorkArray.map((v, index) => {
 						return (
 							<tr key={index}>
-								<td>{v.employee.name}</td>
+								<td className="add-work-name-col-width">{v.employee.fullname}</td>
 								<td>{v.valuation === 0 ? '' : v.valuation}</td>
 								<td>
 									{v.valuation === 0
@@ -130,7 +130,7 @@ const AdditionalWorkTable = ({
 												v.metalOrder * orderCoeff * 1000
 										  ) / 1000}
 								</td>
-								<td>
+								<td className="completed-num-col-width">
 									{v.drawingsCompleted < 0.0000001
 										? ''
 										: v.drawingsCompleted}
@@ -162,7 +162,7 @@ const AdditionalWorkTable = ({
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить исполнителя ${v.employee.name}?`,
+											msg: `Вы действительно хотите удалить исполнителя ${v.employee.fullname}?`,
 											onAccept: () =>
 												onDeleteClick(index, v.id),
 											onCancel: () =>

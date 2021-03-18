@@ -18,9 +18,9 @@ namespace DocumentsKM.Services
             int userId,
             int subnodeId,
             int departmentId,
-            int mainBuilderId,
             int? chiefSpecialistId,
-            int? groupLeaderId);
+            int? groupLeaderId,
+            int? normContrId);
         // Изменить марку
         void Update(int id, MarkUpdateRequest mark);
         // Обновить дату выдачи проекта на текущую

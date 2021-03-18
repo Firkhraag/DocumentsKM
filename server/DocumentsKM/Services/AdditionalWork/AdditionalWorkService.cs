@@ -51,7 +51,7 @@ namespace DocumentsKM.Services
                     Employee = new EmployeeBaseResponse
                     {
                         Id = v.Employee.Id,
-                        Name = v.Employee.Name,
+                        Fullname = v.Employee.Fullname,
                     },
                     Valuation = v.Valuation,
                     MetalOrder = v.MetalOrder,
