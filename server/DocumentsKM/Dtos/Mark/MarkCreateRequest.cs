@@ -6,7 +6,7 @@ namespace DocumentsKM.Dtos
     public class MarkCreateRequest
     {
         [Required]
-        public Int16 SubnodeId { get; set; }
+        public Int32 SubnodeId { get; set; }
 
         [Required]
         [MaxLength(40)]

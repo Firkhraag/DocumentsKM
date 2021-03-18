@@ -7,7 +7,7 @@ namespace DocumentsKM.Models
     public class Project
     {
         [Key]
-        public Int16 Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Название
         [Required]

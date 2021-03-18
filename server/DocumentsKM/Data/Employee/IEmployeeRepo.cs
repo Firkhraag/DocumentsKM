@@ -5,6 +5,8 @@ namespace DocumentsKM.Data
 {
     public interface IEmployeeRepo
     {
+        // Получить всех сотрудников
+        IEnumerable<Employee> GetAll();
         // Получить сотрудников по id  отдела
         IEnumerable<Employee> GetAllByDepartmentId(int departmentId);
         // Получить всех сотрудников по id отдела

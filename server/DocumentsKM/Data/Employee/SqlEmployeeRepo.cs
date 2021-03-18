@@ -14,6 +14,11 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        public IEnumerable<Employee> GetAll()
+        {
+            return _context.Employees.ToList();
+        }
+
         public IEnumerable<Employee> GetAllByDepartmentId(int departmentId)
         {
             return _context.Employees.Where(

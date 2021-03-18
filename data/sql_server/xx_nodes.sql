@@ -1,8 +1,8 @@
 Create Table Nodes (
-	Id Smallint Identity(1, 1) Primary Key,
+	Id Int Identity(1, 1) Primary Key,
 	Code Varchar(10) Not Null,
 	Name Varchar(255) Not Null,
-	ProjectId Smallint Not Null,
+	ProjectId Int Not Null,
 	ChiefEngineerId Int Not Null,
 	Constraint FK_Project_Node Foreign Key(ProjectId) References Projects(Id),
 	Constraint FK_Employee_Node Foreign Key(ChiefEngineerId) References Employees(Id)

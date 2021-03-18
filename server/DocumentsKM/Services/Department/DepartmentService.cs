@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
-using Serilog;
 using System.Linq;
 
 namespace DocumentsKM.Services
@@ -51,36 +50,6 @@ namespace DocumentsKM.Services
                         _repository.Update(foundDepartment);
                 }
             }
-
-
-            // var employees = new List<Employee>{};
-            // foreach (var id in employeeIds)
-            // {
-            //     var employee = _employeeRepo.GetById(id);
-            //     if (employee == null)
-            //         throw new ArgumentNullException(nameof(employee));
-            //     employees.Add(employee);
-            // }
-
-            // var markApprovals = _repository.GetAllByMarkId(markId);
-            // var currentEmployeeIds = new List<int>{};
-            // foreach (var ma in markApprovals)
-            // {
-            //     if (!employeeIds.Contains(ma.Employee.Id))
-            //         _repository.Delete(ma);
-            //     currentEmployeeIds.Add(ma.Employee.Id);
-            // }
-
-            // foreach (var (id, i) in employeeIds.WithIndex())
-            //     if (!currentEmployeeIds.Contains(id))
-            //         _repository.Add(
-            //             new MarkApproval
-            //             {
-            //                 Mark=foundMark,
-            //                 Employee=employees[i],
-            //             });
-
-            Log.Information(departmentsFetched.Count().ToString());
         }
     }
 }

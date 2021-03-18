@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System.Linq;
-using Serilog;
+using DocumentsKM.Dtos;
 
 namespace DocumentsKM.Services
 {
@@ -41,8 +41,6 @@ namespace DocumentsKM.Services
             var departmentHeadArr = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
                 departmentHeadPosId);
-            // if (departmentHeadArr.Count() != 1)
-            //     throw new ConflictException();
             var departmentHead = departmentHeadArr.ToList()[0];
             var chiefSpecialists = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
@@ -56,9 +54,36 @@ namespace DocumentsKM.Services
             return (departmentHead, chiefSpecialists, groupLeaders, mainBuilders);
         }
 
-        public void UpdateAll(List<Employee> employeesFetched)
+        public void UpdateAll(List<EmployeeFetched> employeesFetched)
         {
-            Log.Information(employeesFetched.Count().ToString());
+            var employees = _repository.GetAll();
+            foreach (var employee in employees)
+            {
+                if (!employeesFetched.Select(v => v.Id).Contains(employee.Id))
+                    _repository.Delete(employee);
+            }
+            foreach (var employeeFetched in employeesFetched)
+            {
+                var foundEmployee = employees.SingleOrDefault(v => v.Id == employeeFetched.Id);
+                // if (foundEmployee == null)
+                //     _repository.Add(employeeFetched.ToEmployee());
+                // else
+                // {
+                //     var wasChanged = false;
+                //     if (foundEmployee.Name != employeeFetched.Name)
+                //     {
+                //         foundEmployee.Name = employeeFetched.Name;
+                //         wasChanged = true;
+                //     }
+                //     if (foundEmployee.ShortName != employeeFetched.Reduction)
+                //     {
+                //         foundEmployee.ShortName = employeeFetched.Reduction;
+                //         wasChanged = true;
+                //     }
+                //     if (wasChanged)
+                //         _repository.Update(foundEmployee);
+                // }
+            }
         }
     }
 }

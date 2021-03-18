@@ -5,7 +5,7 @@ namespace DocumentsKM.Dtos
 {
     public class MarkUpdateRequest
     {
-        public Int16? SubnodeId { get; set; }
+        public Int32? SubnodeId { get; set; }
         [MaxLength(40)]
         public string Code { get; set; }
         [MaxLength(255)]
