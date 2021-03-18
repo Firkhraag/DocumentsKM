@@ -1,5 +1,5 @@
 Create Table Nodes (
-	Id Int Identity(1, 1) Primary Key,
+	Id Int Primary Key,
 	Code Varchar(10) Not Null,
 	Name Varchar(255) Not Null,
 	ProjectId Int Not Null,

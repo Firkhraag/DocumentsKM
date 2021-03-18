@@ -14,5 +14,3 @@ Commands:
     cd server
     cd DocumentsKMTest
     dotnet test
-
-    pip install psycopg2

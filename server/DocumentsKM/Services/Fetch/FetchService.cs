@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DocumentsKM.Dtos;
+using DocumentsKM.Helpers;
 using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,11 +43,11 @@ public class FetchService : IHostedService
 
     public async Task OnGet()
     {
-        const string baseUrl = "";
+        const string baseUrl = Secrets.PERSONNEL_URL;
         var client = _clientFactory.CreateClient();
 
         Log.Information("Fetching departments");
-        var departmentUrl = baseUrl + "/department";
+        var departmentUrl = baseUrl + "department";
         var departmentRequest = new HttpRequestMessage(HttpMethod.Get, departmentUrl);
         departmentRequest.Headers.Add("Accept", "application/json");
         var response = await client.SendAsync(departmentRequest);
@@ -65,7 +66,7 @@ public class FetchService : IHostedService
         Log.Information("Departments were fetched successfully");
 
         Log.Information("Fetching posts");
-        var postUrl = baseUrl + "/post";
+        var postUrl = baseUrl + "post";
         var postRequest = new HttpRequestMessage(HttpMethod.Get, postUrl);
         postRequest.Headers.Add("Accept", "application/json");
         response = await client.SendAsync(postRequest);
@@ -82,6 +83,25 @@ public class FetchService : IHostedService
         else
             Log.Fatal("Error while fetching posts");
         Log.Information("Posts were fetched successfully");
+
+        Log.Information("Fetching staffs");
+        var staffUrl = baseUrl + "staff";
+        var staffRequest = new HttpRequestMessage(HttpMethod.Get, staffUrl);
+        staffRequest.Headers.Add("Accept", "application/json");
+        response = await client.SendAsync(staffRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            var employees = await JsonSerializer.DeserializeAsync<IEnumerable<EmployeeFetched>>(responseStream);
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var employeeService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
+                employeeService.UpdateAll(employees.ToList());
+            }
+        }
+        else
+            Log.Fatal("Error while fetching staff");
+        Log.Information("Staff was fetched successfully");
     }
 
     public virtual Task StartAsync(CancellationToken cancellationToken)

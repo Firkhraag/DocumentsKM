@@ -1,5 +1,5 @@
 Create Table Subnodes (
-	Id Int Identity(1, 1) Primary Key,
+	Id Int Primary Key,
 	NodeId Int Not Null,
 	Code Varchar(10) Not Null,
 	Name Varchar(255) Not Null,

@@ -1,5 +1,5 @@
 Create Table Employees (
-	Id Int Identity(1, 1) Primary Key,
+	Id Int Primary Key,
 	PositionId Smallint Not Null,
 	Fullname Varchar(255) Not Null,
 	Name Varchar(80) Not Null,

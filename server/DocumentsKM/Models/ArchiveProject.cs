@@ -1,6 +1,6 @@
-namespace Gipromez.JobLog.External.Archive.Models
+namespace DocumentsKM.Models
 {
-    public class Project
+    public class ArchiveProject
     {
         public int Id { get; set; }
         public string Title { get; set; }
