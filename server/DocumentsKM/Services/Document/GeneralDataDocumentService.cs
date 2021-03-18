@@ -167,8 +167,11 @@ namespace DocumentsKM.Services
             }
             if (attachedDocs.Count() > 0)
             {
+
                 var newTr = clonedFirstTr.CloneNode(true);
                 var trCells = newTr.Descendants<TableCell>().ToList();
+                if (markLinkedDocs.Count() == 0)
+                    trCells = firstTr.Descendants<TableCell>().ToList();
                 var p = trCells[1].GetFirstChild<Paragraph>();
                 p.ParagraphProperties.Append(new Justification
                 {
@@ -176,7 +179,8 @@ namespace DocumentsKM.Services
                 });
 
                 p.Append(Word.GetTextElement("Прилагаемые документы", 26, true));
-                t.Append(newTr);
+                if (markLinkedDocs.Count() != 0)
+                    t.Append(newTr);
 
                 for (int i = 0; i < attachedDocs.Count(); i++)
                 {
