@@ -3,27 +3,27 @@ using DocumentsKM.Data;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
-using System.Collections.Generic;
 using System;
 using DocumentsKM.Helpers;
 using DocumentFormat.OpenXml.Wordprocessing;
-using DocumentFormat.OpenXml;
+using Microsoft.Extensions.Options;
 
 namespace DocumentsKM.Services
 {
     public class EstimationPagesDocumentService : IEstimationPagesDocumentService
     {
-        private readonly int _departmentHeadPosId = 7;
-
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
+        private readonly AppSettings _appSettings;
 
         public EstimationPagesDocumentService(
             IMarkRepo markRepo,
-            IEmployeeRepo employeeRepo)
+            IEmployeeRepo employeeRepo,
+            IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
+            _appSettings = appSettings.Value;
         }
 
         public void PopulateDocument(int markId, MemoryStream memory)
@@ -35,12 +35,11 @@ namespace DocumentsKM.Services
             var node = subnode.Node;
             var project = node.Project;
 
-            var departmentHeadArr = _employeeRepo.GetAllByDepartmentIdAndPosition(
+            var departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
                 mark.Department.Id,
-                _departmentHeadPosId);
-            if (departmentHeadArr.Count() != 1)
+                _appSettings.DepartmentHeadPosId);
+            if (departmentHead == null)
                 throw new ConflictException();
-            var departmentHead = departmentHeadArr.ToList()[0];
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {

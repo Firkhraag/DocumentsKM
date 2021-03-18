@@ -8,12 +8,12 @@ using System.Collections.Generic;
 using System;
 using DocumentsKM.Helpers;
 using DocumentFormat.OpenXml;
+using Microsoft.Extensions.Options;
 
 namespace DocumentsKM.Services
 {
     public class GeneralDataDocumentService : IGeneralDataDocumentService
     {
-        private readonly int _departmentHeadPosId = 7;
         private readonly int _sheetDocTypeId = 1;
         
         private readonly IMarkRepo _markRepo;
@@ -24,6 +24,7 @@ namespace DocumentsKM.Services
         private readonly IMarkLinkedDocRepo _markLinkedDocRepo;
         private readonly IAttachedDocRepo _attachedDocRepo;
         private readonly IMarkOperatingConditionsRepo _markOperatingConditionsRepo;
+        private readonly AppSettings _appSettings;
 
         public GeneralDataDocumentService(
             IMarkRepo markRepo,
@@ -33,7 +34,8 @@ namespace DocumentsKM.Services
             IMarkGeneralDataPointRepo markGeneralDataPointRepo,
             IMarkLinkedDocRepo markLinkedDocRepo,
             IAttachedDocRepo attachedDocRepo,
-            IMarkOperatingConditionsRepo markOperatingConditionsRepo)
+            IMarkOperatingConditionsRepo markOperatingConditionsRepo,
+            IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
             _markApprovalRepo = markApprovalRepo;
@@ -43,6 +45,7 @@ namespace DocumentsKM.Services
             _markLinkedDocRepo = markLinkedDocRepo;
             _attachedDocRepo = attachedDocRepo;
             _markOperatingConditionsRepo = markOperatingConditionsRepo;
+            _appSettings = appSettings.Value;
         }
 
         public void PopulateDocument(int markId, MemoryStream memory)
@@ -55,12 +58,11 @@ namespace DocumentsKM.Services
             var node = subnode.Node;
             var project = node.Project;
 
-            var departmentHeadArr = _employeeRepo.GetAllByDepartmentIdAndPosition(
+            var departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
                 mark.Department.Id,
-                _departmentHeadPosId);
-            if (departmentHeadArr.Count() != 1)
+                _appSettings.DepartmentHeadPosId);
+            if (departmentHead == null)
                 throw new ConflictException();
-            var departmentHead = departmentHeadArr.ToList()[0];
 
             var opCond = _markOperatingConditionsRepo.GetByMarkId(markId);
             if (opCond == null)

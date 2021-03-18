@@ -226,8 +226,8 @@ namespace DocumentsKM.Tests
                     PaintworkType = m.PaintworkType,
                     Note = m.Note,
                     FireHazardCategoryId = m.FireHazardCategoryId,
-                    P_transport = m.P_transport,
-                    P_site = m.P_site,
+                    PTransport = m.PTransport,
+                    PSite = m.PSite,
                 });
             }
             var context = GetContext(marks);

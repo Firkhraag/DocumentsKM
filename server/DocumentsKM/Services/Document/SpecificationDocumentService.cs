@@ -8,18 +8,18 @@ using System;
 using DocumentsKM.Helpers;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml;
+using Microsoft.Extensions.Options;
 
 namespace DocumentsKM.Services
 {
     public class SpecificationDocumentService : ISpecificationDocumentService
     {
-        private readonly int _departmentHeadPosId = 7;
-        
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly ISpecificationRepo _specificationRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IConstructionElementRepo _constructionElementRepo;
+        private readonly AppSettings _appSettings;
 
         private class GroupedElement
         {
@@ -46,13 +46,15 @@ namespace DocumentsKM.Services
             IEmployeeRepo employeeRepo,
             ISpecificationRepo specificationRepo,
             IConstructionRepo constructionRepo,
-            IConstructionElementRepo constructionElementRepo)
+            IConstructionElementRepo constructionElementRepo,
+            IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
             _specificationRepo = specificationRepo;
             _constructionRepo = constructionRepo;
             _constructionElementRepo = constructionElementRepo;
+            _appSettings = appSettings.Value;
         }
 
         public void PopulateDocument(int markId, MemoryStream memory)
@@ -64,12 +66,11 @@ namespace DocumentsKM.Services
             var node = subnode.Node;
             var project = node.Project;
 
-            var departmentHeadArr = _employeeRepo.GetAllByDepartmentIdAndPosition(
+            var departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
                 mark.Department.Id,
-                _departmentHeadPosId);
-            if (departmentHeadArr.Count() != 1)
+                _appSettings.DepartmentHeadPosId);
+            if (departmentHead == null)
                 throw new ConflictException();
-            var departmentHead = departmentHeadArr.ToList()[0];
 
             var currentSpec = _specificationRepo.GetCurrentByMarkId(markId);
 

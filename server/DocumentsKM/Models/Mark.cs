@@ -58,7 +58,7 @@ namespace DocumentsKM.Models
         public string PaintworkType { get; set; }
         public string Note { get; set; }
         public Int16? FireHazardCategoryId { get; set; }
-        public Boolean? P_transport { get; set; }
-        public Boolean? P_site { get; set; }
+        public Boolean? PTransport { get; set; }
+        public Boolean? PSite { get; set; }
     }
 }

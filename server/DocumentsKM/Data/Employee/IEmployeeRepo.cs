@@ -10,12 +10,24 @@ namespace DocumentsKM.Data
         // Получить сотрудников по id  отдела
         IEnumerable<Employee> GetAllByDepartmentId(int departmentId);
         // Получить всех сотрудников по id отдела
-        // с кодом должности из заданного интервала
+        // с кодом должности из заданного интервала [min, max]
         IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
-            int departmentId, int[] posIds);
+            int departmentId,
+            int minPosId,
+            int maxPosId);
+        // // Получить всех сотрудников по id отдела
+        // // с кодом должности из заданного интервала
+        // IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
+        //     int departmentId, int[] posIds);
+
         // Получить всех сотрудников по id отдела
         // с заданным кодом должности
         IEnumerable<Employee> GetAllByDepartmentIdAndPosition(
+            int departmentNumber, int posId);
+        // Получить сотрудника по id отдела
+        // с заданным кодом должности
+
+        Employee GetByDepartmentIdAndPosition(
             int departmentNumber, int posId);
         // Получить сотрудника по id
         Employee GetById(int id);

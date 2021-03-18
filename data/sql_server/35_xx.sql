@@ -2,7 +2,7 @@ Create Table MarkGeneralDataPoints (
 	Id Int Identity(1, 1) Primary Key,
 	MarkId Int Not Null,
 	SectionId Smallint Not Null,
-	Text Varchar Not Null,
+	Text Varchar(1000) Not Null,
 	OrderNum Smallint Not Null,
 	Unique(MarkId, SectionId, Text),
 	Constraint FK_Mark_MarkGeneralDataPoint Foreign Key(MarkId) References Marks(Id),

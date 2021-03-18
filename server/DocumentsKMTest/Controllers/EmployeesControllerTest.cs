@@ -90,7 +90,6 @@ namespace DocumentsKM.Tests
         public async Task GetMarkMainEmployeesByDepartmentId_ShouldReturnOK()
         {
             // Arrange
-            int[] approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
             int departmentId = _rnd.Next(1, TestData.departments.Count());
             var endpoint = $"/api/departments/{departmentId}/mark-main-employees";
 

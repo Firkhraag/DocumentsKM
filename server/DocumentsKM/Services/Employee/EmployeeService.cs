@@ -3,16 +3,22 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System.Linq;
 using DocumentsKM.Dtos;
+using Microsoft.Extensions.Options;
+using DocumentsKM.Helpers;
 
 namespace DocumentsKM.Services
 {
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepo _repository;
+        private readonly AppSettings _appSettings;
 
-        public EmployeeService(IEmployeeRepo employeeRepo)
+        public EmployeeService(
+            IEmployeeRepo employeeRepo,
+            IOptions<AppSettings> appSettings)
         {
             _repository = employeeRepo;
+            _appSettings = appSettings.Value;
         }
 
         public IEnumerable<Employee> GetAllByDepartmentId(int departmentId)
@@ -22,35 +28,28 @@ namespace DocumentsKM.Services
 
         public IEnumerable<Employee> GetMarkApprovalEmployeesByDepartmentId(int departmentId)
         {
-            int[] approvalPosIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-            
             var employees = _repository.GetAllByDepartmentIdAndPositions(
                 departmentId,
-                approvalPosIds);
+                _appSettings.ApprovalMinPosId,
+                _appSettings.ApprovalMaxPosId);
             return employees;
         }
 
         public (Employee, IEnumerable<Employee>,IEnumerable<Employee>, IEnumerable<Employee>) GetMarkMainEmployeesByDepartmentId(
             int departmentId)
         {
-            var departmentHeadPosId = 7;
-            var chiefSpecialistPosId = 9;
-            var groupLeaderPosId = 10;
-            var mainBuilderPosId = 4;
-
-            var departmentHeadArr = _repository.GetAllByDepartmentIdAndPosition(
+            var departmentHead = _repository.GetByDepartmentIdAndPosition(
                 departmentId,
-                departmentHeadPosId);
-            var departmentHead = departmentHeadArr.ToList()[0];
+                _appSettings.DepartmentHeadPosId);
             var chiefSpecialists = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
-                chiefSpecialistPosId);
+                _appSettings.ChiefSpecialistPosId);
             var groupLeaders = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
-                groupLeaderPosId);
+                _appSettings.GroupLeaderPosId);
             var mainBuilders = _repository.GetAllByDepartmentIdAndPosition(
                 departmentId,
-                mainBuilderPosId);
+                _appSettings.MainBuilderPosId);
             return (departmentHead, chiefSpecialists, groupLeaders, mainBuilders);
         }
 

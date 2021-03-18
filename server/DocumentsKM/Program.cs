@@ -12,12 +12,10 @@ namespace DocumentsKM
     {
         public static void Main(string[] args)
         {
-            // Создание конфигурации, используя appsettings.json
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            // Создание Serilog логгера
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
@@ -30,7 +28,6 @@ namespace DocumentsKM
                 try
                 {
                     var context = services.GetRequiredService<ApplicationContext>();
-                    // DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {
@@ -51,7 +48,6 @@ namespace DocumentsKM
             finally
             {
                 Log.Information("Application is shutting down");
-                // Записываем оставшиеся логи
                 Log.CloseAndFlush();
             }
         }
@@ -59,7 +55,6 @@ namespace DocumentsKM
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                // DI Serilog логгера
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

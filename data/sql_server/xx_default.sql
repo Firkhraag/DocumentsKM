@@ -1,5 +1,5 @@
 Create Table DefaultValues (
-	UserId Smallint Identity(1, 1) Primary Key,
+	UserId Smallint Primary Key,
 	DepartmentId Smallint,
 	CreatorId Int,
 	InspectorId Int,

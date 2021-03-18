@@ -26,12 +26,21 @@ namespace DocumentsKM.Data
                     v => v.Position.Id).ToList();
         }
 
-        public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
+        // public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
+        //     int departmentId,
+        //     int[] posIds)
+        // {
+        //     return _context.Employees.Where(v => (v.Department.Id == departmentId) &&
+        //         (posIds.Contains(v.Position.Id))).OrderBy(
+        //             v => v.Position.Id).ToList();
+        // }
+         public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
             int departmentId,
-            int[] posIds)
+            int minPosId,
+            int maxPosId)
         {
             return _context.Employees.Where(v => (v.Department.Id == departmentId) &&
-                (posIds.Contains(v.Position.Id))).OrderBy(
+                (v.Position.Id >= minPosId) && (v.Position.Id <= maxPosId)).OrderBy(
                     v => v.Position.Id).ToList();
         }
 
@@ -43,6 +52,15 @@ namespace DocumentsKM.Data
                 v => (v.Department.Id == departmentId) &&
                     (v.Position.Id == posId)).OrderBy(
                         v => v.Position.Id).ToList();
+        }
+
+        public Employee GetByDepartmentIdAndPosition(
+            int departmentId,
+            int posId)
+        {
+            return _context.Employees.FirstOrDefault(
+                v => (v.Department.Id == departmentId) &&
+                    (v.Position.Id == posId));
         }
 
         public Employee GetById(int id)
