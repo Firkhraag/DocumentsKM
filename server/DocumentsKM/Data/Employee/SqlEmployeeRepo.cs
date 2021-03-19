@@ -37,6 +37,15 @@ namespace DocumentsKM.Data
                     v => v.Position.Id).ToList();
         }
 
+        public IEnumerable<Employee> GetAllByDepartmentIdAndPositions(
+            int departmentId,
+            int[] posIds)
+        {
+            return _context.Employees.Where(v => (v.Department.Id == departmentId) &&
+                (posIds.Contains(v.Position.Id)  && v.IsActive)).OrderBy(
+                    v => v.Position.Id).ToList();
+        }
+
         public IEnumerable<Employee> GetAllByDepartmentIdAndPosition(
             int departmentId,
             int posId)

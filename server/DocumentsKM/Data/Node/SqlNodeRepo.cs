@@ -14,6 +14,11 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        public IEnumerable<Node> GetAll()
+        {
+            return _context.Nodes.ToList();
+        }
+
         public IEnumerable<Node> GetAllByProjectId(int projectId)
         {
             return _context.Nodes.Where(v => v.Project.Id == projectId).ToList();

@@ -102,20 +102,20 @@ public class FetchService : IHostedService
 
             Log.Information("Fetching projects");
             var projects = archiveService.GetProjects();
-            var projectService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
-            projectService.UpdateAll(projects);
+            var projectService = scope.ServiceProvider.GetRequiredService<IProjectService>();
+            projectService.UpdateAll(projects.ToList());
             Log.Information("Projects were fetched successfully");
 
             Log.Information("Fetching nodes");
             var nodes = archiveService.GetNodes();
             var nodeService = scope.ServiceProvider.GetRequiredService<INodeService>();
-            nodeService.UpdateAll(nodes);
+            nodeService.UpdateAll(nodes.ToList());
             Log.Information("Nodes were fetched successfully");
 
             Log.Information("Fetching subnodes");
             var subnodes = archiveService.GetNodes();
             var subnodeService = scope.ServiceProvider.GetRequiredService<ISubnodeService>();
-            subnodeService.UpdateAll(subnodes);
+            subnodeService.UpdateAll(subnodes.ToList());
             Log.Information("Subnodes were fetched successfully");
         }
     }

@@ -17,11 +17,12 @@ namespace DocumentsKM.Services
         public void UpdateAll(List<Position> positionsFetched)
         {
             var positions = _repository.GetAll();
-            foreach (var position in positions)
-            {
-                if (!positionsFetched.Select(v => v.Id).Contains(position.Id))
-                    _repository.Delete(position);
-            }
+            // Delete should be cascade if it's necessary
+            // foreach (var position in positions)
+            // {
+            //     if (!positionsFetched.Select(v => v.Id).Contains(position.Id))
+            //         _repository.Delete(position);
+            // }
             foreach (var positionFetched in positionsFetched)
             {
                 var foundPosition = positions.SingleOrDefault(v => v.Id == positionFetched.Id);

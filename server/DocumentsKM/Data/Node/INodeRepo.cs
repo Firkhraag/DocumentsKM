@@ -5,6 +5,8 @@ namespace DocumentsKM.Data
 {
     public interface INodeRepo
     {
+        // Получить все узлы
+        IEnumerable<Node> GetAll();
         // Получить все узлы по id проекта
         IEnumerable<Node> GetAllByProjectId(int projectId);
         // Получить узел по id

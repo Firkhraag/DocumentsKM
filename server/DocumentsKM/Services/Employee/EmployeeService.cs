@@ -39,14 +39,23 @@ namespace DocumentsKM.Services
             int departmentId)
         {
             var departmentHead = _repository.GetByDepartmentIdAndPosition(
+                departmentId, _appSettings.DepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _repository.GetByDepartmentIdAndPosition(
+                departmentId, _appSettings.ActingDepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _repository.GetByDepartmentIdAndPosition(
+                departmentId, _appSettings.DeputyDepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _repository.GetByDepartmentIdAndPosition(
+                departmentId, _appSettings.ActingDeputyDepartmentHeadPosId);
+
+            var chiefSpecialists = _repository.GetAllByDepartmentIdAndPositions(
                 departmentId,
-                _appSettings.DepartmentHeadPosId);
-            var chiefSpecialists = _repository.GetAllByDepartmentIdAndPosition(
+                new int[] {_appSettings.ChiefSpecialistPosId, _appSettings.ActingChiefSpecialistPosId});
+            var groupLeaders = _repository.GetAllByDepartmentIdAndPositions(
                 departmentId,
-                _appSettings.ChiefSpecialistPosId);
-            var groupLeaders = _repository.GetAllByDepartmentIdAndPosition(
-                departmentId,
-                _appSettings.GroupLeaderPosId);
+                new int[] {_appSettings.GroupLeaderPosId, _appSettings.ActingGroupLeaderPosId});
             var normContrs = _repository.GetAllByDepartmentIdAndPositions(
                 departmentId,
                 _appSettings.ApprovalMinPosId,
@@ -57,11 +66,12 @@ namespace DocumentsKM.Services
         public void UpdateAll(List<EmployeeFetched> employeesFetched)
         {
             var employees = _repository.GetAll();
-            foreach (var employee in employees)
-            {
-                if (!employeesFetched.Select(v => v.Id).Contains(employee.Id))
-                    _repository.Delete(employee);
-            }
+            // Delete should be cascade if it's necessary
+            // foreach (var employee in employees)
+            // {
+            //     if (!employeesFetched.Select(v => v.Id).Contains(employee.Id))
+            //         _repository.Delete(employee);
+            // }
             foreach (var employeeFetched in employeesFetched)
             {
                 var foundEmployee = employees.SingleOrDefault(v => v.Id == employeeFetched.Id);

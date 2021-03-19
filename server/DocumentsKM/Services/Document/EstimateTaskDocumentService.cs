@@ -73,8 +73,16 @@ namespace DocumentsKM.Services
             var project = node.Project;
 
             var departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
-                mark.Department.Id,
-                _appSettings.DepartmentHeadPosId);
+                mark.Department.Id, _appSettings.DepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.ActingDepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.DeputyDepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.ActingDeputyDepartmentHeadPosId);
             if (departmentHead == null)
                 throw new ConflictException();
 

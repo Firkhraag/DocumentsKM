@@ -14,6 +14,11 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        public IEnumerable<Subnode> GetAll()
+        {
+            return _context.Subnodes.ToList();
+        }
+
         public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
         {
             return _context.Subnodes.Where(

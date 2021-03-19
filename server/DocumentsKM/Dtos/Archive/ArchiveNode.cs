@@ -1,3 +1,5 @@
+using DocumentsKM.Models;
+
 namespace DocumentsKM.Dtos
 {
     public class ArchiveNode
@@ -6,5 +8,21 @@ namespace DocumentsKM.Dtos
         public string Title { get; set; }
         public string Name { get; set; }
         public int ParentId { get; set; }
+
+        public Node ToNode()
+        {
+            return new Node
+            {
+                
+            };
+        }
+
+        public Subnode ToSubnode()
+        {
+            return new Subnode
+            {
+                
+            };
+        }
     }
 }

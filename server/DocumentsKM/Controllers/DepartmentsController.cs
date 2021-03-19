@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using AutoMapper;
+using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsKM.Controllers
 {
-    // AMQP
     [Route("api")]
     [Authorize]
     [ApiController]
@@ -15,10 +16,14 @@ namespace DocumentsKM.Controllers
     public class DepartmentsController : ControllerBase
     {
         private readonly IDepartmentService _service;
+        private readonly IMapper _mapper;
 
-        public DepartmentsController(IDepartmentService service)
+        public DepartmentsController(
+            IDepartmentService service,
+            IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet, Route("departments")]
@@ -26,7 +31,7 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<Department>> GetAll()
         {
             var departments = _service.GetAll();
-            return Ok(departments);
+            return Ok(_mapper.Map<IEnumerable<DepartmentResponse>>(departments));
         }
     }
 }

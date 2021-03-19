@@ -23,26 +23,27 @@ namespace DocumentsKM.Services
         public void UpdateAll(List<ArchiveProject> projectsFetched)
         {
             var projects = _repository.GetAll();
-            foreach (var project in projects)
-            {
-                if (!projectsFetched.Select(v => v.Id).Contains(project.Id))
-                    _repository.Delete(project);
-            }
+            // Delete should be cascade if it's necessary
+            // foreach (var project in projects)
+            // {
+            //     if (!projectsFetched.Select(v => v.Id).Contains(project.Id))
+            //         _repository.Delete(project);
+            // }
             foreach (var projectFetched in projectsFetched)
             {
-                var foundDepartment = projects.SingleOrDefault(v => v.Id == projectFetched.Id);
-                if (foundDepartment == null)
+                var foundProject = projects.SingleOrDefault(v => v.Id == projectFetched.Id);
+                if (foundProject == null)
                     _repository.Add(projectFetched.ToProject());
                 else
                 {
                     var wasChanged = false;
-                    if (foundDepartment.Name != projectFetched.Name)
+                    if (foundProject.Name != projectFetched.Name)
                     {
-                        foundDepartment.Name = projectFetched.Name;
+                        foundProject.Name = projectFetched.Name;
                         wasChanged = true;
                     }
                     if (wasChanged)
-                        _repository.Update(foundDepartment);
+                        _repository.Update(foundProject);
                 }
             }
         }

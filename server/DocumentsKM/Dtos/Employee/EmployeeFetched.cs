@@ -13,19 +13,28 @@ namespace DocumentsKM.Dtos
 
         public Position Position { get; set; }
 
-        // DismissedDate
-        // Name
+        public DateTime? DismissedDate { get; set; }
 
         public Employee ToEmployee()
         {
+            var split = Fullname.Split(" ");
+            string name;
+            try
+            {
+                name = split[0];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                name = "";
+            }
             return new Employee
             {
                 Id = Id,
                 Fullname = Fullname,
-                Name = "Test",
+                Name = name,
                 Department = DepartmentFetched.ToDepartment(),
                 Position = Position,
-                IsActive = true,
+                IsActive = DismissedDate == null,
             };
         }
     }

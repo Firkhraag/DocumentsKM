@@ -23,11 +23,12 @@ namespace DocumentsKM.Services
         public void UpdateAll(List<DepartmentFetched> departmentsFetched)
         {
             var departments = _repository.GetAll();
-            foreach (var department in departments)
-            {
-                if (!departmentsFetched.Select(v => v.Id).Contains(department.Code))
-                    _repository.Delete(department);
-            }
+            // Delete should be cascade if it's necessary
+            // foreach (var department in departments)
+            // {
+            //     if (!departmentsFetched.Select(v => v.Id).Contains(department.Code))
+            //         _repository.Delete(department);
+            // }
             foreach (var departmentFetched in departmentsFetched)
             {
                 var foundDepartment = departments.SingleOrDefault(v => v.Code == departmentFetched.Id);

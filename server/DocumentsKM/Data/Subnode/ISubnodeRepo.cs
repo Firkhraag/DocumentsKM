@@ -5,6 +5,8 @@ namespace DocumentsKM.Data
 {
     public interface ISubnodeRepo
     {
+        // Получить все подузлы
+        IEnumerable<Subnode> GetAll();
         // Получить все подузлы по id узла
         IEnumerable<Subnode> GetAllByNodeId(int nodeId);
         // Получить подузел по id

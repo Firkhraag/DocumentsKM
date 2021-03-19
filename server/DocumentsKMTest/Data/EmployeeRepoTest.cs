@@ -113,10 +113,13 @@ namespace DocumentsKM.Tests
 
             // Act
             var employees = repo.GetAllByDepartmentIdAndPositions(departmentId, 1, 2);
+            var employees2 = repo.GetAllByDepartmentIdAndPositions(departmentId, new int[] {1, 2});
 
             // Assert
             Assert.Equal(TestData.employees.Where(
                 v => v.Department.Id == departmentId && v.Position.Id >= 1 && v.Position.Id <= 2 && v.IsActive), employees);
+            Assert.Equal(TestData.employees.Where(
+                v => v.Department.Id == departmentId && (v.Position.Id == 1 || v.Position.Id == 2) && v.IsActive), employees2);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -131,9 +134,11 @@ namespace DocumentsKM.Tests
 
             // Act
             var employees = repo.GetAllByDepartmentIdAndPositions(999, 1, 2);
+            var employees2 = repo.GetAllByDepartmentIdAndPositions(999, new int[] {1, 2});
 
             // Assert
             Assert.Empty(employees);
+            Assert.Empty(employees2);
 
             context.Database.EnsureDeleted();
             context.Dispose();
