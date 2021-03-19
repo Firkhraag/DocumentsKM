@@ -25,5 +25,23 @@ namespace DocumentsKM.Data
             return _context.Subnodes.Include(
                 v => v.Node).SingleOrDefault(v => v.Id == id);
         }
+
+        public void Add(Subnode subnode)
+        {
+            _context.Subnodes.Add(subnode);
+            _context.SaveChanges();
+        }
+
+        public void Update(Subnode subnode)
+        {
+            _context.Entry(subnode).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public void Delete(Subnode subnode)
+        {
+            _context.Subnodes.Remove(subnode);
+            _context.SaveChanges();
+        }
     }
 }

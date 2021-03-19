@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Dapper;
 using DocumentsKM.Helpers;
-using DocumentsKM.Models;
+using DocumentsKM.Dtos;
 
 namespace DocumentsKM.Services
 {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using DocumentsKM.Models;
+using DocumentsKM.Dtos;
 
 namespace DocumentsKM.Services
 {

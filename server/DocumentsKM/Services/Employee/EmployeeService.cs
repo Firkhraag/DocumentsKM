@@ -65,24 +65,19 @@ namespace DocumentsKM.Services
             foreach (var employeeFetched in employeesFetched)
             {
                 var foundEmployee = employees.SingleOrDefault(v => v.Id == employeeFetched.Id);
-                // if (foundEmployee == null)
-                //     _repository.Add(employeeFetched.ToEmployee());
-                // else
-                // {
-                //     var wasChanged = false;
-                //     if (foundEmployee.Name != employeeFetched.Name)
-                //     {
-                //         foundEmployee.Name = employeeFetched.Name;
-                //         wasChanged = true;
-                //     }
-                //     if (foundEmployee.ShortName != employeeFetched.Reduction)
-                //     {
-                //         foundEmployee.ShortName = employeeFetched.Reduction;
-                //         wasChanged = true;
-                //     }
-                //     if (wasChanged)
-                //         _repository.Update(foundEmployee);
-                // }
+                if (foundEmployee == null)
+                    _repository.Add(employeeFetched.ToEmployee());
+                else
+                {
+                    var wasChanged = false;
+                    if (foundEmployee.Fullname != employeeFetched.Fullname)
+                    {
+                        foundEmployee.Fullname = employeeFetched.Fullname;
+                        wasChanged = true;
+                    }
+                    if (wasChanged)
+                        _repository.Update(foundEmployee);
+                }
             }
         }
     }

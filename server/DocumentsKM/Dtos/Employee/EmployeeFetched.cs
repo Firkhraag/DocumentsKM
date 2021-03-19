@@ -12,5 +12,21 @@ namespace DocumentsKM.Dtos
         public DepartmentFetched DepartmentFetched { get; set; }
 
         public Position Position { get; set; }
+
+        // DismissedDate
+        // Name
+
+        public Employee ToEmployee()
+        {
+            return new Employee
+            {
+                Id = Id,
+                Fullname = Fullname,
+                Name = "Test",
+                Department = DepartmentFetched.ToDepartment(),
+                Position = Position,
+                IsActive = true,
+            };
+        }
     }
 }

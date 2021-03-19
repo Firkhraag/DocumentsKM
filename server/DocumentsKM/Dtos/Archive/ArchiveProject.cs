@@ -1,4 +1,4 @@
-namespace DocumentsKM.Models
+namespace DocumentsKM.Dtos
 {
     public class ArchiveProject
     {
