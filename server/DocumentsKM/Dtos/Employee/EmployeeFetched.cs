@@ -9,9 +9,9 @@ namespace DocumentsKM.Dtos
 
         public string Fullname { get; set; }
 
-        public DepartmentFetched DepartmentFetched { get; set; }
+        public DepartmentFetched Department { get; set; }
 
-        public Position Position { get; set; }
+        public Position Post { get; set; }
 
         public DateTime? DismissedDate { get; set; }
 
@@ -32,8 +32,10 @@ namespace DocumentsKM.Dtos
                 Id = Id,
                 Fullname = Fullname,
                 Name = name,
-                Department = DepartmentFetched.ToDepartment(),
-                Position = Position,
+                // TBD
+                DepartmentId = 2,
+                PositionId = Post.Id,
+
                 IsActive = DismissedDate == null,
             };
         }

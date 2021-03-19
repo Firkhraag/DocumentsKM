@@ -19,6 +19,7 @@ namespace DocumentsKM.Dtos
                 Code = Id,
                 Name = Name,
                 ShortName = Reduction,
+                IsActive = Enable,
             };
         }
     }

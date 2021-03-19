@@ -30,9 +30,10 @@ namespace DocumentsKM.Services
                     _repository.Add(positionFetched);
                 else
                 {
-                    if (foundPosition.Name != positionFetched.Name)
+                    var name = positionFetched.Name.Trim();
+                    if (foundPosition.Name != name)
                     {
-                        foundPosition.Name = positionFetched.Name;
+                        foundPosition.Name = name;
                         _repository.Update(foundPosition);
                     }
                 }

@@ -4,12 +4,13 @@ using System.Data.SqlClient;
 using Dapper;
 using DocumentsKM.Helpers;
 using DocumentsKM.Dtos;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Services
 {
     public class ArchiveService : IArchiveService
     {
-        public IEnumerable<ArchiveProject> GetProjects()
+        public IEnumerable<Project> GetProjects()
         {
             // const string query = @"select 
             //                         [Проект] as Id, 
@@ -21,14 +22,13 @@ namespace DocumentsKM.Services
             //                     order by Title";
             const string query = @"select 
                                     [Проект] as Id, 
-                                    [БазСерия] as Title,
-                                    [Название] as Name,
-                                    [Название_кр] as NameShort
+                                    [БазСерия] as BaseSeries,
+                                    [Название] as Name
                                 from [Проекты]";
 
             using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
             {
-                var projects = db.Query<ArchiveProject>(query);
+                var projects = db.Query<Project>(query);
                 return projects;
             }
         }

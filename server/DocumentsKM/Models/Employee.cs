@@ -24,10 +24,12 @@ namespace DocumentsKM.Models
         [Required]
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
+        public Int16 DepartmentId { get; set; }
 
         // Должность
         [ForeignKey("PositionId")]
         public virtual Position Position { get; set; }
+        public Int16 PositionId { get; set; }
 
         [Required]
         public bool IsActive { get; set; }

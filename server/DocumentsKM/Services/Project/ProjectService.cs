@@ -20,7 +20,7 @@ namespace DocumentsKM.Services
             return _repository.GetAll();
         }
 
-        public void UpdateAll(List<ArchiveProject> projectsFetched)
+        public void UpdateAll(List<Project> projectsFetched)
         {
             var projects = _repository.GetAll();
             // Delete should be cascade if it's necessary
@@ -29,17 +29,28 @@ namespace DocumentsKM.Services
             //     if (!projectsFetched.Select(v => v.Id).Contains(project.Id))
             //         _repository.Delete(project);
             // }
-            foreach (var projectFetched in projectsFetched)
+            foreach (var projectFetched in projectsFetched.Where(v => v.Name != null && v.BaseSeries != null))
             {
                 var foundProject = projects.SingleOrDefault(v => v.Id == projectFetched.Id);
                 if (foundProject == null)
-                    _repository.Add(projectFetched.ToProject());
+                {
+                    var uniqueKeyViolation = _repository.GetByUniqueKey(projectFetched.BaseSeries);
+                    if (uniqueKeyViolation == null)
+                        _repository.Add(projectFetched);
+                }
                 else
                 {
                     var wasChanged = false;
-                    if (foundProject.Name != projectFetched.Name)
+                    var name = projectFetched.Name.Trim();
+                    if (foundProject.Name != name)
                     {
-                        foundProject.Name = projectFetched.Name;
+                        foundProject.Name = name;
+                        wasChanged = true;
+                    }
+                    var baseSeries = projectFetched.BaseSeries.Trim();
+                    if (foundProject.Name != name)
+                    {
+                        foundProject.Name = name;
                         wasChanged = true;
                     }
                     if (wasChanged)

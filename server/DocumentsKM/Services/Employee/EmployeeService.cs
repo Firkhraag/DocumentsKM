@@ -72,17 +72,41 @@ namespace DocumentsKM.Services
             //     if (!employeesFetched.Select(v => v.Id).Contains(employee.Id))
             //         _repository.Delete(employee);
             // }
-            foreach (var employeeFetched in employeesFetched)
+            foreach (var employeeFetched in employeesFetched.Where(v => v.Post != null && v.Department != null))
             {
                 var foundEmployee = employees.SingleOrDefault(v => v.Id == employeeFetched.Id);
                 if (foundEmployee == null)
                     _repository.Add(employeeFetched.ToEmployee());
                 else
                 {
+                    var e = employeeFetched.ToEmployee();
+
                     var wasChanged = false;
-                    if (foundEmployee.Fullname != employeeFetched.Fullname)
+                    var fullName = e.Fullname.Trim();
+                    if (foundEmployee.Fullname != fullName)
                     {
-                        foundEmployee.Fullname = employeeFetched.Fullname;
+                        foundEmployee.Fullname = fullName;
+                        wasChanged = true;
+                    }
+                    var name = e.Name.Trim();
+                    if (foundEmployee.Fullname != name)
+                    {
+                        foundEmployee.Fullname = name;
+                        wasChanged = true;
+                    }
+                    if (foundEmployee.IsActive != e.IsActive)
+                    {
+                        foundEmployee.IsActive = e.IsActive;
+                        wasChanged = true;
+                    }
+                    if (foundEmployee.PositionId != e.PositionId)
+                    {
+                        foundEmployee.PositionId = e.PositionId;
+                        wasChanged = true;
+                    }
+                    if (foundEmployee.DepartmentId != e.DepartmentId)
+                    {
+                        foundEmployee.PositionId = e.PositionId;
                         wasChanged = true;
                     }
                     if (wasChanged)

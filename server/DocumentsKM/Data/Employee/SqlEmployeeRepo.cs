@@ -16,6 +16,11 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Employee> GetAll()
         {
+            return _context.Employees.ToList();
+        }
+
+        public IEnumerable<Employee> GetAllActive()
+        {
             return _context.Employees.Where(v => v.IsActive).OrderBy(
                 v => v.Position.Id).ToList();
         }

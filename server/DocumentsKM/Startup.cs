@@ -123,6 +123,7 @@ namespace DocumentsKM
             services.AddScoped<ISubnodeService, SubnodeService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IMarkService, MarkService>();
@@ -191,6 +192,7 @@ namespace DocumentsKM
             services.AddScoped<ISubnodeRepo, SqlSubnodeRepo>();
             services.AddScoped<IEmployeeRepo, SqlEmployeeRepo>();
             services.AddScoped<IDepartmentRepo, SqlDepartmentRepo>();
+            services.AddScoped<IPositionRepo, SqlPositionRepo>();
             services.AddScoped<IUserRepo, SqlUserRepo>();
 
             services.AddScoped<IMarkRepo, SqlMarkRepo>();

@@ -24,6 +24,12 @@ namespace DocumentsKM.Data
             return _context.Projects.SingleOrDefault(v => v.Id == id);
         }
 
+        public Project GetByUniqueKey(string baseSeries)
+        {
+            return _context.Projects.SingleOrDefault(
+                v => v.BaseSeries == baseSeries);
+        }
+
         public void Add(Project project)
         {
             _context.Projects.Add(project);

@@ -7,6 +7,8 @@ namespace DocumentsKM.Data
     {
         // Получить всех сотрудников
         IEnumerable<Employee> GetAll();
+        // Получить всех активных сотрудников
+        IEnumerable<Employee> GetAllActive();
         // Получить сотрудников по id  отдела
         IEnumerable<Employee> GetAllByDepartmentId(int departmentId);
         // Получить всех сотрудников по id отдела

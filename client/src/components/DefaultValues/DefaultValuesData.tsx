@@ -25,7 +25,6 @@ const DefaultValuesData = () => {
 		setDefaultSelectedObject,
 	] = useState<DefaultValues>(null)
 	const [selectedObject, setSelectedObject] = useState<DefaultValues>({
-		id: -1,
 		department: null,
 		creator: null,
 		inspector: null,
@@ -46,14 +45,20 @@ const DefaultValuesData = () => {
 				const defaultValuesResponse = await httpClient.get(
 					`/users/${user.id}/default-values`
 				)
-				const employeesResponse = await httpClient.get(
-					`/departments/${defaultValuesResponse.data.department.id}/employees`
-				)
-
-				setOptionsObject({
-					departments: departmentsResponse.data,
-					employees: employeesResponse.data,
-				})
+				if (defaultValuesResponse.data.department != null) {
+					const employeesResponse = await httpClient.get(
+						`/departments/${defaultValuesResponse.data.department.id}/employees`
+					)
+					setOptionsObject({
+						departments: departmentsResponse.data,
+						employees: employeesResponse.data,
+					})
+				} else {
+					setOptionsObject({
+						...optionsObject,
+						departments: departmentsResponse.data,
+					})
+				}
 				setSelectedObject(defaultValuesResponse.data)
 				setDefaultSelectedObject(defaultValuesResponse.data)
 			} catch (e) {
@@ -63,11 +68,14 @@ const DefaultValuesData = () => {
 		fetchData()
 	}, [])
 
-	const onDepartmentSelect = (id: number) => {
+	const onDepartmentSelect = async (id: number) => {
 		if (id == null) {
 			setSelectedObject({
 				...selectedObject,
 				department: null,
+				creator: null,
+				inspector: null,
+				normContr: null,
 			})
 			return
 		}
@@ -77,10 +85,25 @@ const DefaultValuesData = () => {
 			selectedObject.department
 		)
 		if (v != null) {
-			setSelectedObject({
-				...selectedObject,
-				department: v,
-			})
+			try {
+				const employeesResponse = await httpClient.get(
+					`departments/${id}/employees`
+				)
+				setOptionsObject({
+					...optionsObject,
+					employees: employeesResponse.data,
+				})
+				setSelectedObject({
+					...selectedObject,
+					department: v,
+					creator: null,
+					inspector: null,
+					normContr: null,
+				})
+			} catch (e) {
+				setErrMsg('Произошла ошибка')
+			}
+			
 		}
 	}
 
@@ -246,13 +269,13 @@ const DefaultValuesData = () => {
 								? null
 								: {
 										value: selectedObject.creator.id,
-										label: selectedObject.creator.name,
+										label: selectedObject.creator.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}
@@ -283,13 +306,13 @@ const DefaultValuesData = () => {
 								? null
 								: {
 										value: selectedObject.inspector.id,
-										label: selectedObject.inspector.name,
+										label: selectedObject.inspector.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}
@@ -322,13 +345,13 @@ const DefaultValuesData = () => {
 								? null
 								: {
 										value: selectedObject.normContr.id,
-										label: selectedObject.normContr.name,
+										label: selectedObject.normContr.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}

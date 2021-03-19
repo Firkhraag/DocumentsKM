@@ -17,7 +17,7 @@ namespace DocumentsKM.Services
 
         public IEnumerable<Department> GetAll()
         {
-            return _repository.GetAll();
+            return _repository.GetAllActive();
         }
 
         public void UpdateAll(List<DepartmentFetched> departmentsFetched)
@@ -37,14 +37,21 @@ namespace DocumentsKM.Services
                 else
                 {
                     var wasChanged = false;
-                    if (foundDepartment.Name != departmentFetched.Name)
+                    var name = departmentFetched.Name.Trim();
+                    if (foundDepartment.Name != name)
                     {
-                        foundDepartment.Name = departmentFetched.Name;
+                        foundDepartment.Name = name;
                         wasChanged = true;
                     }
-                    if (foundDepartment.ShortName != departmentFetched.Reduction)
+                    var shortName = departmentFetched.Reduction.Trim();
+                    if (foundDepartment.ShortName != shortName)
                     {
-                        foundDepartment.ShortName = departmentFetched.Reduction;
+                        foundDepartment.ShortName = shortName;
+                        wasChanged = true;
+                    }
+                    if (foundDepartment.IsActive != departmentFetched.Enable)
+                    {
+                        foundDepartment.IsActive = departmentFetched.Enable;
                         wasChanged = true;
                     }
                     if (wasChanged)

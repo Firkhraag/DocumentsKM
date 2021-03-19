@@ -57,7 +57,12 @@ public class FetchService : IHostedService
             if (response.IsSuccessStatusCode)
             {
                 using var responseStream = await response.Content.ReadAsStreamAsync();
-                var departments = await JsonSerializer.DeserializeAsync<IEnumerable<DepartmentFetched>>(responseStream);
+                var departments = await JsonSerializer.DeserializeAsync<IEnumerable<DepartmentFetched>>(
+                    responseStream,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                    });
                 var departmentService = scope.ServiceProvider.GetRequiredService<IDepartmentService>();
                 departmentService.UpdateAll(departments.ToList());
             }
@@ -73,7 +78,12 @@ public class FetchService : IHostedService
             if (response.IsSuccessStatusCode)
             {
                 using var responseStream = await response.Content.ReadAsStreamAsync();
-                var positions = await JsonSerializer.DeserializeAsync<IEnumerable<Position>>(responseStream);
+                var positions = await JsonSerializer.DeserializeAsync<IEnumerable<Position>>(
+                    responseStream,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                    });
                 var positionService = scope.ServiceProvider.GetRequiredService<IPositionService>();
                 positionService.UpdateAll(positions.ToList());
             }
@@ -81,7 +91,7 @@ public class FetchService : IHostedService
                 Log.Fatal("Error while fetching posts");
             Log.Information("Posts were fetched successfully");
 
-            Log.Information("Fetching staffs");
+            Log.Information("Fetching staff");
             var staffUrl = baseUrl + "staff";
             var staffRequest = new HttpRequestMessage(HttpMethod.Get, staffUrl);
             staffRequest.Headers.Add("Accept", "application/json");
@@ -89,7 +99,12 @@ public class FetchService : IHostedService
             if (response.IsSuccessStatusCode)
             {
                 using var responseStream = await response.Content.ReadAsStreamAsync();
-                var employees = await JsonSerializer.DeserializeAsync<IEnumerable<EmployeeFetched>>(responseStream);
+                var employees = await JsonSerializer.DeserializeAsync<IEnumerable<EmployeeFetched>>(
+                    responseStream,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                    });
                 var employeeService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
                 employeeService.UpdateAll(employees.ToList());
             }
@@ -120,6 +135,36 @@ public class FetchService : IHostedService
         }
     }
 
+    public async Task OnTest()
+    {
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            const string baseUrl = Secrets.PERSONNEL_URL;
+            var client = _clientFactory.CreateClient();
+
+            Log.Information("Fetching staff");
+            var staffUrl = baseUrl + "staff";
+            var staffRequest = new HttpRequestMessage(HttpMethod.Get, staffUrl);
+            staffRequest.Headers.Add("Accept", "application/json");
+            var response = await client.SendAsync(staffRequest);
+            if (response.IsSuccessStatusCode)
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                var employees = await JsonSerializer.DeserializeAsync<IEnumerable<EmployeeFetched>>(
+                    responseStream,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                    });
+                var employeeService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
+                employeeService.UpdateAll(employees.ToList());
+            }
+            else
+                Log.Fatal("Error while fetching staff");
+            Log.Information("Staff was fetched successfully");
+        }
+    }
+
     public virtual Task StartAsync(CancellationToken cancellationToken)
     {
         // Task.Run(async () =>
@@ -132,7 +177,8 @@ public class FetchService : IHostedService
         //     }
         // }, cancellationToken);
 
-        return Task.CompletedTask;
+        // return Task.CompletedTask;
+        return OnTest();
     }
 
     private int UntilNextExecution() => Math.Max(0, (int)_nextRun.Subtract(DateTime.Now).TotalMilliseconds);
