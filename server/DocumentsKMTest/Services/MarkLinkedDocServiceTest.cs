@@ -151,11 +151,11 @@ namespace DocumentsKM.Tests
             int id = _rnd.Next(1, _markLinkedDocs.Count());
             int markId = _markLinkedDocs.FirstOrDefault(
                 v => v.Id == id).Mark.Id;
-            var newLinkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
+            short newLinkedDocId = (Int16)(_rnd.Next(1, TestData.linkedDocs.Count()));
             while (_markLinkedDocs.FirstOrDefault(
                 v => v.Mark.Id == markId && v.LinkedDoc.Id == newLinkedDocId) != null)
             {
-                newLinkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
+                newLinkedDocId = (Int16)(_rnd.Next(1, TestData.linkedDocs.Count()));
             }
 
             var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest
@@ -176,10 +176,10 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _markLinkedDocs.Count());
-            var newLinkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
+            short newLinkedDocId = (Int16)(_rnd.Next(1, TestData.linkedDocs.Count()));
             while (newLinkedDocId == _markLinkedDocs[id].LinkedDoc.Id)
             {
-                newLinkedDocId = _rnd.Next(1, TestData.linkedDocs.Count());
+                newLinkedDocId = (Int16)(_rnd.Next(1, TestData.linkedDocs.Count()));
             }
 
             var newMarkLinkedDocRequest = new MarkLinkedDocUpdateRequest

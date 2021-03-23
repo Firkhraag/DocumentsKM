@@ -55,7 +55,7 @@ namespace DocumentsKM.Services
             if (currentPoints.Count() == 0)
                 generalDataPoint.OrderNum = 1;
             else
-                generalDataPoint.OrderNum = currentPoints.Max(v => v.OrderNum) + 1;
+                generalDataPoint.OrderNum = (Int16)(currentPoints.Max(v => v.OrderNum) + 1);
             
             _repository.Add(generalDataPoint);
         }
@@ -90,22 +90,22 @@ namespace DocumentsKM.Services
             {
                 var orderNum = generalDataPoint.OrderNum.GetValueOrDefault();
                 foundGeneralDataPoint.OrderNum = orderNum;
-                var num = 1;
+                short num = 1;
                 foreach (var p in _repository.GetAllByUserAndSectionId(userId, sectionId))
                 {
                     if (p.Id == id)
                         continue;
                     if (num == generalDataPoint.OrderNum)
                     {
-                        num = num + 1;
+                        num = (Int16)(num + 1);
                         p.OrderNum = num;
                         _repository.Update(p);
-                        num = num + 1;
+                        num = (Int16)(num + 1);
                         continue;
                     }
                     p.OrderNum = num;
                     _repository.Update(p);
-                    num = num + 1;
+                    num = (Int16)(num + 1);
                 }
             }
             _repository.Update(foundGeneralDataPoint);
@@ -126,7 +126,7 @@ namespace DocumentsKM.Services
             {
                 if (p.OrderNum > foundGeneralDataPoint.OrderNum)
                 {
-                    p.OrderNum = p.OrderNum - 1;
+                    p.OrderNum = (Int16)(p.OrderNum - 1);
                     _repository.Update(p);
                 }
             }

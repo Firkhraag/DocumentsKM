@@ -215,7 +215,7 @@ namespace DocumentsKM.Tests
             int id = _rnd.Next(2, _docs.Count());
             var newName = "NewUpdate";
             var newTypeId = _docs[0].Type.Id;
-            var newNumOfPages = 9;
+            short newNumOfPages = 9;
             var newForm = 9.0f;
 
             var newDocRequest = new DocUpdateRequest

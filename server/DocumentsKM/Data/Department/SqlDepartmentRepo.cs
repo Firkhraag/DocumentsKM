@@ -19,6 +19,11 @@ namespace DocumentsKM.Data
             return _context.Departments.ToList();
         }
 
+        public IEnumerable<Department> GetAllActive()
+        {
+            return _context.Departments.Where(v => v.IsActive).ToList();
+        }
+
         public Department GetById(int id)
         {
             return _context.Departments.SingleOrDefault(v => v.Id == id);

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
@@ -6,11 +7,11 @@ namespace DocumentsKM.Models
     public class BoltDiameter
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Диаметр
         [Required]
-        public int Diameter { get; set; }
+        public Int16 Diameter { get; set; }
 
         // Вес гайки
         [Required]
@@ -27,7 +28,8 @@ namespace DocumentsKM.Models
 
         // Толщина шайбы
         [Required]
-        public int WasherThickness { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 WasherThickness { get; set; }
 
         // Нормативный документ на болты
         [Required]

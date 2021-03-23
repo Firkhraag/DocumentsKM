@@ -204,14 +204,14 @@ namespace DocumentsKM.Services
             p = tc.GetFirstChild<Paragraph>();
             p.Append(GetTextElement(objectName, 20));
 
-            trCells = trArr[6].Descendants<TableCell>().ToList();
+            // trCells = trArr[6].Descendants<TableCell>().ToList();
 
-            if (mark.ChiefSpecialist != null)
-            {
-                tc = trCells[1];
-                p = tc.GetFirstChild<Paragraph>();
-                p.Append(GetTextElement(mark.ChiefSpecialist.Name, 22));
-            }
+            // if (mark.ChiefSpecialist != null)
+            // {
+            //     tc = trCells[1];
+            //     p = tc.GetFirstChild<Paragraph>();
+            //     p.Append(GetTextElement(mark.ChiefSpecialist.Name, 22));
+            // }
 
             // trCells = trArr[7].Descendants<TableCell>().ToList();
             // tc = trCells[1];
@@ -280,6 +280,25 @@ namespace DocumentsKM.Services
                 {
                     var tb = tcb.GetFirstChild<TopBorder>();
                     tb.Size = 4;
+                }
+            }
+        }
+
+        public static void ReplaceText(WordprocessingDocument wordDoc, string textToReplace, string replacedText)
+        {
+            Body body = wordDoc.MainDocumentPart.Document.Body;
+            var paras = body.Elements<Paragraph>();
+            foreach (var para in paras)
+            {
+                foreach (var run in para.Elements<Run>())
+                {
+                    foreach (var text in run.Elements<Text>())
+                    {
+                        if (text.Text.Contains(textToReplace))
+                        {
+                            text.Text = text.Text.Replace(textToReplace, replacedText);
+                        }
+                    }
                 }
             }
         }

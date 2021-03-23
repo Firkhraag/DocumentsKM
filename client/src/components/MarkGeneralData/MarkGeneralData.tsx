@@ -22,6 +22,8 @@ import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 import { makeMarkName } from '../../util/make-name'
 
 const MarkGeneralData = () => {
+    const corrProtSectionId = 13
+
 	const history = useHistory()
 	const mark = useMark()
 	const setPopup = useSetPopup()
@@ -94,6 +96,14 @@ const MarkGeneralData = () => {
 			selectedObject.section
 		)
 		if (v != null) {
+            var pText = ''
+            if (id == corrProtSectionId) {
+                const pointText = await httpClient.get(
+                    `/marks/${mark.id}/corr-prot-point`
+                )
+                pText = pointText.data.result
+            }
+
 			if (cachedPoints.has(v.id)) {
 				setOptionsObject({
 					...optionsObject,
@@ -103,7 +113,7 @@ const MarkGeneralData = () => {
 					...selectedObject,
 					section: v,
 					point: null,
-					pointText: '',
+					pointText: pText,
 				})
 			} else {
 				try {
@@ -119,7 +129,7 @@ const MarkGeneralData = () => {
 						...selectedObject,
 						section: v,
 						point: null,
-						pointText: '',
+						pointText: pText,
 					})
 				} catch (e) {
 					setErrMsg('Произошла ошибка')
@@ -354,15 +364,17 @@ const MarkGeneralData = () => {
 					)}
 					close={() => setPointsSelectionShown(false)}
 					optionsObject={optionsObject}
+					setOptionsObject={setOptionsObject}
 					selectedObject={selectedObject}
 					setSelectedObject={setSelectedObject}
+                    cachedPoints={cachedPoints}
 				/>
 			) : null}
 			<h1 className="text-centered">Состав общих указаний марки</h1>
 
 			<div className="flex">
 				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
-					<Form.Group>
+					{/* <Form.Group>
 						<Form.Label className="bold" htmlFor="sections">
 							Выбранный раздел
 						</Form.Label>
@@ -392,7 +404,7 @@ const MarkGeneralData = () => {
 							})}
 							styles={reactSelectStyle}
 						/>
-					</Form.Group>
+					</Form.Group> */}
 
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Разделы</label>
@@ -432,7 +444,7 @@ const MarkGeneralData = () => {
 				</div>
 
 				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
-					<Form.Group>
+					{/* <Form.Group>
 						<Form.Label className="bold" htmlFor="points">
 							Выбранный пункт
 						</Form.Label>
@@ -462,7 +474,7 @@ const MarkGeneralData = () => {
 							})}
 							styles={reactSelectStyle}
 						/>
-					</Form.Group>
+					</Form.Group> */}
 
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Пункты</label>
@@ -485,7 +497,8 @@ const MarkGeneralData = () => {
 											style={{ flex: 1 }}
 											onClick={() => onPointSelect(p.id)}
 										>
-											{truncateText(p.text, 100, null)}
+											{/* {truncateText(p.text, 100, null)} */}
+											{p.text}
 										</p>
 										<div
 											onClick={() =>
@@ -588,7 +601,7 @@ const MarkGeneralData = () => {
 						<span className="bold">Символы:</span> °C –
 					</div>
 				</div>
-				<Form.Group className="no-bot-mrg mrg-top-2">
+				<Form.Group className="no-bot-mrg">
 					<Form.Label className="bold" htmlFor="text">
 						Содержание пункта
 					</Form.Label>

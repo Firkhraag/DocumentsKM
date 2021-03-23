@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +8,7 @@ namespace DocumentsKM.Models
     public class Doc
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Марка
         [Required]
@@ -16,7 +17,8 @@ namespace DocumentsKM.Models
 
         // Номер
         [Required]
-        public int Num { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Num { get; set; }
 
         // Тип документа
         [Required]
@@ -30,34 +32,34 @@ namespace DocumentsKM.Models
 
         // Формат
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Form { get; set; }
 
         // Разработал
         [Required]
         [ForeignKey("CreatorId")]
         public virtual Employee Creator { get; set; }
-        public int CreatorId { get; set; }
+        public Int32 CreatorId { get; set; }
 
         // Проверил
         [ForeignKey("InspectorId")]
         public virtual Employee Inspector { get; set; }
-        public int? InspectorId { get; set; }
+        public Int32? InspectorId { get; set; }
 
         // Нормоконтролер
         [ForeignKey("NormContrId")]
         public virtual Employee NormContr { get; set; }
-        public int? NormContrId { get; set; }
+        public Int32? NormContrId { get; set; }
 
         // Выпуск
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int ReleaseNum { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 ReleaseNum { get; set; }
 
         // Листов
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
-        public int NumOfPages { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 NumOfPages { get; set; }
 
         // Примечание
         [MaxLength(255)]

@@ -107,6 +107,63 @@ const Home = () => {
 		setProcessIsRunning(false)
 	}
 
+	const onEstimationDocumentDownloadButtonClick = async () => {
+		setProcessIsRunning(true)
+		try {
+			const response = await httpClient.get(
+				`/marks/${mark.id}/estimation-document-title`,
+				{
+					responseType: 'blob',
+				}
+			)
+
+			const url = window.URL.createObjectURL(new Blob([response.data]))
+			const link = document.createElement('a')
+			link.href = url
+			link.setAttribute(
+				'download',
+				`${makeMarkName(
+					mark.subnode.node.project.baseSeries,
+					mark.subnode.node.code,
+					mark.subnode.code,
+					mark.code
+				)}_РР-обл_тит.docx`
+			)
+			document.body.appendChild(link)
+			link.click()
+			link.remove()
+		} catch (e) {
+			console.log('Failed to download the file')
+		}
+		try {
+			const response = await httpClient.get(
+				`/marks/${mark.id}/estimation-document-pages`,
+				{
+					responseType: 'blob',
+				}
+			)
+
+			const url = window.URL.createObjectURL(new Blob([response.data]))
+			const link = document.createElement('a')
+			link.href = url
+			link.setAttribute(
+				'download',
+				`${makeMarkName(
+					mark.subnode.node.project.baseSeries,
+					mark.subnode.node.code,
+					mark.subnode.code,
+					mark.code
+				)}_РР-листы.docx`
+			)
+			document.body.appendChild(link)
+			link.click()
+			link.remove()
+		} catch (e) {
+			console.log('Failed to download the file')
+		}
+		setProcessIsRunning(false)
+	}
+
 	return (
 		<div>
 			<h2 className="home-cnt-header text-centered">Данные</h2>
@@ -264,16 +321,13 @@ const Home = () => {
 						Лист регистрации проекта
 					</Button>
 				</Link>
-				<Link to={mark != null ? `/set-doc` : '/'}>
-					<Button
-						variant="outline-secondary"
-						disabled={
-							mark == null || processIsRunning ? true : false
-						}
-					>
-						Комплект для расчета
-					</Button>
-				</Link>
+				<Button
+					variant="outline-secondary"
+					disabled={mark == null || processIsRunning ? true : false}
+					onClick={onEstimationDocumentDownloadButtonClick}
+				>
+					Комплект для расчета
+				</Button>
 			</div>
 		</div>
 	)

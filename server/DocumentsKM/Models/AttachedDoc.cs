@@ -1,12 +1,13 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
 {
-    // Прилагаемые документы марки
+    // Прилагаемый документ марки
     public class AttachedDoc
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Марка
         [Required]

@@ -8,7 +8,7 @@ namespace DocumentsKM.Models
     public class Mark
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Подузел
         [Required]
@@ -33,32 +33,33 @@ namespace DocumentsKM.Models
         // Главный специалист
         [ForeignKey("ChiefSpecialistId")]
         public virtual Employee ChiefSpecialist { get; set; }
-        public int? ChiefSpecialistId { get; set; }
+        public Int32? ChiefSpecialistId { get; set; }
 
         // Руководитель группы
         [ForeignKey("GroupLeaderId")]
         public virtual Employee GroupLeader { get; set; }
-        public int? GroupLeaderId { get; set; }
+        public Int32? GroupLeaderId { get; set; }
 
-        // Главный строитель
-        [ForeignKey("MainBuilderId")]
-        public virtual Employee MainBuilder { get; set; }
+        // Нормоконтролер
+        [ForeignKey("NormContrId")]
+        public virtual Employee NormContr { get; set; }
+        public Int32? NormContrId { get; set; }
 
         // Дата редактирования
         public DateTime? EditedDate { get; set; }
 
         // Тут где-то ГИП, где-то начальник отдела
-        public int? Signed1Id { get; set; }
-        public int? Signed2Id { get; set; }
+        public Int32? Signed1Id { get; set; }
+        public Int32? Signed2Id { get; set; }
 
         // Дата выдачи
         public DateTime? IssueDate { get; set; }
 
-        public int? NumOfVolumes { get; set; }
+        public Int16? NumOfVolumes { get; set; }
         public string PaintworkType { get; set; }
         public string Note { get; set; }
-        public int? FireHazardCategoryId { get; set; }
-        public Boolean? P_transport { get; set; }
-        public Boolean? P_site { get; set; }
+        public Int16? FireHazardCategoryId { get; set; }
+        public Boolean? PTransport { get; set; }
+        public Boolean? PSite { get; set; }
     }
 }

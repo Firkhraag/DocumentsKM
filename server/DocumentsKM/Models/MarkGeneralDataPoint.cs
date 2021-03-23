@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +8,7 @@ namespace DocumentsKM.Models
     public class MarkGeneralDataPoint
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Марка
         [Required]
@@ -25,6 +26,7 @@ namespace DocumentsKM.Models
 
         // Номер
         [Required]
-        public int OrderNum { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 OrderNum { get; set; }
     }
 }

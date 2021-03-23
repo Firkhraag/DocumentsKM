@@ -214,7 +214,7 @@ namespace DocumentsKM.Tests
                     Code = "KM1",
                     Name = "Name 1",
                     Department = _departments[0],
-                    MainBuilder = _employees[0],
+                    NormContr = _employees[0],
                 },
                 new Mark
                 {
@@ -223,7 +223,7 @@ namespace DocumentsKM.Tests
                     Code = "KM2",
                     Name = "Name 2",
                     Department = _departments[0],
-                    MainBuilder = _employees[1],
+                    NormContr = _employees[1],
                 },
                 new Mark
                 {
@@ -232,7 +232,7 @@ namespace DocumentsKM.Tests
                     Code = "KM3",
                     Name = "Name 3",
                     Department = _departments[1],
-                    MainBuilder = _employees[2],
+                    NormContr = _employees[2],
                 },
                 new Mark
                 {
@@ -241,7 +241,7 @@ namespace DocumentsKM.Tests
                     Code = "KM4",
                     Name = "Name 4",
                     Department = _departments[1],
-                    MainBuilder = _employees[2],
+                    NormContr = _employees[2],
                 },
             };
             _specifications = new List<Specification>
@@ -722,7 +722,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _rnd.Next(1, _updateConstructionBolts.Count());
-            var newNumber = 6;
+            short newNumber = 6;
 
             var newConstructionBoltRequest = new ConstructionBoltUpdateRequest
             {
@@ -753,7 +753,7 @@ namespace DocumentsKM.Tests
             // Arrange
             int id = _rnd.Next(1, _updateConstructionBolts.Count());
             int wrongId = 999;
-            var newNumber = 6;
+            short newNumber = 6;
 
             var newConstructionBoltRequest = new ConstructionBoltUpdateRequest
             {
@@ -776,7 +776,7 @@ namespace DocumentsKM.Tests
         public void Update_ShouldFailWithConflict()
         {
             // Arrange
-            var conflictDiameterId = 2;
+            short conflictDiameterId = 2;
             var id = 1;
 
             var newConstructionBoltRequest = new ConstructionBoltUpdateRequest

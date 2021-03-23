@@ -80,24 +80,25 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
-        [HttpPost, Route("marks")]
+        [HttpPost, Route("users/{userId}/marks")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<MarkResponse> Create(
-            [FromBody] MarkCreateRequest markRequest)
+            int userId, [FromBody] MarkCreateRequest markRequest)
         {
             var markModel = _mapper.Map<Mark>(markRequest);
             try
             {
                 _service.Create(
                     markModel,
+                    userId,
                     markRequest.SubnodeId,
                     markRequest.DepartmentId,
-                    markRequest.MainBuilderId,
                     markRequest.ChiefSpecialistId,
-                    markRequest.GroupLeaderId);
+                    markRequest.GroupLeaderId,
+                    markRequest.NormContrId);
             }
             catch (ArgumentNullException)
             {

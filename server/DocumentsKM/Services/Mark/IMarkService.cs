@@ -15,11 +15,12 @@ namespace DocumentsKM.Services
         string GetNewMarkCode(int subnodeId);
         // Создать новую марку
         void Create(Mark mark,
+            int userId,
             int subnodeId,
             int departmentId,
-            int mainBuilderId,
             int? chiefSpecialistId,
-            int? groupLeaderId);
+            int? groupLeaderId,
+            int? normContrId);
         // Изменить марку
         void Update(int id, MarkUpdateRequest mark);
         // Обновить дату выдачи проекта на текущую

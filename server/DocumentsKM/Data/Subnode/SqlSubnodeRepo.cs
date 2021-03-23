@@ -14,6 +14,11 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
+        public IEnumerable<Subnode> GetAll()
+        {
+            return _context.Subnodes.ToList();
+        }
+
         public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
         {
             return _context.Subnodes.Where(
@@ -24,6 +29,24 @@ namespace DocumentsKM.Data
         {
             return _context.Subnodes.Include(
                 v => v.Node).SingleOrDefault(v => v.Id == id);
+        }
+
+        public void Add(Subnode subnode)
+        {
+            _context.Subnodes.Add(subnode);
+            _context.SaveChanges();
+        }
+
+        public void Update(Subnode subnode)
+        {
+            _context.Entry(subnode).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public void Delete(Subnode subnode)
+        {
+            _context.Subnodes.Remove(subnode);
+            _context.SaveChanges();
         }
     }
 }

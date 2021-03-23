@@ -62,14 +62,14 @@ namespace DocumentsKM.Services
                 (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                     project.Name, node.Name, subnode.Name, mark.Name);
 
-                ReplaceText(wordDoc, "A", markName);
-                ReplaceText(wordDoc, "B", complexName);
-                ReplaceText(wordDoc, "C", objectName);
-                ReplaceText(wordDoc, "D", mark.Subnode.Node.ChiefEngineer.Name);
-                ReplaceText(wordDoc, "E", mark.GroupLeader.Name);
-                ReplaceText(
+                Word.ReplaceText(wordDoc, "A", markName);
+                Word.ReplaceText(wordDoc, "B", complexName);
+                Word.ReplaceText(wordDoc, "C", objectName);
+                Word.ReplaceText(wordDoc, "D", mark.Subnode.Node.ChiefEngineer.Name);
+                Word.ReplaceText(wordDoc, "E", mark.GroupLeader.Name);
+                Word.ReplaceText(
                     wordDoc, "F", mark.IssueDate.GetValueOrDefault().ToString("dd.MM.yyyy"));
-                ReplaceText(wordDoc, "G", FindWeight(constructions, standardConstructions).ToStringWithComma());
+                Word.ReplaceText(wordDoc, "G", FindWeight(constructions, standardConstructions).ToStringWithComma());
                 AppendToSheetsTable(wordDoc, sheets);
                 AppendToDocsTable(wordDoc, docs);
                 AppendToAttachedDocsTable(wordDoc, attachedDocs);
@@ -77,25 +77,6 @@ namespace DocumentsKM.Services
 
                 Word.AppendToMainSmallFooterTable(wordDoc, markName);
                 Word.AppendToSmallFooterTable(wordDoc, markName);
-            }
-        }
-
-        private void ReplaceText(WordprocessingDocument wordDoc, string textToReplace, string replacedText)
-        {
-            Body body = wordDoc.MainDocumentPart.Document.Body;
-            var paras = body.Elements<Paragraph>();
-            foreach (var para in paras)
-            {
-                foreach (var run in para.Elements<Run>())
-                {
-                    foreach (var text in run.Elements<Text>())
-                    {
-                        if (text.Text.Contains(textToReplace))
-                        {
-                            text.Text = text.Text.Replace(textToReplace, replacedText);
-                        }
-                    }
-                }
             }
         }
 
@@ -255,7 +236,7 @@ namespace DocumentsKM.Services
 
                 sum = 0.0;
                 trCells[0].GetFirstChild<Paragraph>().Append(
-                    Word.GetTextElement(additionalWork[i].Employee.Name, 22));
+                    Word.GetTextElement(additionalWork[i].Employee.Fullname, 22));
                 if (Math.Abs(additionalWork[i].DrawingsCompleted) > 0.0000001)
                 {
                     sum += additionalWork[i].DrawingsCompleted;

@@ -11,6 +11,7 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import ConstructionBolt from '../../model/ConstructionBolt'
 import BoltDiameter from '../../model/BoltDiameter'
 import { useMark } from '../../store/MarkStore'
+import { useSetScroll } from '../../store/ScrollStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 
@@ -29,6 +30,7 @@ const ConstructionBoltData = ({
 }: ConstructionBoltDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
+	const setScroll = useSetScroll()
 
 	const [selectedObject, setSelectedObject] = useState<ConstructionBolt>(
 		isCreateMode
@@ -145,6 +147,7 @@ const ConstructionBoltData = ({
 						washerNum: selectedObject.washerNum,
 					}
 				)
+				setScroll(4)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
@@ -197,6 +200,7 @@ const ConstructionBoltData = ({
 					`/construction-bolts/${selectedObject.id}`,
 					object
 				)
+				setScroll(4)
 				history.push(
 					`/specifications/${specificationId}/constructions/${constructionId}`
 				)
@@ -221,11 +225,10 @@ const ConstructionBoltData = ({
 					: 'Данные высокопрочного болта'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-				<Form.Group className="flex-cent-v">
+				<Form.Group className="space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="diameter"
-						style={{ marginRight: '4.3em' }}
 					>
 						Диаметр болта, мм
 					</Form.Label>
@@ -236,7 +239,7 @@ const ConstructionBoltData = ({
 						isSearchable={true}
 						placeholder="Выберите диаметр болта"
 						noOptionsMessage={() => 'Диаметры болтов не найдены'}
-						className="auto-width flex-grow"
+						className="bolt-input-width"
 						onChange={(selectedOption) =>
 							onDiameterSelect((selectedOption as any)?.value)
 						}
@@ -258,11 +261,10 @@ const ConstructionBoltData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="packet"
-						style={{ marginRight: '3.85em' }}
 					>
 						Толщина пакета, мм
 					</Form.Label>
@@ -270,7 +272,7 @@ const ConstructionBoltData = ({
 						id="packet"
 						type="text"
 						placeholder="Введите толщину пакета"
-						className="auto-width flex-grow"
+						className="bolt-input-width"
 						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.packet)
@@ -281,11 +283,10 @@ const ConstructionBoltData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="num"
-						style={{ marginRight: '4.05em' }}
 					>
 						Число болтов, штук
 					</Form.Label>
@@ -293,7 +294,7 @@ const ConstructionBoltData = ({
 						id="num"
 						type="text"
 						placeholder="Введите число болтов"
-						className="auto-width flex-grow"
+						className="bolt-input-width"
 						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.num) ? '' : selectedObject.num
@@ -302,11 +303,10 @@ const ConstructionBoltData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="nutNum"
-						style={{ marginRight: '1.6em' }}
 					>
 						Число гаек на болт, штук
 					</Form.Label>
@@ -314,7 +314,7 @@ const ConstructionBoltData = ({
 						id="nutNum"
 						type="text"
 						placeholder="Введите число гаек на болт"
-						className="auto-width flex-grow"
+						className="bolt-input-width"
 						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.nutNum)
@@ -325,11 +325,10 @@ const ConstructionBoltData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v no-bot-mrg">
+				<Form.Group className="mrg-top-2 space-between-cent-v no-bot-mrg">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="washerNum"
-						style={{ marginRight: '1em' }}
 					>
 						Число шайб на болт, штук
 					</Form.Label>
@@ -337,7 +336,7 @@ const ConstructionBoltData = ({
 						id="washerNum"
 						type="text"
 						placeholder="Введите число шайб на болт"
-						className="auto-width flex-grow"
+						className="bolt-input-width"
 						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.washerNum)

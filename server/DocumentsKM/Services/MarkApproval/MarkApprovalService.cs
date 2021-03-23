@@ -38,7 +38,6 @@ namespace DocumentsKM.Services
             int markId,
             List<int> employeeIds)
         {
-            Log.Information(JsonSerializer.Serialize(employeeIds));
             if (employeeIds == null)
                 throw new ArgumentNullException(nameof(employeeIds));
             var foundMark = _markRepo.GetById(markId);

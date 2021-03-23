@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +11,7 @@ namespace DocumentsKM.Models
         [ForeignKey("MarkId")]
         public virtual Mark Mark { get; set; }
         [Key]
-        public int MarkId { get; set; }
+        public Int32 MarkId { get; set; }
 
         // Коэффициент надежности по ответственности
         [Required]
@@ -23,7 +24,7 @@ namespace DocumentsKM.Models
 
         // Температура
         [Required]
-        public int Temperature { get; set; }
+        public Int16 Temperature { get; set; }
 
         // Зона эксплуатации
         [Required]

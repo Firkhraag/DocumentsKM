@@ -332,13 +332,13 @@ const EstimateTaskDocument = () => {
 											selectedObject.approvalEmployee.id,
 										label:
 											selectedObject.approvalEmployee
-												.name,
+												.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}

@@ -9,6 +9,7 @@ import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
+import { useScroll, useSetScroll } from '../../store/ScrollStore'
 import ConstructionElement from '../../model/ConstructionElement'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
@@ -26,35 +27,51 @@ const ConstructionElementTable = ({
 	const mark = useMark()
 	const history = useHistory()
 	const setPopup = useSetPopup()
+	const scroll = useScroll()
+	const setScroll = useSetScroll()
 
-	const [constructionElements, setConstructionElements] = useState(
-		[] as ConstructionElement[]
-	)
+	const [constructionElementsState, setConstructionElementsState] = useState({
+		constructionElements: [] as ConstructionElement[],
+		isPopulated: false,
+	})
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
+			if (constructionElementsState.isPopulated) {
+				if (scroll === 3) {
+					window.scrollTo(0, 1000)
+				} else if (scroll === 4) {
+					window.scrollTo(0, 9999)
+				}
+				setScroll(0)
+				return
+			}
 			const fetchData = async () => {
 				try {
 					const constructionElementsResponse = await httpClient.get(
 						`/constructions/${constructionId}/elements`
 					)
-					setConstructionElements(
-						constructionElementsResponse.data as ConstructionElement[]
-					)
+					setConstructionElementsState({
+						constructionElements: constructionElementsResponse.data as ConstructionElement[],
+						isPopulated: true,
+					})
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
 			}
 			fetchData()
 		}
-	}, [mark])
+	}, [mark, constructionElementsState])
 
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/construction-elements/${id}`)
-            var arr = [...constructionElements]
+			var arr = [...constructionElementsState.constructionElements]
 			arr.splice(row, 1)
-			setConstructionElements(arr)
+			setConstructionElementsState({
+				...constructionElementsState,
+				constructionElements: arr,
+			})
 			setPopup(defaultPopup)
 		} catch (e) {
 			console.log('Error')
@@ -90,47 +107,49 @@ const ConstructionElementTable = ({
 					</tr>
 				</thead>
 				<tbody>
-					{constructionElements.map((ce, index) => {
-						return (
-							<tr key={index}>
-								<td>{index + 1}</td>
-								<td className="profile-class-name-col-width">
-									{ce.profile.class.name}
-								</td>
-								<td>{ce.profile.name}</td>
-								<td>{ce.steel.name}</td>
-								<td>{ce.length}</td>
-								<td
-									onClick={() => {
-										setConstructionElement(ce)
-										history.push(
-											`/specifications/${specificationId}/constructions/${constructionId}/elements/${ce.id}`
-										)
-									}}
-									className="pointer action-cell-width text-centered"
-								>
-									<PencilSquare color="#666" size={26} />
-								</td>
-								<td
-									onClick={() =>
-										setPopup({
-											isShown: true,
-											msg: `Вы действительно хотите удалить элемент конструкции № ${
-												index + 1
-											}?`,
-											onAccept: () =>
-												onDeleteClick(index, ce.id),
-											onCancel: () =>
-												setPopup(defaultPopup),
-										})
-									}
-									className="pointer action-cell-width text-centered"
-								>
-									<Trash color="#666" size={26} />
-								</td>
-							</tr>
-						)
-					})}
+					{constructionElementsState.constructionElements.map(
+						(ce, index) => {
+							return (
+								<tr key={index}>
+									<td>{index + 1}</td>
+									<td className="profile-class-name-col-width">
+										{ce.profile.class.name}
+									</td>
+									<td>{ce.profile.name}</td>
+									<td>{ce.steel.name}</td>
+									<td>{ce.length}</td>
+									<td
+										onClick={() => {
+											setConstructionElement(ce)
+											history.push(
+												`/specifications/${specificationId}/constructions/${constructionId}/elements/${ce.id}`
+											)
+										}}
+										className="pointer action-cell-width text-centered"
+									>
+										<PencilSquare color="#666" size={26} />
+									</td>
+									<td
+										onClick={() =>
+											setPopup({
+												isShown: true,
+												msg: `Вы действительно хотите удалить элемент конструкции № ${
+													index + 1
+												}?`,
+												onAccept: () =>
+													onDeleteClick(index, ce.id),
+												onCancel: () =>
+													setPopup(defaultPopup),
+											})
+										}
+										className="pointer action-cell-width text-centered"
+									>
+										<Trash color="#666" size={26} />
+									</td>
+								</tr>
+							)
+						}
+					)}
 				</tbody>
 			</Table>
 		</div>

@@ -1,0 +1,16 @@
+Technologies:
+
+    Dotnet Sdk 5.0.201
+    Node 14.16.0
+    Anaconda Individual Edition 2020.11
+    SQL2019 SSEI Dev
+    SSMS 18.8
+
+Commands:
+
+    cd client
+    npm install
+
+    cd server
+    cd DocumentsKMTest
+    dotnet test

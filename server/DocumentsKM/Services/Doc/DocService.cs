@@ -72,7 +72,7 @@ namespace DocumentsKM.Services
                 if (s.Num > maxNum)
                     maxNum = s.Num;
             }
-            doc.Num = maxNum + 1;
+            doc.Num = (Int16)(maxNum + 1);
 
             var creator = _employeeRepo.GetById(creatorId);
             if (creator == null)
@@ -128,7 +128,7 @@ namespace DocumentsKM.Services
                     if (s.Num > maxNum)
                         maxNum = s.Num;
                 }
-                foundDoc.Num = maxNum + 1;
+                foundDoc.Num = (Int16)(maxNum + 1);
 
                 var docType = _docTypeRepo.GetById(doc.TypeId.GetValueOrDefault());
                 if (docType == null)

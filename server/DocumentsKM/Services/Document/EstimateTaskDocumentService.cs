@@ -8,12 +8,12 @@ using DocumentsKM.Helpers;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml;
 using DocumentsKM.Models;
+using Microsoft.Extensions.Options;
 
 namespace DocumentsKM.Services
 {
     public class EstimateTaskDocumentService : IEstimateTaskDocumentService
     {
-        private readonly int _departmentHeadPosId = 7;
         private readonly int _paintingGeneralDataSectionId = 13;
         
         private readonly IMarkRepo _markRepo;
@@ -24,6 +24,7 @@ namespace DocumentsKM.Services
         private readonly IMarkOperatingConditionsRepo _markOperatingConditionsRepo;
         private readonly IEstimateTaskRepo _estimateTaskRepo;
         private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
+        private readonly AppSettings _appSettings;
 
         private class GroupedSteel
         {
@@ -48,7 +49,8 @@ namespace DocumentsKM.Services
             IStandardConstructionRepo standardConstructionRepo,
             IMarkOperatingConditionsRepo markOperatingConditionsRepo,
             IEstimateTaskRepo estimateTaskRepo,
-            IMarkGeneralDataPointRepo markGeneralDataPointRepo)
+            IMarkGeneralDataPointRepo markGeneralDataPointRepo,
+            IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
@@ -58,6 +60,7 @@ namespace DocumentsKM.Services
             _markOperatingConditionsRepo = markOperatingConditionsRepo;
             _estimateTaskRepo = estimateTaskRepo;
             _markGeneralDataPointRepo = markGeneralDataPointRepo;
+            _appSettings = appSettings.Value;
         }
 
         public void PopulateDocument(int markId, MemoryStream memory)
@@ -69,12 +72,19 @@ namespace DocumentsKM.Services
             var node = subnode.Node;
             var project = node.Project;
 
-            var departmentHeadArr = _employeeRepo.GetAllByDepartmentIdAndPosition(
-                mark.Department.Id,
-                _departmentHeadPosId);
-            if (departmentHeadArr.Count() != 1)
+            var departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.DepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.ActingDepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.DeputyDepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.ActingDeputyDepartmentHeadPosId);
+            if (departmentHead == null)
                 throw new ConflictException();
-            var departmentHead = departmentHeadArr.ToList()[0];
 
             // Вкл в состав спецификации
             var constructions = _constructionRepo.GetAllByMarkId(markId);

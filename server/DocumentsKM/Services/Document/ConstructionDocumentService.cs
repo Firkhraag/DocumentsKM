@@ -8,31 +8,33 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentFormat.OpenXml;
+using Microsoft.Extensions.Options;
 
 namespace DocumentsKM.Services
 {
     public class ConstructionDocumentService : IConstructionDocumentService
     {
-        private readonly int _departmentHeadPosId = 7;
-        
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IStandardConstructionRepo _standardConstructionRepo;
         private readonly IConstructionElementRepo _constructionElementRepo;
+        private readonly AppSettings _appSettings;
 
         public ConstructionDocumentService(
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
             IConstructionRepo constructionRepo,
             IStandardConstructionRepo standardConstructionRepo,
-            IConstructionElementRepo constructionElementRepo)
+            IConstructionElementRepo constructionElementRepo,
+            IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
             _constructionRepo = constructionRepo;
             _standardConstructionRepo = standardConstructionRepo;
             _constructionElementRepo = constructionElementRepo;
+            _appSettings = appSettings.Value;
         }
 
         public void PopulateDocument(int markId, MemoryStream memory)
@@ -44,12 +46,19 @@ namespace DocumentsKM.Services
             var node = subnode.Node;
             var project = node.Project;
 
-            var departmentHeadArr = _employeeRepo.GetAllByDepartmentIdAndPosition(
-                mark.Department.Id,
-                _departmentHeadPosId);
-            if (departmentHeadArr.Count() != 1)
+            var departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.DepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.ActingDepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.DeputyDepartmentHeadPosId);
+            if (departmentHead == null)
+                departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
+                mark.Department.Id, _appSettings.ActingDeputyDepartmentHeadPosId);
+            if (departmentHead == null)
                 throw new ConflictException();
-            var departmentHead = departmentHeadArr.ToList()[0];
 
             var constructions = _constructionRepo.GetAllByMarkId(markId);
             var standardConstructions = _standardConstructionRepo.GetAllByMarkId(markId);
@@ -156,8 +165,12 @@ namespace DocumentsKM.Services
                         }
                     }
 
-                    p = trCells[11].GetFirstChild<Paragraph>();
-                    p.Append(Word.GetTextElement(Math.Round(localSum * multiplier, 3).ToStringWithComma(), 24));
+                    if (localSum > 0.000001)
+                    {
+                        p = trCells[11].GetFirstChild<Paragraph>();
+                        p.Append(Word.GetTextElement(Math.Round(localSum * multiplier, 3).ToStringWithComma(), 24));
+                    }
+                    
                     if (i > 0)
                         t.Append(newTr);
                 }

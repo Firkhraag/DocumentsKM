@@ -1,18 +1,19 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Dtos
 {
     public class MarkUpdateRequest
     {
-        public int? SubnodeId { get; set; }
+        public Int32? SubnodeId { get; set; }
         [MaxLength(40)]
         public string Code { get; set; }
         [MaxLength(255)]
         public string Name { get; set; }
-        public int? DepartmentId { get; set; }
-        public int? ChiefSpecialistId { get; set; }
-        public int? GroupLeaderId { get; set; }
-        public int? MainBuilderId { get; set; }
+        public Int16? DepartmentId { get; set; }
+        public Int32? ChiefSpecialistId { get; set; }
+        public Int32? GroupLeaderId { get; set; }
+        public Int32? NormContrId { get; set; }
 
         public MarkUpdateRequest()
         {
@@ -22,7 +23,7 @@ namespace DocumentsKM.Dtos
             DepartmentId = null;
             ChiefSpecialistId = null;
             GroupLeaderId = null;
-            MainBuilderId = null;
+            NormContrId = null;
         }
     }
 }

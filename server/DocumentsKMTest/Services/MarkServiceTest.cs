@@ -18,6 +18,7 @@ namespace DocumentsKM.Tests
         private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
         private readonly Mock<IEstimateTaskRepo> _mockEstimateTaskRepo = new Mock<IEstimateTaskRepo>();
         private readonly Mock<ISpecificationService> _mockSpecificationService = new Mock<ISpecificationService>();
+        private readonly Mock<IMarkGeneralDataPointService> _mockMarkGeneralDataPointService = new Mock<IMarkGeneralDataPointService>();
         private readonly IMarkService _service;
         private readonly Random _rnd = new Random();
         private readonly List<Mark> _marks = new List<Mark> { };
@@ -36,7 +37,7 @@ namespace DocumentsKM.Tests
                     Department = mark.Department,
                     ChiefSpecialist = mark.ChiefSpecialist,
                     GroupLeader = mark.GroupLeader,
-                    MainBuilder = mark.MainBuilder,
+                    NormContr = mark.NormContr,
                 });
             }
             foreach (var mark in _marks)
@@ -88,7 +89,8 @@ namespace DocumentsKM.Tests
                 _mockDepartmentRepo.Object,
                 _mockEmployeeRepo.Object,
                 _mockEstimateTaskRepo.Object,
-                _mockSpecificationService.Object);
+                _mockSpecificationService.Object,
+                _mockMarkGeneralDataPointService.Object);
         }
 
         [Fact]
@@ -133,13 +135,14 @@ namespace DocumentsKM.Tests
         public void Create_ShouldCreateMark()
         {
             // Arrange
+            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
             int departmentId = _rnd.Next(1, TestData.departments.Count());
-            int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            int normContrId = _rnd.Next(1, TestData.employees.Count());
             while (TestData.employees.SingleOrDefault(
-                v => v.Id == mainBuilderId).Department.Id != departmentId)
+                v => v.Id == normContrId).Department.Id != departmentId)
             {
-                mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+                normContrId = _rnd.Next(1, TestData.employees.Count());
             }
             int chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
             while (TestData.employees.SingleOrDefault(
@@ -162,9 +165,10 @@ namespace DocumentsKM.Tests
 
             // Act
             _service.Create(newMark,
+                userId,
                 subnodeId,
                 departmentId,
-                mainBuilderId,
+                normContrId,
                 chiefSpecialistId,
                 groupLeaderId);
 
@@ -172,7 +176,7 @@ namespace DocumentsKM.Tests
             _repository.Verify(mock => mock.Add(It.IsAny<Mark>()), Times.Once);
             Assert.NotNull(newMark.Subnode);
             Assert.NotNull(newMark.Department);
-            Assert.NotNull(newMark.MainBuilder);
+            Assert.NotNull(newMark.NormContr);
             Assert.NotNull(newMark.ChiefSpecialist);
             Assert.NotNull(newMark.GroupLeader);
         }
@@ -181,13 +185,14 @@ namespace DocumentsKM.Tests
         public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
+            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
             int departmentId = _rnd.Next(1, TestData.departments.Count());
-            int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            int normContrId = _rnd.Next(1, TestData.employees.Count());
             while (TestData.employees.SingleOrDefault(
-                v => v.Id == mainBuilderId).Department.Id != departmentId)
+                v => v.Id == normContrId).Department.Id != departmentId)
             {
-                mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+                normContrId = _rnd.Next(1, TestData.employees.Count());
             }
             int chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
             while (TestData.employees.SingleOrDefault(
@@ -211,27 +216,31 @@ namespace DocumentsKM.Tests
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 null,
+                userId,
                 subnodeId,
                 departmentId,
-                mainBuilderId,
+                normContrId,
                 chiefSpecialistId,
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 999,
                 departmentId,
-                mainBuilderId,
+                normContrId,
                 chiefSpecialistId,
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 subnodeId,
                 999,
-                mainBuilderId,
+                normContrId,
                 chiefSpecialistId,
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 subnodeId,
                 departmentId,
                 999,
@@ -239,16 +248,18 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 subnodeId,
                 departmentId,
-                mainBuilderId,
+                normContrId,
                 999,
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
+                userId,
                 subnodeId,
                 departmentId,
-                mainBuilderId,
+                normContrId,
                 chiefSpecialistId,
                 999));
             _repository.Verify(mock => mock.Add(It.IsAny<Mark>()), Times.Never);
@@ -258,14 +269,15 @@ namespace DocumentsKM.Tests
         public void Create_ShouldFailWithConflict_WhenConflictValue()
         {
             // Arrange
+            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = _marks[0].Subnode.Id;
             var conflictCode = _marks[0].Code;
             int departmentId = _rnd.Next(1, TestData.departments.Count());
-            int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            int normContrId = _rnd.Next(1, TestData.employees.Count());
             while (TestData.employees.SingleOrDefault(
-                v => v.Id == mainBuilderId).Department.Id != departmentId)
+                v => v.Id == normContrId).Department.Id != departmentId)
             {
-                mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+                normContrId = _rnd.Next(1, TestData.employees.Count());
             }
             int chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
             while (TestData.employees.SingleOrDefault(
@@ -288,9 +300,10 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Create(newMark,
+                userId,
                 subnodeId,
                 departmentId,
-                mainBuilderId,
+                normContrId,
                 chiefSpecialistId,
                 groupLeaderId));
 
@@ -304,7 +317,7 @@ namespace DocumentsKM.Tests
             int id = _rnd.Next(1, _marks.Count());
             int newGroupLeaderId = _rnd.Next(1, TestData.employees.Count());
             int newChiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
-            int newMainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            int newnormContrId = _rnd.Next(1, TestData.employees.Count());
             var newStringValue = "NewUpdate";
             while (TestData.employees.SingleOrDefault(
                 v => v.Id == newGroupLeaderId).Department.Id !=
@@ -319,7 +332,7 @@ namespace DocumentsKM.Tests
                 Code = newStringValue,
                 // GroupLeaderId = newGroupLeaderId,
                 // ChiefSpecialistId = newChiefSpecialistId,
-                // MainBuilderId = newMainBuilderId,
+                // normContrId = newnormContrId,
             };
 
             // Act
@@ -336,7 +349,7 @@ namespace DocumentsKM.Tests
             //     v => v.Id == id).GroupLeader.Id);
             // Assert.Equal(newChiefSpecialistId, _marks.SingleOrDefault(
             //     v => v.Id == id).ChiefSpecialist.Id);
-            // Assert.Equal(newMainBuilderId, _marks.SingleOrDefault(
+            // Assert.Equal(newnormContrId, _marks.SingleOrDefault(
             //     v => v.Id == id).MainBuilder.Id);
         }
 
@@ -361,7 +374,7 @@ namespace DocumentsKM.Tests
             };
             var wrongMarkRequest3 = new MarkUpdateRequest
             {
-                MainBuilderId = 999,
+                NormContrId = 999,
             };
 
             // Act & Assert

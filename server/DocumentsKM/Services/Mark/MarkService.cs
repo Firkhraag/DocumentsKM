@@ -16,6 +16,7 @@ namespace DocumentsKM.Services
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IEstimateTaskRepo _estimateTaskRepo;
         private readonly ISpecificationService _specificationService;
+        private readonly IMarkGeneralDataPointService _markGeneralDataPointService;
 
         public MarkService(
             IMarkRepo markRepo,
@@ -23,7 +24,8 @@ namespace DocumentsKM.Services
             IDepartmentRepo departmentRepo,
             IEmployeeRepo employeeRepo,
             IEstimateTaskRepo estimateTaskRepo,
-            ISpecificationService specificationService)
+            ISpecificationService specificationService,
+            IMarkGeneralDataPointService markGeneralDataPointService)
         {
             _repository = markRepo;
             _subnodeRepo = subnodeRepo;
@@ -31,6 +33,7 @@ namespace DocumentsKM.Services
             _employeeRepo = employeeRepo;
             _estimateTaskRepo = estimateTaskRepo;
             _specificationService = specificationService;
+            _markGeneralDataPointService = markGeneralDataPointService;
         }
 
         public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
@@ -69,11 +72,12 @@ namespace DocumentsKM.Services
 
         public void Create(
             Mark mark,
+            int userId,
             int subnodeId,
             int departmentId,
-            int mainBuilderId,
             int? chiefSpecialistId,
-            int? groupLeaderId)
+            int? groupLeaderId,
+            int? normContrId)
         {
             if (mark == null)
                 throw new ArgumentNullException(nameof(mark));
@@ -91,12 +95,7 @@ namespace DocumentsKM.Services
             if (department == null)
                 throw new ArgumentNullException(nameof(department));
             mark.Department = department;
-            var mainBuilder = _employeeRepo.GetById(mainBuilderId);
-            if (mainBuilder == null)
-                throw new ArgumentNullException(nameof(mainBuilder));
-            if (mainBuilder.Department.Id != departmentId)
-                throw new ConflictException(nameof(departmentId));
-            mark.MainBuilder = mainBuilder;
+
             if (chiefSpecialistId != null)
             {
                 var chiefSpecialist = _employeeRepo.GetById(
@@ -116,6 +115,16 @@ namespace DocumentsKM.Services
                     throw new ConflictException(nameof(departmentId));
                 mark.GroupLeader = groupLeader;
             }
+            if (normContrId != null)
+            {
+                var normContr = _employeeRepo.GetById(
+                    normContrId.GetValueOrDefault());
+                if (normContr == null)
+                    throw new ArgumentNullException(nameof(normContr));
+                if (normContr.Department.Id != departmentId)
+                    throw new ConflictException(nameof(departmentId));
+                mark.NormContr = normContr;
+            }
             
             _repository.Add(mark);
             _specificationService.Create(mark.Id);
@@ -125,8 +134,10 @@ namespace DocumentsKM.Services
                 Mark = mark,
                 TaskText = "Разработать сметную документацию к чертежам " + MarkHelper.MakeMarkName(
                     subnode.Node.Project.BaseSeries, subnode.Node.Code, subnode.Code, mark.Code
-                ) + "\r\nСостав и объемы работ:",
+                ) + "\nСостав и объемы работ:",
             });
+
+            _markGeneralDataPointService.AddDefaultPoints(userId, mark);
         }
 
         public void Update(
@@ -184,15 +195,6 @@ namespace DocumentsKM.Services
                     throw new ArgumentNullException(nameof(department));
                 foundMark.Department = department;
             }
-            if (mark.MainBuilderId != null)
-            {
-                var mainBuilder = _employeeRepo.GetById(mark.MainBuilderId.GetValueOrDefault());
-                if (mainBuilder == null)
-                    throw new ArgumentNullException(nameof(mainBuilder));
-                if (mainBuilder.Department.Id != foundMark.Department.Id)
-                        throw new ConflictException("departmentId");
-                foundMark.MainBuilder = mainBuilder;
-            }
             // Nullable section
             if (mark.ChiefSpecialistId != null)
             {
@@ -222,6 +224,21 @@ namespace DocumentsKM.Services
                     if (groupLeader.Department.Id != foundMark.Department.Id)
                         throw new ConflictException("departmentId");
                     foundMark.GroupLeader = groupLeader;
+                }
+            }
+            if (mark.NormContrId != null)
+            {
+                int normContrId = mark.NormContrId.GetValueOrDefault();
+                if (normContrId == -1)
+                    foundMark.NormContrId = null;
+                else
+                {
+                    var normContr = _employeeRepo.GetById(normContrId);
+                    if (normContr == null)
+                        throw new ArgumentNullException(nameof(normContr));
+                    if (normContr.Department.Id != foundMark.Department.Id)
+                        throw new ConflictException("departmentId");
+                    foundMark.NormContr = normContr;
                 }
             }
             foundMark.EditedDate = DateTime.Now;

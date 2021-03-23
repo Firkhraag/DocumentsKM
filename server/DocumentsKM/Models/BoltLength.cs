@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +8,7 @@ namespace DocumentsKM.Models
     public class BoltLength
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Диаметр
         [Required]
@@ -16,11 +17,13 @@ namespace DocumentsKM.Models
 
         // Длина
         [Required]
-        public int Length { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Length { get; set; }
 
         // Длина нарезной части болта
         [Required]
-        public int ScrewLength { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 ScrewLength { get; set; }
 
         // Вес
         [Required]

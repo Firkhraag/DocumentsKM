@@ -1,18 +1,21 @@
+import Employee from './Employee'
+
 interface IUser {
 	id: number
 	login: string
-	name: string
+	employee: Employee
+	// name: string
 }
 
 class User {
 	id: number
 	login: string
-	name: string
+	employee: Employee
 
 	constructor(obj?: IUser) {
 		this.id = (obj && obj.id) || 0
 		this.login = (obj && obj.login) || ''
-		this.name = (obj && obj.name) || ''
+		this.employee = (obj && obj.employee) || null
 	}
 }
 

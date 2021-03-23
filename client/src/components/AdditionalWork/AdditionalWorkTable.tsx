@@ -51,7 +51,7 @@ const AdditionalWorkTable = ({
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/additional-work/${id}`)
-            var arr = [...additionalWorkArray]
+			var arr = [...additionalWorkArray]
 			arr.splice(row, 1)
 			setAdditionalWorkArray(arr)
 			setPopup(defaultPopup)
@@ -74,7 +74,7 @@ const AdditionalWorkTable = ({
 			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
 					<tr>
-						<th rowSpan={3} style={{ verticalAlign: 'middle' }}>
+						<th rowSpan={3} style={{ verticalAlign: 'middle' }} className="add-work-name-col-width">
 							Исполнитель
 						</th>
 						<th colSpan={4}>Дополнительные проектные работы</th>
@@ -91,7 +91,7 @@ const AdditionalWorkTable = ({
 					<tr>
 						<th colSpan={2}>Расчет конструкций</th>
 						<th colSpan={2}>Заказ металла</th>
-						<th rowSpan={2} style={{ verticalAlign: 'middle' }}>
+						<th rowSpan={2} style={{ verticalAlign: 'middle' }} className="completed-num-col-width">
 							Выполн. чертежей
 						</th>
 						<th colSpan={2}>Проверка чертежей</th>
@@ -109,25 +109,45 @@ const AdditionalWorkTable = ({
 					{additionalWorkArray.map((v, index) => {
 						return (
 							<tr key={index}>
-								<td>{v.employee.name}</td>
+								<td className="add-work-name-col-width">{v.employee.fullname}</td>
 								<td>{v.valuation === 0 ? '' : v.valuation}</td>
 								<td>
-									{v.valuation === 0 ? '' : Math.round(
-										v.valuation * valuationCoeff * 1000
-									) / 1000}
+									{v.valuation === 0
+										? ''
+										: Math.round(
+												v.valuation *
+													valuationCoeff *
+													1000
+										  ) / 1000}
 								</td>
-								<td>{v.metalOrder === 0 ? '' : v.metalOrder}</td>
 								<td>
-									{v.metalOrder === 0 ? '' : Math.round(
-										v.metalOrder * orderCoeff * 1000
-									) / 1000}
+									{v.metalOrder === 0 ? '' : v.metalOrder}
 								</td>
-								<td>{v.drawingsCompleted < 0.0000001 ? '' : v.drawingsCompleted}</td>
-								<td>{v.drawingsCheck < 0.0000001 ? '' : v.drawingsCheck}</td>
 								<td>
-									{v.drawingsCheck < 0.0000001 ? '' : Math.round(
-										v.drawingsCheck * valuationCoeff * 1000
-									) / 1000}
+									{v.metalOrder === 0
+										? ''
+										: Math.round(
+												v.metalOrder * orderCoeff * 1000
+										  ) / 1000}
+								</td>
+								<td className="completed-num-col-width">
+									{v.drawingsCompleted < 0.0000001
+										? ''
+										: v.drawingsCompleted}
+								</td>
+								<td>
+									{v.drawingsCheck < 0.0000001
+										? ''
+										: v.drawingsCheck}
+								</td>
+								<td>
+									{v.drawingsCheck < 0.0000001
+										? ''
+										: Math.round(
+												v.drawingsCheck *
+													valuationCoeff *
+													1000
+										  ) / 1000}
 								</td>
 								<td
 									onClick={() => {
@@ -142,7 +162,7 @@ const AdditionalWorkTable = ({
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить исполнителя ${v.employee.name}?`,
+											msg: `Вы действительно хотите удалить исполнителя ${v.employee.fullname}?`,
 											onAccept: () =>
 												onDeleteClick(index, v.id),
 											onCancel: () =>
@@ -159,59 +179,87 @@ const AdditionalWorkTable = ({
 					<tr>
 						<th>Итого по проекту</th>
 						<td>
-							{Math.round(
-								additionalWorkArray
-									.map((v) => v.valuation)
-									.reduce((a, b) => a + b, 0) * 1000
-							) / 1000}
+							{additionalWorkArray
+								.map((v) => v.valuation)
+								.reduce((a, b) => a + b, 0) > 0.000001
+								? Math.round(
+										additionalWorkArray
+											.map((v) => v.valuation)
+											.reduce((a, b) => a + b, 0) * 1000
+								  ) / 1000
+								: ''}
 						</td>
 						<td>
-							{Math.round(
-								additionalWorkArray
-									.map((v) => v.valuation)
-									.reduce((a, b) => a + b, 0) *
-									valuationCoeff *
-									1000
-							) / 1000}
+							{additionalWorkArray
+								.map((v) => v.valuation)
+								.reduce((a, b) => a + b, 0) > 0.000001
+								? Math.round(
+										additionalWorkArray
+											.map((v) => v.valuation)
+											.reduce((a, b) => a + b, 0) *
+											valuationCoeff *
+											1000
+								  ) / 1000
+								: ''}
 						</td>
 						<td>
-							{Math.round(
-								additionalWorkArray
-									.map((v) => v.metalOrder)
-									.reduce((a, b) => a + b, 0) * 1000
-							) / 1000}
+							{additionalWorkArray
+								.map((v) => v.metalOrder)
+								.reduce((a, b) => a + b, 0) > 0.000001
+								? Math.round(
+										additionalWorkArray
+											.map((v) => v.metalOrder)
+											.reduce((a, b) => a + b, 0) * 1000
+								  ) / 1000
+								: ''}
 						</td>
 						<td>
-							{Math.round(
-								additionalWorkArray
-									.map((v) => v.metalOrder)
-									.reduce((a, b) => a + b, 0) *
-									orderCoeff *
-									1000
-							) / 1000}
+							{additionalWorkArray
+								.map((v) => v.metalOrder)
+								.reduce((a, b) => a + b, 0) > 0.000001
+								? Math.round(
+										additionalWorkArray
+											.map((v) => v.metalOrder)
+											.reduce((a, b) => a + b, 0) *
+											orderCoeff *
+											1000
+								  ) / 1000
+								: ''}
 						</td>
 						<td>
-							{Math.round(
-								additionalWorkArray
-									.map((v) => v.drawingsCompleted)
-									.reduce((a, b) => a + b, 0) * 1000
-							) / 1000}
+							{additionalWorkArray
+								.map((v) => v.drawingsCompleted)
+								.reduce((a, b) => a + b, 0) > 0.000001
+								? Math.round(
+										additionalWorkArray
+											.map((v) => v.drawingsCompleted)
+											.reduce((a, b) => a + b, 0) * 1000
+								  ) / 1000
+								: ''}
 						</td>
 						<td>
-							{Math.round(
-								additionalWorkArray
-									.map((v) => v.drawingsCheck)
-									.reduce((a, b) => a + b, 0) * 1000
-							) / 1000}
+							{additionalWorkArray
+								.map((v) => v.drawingsCheck)
+								.reduce((a, b) => a + b, 0) > 0.000001
+								? Math.round(
+										additionalWorkArray
+											.map((v) => v.drawingsCheck)
+											.reduce((a, b) => a + b, 0) * 1000
+								  ) / 1000
+								: ''}
 						</td>
 						<td>
-							{Math.round(
-								additionalWorkArray
-									.map((v) => v.drawingsCheck)
-									.reduce((a, b) => a + b, 0) *
-									valuationCoeff *
-									1000
-							) / 1000}
+							{additionalWorkArray
+								.map((v) => v.drawingsCheck)
+								.reduce((a, b) => a + b, 0) > 0.000001
+								? Math.round(
+										additionalWorkArray
+											.map((v) => v.drawingsCheck)
+											.reduce((a, b) => a + b, 0) *
+											valuationCoeff *
+											1000
+								  ) / 1000
+								: ''}
 						</td>
 					</tr>
 				</tbody>

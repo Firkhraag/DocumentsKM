@@ -1,0 +1,20 @@
+Create Table Docs (
+	Id Int Identity(1, 1) Primary Key,
+	MarkId Int Not Null,
+	Num Smallint Not Null,
+	Name Varchar(255) Not Null,
+	Form Real Not Null Default 1.0,
+	CreatorId Int Not Null,
+	InspectorId Int,
+	NormContrId Int,
+	TypeId Smallint Not Null,
+	ReleaseNum Smallint Not Null Default 0,
+	NumOfPages Smallint Not Null Default 0,
+	Note Varchar(255),
+	Unique (MarkId, Num, TypeId),
+	Constraint FK_Mark_Doc Foreign Key(MarkId) References Marks(Id),
+	Constraint FK_Creator_Doc Foreign Key(CreatorId) References Employees(Id),
+	Constraint FK_Inspector_Doc Foreign Key(InspectorId) References Employees(Id),
+	Constraint FK_NormContr_Doc Foreign Key(NormContrId) References Employees(Id),
+	Constraint FK_DocType_Doc Foreign Key(TypeId) References DocTypes(Id)
+);

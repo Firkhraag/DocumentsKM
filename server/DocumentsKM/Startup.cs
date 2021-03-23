@@ -11,10 +11,8 @@ using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using StackExchange.Redis;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
-using RabbitMQ.Client;
 
 namespace DocumentsKM
 {
@@ -34,7 +32,7 @@ namespace DocumentsKM
             {
                 opt.AddPolicy("EnableCORS", builder =>
                 {
-                    builder.WithOrigins("http://localhost:8080")
+                    builder.WithOrigins("http://localhost:5000", "http://localhost:5001")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -53,7 +51,7 @@ namespace DocumentsKM
                 );
 
             // Add Swagger documentation
-            // URI: https://localhost:5001/swagger
+            // Local URI: https://localhost:5001/swagger
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc(
@@ -62,7 +60,7 @@ namespace DocumentsKM
                     {
                         Title = "DocumentsKM",
                         Version = "v1",
-                        Description = "Service is used for reading, creating and updating marks"
+                        Description = "Сервис марок КМ"
                     }
                 );
             });
@@ -89,35 +87,29 @@ namespace DocumentsKM
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    // Токен будет истекать точно в ExpirationTime
                     ClockSkew = TimeSpan.Zero
                 };
             });
 
-            // Подключение к базе данных Postgres
+            // Подключение к базе данных SqlServer
             services.AddDbContext<ApplicationContext>(
                 opt => opt.UseLazyLoadingProxies()
-                    .UseNpgsql(
-                        Configuration.GetConnectionString("PostgresConnection")
+                    .UseSqlServer(
+                        Configuration.GetConnectionString("SQLServerConnection")
                     ));
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddSingleton<IConnectionMultiplexer>(x =>
-                ConnectionMultiplexer.Connect(Configuration.GetConnectionString("ReddisConnection")));
-            services.AddSingleton<ICacheService, RedisCacheService>();
+            // Http client for api requests
+            services.AddHttpClient();
 
-            services.AddSingleton(serviceProvider =>
+            services.AddHostedService<FetchService>();
+
+            // SPA
+            services.AddSpaStaticFiles(configuration => 
             {
-                var uri = new Uri(Configuration.GetConnectionString("RabbitMQConnection"));
-                return new ConnectionFactory
-                {
-                    Uri = uri
-                };
+                configuration.RootPath = "ClientApp/dist";
             });
-            services.AddHostedService<ConsumerService>(
-                x => new ConsumerService(x.GetService<ConnectionFactory>(),
-                    "personnel_exchange", "personnel_queue", "personnel.exchange"));
 
             // DI for application services
             InjectScopedServices(services);
@@ -131,6 +123,7 @@ namespace DocumentsKM
             services.AddScoped<ISubnodeService, SubnodeService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IMarkService, MarkService>();
@@ -183,6 +176,13 @@ namespace DocumentsKM
             services.AddScoped<IBoltDocumentService, BoltDocumentService>();
             services.AddScoped<IEstimateTaskDocumentService, EstimateTaskDocumentService>();
             services.AddScoped<IProjectRegistrationDocumentService, ProjectRegistrationDocumentService>();
+            services.AddScoped<IEstimationTitleDocumentService, EstimationTitleDocumentService>();
+            services.AddScoped<IEstimationPagesDocumentService, EstimationPagesDocumentService>();
+
+            services.AddScoped<ICorrProtGeneralDataPointService, CorrProtGeneralDataPointService>();
+            services.AddScoped<IDefaultValuesService, DefaultValuesService>();
+
+            services.AddScoped<IArchiveService, ArchiveService>();
         }
 
         private void InjectScopedRepositories(IServiceCollection services)
@@ -192,6 +192,7 @@ namespace DocumentsKM
             services.AddScoped<ISubnodeRepo, SqlSubnodeRepo>();
             services.AddScoped<IEmployeeRepo, SqlEmployeeRepo>();
             services.AddScoped<IDepartmentRepo, SqlDepartmentRepo>();
+            services.AddScoped<IPositionRepo, SqlPositionRepo>();
             services.AddScoped<IUserRepo, SqlUserRepo>();
 
             services.AddScoped<IMarkRepo, SqlMarkRepo>();
@@ -238,6 +239,14 @@ namespace DocumentsKM
             services.AddScoped<IGeneralDataSectionRepo, SqlGeneralDataSectionRepo>();
             services.AddScoped<IGeneralDataPointRepo, SqlGeneralDataPointRepo>();
             services.AddScoped<IMarkGeneralDataPointRepo, SqlMarkGeneralDataPointRepo>();
+
+            services.AddScoped<ICorrProtVariantRepo, SqlCorrProtVariantRepo>();
+            services.AddScoped<ICorrProtMethodRepo, SqlCorrProtMethodRepo>();
+            services.AddScoped<ICorrProtCoatingRepo, SqlCorrProtCoatingRepo>();
+            services.AddScoped<ICorrProtCleaningDegreeRepo, SqlCorrProtCleaningDegreeRepo>();
+            services.AddScoped<IPrimerRepo, SqlPrimerRepo>();
+
+            services.AddScoped<IDefaultValuesRepo, SqlDefaultValuesRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -255,8 +264,6 @@ namespace DocumentsKM
             app.UseHttpsRedirection();
 
             // Logger
-            // app.UseMiddleware<RequestResponseLoggingMiddleware>();
-            // app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
@@ -267,6 +274,14 @@ namespace DocumentsKM
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
             });
         }
     }

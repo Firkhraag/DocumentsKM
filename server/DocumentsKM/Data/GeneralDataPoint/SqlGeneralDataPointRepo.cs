@@ -22,6 +22,13 @@ namespace DocumentsKM.Data
                     v => v.OrderNum).ToList();
         }
 
+        public IEnumerable<GeneralDataPoint> GetAllByUserId(int userId)
+        {
+            return _context.GeneralDataPoints.Where(
+                v => v.User.Id == userId).OrderBy(
+                    v => v.OrderNum).ToList();
+        }
+
         public GeneralDataPoint GetById(int id)
         {
             return _context.GeneralDataPoints.SingleOrDefault(v => v.Id == id);

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
@@ -6,11 +7,11 @@ namespace DocumentsKM.Models
     public class Position
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Название
         [Required]
-        [MaxLength(20)]
+        [MaxLength(80)]
         public string Name { get; set; }
     }
 }

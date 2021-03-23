@@ -15,7 +15,7 @@ namespace DocumentsKM.Data
 
         public IEnumerable<OperatingArea> GetAll()
         {
-            return _context.OperatingAreas.ToList();
+            return _context.OperatingAreas.OrderBy(v => v.Id).ToList();
         }
 
         public OperatingArea GetById(int id)

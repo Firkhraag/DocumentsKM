@@ -9,7 +9,7 @@ namespace DocumentsKM.Models
     public class Specification
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Марка
         [Required]
@@ -18,7 +18,8 @@ namespace DocumentsKM.Models
 
         // Номер
         [Required]
-        public int Num { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Num { get; set; }
 
         // Текущий
         [Required]

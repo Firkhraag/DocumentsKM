@@ -83,7 +83,7 @@ namespace DocumentsKM.Tests
             // Arrange
             int constructionId = 1;
             int profileId = 3;
-            int steelId = 3;
+            short steelId = 3;
             var constructionElementRequest = new ConstructionElementCreateRequest
             {
                 ProfileId = profileId,
@@ -107,7 +107,7 @@ namespace DocumentsKM.Tests
             // Arrange
             int constructionId = 1;
             int profileId = 3;
-            int steelId = 3;
+            short steelId = 3;
             var wrongConstructionElementRequest = new ConstructionElementCreateRequest
             {
                 ProfileId = profileId,
@@ -132,8 +132,7 @@ namespace DocumentsKM.Tests
             // Arrange
             int constructionId = 1;
             int profileId = 3;
-            int steelId = 3;
-
+            short steelId = 3;
             var constructionElementRequests = new List<CreateRequest>
             {
                 new CreateRequest
@@ -188,7 +187,7 @@ namespace DocumentsKM.Tests
             // Arrange
             int constructionId = 1;
             int profileId = 3;
-            int steelId = 3;
+            short steelId = 3;
             var constructionElementRequest = new ConstructionElementCreateRequest
             {
                 ProfileId = profileId,
@@ -214,7 +213,7 @@ namespace DocumentsKM.Tests
             // Arrange
             int id = 1;
             int profileId = 2;
-            int steelId = 2;
+            short steelId = 2;
             var constructionElementRequest = new ConstructionElementUpdateRequest
             {
                 ProfileId = profileId,

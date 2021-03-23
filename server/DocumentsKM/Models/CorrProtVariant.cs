@@ -1,57 +1,66 @@
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
+    // Not used now
     // Вариант антикоррозионной защиты
     public class CorrProtVariant
     {
         [Key]
-        public int Id { get; set; }
+        public Int16 Id { get; set; }
 
         // Зона эксплуатации
         [Required]
-        public int ExploitationZone { get; set; }
+        [ForeignKey("OperatingAreaId")]
+        public virtual OperatingArea OperatingArea { get; set; }
 
         // Группа газов
         [Required]
-        public int GasGroup { get; set; }
+        [ForeignKey("GasGroupId")]
+        public virtual GasGroup GasGroup { get; set; }
 
         // Агрессивность среды
         [Required]
-        public int EnvAggressiveness { get; set; }
+        [ForeignKey("EnvAggressivenessId")]
+        public virtual EnvAggressiveness EnvAggressiveness { get; set; }
 
-        // Материал
+        // Материал конструкций
         [Required]
-        public int Material { get; set; }
+        [ForeignKey("ConstructionMaterialId")]
+        public virtual ConstructionMaterial ConstructionMaterial { get; set; }
 
         // Тип лакокрасочного материала
-        [Required]
-        [MaxLength(2)]
-        public string PaintworkType { get; set; }
+        [ForeignKey("PaintworkTypeId")]
+        public virtual PaintworkType PaintworkType { get; set; }
 
         // Группа покраски
-        [Required]
-        public int PaintworkGroup { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PaintworkGroup { get; set; }
 
         // Стойкость
-        [Required]
-        [MaxLength(2)]
-        public string PaintworkDurability { get; set; }
+        [ForeignKey("PaintworkFastnessId")]
+        public virtual PaintworkFastness PaintworkFastness { get; set; }
 
         // Число слоев
-        [Required]
-        public int PaintworkNumOfLayers { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PaintworkNumOfLayers { get; set; }
 
         // Толщина покраски
-        [Required]
-        public int PaintworkPrimerThickness { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PaintworkPrimerThickness { get; set; }
 
         // Количество слоев грунтовки
-        [Required]
-        public int PrimerNumOfLayers { get; set; }
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16? PrimerNumOfLayers { get; set; }
 
         // Степень очистки
-        [Required]
+        [ForeignKey("CleaningDegreeId")]
         public virtual CorrProtCleaningDegree CleaningDegree { get; set; }
+
+        [Required]
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
+        public Int16 Status { get; set; }
     }
 }

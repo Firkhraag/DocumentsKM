@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom'
 // Other
 import { MarkProvider } from '../store/MarkStore'
 import { PopupProvider } from '../store/PopupStore'
+import { ScrollProvider } from '../store/ScrollStore'
 import Header from '../components/Header/Header'
 import Popup from '../components/Popup/Popup'
 import Home from '../components/Home/Home'
@@ -31,6 +32,7 @@ import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
 import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import EstimateTaskDocument from '../components/EstimateTask/EstimateTaskDocument'
 import ProjectRegistration from '../components/ProjectRegistration/ProjectRegistration'
+import DefaultValuesData from '../components/DefaultValues/DefaultValuesData'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
 import StandardConstruction from '../model/StandardConstruction'
@@ -70,6 +72,7 @@ const AuthApp = () => {
 	return (
 		<MarkProvider>
 			<PopupProvider>
+			<ScrollProvider>
 				<Switch>
 					<React.Fragment>
 						<Header />
@@ -454,6 +457,12 @@ const AuthApp = () => {
 								</div>
 							</Route>
 
+                            <Route exact path="/user/default-values">
+								<div className="full-width div-container">
+									<DefaultValuesData />
+								</div>
+							</Route>
+
                             <Route exact path="/estimate-task">
 								<div className="full-width div-container">
 									<EstimateTaskDocument />
@@ -467,6 +476,7 @@ const AuthApp = () => {
 						</div>
 					</React.Fragment>
 				</Switch>
+            </ScrollProvider>
 			</PopupProvider>
 		</MarkProvider>
 	)

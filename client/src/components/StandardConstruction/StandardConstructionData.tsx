@@ -11,6 +11,7 @@ import StandardConstruction from '../../model/StandardConstruction'
 import StandardConstructionName from '../../model/StandardConstructionName'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
+import { useSetScroll } from '../../store/ScrollStore'
 import { reactSelectStyle } from '../../util/react-select-style'
 
 type StandardConstructionDataProps = {
@@ -26,6 +27,7 @@ const StandardConstructionData = ({
 }: StandardConstructionDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
+    const setScroll = useSetScroll()
 
 	const [selectedObject, setSelectedObject] = useState<StandardConstruction>(
 		isCreateMode
@@ -146,6 +148,7 @@ const StandardConstructionData = ({
 						weight: selectedObject.weight,
 					}
 				)
+                setScroll(2)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -191,6 +194,7 @@ const StandardConstructionData = ({
 					`/standard-constructions/${selectedObject.id}`,
 					object
 				)
+                setScroll(2)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -246,11 +250,10 @@ const StandardConstructionData = ({
 					styles={reactSelectStyle}
 				/>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="num"
-						style={{ marginRight: '9.55em' }}
 					>
 						Количество элементов, шт.
 					</Form.Label>
@@ -259,7 +262,7 @@ const StandardConstructionData = ({
 						type="text"
 						placeholder="Введите количество элементов"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="standard-construction-input-width"
 						defaultValue={
 							isNaN(selectedObject.num) ? '' : selectedObject.num
 						}
@@ -267,11 +270,10 @@ const StandardConstructionData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="sheet"
-						style={{ marginRight: '1em' }}
 					>
 						№ чертежа проекта с типовой конструкцией
 					</Form.Label>
@@ -280,17 +282,16 @@ const StandardConstructionData = ({
 						type="text"
 						placeholder="Не введено"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="standard-construction-input-width"
 						defaultValue={selectedObject.sheet}
 						onBlur={onSheetChange}
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="weight"
-						style={{ marginRight: '5.55em' }}
 					>
 						Общий вес типовой конструкции, т
 					</Form.Label>
@@ -299,7 +300,7 @@ const StandardConstructionData = ({
 						type="text"
 						placeholder="Введите вес"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="standard-construction-input-width"
 						defaultValue={
 							isNaN(selectedObject.weight)
 								? ''

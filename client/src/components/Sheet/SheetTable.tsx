@@ -83,17 +83,17 @@ const SheetTable = ({ setSheet }: SheetTableProps) => {
 								<td className="doc-name-col-width">{s.name}</td>
 								<td>{s.form}</td>
 								<td className="doc-employee-col-width">
-									{s.creator.name}
+									{s.creator.fullname}
 								</td>
 								<td className="doc-employee-col-width">
 									{s.inspector == null
 										? ''
-										: s.inspector.name}
+										: s.inspector.fullname}
 								</td>
 								<td className="doc-employee-col-width">
 									{s.normContr == null
 										? ''
-										: s.normContr.name}
+										: s.normContr.fullname}
 								</td>
 								<td className="doc-note-col-width">{s.note}</td>
 								<td

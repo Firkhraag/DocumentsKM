@@ -169,7 +169,7 @@ namespace DocumentsKM.Tests
             int departmentId = _rnd.Next(1, TestData.departments.Count());
             int chiefSpecialistId = _rnd.Next(1, TestData.employees.Count());
             int groupLeaderId = _rnd.Next(1, TestData.employees.Count());
-            int mainBuilderId = _rnd.Next(1, TestData.employees.Count());
+            int normContrId = _rnd.Next(1, TestData.employees.Count());
             var mark = new Mark
             {
                 Subnode = TestData.subnodes.SingleOrDefault(
@@ -186,8 +186,8 @@ namespace DocumentsKM.Tests
                 GroupLeader = TestData.employees.SingleOrDefault(
                     v => v.Id == groupLeaderId
                 ),
-                MainBuilder = TestData.employees.SingleOrDefault(
-                    v => v.Id == mainBuilderId
+                NormContr = TestData.employees.SingleOrDefault(
+                    v => v.Id == normContrId
                 ),
             };
 
@@ -217,7 +217,7 @@ namespace DocumentsKM.Tests
                     Department = m.Department,
                     ChiefSpecialist = m.ChiefSpecialist,
                     GroupLeader = m.GroupLeader,
-                    MainBuilder = m.MainBuilder,
+                    NormContr = m.NormContr,
                     EditedDate = m.EditedDate,
                     Signed1Id = m.Signed1Id,
                     Signed2Id = m.Signed2Id,
@@ -226,8 +226,8 @@ namespace DocumentsKM.Tests
                     PaintworkType = m.PaintworkType,
                     Note = m.Note,
                     FireHazardCategoryId = m.FireHazardCategoryId,
-                    P_transport = m.P_transport,
-                    P_site = m.P_site,
+                    PTransport = m.PTransport,
+                    PSite = m.PSite,
                 });
             }
             var context = GetContext(marks);

@@ -21,6 +21,8 @@ const UserGeneralData = () => {
 	const user = useUser()
 	const setPopup = useSetPopup()
 
+	const readOnlySectionIds = [7, 13]
+
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
 		section: null,
 		point: null,
@@ -133,6 +135,18 @@ const UserGeneralData = () => {
 			})
 			window.scrollTo(0, document.body.scrollHeight / 2)
 		}
+	}
+
+	const onSectionTextChange = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setSelectedObject({
+			...selectedObject,
+			section: new GeneralDataSection({
+				id: selectedObject.section.id,
+				name: event.currentTarget.value,
+			}),
+		})
 	}
 
 	const onPointTextChange = (
@@ -290,38 +304,6 @@ const UserGeneralData = () => {
 
 			<div className="flex">
 				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
-					<Form.Group>
-						<Form.Label className="bold" htmlFor="sections">
-							Выбранный раздел
-						</Form.Label>
-						<Select
-							inputId="sections"
-							maxMenuHeight={250}
-							isClearable={true}
-							isSearchable={true}
-							placeholder=""
-							noOptionsMessage={() => 'Разделы не найдены'}
-							onChange={(selectedOption) =>
-								onSectionSelect((selectedOption as any)?.value)
-							}
-							value={
-								selectedObject.section == null
-									? null
-									: {
-											value: selectedObject.section.id,
-											label: selectedObject.section.name,
-									  }
-							}
-							options={optionsObject.sections.map((s) => {
-								return {
-									value: s.id,
-									label: s.name,
-								}
-							})}
-							styles={reactSelectStyle}
-						/>
-					</Form.Group>
-
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Разделы</label>
 						<div className="flex-v general-data-selection mrg-top">
@@ -352,38 +334,6 @@ const UserGeneralData = () => {
 				</div>
 
 				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
-					<Form.Group>
-						<Form.Label className="bold" htmlFor="points">
-							Выбранный пункт
-						</Form.Label>
-						<Select
-							inputId="points"
-							maxMenuHeight={250}
-							isClearable={true}
-							isSearchable={true}
-							placeholder=""
-							noOptionsMessage={() => 'Пункты не найдены'}
-							onChange={(selectedOption) =>
-								onPointSelect((selectedOption as any)?.value)
-							}
-							value={
-								selectedObject.point == null
-									? null
-									: {
-											value: selectedObject.point.id,
-											label: selectedObject.point.text,
-									  }
-							}
-							options={optionsObject.points.map((p) => {
-								return {
-									value: p.id,
-									label: p.text,
-								}
-							})}
-							styles={reactSelectStyle}
-						/>
-					</Form.Group>
-
 					<div className="full-width">
 						<label className="bold no-bot-mrg">Пункты</label>
 						<div className="flex-v general-data-selection mrg-top">
@@ -405,7 +355,8 @@ const UserGeneralData = () => {
 											style={{ flex: 1 }}
 											onClick={() => onPointSelect(p.id)}
 										>
-											{truncateText(p.text, 100, null)}
+											{/* {truncateText(p.text, 100, null)} */}
+											{p.text}
 										</p>
 										<div
 											onClick={() =>
@@ -454,7 +405,15 @@ const UserGeneralData = () => {
 								? ''
 								: selectedObject.section.name
 						}
-						readOnly={true}
+						// readOnly={
+						// 	selectedObject.section == null
+						// 		? true
+						// 		: readOnlySectionIds.includes(
+						// 				selectedObject.section.id
+						// 		  )
+						// }
+						// onChange={onSectionTextChange}
+                        readOnly={true}
 						className="auto-width flex-grow"
 					/>
 				</Form.Group>
@@ -504,7 +463,7 @@ const UserGeneralData = () => {
 						<span className="bold">Символы:</span> °C –
 					</div>
 				</div>
-				<Form.Group className="no-bot-mrg mrg-top-2">
+				<Form.Group className="no-bot-mrg">
 					<Form.Label className="bold" htmlFor="text">
 						Содержание пункта
 					</Form.Label>

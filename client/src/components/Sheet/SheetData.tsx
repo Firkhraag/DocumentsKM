@@ -12,6 +12,7 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Doc from '../../model/Doc'
 import SheetName from '../../model/SheetName'
 import { useMark } from '../../store/MarkStore'
+import { useUser } from '../../store/UserStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
@@ -32,6 +33,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 
 	const history = useHistory()
 	const mark = useMark()
+	const user = useUser()
 
 	const [selectedObject, setSelectedObject] = useState<Doc>(
 		isCreateMode
@@ -73,6 +75,17 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						sheetNames: sheetNamesResponse.data,
 						employees: employeesResponse.data,
 					})
+                    if (isCreateMode) {
+                        const defaultValuesResponse = await httpClient.get(
+                            `/users/${user.id}/default-values`
+                        )
+                        setSelectedObject({
+                            ...selectedObject,
+                            creator: defaultValuesResponse.data.creator,
+                            inspector: defaultValuesResponse.data.inspector,
+                            normContr: defaultValuesResponse.data.normContr,
+                        })
+                    }
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -307,11 +320,10 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 					styles={reactSelectStyle}
 				/>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="format"
-						style={{ marginRight: '5.6em' }}
 					>
 						Формат
 					</Form.Label>
@@ -319,6 +331,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						id="format"
 						type="text"
 						placeholder="Введите формат"
+						className="doc-input-width"
 						autoComplete="off"
 						defaultValue={
 							isNaN(selectedObject.form)
@@ -329,11 +342,10 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="creator"
-						style={{ marginRight: '3.9em' }}
 					>
 						Разработал
 					</Form.Label>
@@ -344,7 +356,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						isSearchable={true}
 						placeholder="Выбор разработчика"
 						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="auto-width flex-grow"
+						className="doc-input-width"
 						onChange={(selectedOption) =>
 							onCreatorSelect((selectedOption as any)?.value)
 						}
@@ -353,24 +365,23 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								? null
 								: {
 										value: selectedObject.creator.id,
-										label: selectedObject.creator.name,
+										label: selectedObject.creator.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="inspector"
-						style={{ marginRight: '4.5em' }}
 					>
 						Проверил
 					</Form.Label>
@@ -381,7 +392,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						isSearchable={true}
 						placeholder="Выбор проверщика"
 						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="auto-width flex-grow"
+						className="doc-input-width"
 						onChange={(selectedOption) =>
 							onInspectorSelect((selectedOption as any)?.value)
 						}
@@ -390,26 +401,25 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								? null
 								: {
 										value: selectedObject.inspector.id,
-										label: selectedObject.inspector.name,
+										label: selectedObject.inspector.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="normContr"
-						style={{ marginRight: '1em' }}
 					>
-						Нормоконтролер
+						Нормоконтроль
 					</Form.Label>
 					<Select
 						inputId="normContr"
@@ -418,7 +428,7 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 						isSearchable={true}
 						placeholder="Выбор нормоконтролера"
 						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="auto-width flex-grow"
+						className="doc-input-width"
 						onChange={(selectedOption) =>
 							onNormControllerSelect(
 								(selectedOption as any)?.value
@@ -429,13 +439,13 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 								? null
 								: {
 										value: selectedObject.normContr.id,
-										label: selectedObject.normContr.name,
+										label: selectedObject.normContr.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}

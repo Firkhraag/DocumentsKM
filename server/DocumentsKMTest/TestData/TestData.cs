@@ -11,11 +11,17 @@ namespace DocumentsKM.Tests
             {
                 Id = 1,
                 Name = "D1",
+                IsActive = true,
             },
             new Department
             {
                 Id = 2,
-                Name = "D2",
+                IsActive = true,
+            },
+            new Department
+            {
+                Id = 3,
+                IsActive = false,
             },
         };
 
@@ -66,6 +72,7 @@ namespace DocumentsKM.Tests
                 Name = "E1",
                 Department = departments[0],
                 Position = positions[0],
+                IsActive = true,
             },
             new Employee
             {
@@ -73,6 +80,7 @@ namespace DocumentsKM.Tests
                 Name = "E2",
                 Department = departments[1],
                 Position = positions[1],
+                IsActive = true,
             },
             new Employee
             {
@@ -80,6 +88,7 @@ namespace DocumentsKM.Tests
                 Name = "E3",
                 Department = departments[0],
                 Position = positions[2],
+                IsActive = true,
             },
             new Employee
             {
@@ -87,6 +96,7 @@ namespace DocumentsKM.Tests
                 Name = "E4",
                 Department = departments[1],
                 Position = positions[1],
+                IsActive = true,
             },
             new Employee
             {
@@ -94,6 +104,7 @@ namespace DocumentsKM.Tests
                 Name = "E5",
                 Department = departments[0],
                 Position = positions[4],
+                IsActive = true,
             },
             new Employee
             {
@@ -101,6 +112,7 @@ namespace DocumentsKM.Tests
                 Name = "E6",
                 Department = departments[1],
                 Position = positions[4],
+                IsActive = true,
             },
             new Employee
             {
@@ -108,6 +120,7 @@ namespace DocumentsKM.Tests
                 Name = "E7",
                 Department = departments[0],
                 Position = positions[5],
+                IsActive = true,
             },
             new Employee
             {
@@ -115,6 +128,15 @@ namespace DocumentsKM.Tests
                 Name = "E8",
                 Department = departments[1],
                 Position = positions[6],
+                IsActive = true,
+            },
+            new Employee
+            {
+                Id = 9,
+                Name = "E9",
+                Department = departments[0],
+                Position = positions[0],
+                IsActive = false,
             },
         };
 
@@ -181,7 +203,7 @@ namespace DocumentsKM.Tests
                 Code = "KM1",
                 Name = "Name 1",
                 Department = departments[0],
-                MainBuilder = employees[0],
+                NormContr = employees[0],
             },
             new Mark
             {
@@ -190,7 +212,7 @@ namespace DocumentsKM.Tests
                 Code = "KM2",
                 Name = "Name 2",
                 Department = departments[0],
-                MainBuilder = employees[1],
+                NormContr = employees[1],
             },
             new Mark
             {
@@ -199,7 +221,7 @@ namespace DocumentsKM.Tests
                 Code = "KM3",
                 Name = "Name 3",
                 Department = departments[1],
-                MainBuilder = employees[2],
+                NormContr = employees[2],
             },
             new Mark
             {
@@ -208,7 +230,7 @@ namespace DocumentsKM.Tests
                 Code = "KM4",
                 Name = "Name 4",
                 Department = departments[1],
-                MainBuilder = employees[2],
+                NormContr = employees[2],
             },
         };
 
@@ -414,21 +436,21 @@ namespace DocumentsKM.Tests
             {
                 Id = 1,
                 Login = "1",
-                Password = BCrypt.Net.BCrypt.HashPassword("1"),
+                Password = "1",
                 Employee = employees[0],
             },
             new User
             {
                 Id = 2,
                 Login = "2",
-                Password = BCrypt.Net.BCrypt.HashPassword("2"),
+                Password = "2",
                 Employee = employees[1],
             },
             new User
             {
                 Id = 3,
                 Login = "3",
-                Password = BCrypt.Net.BCrypt.HashPassword("3"),
+                Password = "3",
                 Employee = employees[2],
             },
         };

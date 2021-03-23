@@ -6,7 +6,7 @@ module.exports = {
     entry: "./src/index.tsx",
     mode: 'development',
     output: {
-        path: path.join(__dirname, "../public"),
+        path: path.join(__dirname, "../server/DocumentsKM/ClientApp/dist"),
         filename: "assets/[contenthash].js",
         sourceMapFilename: "[name].js.map",
         publicPath: '/'
@@ -34,7 +34,7 @@ module.exports = {
     },
     devServer: {
         historyApiFallback: true,
-        contentBase: path.join(__dirname, '../public'),
+        contentBase: path.join(__dirname, '../server/DocumentsKM/ClientApp/dist'),
     },
     plugins: [
         new CleanWebpackPlugin(),

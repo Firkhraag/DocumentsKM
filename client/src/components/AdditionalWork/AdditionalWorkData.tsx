@@ -194,11 +194,10 @@ const AdditionalWorkData = ({
 				Учет дополнительных проектных работ
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-				<Form.Group className="flex-cent-v">
+				<Form.Group className="space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="code"
-						style={{ marginRight: '4.7em' }}
 					>
 						Исполнитель
 					</Form.Label>
@@ -209,7 +208,7 @@ const AdditionalWorkData = ({
 						isSearchable={true}
 						placeholder="Выбор исполнителя"
 						noOptionsMessage={() => 'Исполнители не найдены'}
-						className="auto-width flex-grow"
+						className="additional-work-input-width"
 						onChange={(selectedOption) =>
 							onEmployeeSelect((selectedOption as any)?.value)
 						}
@@ -218,24 +217,23 @@ const AdditionalWorkData = ({
 								? null
 								: {
 										value: selectedObject.employee.id,
-										label: selectedObject.employee.name,
+										label: selectedObject.employee.fullname,
 								  }
 						}
 						options={employees.map((v) => {
 							return {
 								value: v.id,
-								label: v.name,
+								label: v.fullname,
 							}
 						})}
 						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="numOfPages"
-						style={{ marginRight: '3.7em' }}
 					>
 						Расчет, лист А4
 					</Form.Label>
@@ -244,7 +242,7 @@ const AdditionalWorkData = ({
 						type="text"
 						placeholder="Введите число листов"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="additional-work-input-width"
 						defaultValue={
 							isNaN(selectedObject.valuation)
 								? ''
@@ -254,11 +252,10 @@ const AdditionalWorkData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v no-bot-mrg">
+				<Form.Group className="mrg-top-2 space-between-cent-v no-bot-mrg">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="format"
-						style={{ marginRight: '1em' }}
 					>
 						Заказ металла, строк
 					</Form.Label>
@@ -267,7 +264,7 @@ const AdditionalWorkData = ({
 						type="text"
 						placeholder="Введите число строк"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="additional-work-input-width"
 						defaultValue={
 							isNaN(selectedObject.metalOrder)
 								? ''

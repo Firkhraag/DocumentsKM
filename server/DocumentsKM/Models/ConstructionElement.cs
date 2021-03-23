@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +8,7 @@ namespace DocumentsKM.Models
     public class ConstructionElement
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Вид конструкции
         [Required]
@@ -26,7 +27,7 @@ namespace DocumentsKM.Models
 
         // Длина
         [Required]
-        [Range(0, 1000000, ErrorMessage = "Value should be greater than or equal to 0")]
+        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Length { get; set; }
     }
 }

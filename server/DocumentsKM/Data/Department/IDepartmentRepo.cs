@@ -7,6 +7,8 @@ namespace DocumentsKM.Data
     {
         // Получить все отделы
         IEnumerable<Department> GetAll();
+        // Получить все активные отделы
+        IEnumerable<Department> GetAllActive();
         // Получить отдел по id
         Department GetById(int id);
         // Добавить отдел

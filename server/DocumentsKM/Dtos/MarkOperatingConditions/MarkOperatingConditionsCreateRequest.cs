@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Dtos
@@ -8,24 +9,24 @@ namespace DocumentsKM.Dtos
         public float SafetyCoeff { get; set; }
 
         [Required]
-        public int EnvAggressivenessId { get; set; }
+        public Int16 EnvAggressivenessId { get; set; }
 
         [Required]
-        public int Temperature { get; set; }
+        public Int16 Temperature { get; set; }
 
         [Required]
-        public int OperatingAreaId { get; set; }
+        public Int16 OperatingAreaId { get; set; }
 
         [Required]
-        public int GasGroupId { get; set; }
+        public Int16 GasGroupId { get; set; }
 
         [Required]
-        public int ConstructionMaterialId { get; set; }
+        public Int16 ConstructionMaterialId { get; set; }
 
         [Required]
-        public int PaintworkTypeId { get; set; }
+        public Int16 PaintworkTypeId { get; set; }
 
         [Required]
-        public int HighTensileBoltsTypeId { get; set; }
+        public Int16 HighTensileBoltsTypeId { get; set; }
     }
 }

@@ -12,6 +12,7 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Doc from '../../model/Doc'
 import DocType from '../../model/DocType'
 import { useMark } from '../../store/MarkStore'
+import { useUser } from '../../store/UserStore'
 import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
@@ -32,6 +33,7 @@ const DevelopingAttachedDocData = ({
 
 	const history = useHistory()
 	const mark = useMark()
+	const user = useUser()
 
 	const [selectedObject, setSelectedObject] = useState<Doc>(
 		isCreateMode
@@ -73,6 +75,17 @@ const DevelopingAttachedDocData = ({
 						employees: employeesResponse.data,
 						types: docTypesResponse.data,
 					})
+                    if (isCreateMode) {
+                        const defaultValuesResponse = await httpClient.get(
+                            `/users/${user.id}/default-values`
+                        )
+                        setSelectedObject({
+                            ...selectedObject,
+                            creator: defaultValuesResponse.data.creator,
+                            inspector: defaultValuesResponse.data.inspector,
+                            normContr: defaultValuesResponse.data.normContr,
+                        })
+                    }
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -238,6 +251,8 @@ const DevelopingAttachedDocData = ({
 				setErrMsg('Произошла ошибка')
 				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -292,6 +307,8 @@ const DevelopingAttachedDocData = ({
 				setErrMsg('Произошла ошибка')
 				setProcessIsRunning(false)
 			}
+		} else {
+			setProcessIsRunning(false)
 		}
 	}
 
@@ -303,7 +320,7 @@ const DevelopingAttachedDocData = ({
 					: 'Данные прилагаемого документа'}
 			</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-				<Form.Group className="flex-cent-v">
+				<Form.Group className="space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="code"
@@ -318,7 +335,7 @@ const DevelopingAttachedDocData = ({
 						isSearchable={true}
 						placeholder="Выбор шифр документа"
 						noOptionsMessage={() => 'Шифры не найдены'}
-						className="auto-width flex-grow"
+						className="doc-input-width"
 						onChange={(selectedOption) =>
 							onCodeSelect((selectedOption as any)?.value)
 						}
@@ -353,11 +370,10 @@ const DevelopingAttachedDocData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="numOfPages"
-						style={{ marginRight: '2.85em' }}
 					>
 						Число листов
 					</Form.Label>
@@ -366,21 +382,20 @@ const DevelopingAttachedDocData = ({
 						type="text"
 						placeholder="Введите число листов"
 						autoComplete="off"
+						className="doc-input-width"
 						defaultValue={
 							isNaN(selectedObject.numOfPages)
 								? ''
 								: selectedObject.numOfPages
 						}
-						className="auto-width flex-grow"
 						onBlur={onNumOfPagesChange}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="format"
-						style={{ marginRight: '5.6em' }}
 					>
 						Формат
 					</Form.Label>
@@ -389,6 +404,7 @@ const DevelopingAttachedDocData = ({
 						type="text"
 						placeholder="Введите формат"
 						autoComplete="off"
+						className="doc-input-width"
 						value={
 							isNaN(selectedObject.form)
 								? ''
@@ -398,11 +414,10 @@ const DevelopingAttachedDocData = ({
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="creator"
-						style={{ marginRight: '3.9em' }}
 					>
 						Разработал
 					</Form.Label>
@@ -413,7 +428,7 @@ const DevelopingAttachedDocData = ({
 						isSearchable={true}
 						placeholder="Выбор разработчика"
 						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="auto-width flex-grow"
+						className="doc-input-width"
 						onChange={(selectedOption) =>
 							onCreatorSelect((selectedOption as any)?.value)
 						}
@@ -422,24 +437,23 @@ const DevelopingAttachedDocData = ({
 								? null
 								: {
 										value: selectedObject.creator.id,
-										label: selectedObject.creator.name,
+										label: selectedObject.creator.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="inspector"
-						style={{ marginRight: '4.5em' }}
 					>
 						Проверил
 					</Form.Label>
@@ -450,7 +464,7 @@ const DevelopingAttachedDocData = ({
 						isSearchable={true}
 						placeholder="Выбор проверщика"
 						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="auto-width flex-grow"
+						className="doc-input-width"
 						onChange={(selectedOption) =>
 							onInspectorSelect((selectedOption as any)?.value)
 						}
@@ -459,26 +473,25 @@ const DevelopingAttachedDocData = ({
 								? null
 								: {
 										value: selectedObject.inspector.id,
-										label: selectedObject.inspector.name,
+										label: selectedObject.inspector.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="normContr"
-						style={{ marginRight: '1em' }}
 					>
-						Нормоконтролер
+						Нормоконтроль
 					</Form.Label>
 					<Select
 						inputId="normContr"
@@ -487,7 +500,7 @@ const DevelopingAttachedDocData = ({
 						isSearchable={true}
 						placeholder="Выбор нормоконтролера"
 						noOptionsMessage={() => 'Сотрудники не найдены'}
-						className="auto-width flex-grow"
+						className="doc-input-width"
 						onChange={(selectedOption) =>
 							onNormControllerSelect(
 								(selectedOption as any)?.value
@@ -498,13 +511,13 @@ const DevelopingAttachedDocData = ({
 								? null
 								: {
 										value: selectedObject.normContr.id,
-										label: selectedObject.normContr.name,
+										label: selectedObject.normContr.fullname,
 								  }
 						}
 						options={optionsObject.employees.map((e) => {
 							return {
 								value: e.id,
-								label: e.name,
+								label: e.fullname,
 							}
 						})}
 						styles={reactSelectStyle}

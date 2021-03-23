@@ -18,13 +18,16 @@ namespace DocumentsKM.Controllers
     public class MarkGeneralDataPointsController : ControllerBase
     {
         private readonly IMarkGeneralDataPointService _service;
+        private readonly ICorrProtGeneralDataPointService _corrProtGeneralDataPointService;
         private readonly IMapper _mapper;
 
         public MarkGeneralDataPointsController(
             IMarkGeneralDataPointService markGeneralDataPointService,
+            ICorrProtGeneralDataPointService corrProtGeneralDataPointService,
             IMapper mapper)
         {
             _service = markGeneralDataPointService;
+            _corrProtGeneralDataPointService = corrProtGeneralDataPointService;
             _mapper = mapper;
         }
 
@@ -43,6 +46,14 @@ namespace DocumentsKM.Controllers
         {
             var sections = _service.GetSectionsByMarkId(markId);
             return Ok(_mapper.Map<IEnumerable<GeneralDataSection>>(sections));
+        }
+
+        [HttpGet, Route("marks/{markId}/corr-prot-point")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<GeneralDataSection>> GetCorrProtPointByMarkId(int markId)
+        {
+            var point = _corrProtGeneralDataPointService.GetWholeString(markId);
+            return Ok(new { Result = point });
         }
 
         [HttpPost, Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points")]

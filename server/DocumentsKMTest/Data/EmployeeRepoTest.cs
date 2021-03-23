@@ -39,7 +39,7 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId), employees);
+                v => v.Department.Id == departmentId && v.IsActive), employees);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -77,7 +77,7 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId && v.Position.Id == positionId), employees);
+                v => v.Department.Id == departmentId && v.Position.Id == positionId && v.IsActive), employees);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -110,14 +110,16 @@ namespace DocumentsKM.Tests
             var repo = new SqlEmployeeRepo(context);
 
             var departmentId = _rnd.Next(1, TestData.departments.Count());
-            var positionIds = new int[] { 1, 2 };
 
             // Act
-            var employees = repo.GetAllByDepartmentIdAndPositions(departmentId, positionIds);
+            var employees = repo.GetAllByDepartmentIdAndPositions(departmentId, 1, 2);
+            var employees2 = repo.GetAllByDepartmentIdAndPositions(departmentId, new int[] {1, 2});
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId && positionIds.Contains(v.Position.Id)), employees);
+                v => v.Department.Id == departmentId && v.Position.Id >= 1 && v.Position.Id <= 2 && v.IsActive), employees);
+            Assert.Equal(TestData.employees.Where(
+                v => v.Department.Id == departmentId && (v.Position.Id == 1 || v.Position.Id == 2) && v.IsActive), employees2);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -130,13 +132,13 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.employees);
             var repo = new SqlEmployeeRepo(context);
 
-            var positionIds = new int[] { 1, 2 };
-
             // Act
-            var employees = repo.GetAllByDepartmentIdAndPositions(999, positionIds);
+            var employees = repo.GetAllByDepartmentIdAndPositions(999, 1, 2);
+            var employees2 = repo.GetAllByDepartmentIdAndPositions(999, new int[] {1, 2});
 
             // Assert
             Assert.Empty(employees);
+            Assert.Empty(employees2);
 
             context.Database.EnsureDeleted();
             context.Dispose();

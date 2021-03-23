@@ -1,25 +1,23 @@
-using System.Text.Json.Serialization;
+using System;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Dtos
 {
     public class UserResponse
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string AccessToken { get; set; }
+        public Int16 Id { get; set; }
+        public EmployeeDepartmentResponse Employee { get; set; }
 
-        // Refresh token возвращается только в cookie
-        [JsonIgnore] 
-        public string RefreshToken { get; set; }
-
-        public UserResponse(int id, string name, string acessToken, string refreshToken)
+        public UserResponse(short id, Employee employee)
         {
             Id = id;
-            Name = name;
-            AccessToken = acessToken;
-            RefreshToken = refreshToken;
+            Employee = new EmployeeDepartmentResponse
+            {
+                Id = employee.Id,
+                Fullname = employee.Fullname,
+                Department = employee.Department,
+            };
         }
-
         public UserResponse() {}
     }
 }

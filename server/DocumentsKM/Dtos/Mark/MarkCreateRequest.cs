@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Dtos
@@ -5,7 +6,7 @@ namespace DocumentsKM.Dtos
     public class MarkCreateRequest
     {
         [Required]
-        public int SubnodeId { get; set; }
+        public Int32 SubnodeId { get; set; }
 
         [Required]
         [MaxLength(40)]
@@ -16,18 +17,19 @@ namespace DocumentsKM.Dtos
         public string Name { get; set; }
 
         [Required]
-        public int DepartmentId { get; set; }
+        public Int16 DepartmentId { get; set; }
 
-        public int? ChiefSpecialistId { get; set; }
-        public int? GroupLeaderId { get; set; }
+        public Int32? ChiefSpecialistId { get; set; }
+        public Int32? GroupLeaderId { get; set; }
 
         [Required]
-        public int MainBuilderId { get; set; }
+        public Int32? NormContrId { get; set; }
 
         public MarkCreateRequest()
         {
             ChiefSpecialistId = null;
             GroupLeaderId = null;
+            NormContrId = null;
         }
     }
 }

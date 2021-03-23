@@ -213,7 +213,7 @@ namespace DocumentsKM.Tests
                     Code = "KM1",
                     Name = "Name 1",
                     Department = _departments[0],
-                    MainBuilder = _employees[0],
+                    NormContr = _employees[0],
                 },
                 new Mark
                 {
@@ -222,7 +222,7 @@ namespace DocumentsKM.Tests
                     Code = "KM2",
                     Name = "Name 2",
                     Department = _departments[0],
-                    MainBuilder = _employees[1],
+                    NormContr = _employees[1],
                 },
                 new Mark
                 {
@@ -231,7 +231,7 @@ namespace DocumentsKM.Tests
                     Code = "KM3",
                     Name = "Name 3",
                     Department = _departments[1],
-                    MainBuilder = _employees[2],
+                    NormContr = _employees[2],
                 },
                 new Mark
                 {
@@ -240,7 +240,7 @@ namespace DocumentsKM.Tests
                     Code = "KM4",
                     Name = "Name 4",
                     Department = _departments[1],
-                    MainBuilder = _employees[2],
+                    NormContr = _employees[2],
                 },
             };
             _specifications = new List<Specification>
@@ -668,7 +668,7 @@ namespace DocumentsKM.Tests
             int id = _rnd.Next(1, _updateConstructions.Count());
             var newStringValue = "NewUpdate";
             var newBoolValue = true;
-            var newIntValue = 99;
+            short newIntValue = 99;
 
             var newConstructionRequest = new ConstructionUpdateRequest
             {

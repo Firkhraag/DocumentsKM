@@ -1,3 +1,4 @@
+using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 using System.Collections.Generic;
 
@@ -7,5 +8,7 @@ namespace DocumentsKM.Services
     {
         // Получить все отделы
         IEnumerable<Department> GetAll();
+        // Обновить отделы
+        void UpdateAll(List<DepartmentFetched> departmentsFetched);
     }
 }

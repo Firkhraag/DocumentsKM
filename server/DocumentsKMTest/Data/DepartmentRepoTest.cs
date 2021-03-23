@@ -35,7 +35,7 @@ namespace DocumentsKM.Tests
             var departments = repo.GetAll();
 
             // Assert
-            Assert.Equal(TestData.departments, departments);
+            Assert.Equal(TestData.departments.Where(v => v.IsActive), departments);
 
             context.Database.EnsureDeleted();
             context.Dispose();

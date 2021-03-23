@@ -91,17 +91,17 @@ const DevelopingAttachedDocTable = ({
 								<td>{d.numOfPages}</td>
 								<td>{d.form}</td>
 								<td>
-									{d.creator == null ? '' : d.creator.name}
+									{d.creator == null ? '' : d.creator.fullname}
 								</td>
 								<td>
 									{d.inspector == null
 										? ''
-										: d.inspector.name}
+										: d.inspector.fullname}
 								</td>
 								<td>
 									{d.normContr == null
 										? ''
-										: d.normContr.name}
+										: d.normContr.fullname}
 								</td>
 								<td>{d.note}</td>
 								<td

@@ -145,20 +145,21 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnCreated()
         {
             // Arrange
-            var subnodeId = 1;
-            var departmentId = 1;
-            var mainBuilderId = 1;
+            var userId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
+            var normContrId = 1;
             var markRequest = new MarkCreateRequest
             {
                 SubnodeId = subnodeId,
                 Code = "NewCreate",
                 Name = "NewCreate",
                 DepartmentId = departmentId,
-                MainBuilderId = mainBuilderId,
+                NormContrId = normContrId,
             };
             string json = JsonSerializer.Serialize(markRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
 
             // Act
             var response = await _httpClient.PostAsync(endpoint, httpContent);
@@ -171,9 +172,10 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
         {
             // Arrange
-            var subnodeId = 1;
-            var departmentId = 1;
-            var mainBuilderId = 1;
+            var userId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
+            var normContrId = 1;
             var wrongMarkRequests = new List<MarkCreateRequest>
             {
                 new MarkCreateRequest
@@ -182,7 +184,7 @@ namespace DocumentsKM.Tests
                     Code = "",
                     Name = "NewCreate",
                     DepartmentId = departmentId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -190,11 +192,11 @@ namespace DocumentsKM.Tests
                     Code = "NewCreate",
                     Name = "",
                     DepartmentId = departmentId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
             };
 
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
             foreach (var wrongMarkRequest in wrongMarkRequests)
             {
                 var json = JsonSerializer.Serialize(wrongMarkRequest);
@@ -212,9 +214,10 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnNotFound_WhenWrongValues()
         {
             // Arrange
-            var subnodeId = 1;
-            var departmentId = 1;
-            var mainBuilderId = 1;
+            var userId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
+            var normContrId = 1;
             var groupLeaderId = 1;
             var chiefSpecialistId = 1;
             var wrongMarkRequests = new List<MarkCreateRequest>
@@ -227,7 +230,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -237,7 +240,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = 999,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -247,7 +250,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = 999,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -257,7 +260,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = 999,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                  new MarkCreateRequest
                 {
@@ -267,11 +270,11 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = 999,
+                    NormContrId = 999,
                 },
             };
 
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
             foreach (var wrongMarkRequest in wrongMarkRequests)
             {
                 var json = JsonSerializer.Serialize(wrongMarkRequest);
@@ -289,11 +292,12 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnConflict_WhenEmployeesAndDepartmentDontMatchOrConflictValues()
         {
             // Arrange
-            var subnodeId = 1;
-            var departmentId = 1;
+            var userId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
             var chiefSpecialistId = 1;
             var groupLeaderId = 2;
-            var mainBuilderId = 3;
+            var normContrId = 3;
 
             var wrongMarkRequests = new List<MarkCreateRequest>
             {
@@ -305,7 +309,7 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
                 new MarkCreateRequest
                 {
@@ -315,11 +319,11 @@ namespace DocumentsKM.Tests
                     DepartmentId = departmentId,
                     ChiefSpecialistId = chiefSpecialistId,
                     GroupLeaderId = groupLeaderId,
-                    MainBuilderId = mainBuilderId,
+                    NormContrId = normContrId,
                 },
             };
 
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
             foreach (var wrongMarkRequest in wrongMarkRequests)
             {
                 var json = JsonSerializer.Serialize(wrongMarkRequest);
@@ -337,20 +341,21 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            var subnodeId = 1;
-            var departmentId = 1;
-            var mainBuilderId = 1;
+            var userId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
+            var normContrId = 1;
             var markRequest = new MarkCreateRequest
             {
                 SubnodeId = subnodeId,
                 Code = "NewCreate",
                 Name = "NewCreate",
                 DepartmentId = departmentId,
-                MainBuilderId = mainBuilderId,
+                NormContrId = normContrId,
             };
             string json = JsonSerializer.Serialize(markRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/marks";
+            var endpoint = $"/api/users/{userId}/marks";
 
             // Act
             var response = await _authHttpClient.PostAsync(endpoint, httpContent);
@@ -449,7 +454,7 @@ namespace DocumentsKM.Tests
                     Id = id,
                     Body = new MarkUpdateRequest
                     {
-                        MainBuilderId = 999,
+                        NormContrId = 999,
                     },
                 },
             };

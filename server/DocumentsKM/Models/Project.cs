@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DocumentsKM.Models
@@ -6,11 +7,11 @@ namespace DocumentsKM.Models
     public class Project
     {
         [Key]
-        public int Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Название
         [Required]
-        [MaxLength(255)]
+        [MaxLength(550)]
         public string Name { get; set; }
 
         // Базовая серия

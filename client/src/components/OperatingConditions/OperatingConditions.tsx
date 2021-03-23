@@ -369,11 +369,10 @@ const OperatingConditions = () => {
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Общие условия эксплуатации</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
-				<Form.Group className="flex-cent-v">
+				<Form.Group className="space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="coeff"
-						style={{ marginRight: '2.5em' }}
 					>
 						Коэф. надежности по ответственности
 					</Form.Label>
@@ -387,16 +386,15 @@ const OperatingConditions = () => {
 								? ''
 								: selectedObject.safetyCoeff
 						}
-						className="auto-width flex-grow"
+						className="operating-conditions-input-width"
 						onBlur={onCoeffChange}
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="aggressiveness"
-						style={{ marginRight: '10.5em' }}
 					>
 						Агрессивность среды
 					</Form.Label>
@@ -409,7 +407,7 @@ const OperatingConditions = () => {
 						noOptionsMessage={() =>
 							'Агрессивность среды не найдена'
 						}
-						className="auto-width flex-grow"
+						className="operating-conditions-input-width"
 						onChange={(selectedOption) =>
 							onEnvAggresivnessSelect(
 								(selectedOption as any)?.value
@@ -436,11 +434,10 @@ const OperatingConditions = () => {
 					/>
 				</Form.Group>
 
-				<Form.Group className="mrg-top-2 flex-cent-v">
+				<Form.Group className="mrg-top-2 space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="temp"
-						style={{ marginRight: '1em' }}
 					>
 						Расчетная температура эксплуатации (°C)
 					</Form.Label>
@@ -449,7 +446,7 @@ const OperatingConditions = () => {
 						type="text"
 						placeholder="Введите наименование"
 						autoComplete="off"
-						className="auto-width flex-grow"
+						className="operating-conditions-input-width"
 						defaultValue={
 							isNaN(selectedObject.temperature)
 								? ''
@@ -459,11 +456,10 @@ const OperatingConditions = () => {
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="operatingArea"
-						style={{ marginRight: '11.65em' }}
 					>
 						Зона эксплуатации
 					</Form.Label>
@@ -474,7 +470,7 @@ const OperatingConditions = () => {
 						isSearchable={true}
 						placeholder="Выберите зону эксплуатации"
 						noOptionsMessage={() => 'Зоны эксплуатации не найдены'}
-						className="auto-width flex-grow"
+						className="operating-conditions-input-width"
 						onChange={(selectedOption) =>
 							onOperatingAreaSelect(
 								(selectedOption as any)?.value
@@ -499,11 +495,10 @@ const OperatingConditions = () => {
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="gasGroup"
-						style={{ marginRight: '14.65em' }}
 					>
 						Группа газов
 					</Form.Label>
@@ -514,7 +509,7 @@ const OperatingConditions = () => {
 						isSearchable={true}
 						placeholder="Выберите группу газов"
 						noOptionsMessage={() => 'Группы газов не найдены'}
-						className="auto-width flex-grow"
+						className="operating-conditions-input-width"
 						onChange={(selectedOption) =>
 							onGasGroupSelect((selectedOption as any)?.value)
 						}
@@ -536,11 +531,10 @@ const OperatingConditions = () => {
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="constructionMaterial"
-						style={{ marginRight: '9.65em' }}
 					>
 						Материал конструкций
 					</Form.Label>
@@ -553,7 +547,7 @@ const OperatingConditions = () => {
 						noOptionsMessage={() =>
 							'Материалы конструкций не найдены'
 						}
-						className="auto-width flex-grow"
+						className="operating-conditions-input-width"
 						onChange={(selectedOption) =>
 							onConstructionMaterialSelect(
 								(selectedOption as any)?.value
@@ -583,11 +577,10 @@ const OperatingConditions = () => {
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2">
+				<Form.Group className="space-between-cent-v mrg-top-2">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="paintworkType"
-						style={{ marginRight: '5.75em' }}
 					>
 						Тип лакокрасочного материала
 					</Form.Label>
@@ -598,7 +591,7 @@ const OperatingConditions = () => {
 						isSearchable={true}
 						placeholder="Выберите тип"
 						noOptionsMessage={() => 'Типы не найдены'}
-						className="auto-width flex-grow"
+						className="operating-conditions-input-width"
 						onChange={(selectedOption) =>
 							onPaintworkTypeSelect(
 								(selectedOption as any)?.value
@@ -623,11 +616,10 @@ const OperatingConditions = () => {
 					/>
 				</Form.Group>
 
-				<Form.Group className="flex-cent-v mrg-top-2 no-bot-mrg">
+				<Form.Group className="space-between-cent-v mrg-top-2 no-bot-mrg">
 					<Form.Label
 						className="no-bot-mrg"
 						htmlFor="highTensileBoltsType"
-						style={{ marginRight: '9.65em' }}
 					>
 						Высокопрочные болты
 					</Form.Label>
@@ -640,7 +632,7 @@ const OperatingConditions = () => {
 						noOptionsMessage={() =>
 							'Высокопрочные болты не найдены'
 						}
-						className="auto-width flex-grow"
+						className="operating-conditions-input-width"
 						onChange={(selectedOption) =>
 							onHighTensileBoltsTypeSelect(
 								(selectedOption as any)?.value

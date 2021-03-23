@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Helpers;
 using DocumentsKM.Services;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -12,7 +14,6 @@ namespace DocumentsKM.Tests
         private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
         private readonly IEmployeeService _service;
         private readonly Random _rnd = new Random();
-        private readonly int[] _approvalPosIds = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
         public EmployeeServiceTest()
         {
@@ -27,14 +28,14 @@ namespace DocumentsKM.Tests
             {
                 _mockEmployeeRepo.Setup(mock =>
                     mock.GetAllByDepartmentId(department.Id)).Returns(
-                        TestData.employees.Where(v => v.Department.Id == department.Id));
+                        TestData.employees.Where(v => v.Department.Id == department.Id && v.IsActive));
 
                 _mockEmployeeRepo.Setup(mock =>
                     mock.GetAllByDepartmentIdAndPositions(
-                        department.Id, _approvalPosIds)).Returns(
+                        department.Id, 1, 10)).Returns(
                             TestData.employees.Where(
                                 v => v.Department.Id == department.Id &&
-                                _approvalPosIds.Contains(v.Position.Id)));
+                                v.Position.Id >= 1 && v.Position.Id <= 10 && v.IsActive));
 
                 foreach (var position in TestData.positions)
                 {
@@ -43,11 +44,27 @@ namespace DocumentsKM.Tests
                             department.Id, position.Id)).Returns(
                                 TestData.employees.Where(
                                     v => v.Department.Id == department.Id &&
-                                    v.Position.Id == position.Id));
+                                    v.Position.Id == position.Id && v.IsActive));
+
+                    _mockEmployeeRepo.Setup(mock =>
+                        mock.GetByDepartmentIdAndPosition(
+                            department.Id, position.Id)).Returns(
+                                TestData.employees.FirstOrDefault(
+                                    v => v.Department.Id == department.Id &&
+                                    v.Position.Id == position.Id && v.IsActive));
                 }
             }
 
-            _service = new EmployeeService(_mockEmployeeRepo.Object);
+            IOptions<AppSettings> options = Options.Create<AppSettings>(new AppSettings()
+            {
+                DepartmentHeadPosId = 7,
+                ChiefSpecialistPosId = 9,
+                GroupLeaderPosId = 10,
+                MainBuilderPosId = 4,
+                ApprovalMinPosId = 1,
+                ApprovalMaxPosId = 10,
+            });
+            _service = new EmployeeService(_mockEmployeeRepo.Object, options);
         }
 
         [Fact]
@@ -61,7 +78,7 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId), returnedEmployees);
+                v => v.Department.Id == departmentId && v.IsActive), returnedEmployees);
         }
 
         [Fact]
@@ -85,8 +102,10 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Equal(TestData.employees.Where(
-                v => v.Department.Id == departmentId && _approvalPosIds.Contains(
-                    v.Position.Id)), returnedEmployees);
+                v => v.Department.Id == departmentId &&
+                v.Position.Id >= 1 &&
+                v.Position.Id <= 10 &&
+                v.IsActive), returnedEmployees);
         }
 
         [Fact]
@@ -103,28 +122,38 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetMarkMainEmployeesByDepartmentId_ShouldReturnEmployeesForMarkApproval()
+        public void GetMarkMainEmployeesByDepartmentId_ShouldReturnEmployees()
         {
             // Arrange
             int departmentId = _rnd.Next(1, TestData.departments.Count());
             var departmentHeadPosId = 7;
             var chiefSpecialistPosId = 9;
             var groupLeaderPosId = 10;
-            var mainBuilderPosId = 4;
+            var minNormContrPos = 1;
+            var maxNormContrPos = 10;
 
             // Act
             (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) =
                 _service.GetMarkMainEmployeesByDepartmentId(departmentId);
 
             // Assert
-            Assert.Equal(TestData.employees.SingleOrDefault(
-                v => v.Position.Id == departmentHeadPosId && v.Department.Id == departmentId), departmentHead);
+            Assert.Equal(TestData.employees.FirstOrDefault(
+                v => v.Position.Id == departmentHeadPosId &&
+                v.Department.Id == departmentId &&
+                v.IsActive), departmentHead);
             Assert.Equal(TestData.employees.Where(
-                v => v.Position.Id == chiefSpecialistPosId && v.Department.Id == departmentId), chiefSpecialists);
+                v => v.Position.Id == chiefSpecialistPosId &&
+                v.Department.Id == departmentId &&
+                v.IsActive), chiefSpecialists);
             Assert.Equal(TestData.employees.Where(
-                v => v.Position.Id == groupLeaderPosId && v.Department.Id == departmentId), groupLeaders);
+                v => v.Position.Id == groupLeaderPosId &&
+                v.Department.Id == departmentId &&
+                v.IsActive), groupLeaders);
             Assert.Equal(TestData.employees.Where(
-                v => v.Position.Id == mainBuilderPosId && v.Department.Id == departmentId), mainBuilders);
+                v => v.Position.Id >= minNormContrPos &&
+                v.Position.Id <= maxNormContrPos &&
+                v.Department.Id == departmentId &&
+                v.IsActive), mainBuilders);
         }
     }
 }
