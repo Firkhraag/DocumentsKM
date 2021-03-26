@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
-    // Not used now
     // Вариант антикоррозионной защиты
     public class CorrProtVariant
     {

@@ -23,15 +23,14 @@ namespace DocumentsKM.Services
             _generalDataSectionRepo = generalDataSectionRepo;
         }
 
-        public IEnumerable<GeneralDataPoint> GetAllByUserAndSectionId(
-            int userId, int sectionId)
+        public IEnumerable<GeneralDataPoint> GetAllBySectionId(
+            int sectionId)
         {
-            return _repository.GetAllByUserAndSectionId(userId, sectionId);
+            return _repository.GetAllBySectionId(sectionId);
         }
 
         public void Create(
             GeneralDataPoint generalDataPoint,
-            int userId,
             int sectionId)
         {
             if (generalDataPoint == null)
@@ -39,19 +38,15 @@ namespace DocumentsKM.Services
             var foundSection = _generalDataSectionRepo.GetById(sectionId);
             if (foundSection == null)
                 throw new ArgumentNullException(nameof(foundSection));
-            var foundUser = _userRepo.GetById(userId);
-            if (foundUser == null)
-                throw new ArgumentNullException(nameof(foundUser));
 
             var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
-                userId, sectionId, generalDataPoint.Text);
+                sectionId, generalDataPoint.Text);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
 
             generalDataPoint.Section = foundSection;
-            generalDataPoint.User = foundUser;
 
-            var currentPoints = _repository.GetAllByUserAndSectionId(userId, sectionId);
+            var currentPoints = _repository.GetAllBySectionId(sectionId);
             if (currentPoints.Count() == 0)
                 generalDataPoint.OrderNum = 1;
             else
@@ -61,7 +56,7 @@ namespace DocumentsKM.Services
         }
 
         public void Update(
-            int id, int userId, int sectionId,
+            int id, int sectionId,
             GeneralDataPointUpdateRequest generalDataPoint)
         {
             if (generalDataPoint == null)
@@ -69,9 +64,6 @@ namespace DocumentsKM.Services
             var foundGeneralDataPoint = _repository.GetById(id);
             if (foundGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundGeneralDataPoint));
-            var foundUser = _userRepo.GetById(userId);
-            if (foundUser == null)
-                throw new ArgumentNullException(nameof(foundUser));
             var foundSection = _generalDataSectionRepo.GetById(sectionId);
             if (foundSection == null)
                 throw new ArgumentNullException(nameof(foundSection));
@@ -79,7 +71,6 @@ namespace DocumentsKM.Services
             if (generalDataPoint.Text != null)
             {
                 var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
-                    foundGeneralDataPoint.User.Id,
                     foundGeneralDataPoint.Section.Id,
                     generalDataPoint.Text);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
@@ -91,7 +82,7 @@ namespace DocumentsKM.Services
                 var orderNum = generalDataPoint.OrderNum.GetValueOrDefault();
                 foundGeneralDataPoint.OrderNum = orderNum;
                 short num = 1;
-                foreach (var p in _repository.GetAllByUserAndSectionId(userId, sectionId))
+                foreach (var p in _repository.GetAllBySectionId(sectionId))
                 {
                     if (p.Id == id)
                         continue;
@@ -111,18 +102,15 @@ namespace DocumentsKM.Services
             _repository.Update(foundGeneralDataPoint);
         }
 
-        public void Delete(int id, int userId, int sectionId)
+        public void Delete(int id, int sectionId)
         {
             var foundGeneralDataPoint = _repository.GetById(id);
             if (foundGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundGeneralDataPoint));
-            var foundUser = _userRepo.GetById(userId);
-            if (foundUser == null)
-                throw new ArgumentNullException(nameof(foundUser));
             var foundSection = _generalDataSectionRepo.GetById(sectionId);
             if (foundSection == null)
                 throw new ArgumentNullException(nameof(foundSection));
-            foreach (var p in _repository.GetAllByUserAndSectionId(userId, sectionId))
+            foreach (var p in _repository.GetAllBySectionId(sectionId))
             {
                 if (p.OrderNum > foundGeneralDataPoint.OrderNum)
                 {

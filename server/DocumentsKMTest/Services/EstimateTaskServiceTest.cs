@@ -13,8 +13,6 @@ namespace DocumentsKM.Tests
     public class EstimateTaskServiceTest
     {
         private readonly Mock<IEstimateTaskRepo> _repository = new Mock<IEstimateTaskRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
         private readonly IEstimateTaskService _service;
         private readonly Random _rnd = new Random();
         private readonly List<EstimateTask> _estimateTask =
@@ -23,6 +21,9 @@ namespace DocumentsKM.Tests
 
         public EstimateTaskServiceTest()
         {
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockEmployeeRepo = new Mock<IEmployeeRepo>();
+
             // Arrange
             foreach (var et in TestData.estimateTask)
             {
@@ -37,7 +38,7 @@ namespace DocumentsKM.Tests
 
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
@@ -47,7 +48,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var employee in TestData.employees)
             {
-                _mockEmployeeRepo.Setup(mock =>
+                mockEmployeeRepo.Setup(mock =>
                     mock.GetById(employee.Id)).Returns(
                         TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
             }
@@ -59,8 +60,8 @@ namespace DocumentsKM.Tests
 
             _service = new EstimateTaskService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockEmployeeRepo.Object);
+                mockMarkRepo.Object,
+                mockEmployeeRepo.Object);
         }
 
         [Fact]

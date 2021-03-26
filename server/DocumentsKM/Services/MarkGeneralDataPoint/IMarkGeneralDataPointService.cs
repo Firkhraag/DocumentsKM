@@ -6,27 +6,22 @@ namespace DocumentsKM.Services
 {
     public interface IMarkGeneralDataPointService
     {
-        // Получить все пункты общих указаний марки по id марки и раздела
-        IEnumerable<MarkGeneralDataPoint> GetAllByMarkAndSectionId(
-            int markId, int sectionId);
+        // Получить все пункты общих указаний марки по id раздела
+        IEnumerable<MarkGeneralDataPoint> GetAllBySectionId(
+            int sectionId);
         // Добавить пункт общих указаний к марке
         void Create(
             MarkGeneralDataPoint generalDataPoint,
-            int markId,
             int sectionId);
-        // Обновить пункты общих указаний марки по id разделов
-        void UpdateAllBySectionIds(int markId, List<int> sectionIds);
         // Обновить пункты общих указаний марки по id шаблонных пунктов
         IEnumerable<MarkGeneralDataPoint> UpdateAllByPointIds(
-            int userId, int markId, int sectionId, List<int> pointIds);
+            int userId, int sectionId, List<int> pointIds);
         // Обновить пункт общих указаний марки
-        void Update(int id, int markId, int sectionId,
+        void Update(int id, int sectionId,
             MarkGeneralDataPointUpdateRequest generalDataPoint);
         // Удалить пункт общих указаний марки
-        void Delete(int id, int markId, int sectionId);
-        // Получить разделы общих указаний по id марки
-        IEnumerable<GeneralDataSection> GetSectionsByMarkId(int markId);
-        // Добавить пункты общих указаний пользователя к марке
+        void Delete(int id, int sectionId);
+        // Добавить шаблонные пункты общих указаний пользователя к марке
         void AddDefaultPoints(int userId, Mark mark);
     }
 }

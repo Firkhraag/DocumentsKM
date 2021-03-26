@@ -12,23 +12,22 @@ namespace DocumentsKM.Tests
 {
     public class GeneralDataPointServiceTest
     {
-        private readonly Mock<IGeneralDataPointRepo> _repository = new Mock<IGeneralDataPointRepo>();
-        private readonly Mock<IUserRepo> _mockUserRepo = new Mock<IUserRepo>();
-        private readonly Mock<IGeneralDataSectionRepo> _mockGeneralDataSectionRepo = new Mock<IGeneralDataSectionRepo>();
+        Mock<IGeneralDataPointRepo> _repository = new Mock<IGeneralDataPointRepo>();
         private readonly IGeneralDataPointService _service;
         private readonly Random _rnd = new Random();
         private readonly List<GeneralDataPoint> _generalDataPoints = new List<GeneralDataPoint> { };
-        private readonly int _maxUserId = 3;
 
         public GeneralDataPointServiceTest()
         {
+            var mockUserRepo = new Mock<IUserRepo>();
+            var mockGeneralDataSectionRepo = new Mock<IGeneralDataSectionRepo>();
+
             // Arrange
             foreach (var gdp in TestData.generalDataPoints)
             {
                 _generalDataPoints.Add(new GeneralDataPoint
                 {
                     Id = gdp.Id,
-                    User = gdp.User,
                     Section = gdp.Section,
                     Text = gdp.Text,
                     OrderNum = gdp.OrderNum,
@@ -42,32 +41,35 @@ namespace DocumentsKM.Tests
             }
             foreach (var user in TestData.users)
             {
-                _mockUserRepo.Setup(mock =>
+                mockUserRepo.Setup(mock =>
                     mock.GetById(user.Id)).Returns(
                         TestData.users.SingleOrDefault(v => v.Id == user.Id));
 
                 foreach (var generalDataSection in TestData.generalDataSections)
                 {
-                    _repository.Setup(mock =>
-                    mock.GetAllByUserAndSectionId(user.Id, generalDataSection.Id)).Returns(
-                        _generalDataPoints.Where(
-                            v => v.User.Id == user.Id && v.Section.Id == generalDataSection.Id));
-
                     foreach (var generalDataPoint in _generalDataPoints)
                     {
                         _repository.Setup(mock =>
                             mock.GetByUniqueKey(
-                                user.Id, generalDataSection.Id, generalDataPoint.Text)).Returns(
+                                generalDataSection.Id, generalDataPoint.Text)).Returns(
                                     _generalDataPoints.SingleOrDefault(
-                                        v => v.User.Id == user.Id && v.Section.Id == generalDataSection.Id &&
+                                        v => v.Section.Id == generalDataSection.Id &&
                                             v.Text == generalDataPoint.Text));
                     }
                 }
             }
             foreach (var generalDataSection in TestData.generalDataSections)
             {
-                _mockGeneralDataSectionRepo.Setup(mock =>
-                    mock.GetById(generalDataSection.Id)).Returns(
+                _repository.Setup(mock =>
+                    mock.GetAllBySectionId(generalDataSection.Id)).Returns(
+                        _generalDataPoints.Where(
+                            v => v.Section.Id == generalDataSection.Id));
+                mockGeneralDataSectionRepo.Setup(mock =>
+                    mock.GetById(generalDataSection.Id, false)).Returns(
+                        TestData.generalDataSections.SingleOrDefault(
+                            v => v.Id == generalDataSection.Id));
+                mockGeneralDataSectionRepo.Setup(mock =>
+                    mock.GetById(generalDataSection.Id, true)).Returns(
                         TestData.generalDataSections.SingleOrDefault(
                             v => v.Id == generalDataSection.Id));
             }
@@ -81,47 +83,42 @@ namespace DocumentsKM.Tests
 
             _service = new GeneralDataPointService(
                 _repository.Object,
-                _mockUserRepo.Object,
-                _mockGeneralDataSectionRepo.Object);
+                mockUserRepo.Object,
+                mockGeneralDataSectionRepo.Object);
         }
 
         [Fact]
-        public void GetAllByUserAndSectionId_ShouldReturnuserGeneralDataPoints()
+        public void GetAllBySectionId_ShouldReturnuserGeneralDataPoints()
         {
             // Arrange
-            int userId = _rnd.Next(1, _maxUserId);
             int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
 
             // Act
-            var returnedGeneralDataPoints = _service.GetAllByUserAndSectionId(userId, sectionId);
+            var returnedGeneralDataPoints = _service.GetAllBySectionId(sectionId);
 
             // Assert
             Assert.Equal(_generalDataPoints.Where(
-                v => v.User.Id == userId && v.Section.Id == sectionId),
+                v => v.Section.Id == sectionId),
                     returnedGeneralDataPoints);
         }
 
         [Fact]
-        public void GetAllByUserAndSectionId_ShouldReturnEmptyArray_WhenWrongValues()
+        public void GetAllBySectionId_ShouldReturnEmptyArray_WhenWrongValues()
         {
             // Arrange
-            int userId = _rnd.Next(1, _maxUserId);
             int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
 
             // Act
-            var returnedGeneralDataPoints1 = _service.GetAllByUserAndSectionId(999, sectionId);
-            var returnedGeneralDataPoints2 = _service.GetAllByUserAndSectionId(userId, 999);
+            var returnedGeneralDataPoints = _service.GetAllBySectionId(999);
 
             // Assert
-            Assert.Empty(returnedGeneralDataPoints1);
-            Assert.Empty(returnedGeneralDataPoints2);
+            Assert.Empty(returnedGeneralDataPoints);
         }
 
         [Fact]
         public void Create_ShouldCreateGeneralDataPoint()
         {
             // Arrange
-            int userId = _rnd.Next(1, TestData.users.Count());
             int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
 
             var newGeneralDataPoint = new GeneralDataPoint
@@ -130,18 +127,17 @@ namespace DocumentsKM.Tests
             };
 
             // Act
-            _service.Create(newGeneralDataPoint, userId, sectionId);
+            _service.Create(newGeneralDataPoint, sectionId);
 
             // Assert
             _repository.Verify(mock => mock.Add(It.IsAny<GeneralDataPoint>()), Times.Once);
-            Assert.NotNull(newGeneralDataPoint.User);
+            Assert.NotNull(newGeneralDataPoint.Section);
         }
 
         [Fact]
         public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
-            int userId = _rnd.Next(1, TestData.users.Count());
             int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
 
             var newGeneralDataPoint = new GeneralDataPoint
@@ -150,8 +146,8 @@ namespace DocumentsKM.Tests
             };
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Create(null, userId, sectionId));
-            Assert.Throws<ArgumentNullException>(() => _service.Create(newGeneralDataPoint, userId, 999));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null, sectionId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newGeneralDataPoint, 999));
 
             _repository.Verify(mock => mock.Add(It.IsAny<GeneralDataPoint>()), Times.Never);
         }
@@ -160,7 +156,6 @@ namespace DocumentsKM.Tests
         public void Create_ShouldFailWithConflict_WhenConflictValues()
         {
             // Arrange
-            int conflictuserId = _generalDataPoints[0].User.Id;
             int conflictSectionId = _generalDataPoints[0].Section.Id;
 
             var newGeneralDataPoint = new GeneralDataPoint
@@ -170,7 +165,7 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Create(
-                newGeneralDataPoint, conflictuserId, conflictSectionId));
+                newGeneralDataPoint, conflictSectionId));
 
             _repository.Verify(mock => mock.Add(It.IsAny<GeneralDataPoint>()), Times.Never);
         }
@@ -180,7 +175,6 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _generalDataPoints[0].Id;
-            int userId = _generalDataPoints[0].User.Id;
             int sectionId = _generalDataPoints[0].Section.Id;
             var newStringValue = "NewUpdate";
 
@@ -191,7 +185,7 @@ namespace DocumentsKM.Tests
 
             // Act
             _service.Update(
-                id, userId, sectionId, newGeneralDataPointRequest);
+                id, sectionId, newGeneralDataPointRequest);
 
             // Assert
             _repository.Verify(mock => mock.Update(It.IsAny<GeneralDataPoint>()), Times.Once);
@@ -204,7 +198,6 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _generalDataPoints[0].Id;
-            int userId = _generalDataPoints[0].User.Id;
             int sectionId = _generalDataPoints[0].Section.Id;
             var newStringValue = "NewUpdate";
 
@@ -215,14 +208,11 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(
-                id, userId, sectionId, null));
+                id, sectionId, null));
             Assert.Throws<ArgumentNullException>(() => _service.Update(
-                999, userId, sectionId, newGeneralDataPointRequest));
+                999, sectionId, newGeneralDataPointRequest));
             Assert.Throws<ArgumentNullException>(() => _service.Update(
-                id, 999, sectionId, newGeneralDataPointRequest));
-            Assert.Throws<ArgumentNullException>(() => _service.Update(
-                id, userId, 999, newGeneralDataPointRequest));
-
+                id, 999, newGeneralDataPointRequest));
 
             _repository.Verify(mock => mock.Update(It.IsAny<GeneralDataPoint>()), Times.Never);
         }
@@ -232,7 +222,6 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _generalDataPoints[0].Id;
-            int userId = _generalDataPoints[0].User.Id;
             int sectionId = _generalDataPoints[0].Section.Id;
 
             var newGeneralDataPointRequest = new GeneralDataPointUpdateRequest
@@ -242,7 +231,7 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Update(
-                id, userId, sectionId, newGeneralDataPointRequest));
+                id, sectionId, newGeneralDataPointRequest));
 
             _repository.Verify(mock => mock.Update(It.IsAny<GeneralDataPoint>()), Times.Never);
         }
@@ -252,11 +241,10 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _generalDataPoints[0].Id;
-            int userId = _generalDataPoints[0].User.Id;
             int sectionId = _generalDataPoints[0].Section.Id;
 
             // Act
-            _service.Delete(id, userId, sectionId);
+            _service.Delete(id, sectionId);
 
             // Assert
             _repository.Verify(mock => mock.Delete(It.IsAny<GeneralDataPoint>()), Times.Once);
@@ -267,13 +255,11 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _generalDataPoints[0].Id;
-            int userId = _generalDataPoints[0].User.Id;
             int sectionId = _generalDataPoints[0].Section.Id;
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(999, userId, sectionId));
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(id, 999, sectionId));
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(id, userId, 999));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(999, sectionId));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(id, 999));
 
             _repository.Verify(mock => mock.Delete(It.IsAny<GeneralDataPoint>()), Times.Never);
         }

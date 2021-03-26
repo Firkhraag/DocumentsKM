@@ -29,23 +29,23 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpGet,
-            Route("users/{userId}/general-data-sections/{sectionId}/general-data-points")]
+            Route("general-data-sections/{sectionId}/general-data-points")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<GeneralDataPointResponse>> GetAllByUserAndSectionId(
-            int userId, int sectionId)
+        public ActionResult<IEnumerable<GeneralDataPointResponse>> GetAllBySectionId(
+            int sectionId)
         {
-            var points = _service.GetAllByUserAndSectionId(userId, sectionId);
+            var points = _service.GetAllBySectionId(sectionId);
             return Ok(_mapper.Map<IEnumerable<GeneralDataPointResponse>>(points));
         }
 
         [HttpPost,
-            Route("users/{userId}/general-data-sections/{sectionId}/general-data-points")]
+            Route("general-data-sections/{sectionId}/general-data-points")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<GeneralDataPoint> Create(int userId, int sectionId,
+        public ActionResult<GeneralDataPoint> Create(int sectionId,
             [FromBody] GeneralDataPointCreateRequest generalDataPointRequest)
         {
             var generalDataPointModel = _mapper.Map<GeneralDataPoint>(
@@ -54,7 +54,6 @@ namespace DocumentsKM.Controllers
             {
                 _service.Create(
                     generalDataPointModel,
-                    userId,
                     sectionId);
             }
             catch (ArgumentNullException)
@@ -70,19 +69,19 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpPatch,
-            Route("users/{userId}/general-data-sections/{sectionId}/general-data-points/{id}")]
+            Route("general-data-sections/{sectionId}/general-data-points/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int userId, int sectionId, int id,
+        public ActionResult Update(int sectionId, int id,
             [FromBody] GeneralDataPointUpdateRequest generalDataPointRequest)
         {
             if (!generalDataPointRequest.Validate())
                 return BadRequest();
             try
             {
-                _service.Update(id, userId, sectionId, generalDataPointRequest);
+                _service.Update(id, sectionId, generalDataPointRequest);
             }
             catch (ArgumentNullException)
             {
@@ -96,14 +95,14 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpDelete,
-            Route("users/{userId}/general-data-sections/{sectionId}/general-data-points/{id}")]
+            Route("general-data-sections/{sectionId}/general-data-points/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Delete(int userId, int sectionId, int id)
+        public ActionResult Delete(int sectionId, int id)
         {
             try
             {
-                _service.Delete(id, userId, sectionId);
+                _service.Delete(id, sectionId);
                 return NoContent();
             }
             catch (ArgumentNullException)

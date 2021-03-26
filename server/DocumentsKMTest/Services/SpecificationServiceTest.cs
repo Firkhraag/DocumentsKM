@@ -15,7 +15,6 @@ namespace DocumentsKM.Tests
     {
         private readonly Mock<ISpecificationRepo> _repository = new Mock<ISpecificationRepo>();
         private readonly Mock<ISpecificationRepo> _updateRepository = new Mock<ISpecificationRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly ISpecificationService _service;
         private readonly ISpecificationService _updateService;
         private readonly Random _rnd = new Random();
@@ -266,6 +265,10 @@ namespace DocumentsKM.Tests
                     IsCurrent = true,
                 },
             };
+
+            var mockMarkRepo = new Mock<IMarkRepo>();
+
+
             foreach (var spec in _specifications)
             {
                 _updateSpecifications.Add(new Specification
@@ -294,7 +297,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var mark in _marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         _marks.SingleOrDefault(v => v.Id == mark.Id));
 
@@ -322,10 +325,10 @@ namespace DocumentsKM.Tests
 
             _service = new SpecificationService(
                 _repository.Object,
-                _mockMarkRepo.Object);
+                mockMarkRepo.Object);
             _updateService = new SpecificationService(
                 _updateRepository.Object,
-                _mockMarkRepo.Object);
+                mockMarkRepo.Object);
         }
 
         [Fact]

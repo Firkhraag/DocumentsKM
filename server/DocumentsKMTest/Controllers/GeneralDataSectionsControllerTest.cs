@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,6 +13,9 @@ namespace DocumentsKM.Tests
     {
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
+
+        private readonly int _maxUserId = 3;
 
         public GeneralDataSectionsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
@@ -27,10 +31,12 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAll_ShouldReturnOK()
+        public async Task GetAllByUserId_ShouldReturnOK()
         {
             // Arrange
-            var endpoint = "/api/general-data-sections";
+            int userId = _rnd.Next(1, _maxUserId);
+
+            var endpoint = $"/api/users/{userId}/general-data-sections";
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
@@ -40,10 +46,12 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAll_ShouldReturnUnauthorized_WhenNoAccessToken()
+        public async Task GetAllByUserId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            var endpoint = "/api/general-data-sections";
+            int userId = _rnd.Next(1, _maxUserId);
+
+            var endpoint = $"/api/users/{userId}/general-data-sections";
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);

@@ -26,6 +26,7 @@ const UserGeneralData = () => {
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
 		section: null,
 		point: null,
+		sectionText: '',
 		pointText: '',
 	})
 	const [optionsObject, setOptionsObject] = useState({
@@ -46,12 +47,13 @@ const UserGeneralData = () => {
 
 	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
+	const [isLeftErrMsg, setLeftErrMsg] = useState(true)
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const sectionsResponse = await httpClient.get(
-					`/general-data-sections`
+					`/users/${user.id}/general-data-sections`
 				)
 				setOptionsObject({
 					...optionsObject,
@@ -65,19 +67,6 @@ const UserGeneralData = () => {
 	}, [])
 
 	const onSectionSelect = async (id: number) => {
-		if (id == null) {
-			setOptionsObject({
-				sections: optionsObject.sections,
-				points: [],
-			})
-			setSelectedObject({
-				...selectedObject,
-				section: null,
-				point: null,
-				pointText: '',
-			})
-			return
-		}
 		const v = getFromOptions(
 			id,
 			optionsObject.sections,
@@ -94,11 +83,12 @@ const UserGeneralData = () => {
 					section: v,
 					point: null,
 					pointText: '',
+					sectionText: v.name,
 				})
 			} else {
 				try {
 					const pointsResponse = await httpClient.get(
-						`/users/${user.id}/general-data-sections/${id}/general-data-points`
+						`/general-data-sections/${id}/general-data-points`
 					)
 					cachedPoints.set(v.id, pointsResponse.data)
 					setOptionsObject({
@@ -110,8 +100,10 @@ const UserGeneralData = () => {
 						section: v,
 						point: null,
 						pointText: '',
+						sectionText: v.name,
 					})
 				} catch (e) {
+					setLeftErrMsg(true)
 					setErrMsg('Произошла ошибка')
 				}
 			}
@@ -119,13 +111,6 @@ const UserGeneralData = () => {
 	}
 
 	const onPointSelect = async (id: number) => {
-		if (id == null) {
-			setSelectedObject({
-				...selectedObject,
-				point: null,
-			})
-			return
-		}
 		const v = getFromOptions(id, optionsObject.points, selectedObject.point)
 		if (v != null) {
 			setSelectedObject({
@@ -133,7 +118,6 @@ const UserGeneralData = () => {
 				point: v,
 				pointText: v.text,
 			})
-			window.scrollTo(0, document.body.scrollHeight / 2)
 		}
 	}
 
@@ -142,10 +126,7 @@ const UserGeneralData = () => {
 	) => {
 		setSelectedObject({
 			...selectedObject,
-			section: new GeneralDataSection({
-				id: selectedObject.section.id,
-				name: event.currentTarget.value,
-			}),
+			sectionText: event.currentTarget.value,
 		})
 	}
 
@@ -158,6 +139,15 @@ const UserGeneralData = () => {
 		})
 	}
 
+	const onSectionNumChange = (num: number) => {
+		const s = { ...selectedObject.section }
+		s.orderNum = num
+		setSelectedObject({
+			...selectedObject,
+			section: s,
+		})
+	}
+
 	const onPointNumChange = (num: number) => {
 		const p = { ...selectedObject.point }
 		p.orderNum = num
@@ -167,11 +157,148 @@ const UserGeneralData = () => {
 		})
 	}
 
-	const onDeleteClick = async (row: number, id: number) => {
+	const onSectionDeleteClick = async (row: number, id: number) => {
+		setProcessIsRunning(true)
+		try {
+			await httpClient.delete(`/users/${user.id}/general-data-sections/${id}`)
+
+			for (let s of optionsObject.sections) {
+				if (s.orderNum > optionsObject.sections[row].orderNum) {
+					s.orderNum = s.orderNum - 1
+				}
+			}
+
+			var arr = [...optionsObject.sections]
+			arr.splice(row, 1)
+			setOptionsObject({
+				...optionsObject,
+				sections: arr,
+                points: [],
+			})
+
+			if (
+				selectedObject.section != null &&
+				selectedObject.section.id == id
+			) {
+				setSelectedObject({
+					...selectedObject,
+					section: null,
+                    point: null,
+				})
+			}
+			setPopup(defaultPopup)
+		} catch (e) {
+			setLeftErrMsg(true)
+			setErrMsg('Произошла ошибка')
+		}
+		setProcessIsRunning(false)
+	}
+
+	const checkIfSectionValid = () => {
+		if (selectedObject.sectionText === '') {
+			setLeftErrMsg(true)
+			setErrMsg('Пожалуйста, введите название раздела')
+			return false
+		}
+		return true
+	}
+
+	const onUpdateSectionButtonClick = async () => {
+		setProcessIsRunning(true)
+		if (checkIfSectionValid()) {
+			try {
+				await httpClient.patch(
+					`/users/${user.id}/general-data-sections/${selectedObject.section.id}`,
+					{
+						name: selectedObject.sectionText,
+						orderNum: selectedObject.section.orderNum,
+					}
+				)
+				const s = { ...selectedObject.section }
+				s.name = selectedObject.sectionText
+				const foundSection = optionsObject.sections.find(
+					(v) => v.id === s.id
+				)
+				foundSection.name = selectedObject.sectionText
+				foundSection.orderNum = selectedObject.section.orderNum
+
+				var num = 1
+				for (let s of optionsObject.sections) {
+					if (s.id == selectedObject.section.id) continue
+					if (num == selectedObject.section.orderNum) {
+						num = num + 1
+						s.orderNum = num
+						num = num + 1
+						continue
+					}
+					s.orderNum = num
+					num = num + 1
+				}
+
+				const compareFunc = (a: any, b: any) => {
+					if (a.orderNum < b.orderNum) {
+						return -1
+					}
+					if (a.orderNum > b.orderNum) {
+						return 1
+					}
+					return 0
+				}
+
+				optionsObject.sections.sort(compareFunc)
+
+				setSelectedObject({
+					...selectedObject,
+					section: s,
+				})
+			} catch (e) {
+				setLeftErrMsg(true)
+				if (e.response.status === 409) {
+					setErrMsg('Раздел с таким содержанием уже существует')
+				} else {
+					setErrMsg('Произошла ошибка')
+				}
+			}
+		}
+		setProcessIsRunning(false)
+	}
+
+	const onCreateSectionButtonClick = async () => {
+		setProcessIsRunning(true)
+		if (checkIfSectionValid()) {
+			try {
+				const response = await httpClient.post(
+					`/users/${user.id}/general-data-sections`,
+					{
+						name: selectedObject.sectionText,
+					}
+				)
+				optionsObject.sections.push(response.data)
+				setSelectedObject({
+					...selectedObject,
+					section: response.data,
+				})
+                setOptionsObject({
+                    ...optionsObject,
+                    points: [],
+                })
+			} catch (e) {
+				setLeftErrMsg(true)
+				if (e.response.status === 409) {
+					setErrMsg('Раздел с таким содержанием уже существует')
+				} else {
+					setErrMsg('Произошла ошибка')
+				}
+			}
+		}
+		setProcessIsRunning(false)
+	}
+
+	const onPointDeleteClick = async (row: number, id: number) => {
 		setProcessIsRunning(true)
 		try {
 			await httpClient.delete(
-				`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${id}`
+				`/general-data-sections/${selectedObject.section.id}/general-data-points/${id}`
 			)
 
 			for (let p of optionsObject.points) {
@@ -193,19 +320,24 @@ const UserGeneralData = () => {
 					point: null,
 				})
 			}
+
+			cachedPoints.delete(selectedObject.section.id)
 			setPopup(defaultPopup)
 		} catch (e) {
+			setLeftErrMsg(false)
 			setErrMsg('Произошла ошибка')
 		}
 		setProcessIsRunning(false)
 	}
 
-	const checkIfValid = () => {
+	const checkIfPointValid = () => {
 		if (selectedObject.section === null) {
+			setLeftErrMsg(false)
 			setErrMsg('Пожалуйста, выберите раздел')
 			return false
 		}
 		if (selectedObject.pointText === '') {
+			setLeftErrMsg(false)
 			setErrMsg('Пожалуйста, введите содержание пункта')
 			return false
 		}
@@ -214,10 +346,10 @@ const UserGeneralData = () => {
 
 	const onUpdatePointButtonClick = async () => {
 		setProcessIsRunning(true)
-		if (checkIfValid()) {
+		if (checkIfPointValid()) {
 			try {
 				await httpClient.patch(
-					`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points/${selectedObject.point.id}`,
+					`/general-data-sections/${selectedObject.section.id}/general-data-points/${selectedObject.point.id}`,
 					{
 						text: selectedObject.pointText,
 						orderNum: selectedObject.point.orderNum,
@@ -260,8 +392,8 @@ const UserGeneralData = () => {
 					...selectedObject,
 					point: p,
 				})
-				window.scrollTo(0, 0)
 			} catch (e) {
+				setLeftErrMsg(false)
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
 				} else {
@@ -274,10 +406,10 @@ const UserGeneralData = () => {
 
 	const onCreatePointButtonClick = async () => {
 		setProcessIsRunning(true)
-		if (checkIfValid()) {
+		if (checkIfPointValid()) {
 			try {
 				const response = await httpClient.post(
-					`/users/${user.id}/general-data-sections/${selectedObject.section.id}/general-data-points`,
+					`/general-data-sections/${selectedObject.section.id}/general-data-points`,
 					{
 						text: selectedObject.pointText,
 					}
@@ -288,6 +420,7 @@ const UserGeneralData = () => {
 					point: response.data,
 				})
 			} catch (e) {
+				setLeftErrMsg(false)
 				if (e.response.status === 409) {
 					setErrMsg('Пункт с таким содержанием уже существует')
 				} else {
@@ -301,42 +434,157 @@ const UserGeneralData = () => {
 	return (
 		<div className="component-cnt flex-v-cent-h">
 			<h1 className="text-centered">Шаблоны общих указаний</h1>
-
 			<div className="flex">
 				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
 					<div className="full-width">
-						<label className="bold no-bot-mrg">Разделы</label>
-						<div className="flex-v general-data-selection mrg-top">
+						<div className="flex-v general-data-selection">
 							{optionsObject.sections.map((s, index) => {
 								return (
 									<div
 										className={
 											selectedObject.section == null
-												? 'pointer selection-text'
+												? 'pointer selection-text flex'
 												: selectedObject.section.id ==
 												  s.id
-												? 'pointer selection-text selected-bg'
-												: 'pointer selection-text'
+												? 'pointer selection-text selected-bg flex'
+												: 'pointer selection-text flex'
 										}
 										onClick={() => onSectionSelect(s.id)}
 										key={s.id}
 									>
-										<p className="no-bot-mrg">
+										<p
+											className="no-bot-mrg"
+											style={{ flex: 1 }}
+										>
 											{(index + 1).toString() +
 												'. ' +
 												s.name}
 										</p>
+										{readOnlySectionIds.includes(
+											s.id
+										) ? null : (
+											<div
+												onClick={() =>
+													setPopup({
+														isShown: true,
+														msg: `Вы действительно хотите удалить раздел № ${
+															index + 1
+														}?`,
+														onAccept: () => onSectionDeleteClick(
+															index,
+															s.id
+														),
+														onCancel: () =>
+															setPopup(
+																defaultPopup
+															),
+													})
+												}
+												className="trash-area"
+											>
+												<Trash color="#666" size={22} />
+											</div>
+										)}
 									</div>
 								)
 							})}
 						</div>
 					</div>
+
+                    <Form.Group className="flex-cent-v mrg-top-2">
+						<Form.Label
+							className="bold no-bot-mrg"
+							htmlFor="sectionOrderNum"
+							style={{ marginRight: '1em' }}
+						>
+							Номер
+						</Form.Label>
+						<Select
+							inputId="sectionOrderNum"
+							maxMenuHeight={250}
+							isSearchable={true}
+							placeholder=""
+							noOptionsMessage={() => 'Номер не найден'}
+							className="num-field-width"
+							isDisabled={
+								selectedObject.section == null ? true : false
+							}
+							onChange={(selectedOption) =>
+								onSectionNumChange(
+									(selectedOption as any)?.value
+								)
+							}
+							value={
+								selectedObject.section == null
+									? null
+									: {
+											value: selectedObject.section.id,
+											label:
+												selectedObject.section.orderNum,
+									  }
+							}
+							options={[
+								...Array(optionsObject.sections.length).keys(),
+							].map((v) => {
+								return {
+									value: v + 1,
+									label: v + 1,
+								}
+							})}
+							styles={reactSelectStyle}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label className="bold" htmlFor="section_title">
+							Раздел
+						</Form.Label>
+						<Form.Control
+							id="section_title"
+							type="text"
+							value={selectedObject.sectionText}
+							readOnly={
+								selectedObject.section != null &&
+								readOnlySectionIds.includes(
+									selectedObject.section.id
+								)
+							}
+							onChange={onSectionTextChange}
+                            autoComplete="off"
+						/>
+					</Form.Group>
+					{isLeftErrMsg ? (
+						<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
+					) : null}
+					<div className="flex btn-mrg-top-2">
+						<Button
+							variant="secondary"
+							className="flex-grow"
+							onClick={onUpdateSectionButtonClick}
+							disabled={
+								selectedObject.section == null ||
+								processIsRunning ||
+								(selectedObject.section != null &&
+									readOnlySectionIds.includes(
+										selectedObject.section.id
+									))
+							}
+						>
+							Изменить
+						</Button>
+						<Button
+							variant="secondary"
+							className="flex-grow mrg-left"
+							onClick={onCreateSectionButtonClick}
+                            disabled={processIsRunning}
+						>
+							Добавить
+						</Button>
+					</div>
 				</div>
 
 				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
 					<div className="full-width">
-						<label className="bold no-bot-mrg">Пункты</label>
-						<div className="flex-v general-data-selection mrg-top">
+						<div className="flex-v general-data-selection">
 							{optionsObject.points.map((p, index) => {
 								return (
 									<div
@@ -355,20 +603,19 @@ const UserGeneralData = () => {
 											style={{ flex: 1 }}
 											onClick={() => onPointSelect(p.id)}
 										>
-											{/* {truncateText(p.text, 100, null)} */}
-											{p.text}
+											{(index + 1).toString() +
+												'. ' +
+												truncateText(p.text, 50, null)}
 										</p>
 										<div
 											onClick={() =>
 												setPopup({
 													isShown: true,
-													msg: `Вы действительно хотите удалить пункт "${truncateText(
-														p.text,
-														33,
-														null
-													)}"?`,
+													msg: `Вы действительно хотите удалить пункт № ${
+														index + 1
+													}?`,
 													onAccept: () =>
-														onDeleteClick(
+														onPointDeleteClick(
 															index,
 															p.id
 														),
@@ -384,122 +631,104 @@ const UserGeneralData = () => {
 								)
 							})}
 						</div>
-					</div>
-				</div>
-			</div>
 
-			<div className="shadow p-3 mb-5 bg-white rounded component-width-4 component-cnt-div mrg-top-2">
-				<Form.Group className="flex-cent-v">
-					<Form.Label
-						className="bold no-bot-mrg"
-						htmlFor="section_title"
-						style={{ marginRight: '1em' }}
-					>
-						Название раздела
-					</Form.Label>
-					<Form.Control
-						id="section_title"
-						type="text"
-						value={
-							selectedObject.section == null
-								? ''
-								: selectedObject.section.name
-						}
-						// readOnly={
-						// 	selectedObject.section == null
-						// 		? true
-						// 		: readOnlySectionIds.includes(
-						// 				selectedObject.section.id
-						// 		  )
-						// }
-						// onChange={onSectionTextChange}
-                        readOnly={true}
-						className="auto-width flex-grow"
-					/>
-				</Form.Group>
-				<div className="space-between">
-					<Form.Group className="flex-cent-v">
-						<Form.Label
-							className="bold no-bot-mrg"
-							htmlFor="orderNum"
-							style={{ marginRight: '2.9em' }}
-						>
-							Номер пункта
-						</Form.Label>
-						<Select
-							inputId="orderNum"
-							maxMenuHeight={250}
-							isSearchable={true}
-							placeholder=""
-							noOptionsMessage={() => 'Номер не найден'}
-							className="num-field-width"
-							isDisabled={
-								selectedObject.point == null ? true : false
-							}
-							onChange={(selectedOption) =>
-								onPointNumChange((selectedOption as any)?.value)
-							}
-							value={
-								selectedObject.point == null
-									? null
-									: {
-											value: selectedObject.point.id,
-											label:
-												selectedObject.point.orderNum,
-									  }
-							}
-							options={[
-								...Array(optionsObject.points.length).keys(),
-							].map((v) => {
-								return {
-									value: v + 1,
-									label: v + 1,
+						<div className="space-between">
+							<Form.Group className="flex-cent-v mrg-top-2">
+								<Form.Label
+									className="bold no-bot-mrg"
+									htmlFor="orderNum"
+									style={{ marginRight: '1em' }}
+								>
+									Номер
+								</Form.Label>
+								<Select
+									inputId="orderNum"
+									maxMenuHeight={250}
+									isSearchable={true}
+									placeholder=""
+									noOptionsMessage={() => 'Номер не найден'}
+									className="num-field-width"
+									isDisabled={
+										selectedObject.point == null
+											? true
+											: false
+									}
+									onChange={(selectedOption) =>
+										onPointNumChange(
+											(selectedOption as any)?.value
+										)
+									}
+									value={
+										selectedObject.point == null
+											? null
+											: {
+													value:
+														selectedObject.point.id,
+													label:
+														selectedObject.point
+															.orderNum,
+											  }
+									}
+									options={[
+										...Array(
+											optionsObject.points.length
+										).keys(),
+									].map((v) => {
+										return {
+											value: v + 1,
+											label: v + 1,
+										}
+									})}
+									styles={reactSelectStyle}
+								/>
+							</Form.Group>
+							<div style={{ marginTop: '1.66em' }}>
+								<span className="bold">Символы:</span> °C –
+							</div>
+						</div>
+						<Form.Group className="no-bot-mrg">
+							<Form.Label className="bold" htmlFor="text">
+								Пункт
+							</Form.Label>
+							<Form.Control
+								id="text"
+								as="textarea"
+								rows={8}
+								style={{ resize: 'none' }}
+								value={selectedObject.pointText}
+								onChange={onPointTextChange}
+							/>
+						</Form.Group>
+						{isLeftErrMsg ? null : (
+							<ErrorMsg
+								errMsg={errMsg}
+								hide={() => setErrMsg('')}
+							/>
+						)}
+						<div className="flex btn-mrg-top-2">
+							<Button
+								variant="secondary"
+								className="flex-grow"
+								onClick={onUpdatePointButtonClick}
+								disabled={
+									selectedObject.point == null ||
+									processIsRunning
 								}
-							})}
-							styles={reactSelectStyle}
-						/>
-					</Form.Group>
-					<div style={{ marginTop: '1rem' }}>
-						<span className="bold">Символы:</span> °C –
+							>
+								Изменить
+							</Button>
+							<Button
+								variant="secondary"
+								className="flex-grow mrg-left"
+								onClick={onCreatePointButtonClick}
+								disabled={
+									createBtnDisabled || processIsRunning
+								}
+							>
+								Добавить
+							</Button>
+						</div>
 					</div>
-				</div>
-				<Form.Group className="no-bot-mrg">
-					<Form.Label className="bold" htmlFor="text">
-						Содержание пункта
-					</Form.Label>
-					<Form.Control
-						id="text"
-						as="textarea"
-						rows={8}
-						style={{ resize: 'none' }}
-						value={selectedObject.pointText}
-						onChange={onPointTextChange}
-					/>
-				</Form.Group>
-				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-				<div className="flex btn-mrg-top-2">
-					<Button
-						variant="secondary"
-						className="flex-grow"
-						onClick={onUpdatePointButtonClick}
-						disabled={
-							selectedObject.point == null || processIsRunning
-								? true
-								: false
-						}
-					>
-						Сохранить изменения
-					</Button>
-					<Button
-						variant="secondary"
-						className="flex-grow mrg-left"
-						onClick={onCreatePointButtonClick}
-						disabled={
-							createBtnDisabled || processIsRunning ? true : false
-						}
-					>
-						Добавить новый пункт
-					</Button>
 				</div>
 			</div>
 		</div>

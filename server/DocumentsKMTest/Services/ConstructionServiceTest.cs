@@ -15,11 +15,6 @@ namespace DocumentsKM.Tests
     {
         private readonly Mock<IConstructionRepo> _repository = new Mock<IConstructionRepo>();
         private readonly Mock<IConstructionRepo> _updateRepository = new Mock<IConstructionRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<ISpecificationRepo> _mockSpecificationRepo = new Mock<ISpecificationRepo>();
-        private readonly Mock<IConstructionTypeRepo> _mockConstructionTypeRepo = new Mock<IConstructionTypeRepo>();
-        private readonly Mock<IConstructionSubtypeRepo> _mockConstructionSubtypeRepo = new Mock<IConstructionSubtypeRepo>();
-        private readonly Mock<IWeldingControlRepo> _mockWeldingControlRepo = new Mock<IWeldingControlRepo>();
         private readonly IConstructionService _service;
         private readonly IConstructionService _updateService;
         private readonly Random _rnd = new Random();
@@ -411,6 +406,12 @@ namespace DocumentsKM.Tests
                 },
             };
 
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockSpecificationRepo = new Mock<ISpecificationRepo>();
+            var mockConstructionTypeRepo = new Mock<IConstructionTypeRepo>();
+            var mockConstructionSubtypeRepo = new Mock<IConstructionSubtypeRepo>();
+            var mockWeldingControlRepo = new Mock<IWeldingControlRepo>();
+
             foreach (var c in _constructions)
             {
                 _updateConstructions.Add(new Construction
@@ -447,10 +448,10 @@ namespace DocumentsKM.Tests
             }
             foreach (var specification in _specifications)
             {
-                _mockSpecificationRepo.Setup(mock =>
+                mockSpecificationRepo.Setup(mock =>
                     mock.GetById(specification.Id, false)).Returns(
                         _specifications.SingleOrDefault(v => v.Id == specification.Id));
-                _mockSpecificationRepo.Setup(mock =>
+                mockSpecificationRepo.Setup(mock =>
                     mock.GetById(specification.Id, true)).Returns(
                         _specifications.SingleOrDefault(v => v.Id == specification.Id));
 
@@ -482,25 +483,25 @@ namespace DocumentsKM.Tests
             }
             foreach (var type in _constructionTypes)
             {
-                _mockConstructionTypeRepo.Setup(mock =>
+                mockConstructionTypeRepo.Setup(mock =>
                     mock.GetById(type.Id)).Returns(
                         _constructionTypes.SingleOrDefault(v => v.Id == type.Id));
             }
             foreach (var subtype in _constructionSubtypes)
             {
-                _mockConstructionSubtypeRepo.Setup(mock =>
+                mockConstructionSubtypeRepo.Setup(mock =>
                     mock.GetById(subtype.Id)).Returns(
                         _constructionSubtypes.SingleOrDefault(v => v.Id == subtype.Id));
             }
             foreach (var weldingControl in _weldingControl)
             {
-                _mockWeldingControlRepo.Setup(mock =>
+                mockWeldingControlRepo.Setup(mock =>
                     mock.GetById(weldingControl.Id)).Returns(
                         _weldingControl.SingleOrDefault(v => v.Id == weldingControl.Id));
             }
             foreach (var mark in _marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         _marks.SingleOrDefault(v => v.Id == mark.Id));
             }
@@ -514,18 +515,18 @@ namespace DocumentsKM.Tests
 
             _service = new ConstructionService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockSpecificationRepo.Object,
-                _mockConstructionTypeRepo.Object,
-                _mockConstructionSubtypeRepo.Object,
-                _mockWeldingControlRepo.Object);
+                mockMarkRepo.Object,
+                mockSpecificationRepo.Object,
+                mockConstructionTypeRepo.Object,
+                mockConstructionSubtypeRepo.Object,
+                mockWeldingControlRepo.Object);
             _updateService = new ConstructionService(
                 _updateRepository.Object,
-                _mockMarkRepo.Object,
-                _mockSpecificationRepo.Object,
-                _mockConstructionTypeRepo.Object,
-                _mockConstructionSubtypeRepo.Object,
-                _mockWeldingControlRepo.Object);
+                mockMarkRepo.Object,
+                mockSpecificationRepo.Object,
+                mockConstructionTypeRepo.Object,
+                mockConstructionSubtypeRepo.Object,
+                mockWeldingControlRepo.Object);
         }
 
         [Fact]

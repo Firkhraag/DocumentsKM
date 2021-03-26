@@ -31,21 +31,13 @@ namespace DocumentsKM.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet, Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points")]
+        [HttpGet, Route("mark-general-data-sections/{sectionId}/mark-general-data-points")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<MarkGeneralDataPointResponse>> GetAllByMarkAndSectionId(
-            int markId, int sectionId)
+        public ActionResult<IEnumerable<MarkGeneralDataPointResponse>> GetAllBySectionId(
+            int sectionId)
         {
-            var points = _service.GetAllByMarkAndSectionId(markId, sectionId);
+            var points = _service.GetAllBySectionId(sectionId);
             return Ok(_mapper.Map<IEnumerable<MarkGeneralDataPointResponse>>(points));
-        }
-
-        [HttpGet, Route("marks/{markId}/general-data-sections")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<GeneralDataSection>> GetSectionsByMarkId(int markId)
-        {
-            var sections = _service.GetSectionsByMarkId(markId);
-            return Ok(_mapper.Map<IEnumerable<GeneralDataSection>>(sections));
         }
 
         [HttpGet, Route("marks/{markId}/corr-prot-point")]
@@ -56,13 +48,13 @@ namespace DocumentsKM.Controllers
             return Ok(new { Result = point });
         }
 
-        [HttpPost, Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points")]
+        [HttpPost, Route("mark-general-data-sections/{sectionId}/mark-general-data-points")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkGeneralDataPoint> Create(int markId, int sectionId,
+        public ActionResult<MarkGeneralDataPoint> Create(int sectionId,
             [FromBody] MarkGeneralDataPointCreateRequest markGeneralDataPointRequest)
         {
             var markGeneralDataPointModel = _mapper.Map<MarkGeneralDataPoint>(
@@ -71,7 +63,6 @@ namespace DocumentsKM.Controllers
             {
                 _service.Create(
                     markGeneralDataPointModel,
-                    markId,
                     sectionId);
             }
             catch (ArgumentNullException)
@@ -86,16 +77,43 @@ namespace DocumentsKM.Controllers
                 _mapper.Map<MarkGeneralDataPointResponse>(markGeneralDataPointModel));
         }
 
-        [HttpPatch, Route("marks/{markId}/general-data-points")]
+        [HttpPatch,
+            Route("users/{userId}/mark-general-data-sections/{sectionId}/mark-general-data-points")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<MarkGeneralDataPointResponse>> UpdateAllByPointIds(
+            int userId,
+            int sectionId,
+            [FromBody] List<int> pointIds)
+        {
+            try
+            {
+                var addedPoints = _service.UpdateAllByPointIds(
+                    userId, sectionId, pointIds);
+                return Ok(_mapper.Map<IEnumerable<MarkGeneralDataPointResponse>>(
+                    addedPoints));
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPatch,
+            Route("mark-general-data-sections/{sectionId}/mark-general-data-points/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult UpdateAllBySectionIds(int markId, [FromBody] List<int> sectionIds)
+        public ActionResult Update(int sectionId, int id,
+            [FromBody] MarkGeneralDataPointUpdateRequest markGeneralDataPointRequest)
         {
+            if (!markGeneralDataPointRequest.Validate())
+                return BadRequest();
             try
             {
-                _service.UpdateAllBySectionIds(markId, sectionIds);
+                _service.Update(id, sectionId, markGeneralDataPointRequest);
             }
             catch (ArgumentNullException)
             {
@@ -108,61 +126,15 @@ namespace DocumentsKM.Controllers
             return NoContent();
         }
 
-        [HttpPatch,
-            Route("users/{userId}/marks/{markId}/general-data-sections/{sectionId}/general-data-points")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<MarkGeneralDataPointResponse>> UpdateAllByPointIds(
-            int userId,
-            int markId,
-            int sectionId,
-            [FromBody] List<int> pointIds)
-        {
-            try
-            {
-                var addedPoints = _service.UpdateAllByPointIds(
-                    userId, markId, sectionId, pointIds);
-                return Ok(_mapper.Map<IEnumerable<MarkGeneralDataPointResponse>>(
-                    addedPoints));
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPatch,
-            Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points/{id}")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult Update(int markId, int sectionId, int id,
-            [FromBody] MarkGeneralDataPointUpdateRequest markGeneralDataPointRequest)
-        {
-            if (!markGeneralDataPointRequest.Validate())
-                return BadRequest();
-            try
-            {
-                _service.Update(id, markId, sectionId, markGeneralDataPointRequest);
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            return NoContent();
-        }
-
         [HttpDelete,
-            Route("marks/{markId}/general-data-sections/{sectionId}/general-data-points/{id}")]
+            Route("mark-general-data-sections/{sectionId}/mark-general-data-points/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Delete(int markId, int sectionId, int id)
+        public ActionResult Delete(int sectionId, int id)
         {
             try
             {
-                _service.Delete(id, markId, sectionId);
+                _service.Delete(id, sectionId);
                 return NoContent();
             }
             catch (ArgumentNullException)

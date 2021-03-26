@@ -18,6 +18,7 @@ type IOptionsObject = {
 type ISelectionObject = {
 	section: GeneralDataSection
 	point: GeneralDataPoint
+	sectionText: string
 	pointText: string
 }
 

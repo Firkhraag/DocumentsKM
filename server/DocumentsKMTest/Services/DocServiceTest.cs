@@ -13,9 +13,6 @@ namespace DocumentsKM.Tests
     public class DocServiceTest
     {
         private readonly Mock<IDocRepo> _repository = new Mock<IDocRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
-        private readonly Mock<IDocTypeRepo> _mockDocTypeRepo = new Mock<IDocTypeRepo>();
         private readonly IDocService _service;
         private readonly Random _rnd = new Random();
         private readonly List<Doc> _docs = new List<Doc> { };
@@ -23,6 +20,10 @@ namespace DocumentsKM.Tests
 
         public DocServiceTest()
         {
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockEmployeeRepo = new Mock<IEmployeeRepo>();
+            var mockDocTypeRepo = new Mock<IDocTypeRepo>();
+
             // Arrange
             foreach (var doc in TestData.docs)
             {
@@ -50,7 +51,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
@@ -69,13 +70,13 @@ namespace DocumentsKM.Tests
             }
             foreach (var employee in TestData.employees)
             {
-                _mockEmployeeRepo.Setup(mock =>
+                mockEmployeeRepo.Setup(mock =>
                     mock.GetById(employee.Id)).Returns(
                         TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
             }
             foreach (var docType in TestData.docTypes)
             {
-                _mockDocTypeRepo.Setup(mock =>
+                mockDocTypeRepo.Setup(mock =>
                     mock.GetById(docType.Id)).Returns(
                         TestData.docTypes.SingleOrDefault(v => v.Id == docType.Id));
             }
@@ -89,9 +90,9 @@ namespace DocumentsKM.Tests
 
             _service = new DocService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockEmployeeRepo.Object,
-                _mockDocTypeRepo.Object);
+                mockMarkRepo.Object,
+                mockEmployeeRepo.Object,
+                mockDocTypeRepo.Object);
         }
 
         [Fact]

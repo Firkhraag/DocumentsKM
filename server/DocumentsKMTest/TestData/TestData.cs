@@ -69,6 +69,7 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 1,
+                Fullname = "E1",
                 Name = "E1",
                 Department = departments[0],
                 Position = positions[0],
@@ -77,6 +78,7 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 2,
+                Fullname = "E2",
                 Name = "E2",
                 Department = departments[1],
                 Position = positions[1],
@@ -85,6 +87,7 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 3,
+                Fullname = "E3",
                 Name = "E3",
                 Department = departments[0],
                 Position = positions[2],
@@ -93,6 +96,7 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 4,
+                Fullname = "E4",
                 Name = "E4",
                 Department = departments[1],
                 Position = positions[1],
@@ -101,6 +105,7 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 5,
+                Fullname = "E5",
                 Name = "E5",
                 Department = departments[0],
                 Position = positions[4],
@@ -109,6 +114,7 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 6,
+                Fullname = "E6",
                 Name = "E6",
                 Department = departments[1],
                 Position = positions[4],
@@ -117,6 +123,7 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 7,
+                Fullname = "E7",
                 Name = "E7",
                 Department = departments[0],
                 Position = positions[5],
@@ -125,6 +132,7 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 8,
+                Fullname = "E8",
                 Name = "E8",
                 Department = departments[1],
                 Position = positions[6],
@@ -133,10 +141,39 @@ namespace DocumentsKM.Tests
             new Employee
             {
                 Id = 9,
+                Fullname = "E9",
                 Name = "E9",
                 Department = departments[0],
                 Position = positions[0],
                 IsActive = false,
+            },
+        };
+
+        public static readonly List<Primer> primer = new List<Primer>
+        {
+            new Primer
+            {
+                Id = 1,
+                GroupNum = 1,
+                Name = "P1",
+                CanBePrimed = true,
+                Priority = 1,
+            },
+            new Primer
+            {
+                Id = 2,
+                GroupNum = 1,
+                Name = "P2",
+                CanBePrimed = true,
+                Priority = 2,
+            },
+            new Primer
+            {
+                Id = 3,
+                GroupNum = 2,
+                Name = "P3",
+                CanBePrimed = false,
+                Priority = 3,
             },
         };
 
@@ -452,6 +489,34 @@ namespace DocumentsKM.Tests
                 Login = "3",
                 Password = "3",
                 Employee = employees[2],
+            },
+        };
+
+        public static readonly List<DefaultValues> defaultValues = new List<DefaultValues>
+        {
+            new DefaultValues
+            {
+                User = users[0],
+                Department = departments[0],
+                Creator = employees[0],
+                Inspector = employees[0],
+                NormContr = employees[0],
+            },
+            new DefaultValues
+            {
+                User = users[1],
+                Department = departments[1],
+                Creator = employees[1],
+                Inspector = employees[1],
+                NormContr = employees[1],
+            },
+            new DefaultValues
+            {
+                User = users[2],
+                Department = departments[1],
+                Creator = employees[1],
+                Inspector = employees[1],
+                NormContr = employees[1],
             },
         };
 
@@ -1263,16 +1328,37 @@ namespace DocumentsKM.Tests
             {
                 Id = 1,
                 Name = "S1",
+                User = users[0],
             },
             new GeneralDataSection
             {
                 Id = 2,
                 Name = "S2",
+                User = users[0],
             },
             new GeneralDataSection
             {
                 Id = 3,
                 Name = "S3",
+                User = users[0],
+            },
+            new GeneralDataSection
+            {
+                Id = 4,
+                Name = "S4",
+                User = users[1],
+            },
+            new GeneralDataSection
+            {
+                Id = 5,
+                Name = "S5",
+                User = users[1],
+            },
+            new GeneralDataSection
+            {
+                Id = 6,
+                Name = "S6",
+                User = users[2],
             },
         };
 
@@ -1281,7 +1367,6 @@ namespace DocumentsKM.Tests
             new GeneralDataPoint
             {
                 Id = 1,
-                User = users[0],
                 Section = generalDataSections[0],
                 Text = "gdp1",
                 OrderNum = 1,
@@ -1289,7 +1374,6 @@ namespace DocumentsKM.Tests
             new GeneralDataPoint
             {
                 Id = 2,
-                User = users[0],
                 Section = generalDataSections[1],
                 Text = "gdp2",
                 OrderNum = 2,
@@ -1297,7 +1381,6 @@ namespace DocumentsKM.Tests
             new GeneralDataPoint
             {
                 Id = 3,
-                User = users[1],
                 Section = generalDataSections[0],
                 Text = "gdp3",
                 OrderNum = 1,
@@ -1305,7 +1388,6 @@ namespace DocumentsKM.Tests
             new GeneralDataPoint
             {
                 Id = 4,
-                User = users[1],
                 Section = generalDataSections[1],
                 Text = "gdp4",
                 OrderNum = 2,
@@ -1313,7 +1395,6 @@ namespace DocumentsKM.Tests
             new GeneralDataPoint
             {
                 Id = 5,
-                User = users[2],
                 Section = generalDataSections[0],
                 Text = "gdp5",
                 OrderNum = 1,
@@ -1321,7 +1402,6 @@ namespace DocumentsKM.Tests
             new GeneralDataPoint
             {
                 Id = 6,
-                User = users[2],
                 Section = generalDataSections[1],
                 Text = "gdp6",
                 OrderNum = 2,
@@ -1329,10 +1409,31 @@ namespace DocumentsKM.Tests
             new GeneralDataPoint
             {
                 Id = 7,
-                User = users[0],
                 Section = generalDataSections[0],
                 Text = "mgdp7",
                 OrderNum = 2,
+            },
+        };
+
+        public static readonly List<MarkGeneralDataSection> markGeneralDataSections = new List<MarkGeneralDataSection>
+        {
+            new MarkGeneralDataSection
+            {
+                Id = 1,
+                Name = "S1",
+                Mark = marks[0],
+            },
+            new MarkGeneralDataSection
+            {
+                Id = 2,
+                Name = "S2",
+                Mark = marks[1],
+            },
+            new MarkGeneralDataSection
+            {
+                Id = 3,
+                Name = "S3",
+                Mark = marks[2],
             },
         };
 
@@ -1341,56 +1442,49 @@ namespace DocumentsKM.Tests
             new MarkGeneralDataPoint
             {
                 Id = 1,
-                Mark = marks[0],
-                Section = generalDataSections[0],
+                Section = markGeneralDataSections[0],
                 Text = "mgdp1",
                 OrderNum = 1,
             },
             new MarkGeneralDataPoint
             {
                 Id = 2,
-                Mark = marks[0],
-                Section = generalDataSections[1],
+                Section = markGeneralDataSections[1],
                 Text = "mgdp2",
                 OrderNum = 2,
             },
             new MarkGeneralDataPoint
             {
                 Id = 3,
-                Mark = marks[1],
-                Section = generalDataSections[0],
+                Section = markGeneralDataSections[0],
                 Text = "mgdp3",
                 OrderNum = 1,
             },
             new MarkGeneralDataPoint
             {
                 Id = 4,
-                Mark = marks[1],
-                Section = generalDataSections[1],
+                Section = markGeneralDataSections[1],
                 Text = "mgdp4",
                 OrderNum = 2,
             },
             new MarkGeneralDataPoint
             {
                 Id = 5,
-                Mark = marks[2],
-                Section = generalDataSections[0],
+                Section = markGeneralDataSections[0],
                 Text = "mgdp5",
                 OrderNum = 1,
             },
             new MarkGeneralDataPoint
             {
                 Id = 6,
-                Mark = marks[2],
-                Section = generalDataSections[1],
+                Section = markGeneralDataSections[1],
                 Text = "mgdp6",
                 OrderNum = 2,
             },
             new MarkGeneralDataPoint
             {
                 Id = 7,
-                Mark = marks[0],
-                Section = generalDataSections[0],
+                Section = markGeneralDataSections[0],
                 Text = "mgdp7",
                 OrderNum = 2,
             },

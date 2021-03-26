@@ -11,50 +11,45 @@ namespace DocumentsKM.Services
     {
         private readonly IMarkGeneralDataPointRepo _repository;
         private readonly IMarkRepo _markRepo;
-        private readonly IGeneralDataSectionRepo _generalDataSectionRepo;
+        private readonly IMarkGeneralDataSectionRepo _markGeneralDataSectionRepo;
         private readonly IGeneralDataPointRepo _generalDataPointRepo;
 
         public MarkGeneralDataPointService(
             IMarkGeneralDataPointRepo markGeneralDataPointRepo,
             IMarkRepo markRepo,
-            IGeneralDataSectionRepo generalDataSectionRepo,
+            IMarkGeneralDataSectionRepo markGeneralDataSectionRepo,
             IGeneralDataPointRepo generalDataPointRepo)
         {
             _repository = markGeneralDataPointRepo;
             _markRepo = markRepo;
-            _generalDataSectionRepo = generalDataSectionRepo;
+            _markGeneralDataSectionRepo = markGeneralDataSectionRepo;
             _generalDataPointRepo = generalDataPointRepo;
         }
 
-        public IEnumerable<MarkGeneralDataPoint> GetAllByMarkAndSectionId(
-            int markId, int sectionId)
+        public IEnumerable<MarkGeneralDataPoint> GetAllBySectionId(
+            int sectionId)
         {
-            return _repository.GetAllByMarkAndSectionId(markId, sectionId);
+            return _repository.GetAllBySectionId(sectionId);
         }
 
         public void Create(
             MarkGeneralDataPoint markGeneralDataPoint,
-            int markId,
             int sectionId)
         {
             if (markGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(markGeneralDataPoint));
-            var foundSection = _generalDataSectionRepo.GetById(sectionId);
+            var foundSection = _markGeneralDataSectionRepo.GetById(sectionId);
             if (foundSection == null)
                 throw new ArgumentNullException(nameof(foundSection));
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
 
             var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
-                markId, sectionId, markGeneralDataPoint.Text);
+                sectionId, markGeneralDataPoint.Text);
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
 
             markGeneralDataPoint.Section = foundSection;
-            markGeneralDataPoint.Mark = foundMark;
 
-            var currentPoints = _repository.GetAllByMarkAndSectionId(markId, sectionId);
+            var currentPoints = _repository.GetAllBySectionId(sectionId);
             if (currentPoints.Count() == 0)
                 markGeneralDataPoint.OrderNum = 1;
             else
@@ -62,52 +57,22 @@ namespace DocumentsKM.Services
 
             _repository.Add(markGeneralDataPoint);
 
-            foundMark.EditedDate = DateTime.Now;
-            _markRepo.Update(foundMark);
-        }
-
-        public void UpdateAllBySectionIds(int markId, List<int> sectionIds)
-        {
-            if (sectionIds == null)
-                throw new ArgumentNullException(nameof(sectionIds));
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
-
-            foreach (var id in sectionIds)
-            {
-                var section = _generalDataSectionRepo.GetById(id);
-                if (section == null)
-                    throw new ArgumentNullException(nameof(section));
-            }
-
-            var points = _repository.GetAllByMarkId(markId);
-            var currentPointIds = new List<int> { };
-            foreach (var p in points)
-            {
-                if (!sectionIds.Contains(p.Section.Id))
-                    _repository.Delete(p);
-                currentPointIds.Add(p.Section.Id);
-            }
-
-            foundMark.EditedDate = DateTime.Now;
-            _markRepo.Update(foundMark);
+            var mark = foundSection.Mark;
+            mark.EditedDate = DateTime.Now;
+            _markRepo.Update(mark);
         }
 
         public IEnumerable<MarkGeneralDataPoint> UpdateAllByPointIds(
-            int userId, int markId, int sectionId, List<int> pointIds)
+            int userId, int sectionId, List<int> pointIds)
         {
             if (pointIds == null)
                 throw new ArgumentNullException(nameof(pointIds));
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
-            var foundSection = _generalDataSectionRepo.GetById(sectionId);
+            var foundSection = _markGeneralDataSectionRepo.GetById(sectionId);
             if (foundSection == null)
                 throw new ArgumentNullException(nameof(foundSection));
 
-            var currentPoints = _repository.GetAllByMarkAndSectionId(
-                markId, sectionId).ToList();
+            var currentPoints = _repository.GetAllBySectionId(
+                sectionId).ToList();
 
             var generalDataPoints = new List<GeneralDataPoint> { };
             foreach (var id in pointIds)
@@ -118,7 +83,7 @@ namespace DocumentsKM.Services
                 generalDataPoints.Add(generalDataPoint);
             }
 
-            var allUserPoints = _generalDataPointRepo.GetAllByUserAndSectionId(userId, sectionId);
+            var allUserPoints = _generalDataPointRepo.GetAllBySectionId(sectionId);
             foreach (var userPoint in allUserPoints)
                 if (!pointIds.Contains(userPoint.Id))
                     if (currentPoints.Select(v => v.Text).Contains(userPoint.Text))
@@ -132,12 +97,11 @@ namespace DocumentsKM.Services
             foreach (var p in generalDataPoints.OrderBy(v => v.OrderNum))
             {
                 var uniqueConstraintCheck = _repository.GetByUniqueKey(
-                    markId, sectionId, p.Text);
+                    sectionId, p.Text);
                 if (uniqueConstraintCheck == null)
                 {
                     var markGeneralDataPoint = new MarkGeneralDataPoint
                     {
-                        Mark = foundMark,
                         Section = foundSection,
                         Text = p.Text,
                     };
@@ -157,14 +121,15 @@ namespace DocumentsKM.Services
                 num += 1;
             }
 
-            foundMark.EditedDate = DateTime.Now;
-            _markRepo.Update(foundMark);
+            var mark = foundSection.Mark;
+            mark.EditedDate = DateTime.Now;
+            _markRepo.Update(mark);
             
             return currentPoints;
         }
 
         public void Update(
-            int id, int markId, int sectionId,
+            int id, int sectionId,
             MarkGeneralDataPointUpdateRequest markGeneralDataPoint)
         {
             if (markGeneralDataPoint == null)
@@ -172,17 +137,13 @@ namespace DocumentsKM.Services
             var foundMarkGeneralDataPoint = _repository.GetById(id);
             if (foundMarkGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundMarkGeneralDataPoint));
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
-            var foundSection = _generalDataSectionRepo.GetById(sectionId);
+            var foundSection = _markGeneralDataSectionRepo.GetById(sectionId);
             if (foundSection == null)
                 throw new ArgumentNullException(nameof(foundSection));
 
             if (markGeneralDataPoint.Text != null)
             {
                 var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
-                    foundMarkGeneralDataPoint.Mark.Id,
                     foundMarkGeneralDataPoint.Section.Id,
                     markGeneralDataPoint.Text);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
@@ -194,7 +155,7 @@ namespace DocumentsKM.Services
                 var orderNum = markGeneralDataPoint.OrderNum.GetValueOrDefault();
                 foundMarkGeneralDataPoint.OrderNum = orderNum;
                 short num = 1;
-                foreach (var p in _repository.GetAllByMarkAndSectionId(markId, sectionId))
+                foreach (var p in _repository.GetAllBySectionId(sectionId))
                 {
                     if (p.Id == id)
                         continue;
@@ -214,22 +175,20 @@ namespace DocumentsKM.Services
 
             _repository.Update(foundMarkGeneralDataPoint);
 
-            foundMark.EditedDate = DateTime.Now;
-            _markRepo.Update(foundMark);
+            var mark = foundSection.Mark;
+            mark.EditedDate = DateTime.Now;
+            _markRepo.Update(mark);
         }
 
-        public void Delete(int id, int markId, int sectionId)
+        public void Delete(int id, int sectionId)
         {
             var foundMarkGeneralDataPoint = _repository.GetById(id);
             if (foundMarkGeneralDataPoint == null)
                 throw new ArgumentNullException(nameof(foundMarkGeneralDataPoint));
-            var foundMark = _markRepo.GetById(markId);
-            if (foundMark == null)
-                throw new ArgumentNullException(nameof(foundMark));
-            var foundSection = _generalDataSectionRepo.GetById(sectionId);
+            var foundSection = _markGeneralDataSectionRepo.GetById(sectionId);
             if (foundSection == null)
                 throw new ArgumentNullException(nameof(foundSection));
-            foreach (var p in _repository.GetAllByMarkAndSectionId(markId, sectionId))
+            foreach (var p in _repository.GetAllBySectionId(sectionId))
             {
                 if (p.OrderNum > foundMarkGeneralDataPoint.OrderNum)
                 {
@@ -239,13 +198,9 @@ namespace DocumentsKM.Services
             }
             _repository.Delete(foundMarkGeneralDataPoint);
 
-            foundMark.EditedDate = DateTime.Now;
-            _markRepo.Update(foundMark);
-        }
-
-        public IEnumerable<GeneralDataSection> GetSectionsByMarkId(int markId)
-        {
-            return _repository.GetSectionsByMarkId(markId);
+            var mark = foundSection.Mark;
+            mark.EditedDate = DateTime.Now;
+            _markRepo.Update(mark);
         }
 
         public void AddDefaultPoints(int userId, Mark mark)
@@ -253,8 +208,11 @@ namespace DocumentsKM.Services
             var points = _generalDataPointRepo.GetAllByUserId(userId);
             var markPoints = points.Select(v => new MarkGeneralDataPoint()
             {
-                Mark = mark,
-                Section = v.Section,
+                Section = new MarkGeneralDataSection()
+                {
+                    Name = v.Section.Name,
+                    OrderNum = v.Section.OrderNum,
+                },
                 Text = v.Text,
                 OrderNum = v.OrderNum,
             });

@@ -457,7 +457,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 									label:
 										p.baseSeries === ''
 											? '-'
-											: p.baseSeries,
+											: p.baseSeries + ' ' + p.name,
 								}
 							})}
 							styles={reactSelectStyle}
@@ -490,7 +490,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 							options={optionsObject.nodes.map((n) => {
 								return {
 									value: n.id,
-									label: n.code === '' ? '-' : n.code,
+									label: (n.code === '' ? '-' : n.code) + ' ' + n.name,
 								}
 							})}
 							styles={reactSelectStyle}
@@ -525,7 +525,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 							options={optionsObject.subnodes.map((s) => {
 								return {
 									value: s.id,
-									label: s.code === '' ? '-' : s.code,
+									label: (s.code === '' ? '-' : s.code) + ' ' + s.name,
 								}
 							})}
 							styles={reactSelectStyle}

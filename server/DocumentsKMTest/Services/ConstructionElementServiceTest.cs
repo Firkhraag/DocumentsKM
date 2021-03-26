@@ -15,10 +15,6 @@ namespace DocumentsKM.Tests
     {
         private readonly Mock<IConstructionElementRepo> _repository = new Mock<IConstructionElementRepo>();
         private readonly Mock<IConstructionElementRepo> _updateRepository = new Mock<IConstructionElementRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<IConstructionRepo> _mockConstructionRepo = new Mock<IConstructionRepo>();
-        private readonly Mock<IProfileRepo> _mockProfileRepo = new Mock<IProfileRepo>();
-        private readonly Mock<ISteelRepo> _mockSteelRepo = new Mock<ISteelRepo>();
         private readonly IConstructionElementService _service;
         private readonly IConstructionElementService _updateService;
         private readonly Random _rnd = new Random();
@@ -584,6 +580,11 @@ namespace DocumentsKM.Tests
                 },
             };
 
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockConstructionRepo = new Mock<IConstructionRepo>();
+            var mockProfileRepo = new Mock<IProfileRepo>();
+            var mockSteelRepo = new Mock<ISteelRepo>();
+
             foreach (var ce in _constructionElements)
             {
                 _updateConstructionElements.Add(new ConstructionElement
@@ -607,10 +608,10 @@ namespace DocumentsKM.Tests
             }
             foreach (var construction in _constructions)
             {
-                _mockConstructionRepo.Setup(mock =>
+                mockConstructionRepo.Setup(mock =>
                     mock.GetById(construction.Id, false)).Returns(
                         _constructions.SingleOrDefault(v => v.Id == construction.Id));
-                _mockConstructionRepo.Setup(mock =>
+                mockConstructionRepo.Setup(mock =>
                     mock.GetById(construction.Id, true)).Returns(
                         _constructions.SingleOrDefault(v => v.Id == construction.Id));
 
@@ -631,21 +632,21 @@ namespace DocumentsKM.Tests
             }
             foreach (var profile in _profiles)
             {
-                _mockProfileRepo.Setup(mock =>
+                mockProfileRepo.Setup(mock =>
                     mock.GetById(profile.Id)).Returns(
                         _profiles.SingleOrDefault(
                             v => v.Id == profile.Id));
             }
             foreach (var steel in _steel)
             {
-                _mockSteelRepo.Setup(mock =>
+                mockSteelRepo.Setup(mock =>
                     mock.GetById(steel.Id)).Returns(
                         _steel.SingleOrDefault(
                             v => v.Id == steel.Id));
             }
             foreach (var mark in _marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         _marks.SingleOrDefault(v => v.Id == mark.Id));
             }
@@ -659,16 +660,16 @@ namespace DocumentsKM.Tests
 
             _service = new ConstructionElementService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockConstructionRepo.Object,
-                _mockProfileRepo.Object,
-                _mockSteelRepo.Object);
+                mockMarkRepo.Object,
+                mockConstructionRepo.Object,
+                mockProfileRepo.Object,
+                mockSteelRepo.Object);
             _updateService = new ConstructionElementService(
                 _updateRepository.Object,
-                _mockMarkRepo.Object,
-                _mockConstructionRepo.Object,
-                _mockProfileRepo.Object,
-                _mockSteelRepo.Object);
+                mockMarkRepo.Object,
+                mockConstructionRepo.Object,
+                mockProfileRepo.Object,
+                mockSteelRepo.Object);
         }
 
         [Fact]

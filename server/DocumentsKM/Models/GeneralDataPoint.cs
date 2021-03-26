@@ -10,11 +10,6 @@ namespace DocumentsKM.Models
         [Key]
         public Int16 Id { get; set; }
 
-        // Пользователь
-        [Required]
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
-
         // Раздел
         [Required]
         [ForeignKey("SectionId")]
@@ -26,7 +21,6 @@ namespace DocumentsKM.Models
 
         // Номер
         [Required]
-        [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public Int16 OrderNum { get; set; }
     }
 }

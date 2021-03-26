@@ -13,23 +13,22 @@ namespace DocumentsKM.Tests
     public class MarkGeneralDataPointServiceTest
     {
         private readonly Mock<IMarkGeneralDataPointRepo> _repository = new Mock<IMarkGeneralDataPointRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<IGeneralDataSectionRepo> _mockGeneralDataSectionRepo = new Mock<IGeneralDataSectionRepo>();
-        private readonly Mock<IGeneralDataPointRepo> _mockGeneralDataPointRepo = new Mock<IGeneralDataPointRepo>();
         private readonly IMarkGeneralDataPointService _service;
         private readonly Random _rnd = new Random();
         private readonly List<MarkGeneralDataPoint> _markGeneralDataPoints = new List<MarkGeneralDataPoint> { };
-        private readonly int _maxMarkId = 3;
 
         public MarkGeneralDataPointServiceTest()
         {
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockMarkGeneralDataSectionRepo = new Mock<IMarkGeneralDataSectionRepo>();
+            var mockGeneralDataPointRepo = new Mock<IGeneralDataPointRepo>();
+
             // Arrange
             foreach (var mgdp in TestData.markGeneralDataPoints)
             {
                 _markGeneralDataPoints.Add(new MarkGeneralDataPoint
                 {
                     Id = mgdp.Id,
-                    Mark = mgdp.Mark,
                     Section = mgdp.Section,
                     Text = mgdp.Text,
                     OrderNum = mgdp.OrderNum,
@@ -43,42 +42,51 @@ namespace DocumentsKM.Tests
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
                 _repository.Setup(mock =>
                     mock.GetAllByMarkId(mark.Id)).Returns(
-                        _markGeneralDataPoints.Where(v => v.Mark.Id == mark.Id));
+                        _markGeneralDataPoints.Where(v => v.Section.Mark.Id == mark.Id));
 
-                foreach (var generalDataSection in TestData.generalDataSections)
+                foreach (var generalDataSection in TestData.markGeneralDataSections)
                 {
-                    _repository.Setup(mock =>
-                    mock.GetAllByMarkAndSectionId(mark.Id, generalDataSection.Id)).Returns(
-                        _markGeneralDataPoints.Where(
-                            v => v.Mark.Id == mark.Id && v.Section.Id == generalDataSection.Id));
-
                     foreach (var markGeneralDataPoint in _markGeneralDataPoints)
                     {
-                        _repository.Setup(mock =>
-                            mock.GetByUniqueKey(
-                                mark.Id, generalDataSection.Id, markGeneralDataPoint.Text)).Returns(
-                                    _markGeneralDataPoints.SingleOrDefault(
-                                        v => v.Mark.Id == mark.Id && v.Section.Id == generalDataSection.Id &&
-                                            v.Text == markGeneralDataPoint.Text));
+                        
                     }
                 }
             }
-            foreach (var generalDataSection in TestData.generalDataSections)
+            foreach (var markGeneralDataSection in TestData.markGeneralDataSections)
             {
-                _mockGeneralDataSectionRepo.Setup(mock =>
-                    mock.GetById(generalDataSection.Id)).Returns(
-                        TestData.generalDataSections.SingleOrDefault(
-                            v => v.Id == generalDataSection.Id));
+                mockMarkGeneralDataSectionRepo.Setup(mock =>
+                    mock.GetById(markGeneralDataSection.Id, true)).Returns(
+                        TestData.markGeneralDataSections.SingleOrDefault(
+                            v => v.Id == markGeneralDataSection.Id));
+                mockMarkGeneralDataSectionRepo.Setup(mock =>
+                    mock.GetById(markGeneralDataSection.Id, false)).Returns(
+                        TestData.markGeneralDataSections.SingleOrDefault(
+                            v => v.Id == markGeneralDataSection.Id));
+
+                _repository.Setup(mock =>
+                    mock.GetAllBySectionId(markGeneralDataSection.Id)).Returns(
+                        _markGeneralDataPoints.Where(
+                            v => v.Section.Id == markGeneralDataSection.Id));
+
+                foreach (var markGeneralDataPoint in _markGeneralDataPoints)
+                {
+                    _repository.Setup(mock =>
+                        mock.GetByUniqueKey(
+                            markGeneralDataSection.Id, markGeneralDataPoint.Text)).Returns(
+                                _markGeneralDataPoints.SingleOrDefault(
+                                    v => v.Section.Id == markGeneralDataSection.Id &&
+                                        v.Text == markGeneralDataPoint.Text));
+                }
             }
             foreach (var generalDataPoint in TestData.generalDataPoints)
             {
-                _mockGeneralDataPointRepo.Setup(mock =>
+                mockGeneralDataPointRepo.Setup(mock =>
                     mock.GetById(generalDataPoint.Id)).Returns(
                         TestData.generalDataPoints.SingleOrDefault(
                             v => v.Id == generalDataPoint.Id));
@@ -93,49 +101,43 @@ namespace DocumentsKM.Tests
 
             _service = new MarkGeneralDataPointService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockGeneralDataSectionRepo.Object,
-                _mockGeneralDataPointRepo.Object);
+                mockMarkRepo.Object,
+                mockMarkGeneralDataSectionRepo.Object,
+                mockGeneralDataPointRepo.Object);
         }
 
         [Fact]
-        public void GetAllByMarkAndSectionId_ShouldReturnMarkGeneralDataPoints()
+        public void GetAllBySectionId_ShouldReturnMarkGeneralDataPoints()
         {
             // Arrange
-            int markId = _rnd.Next(1, _maxMarkId);
-            int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
+            int sectionId = _rnd.Next(1, TestData.markGeneralDataSections.Count());
 
             // Act
-            var returnedMarkGeneralDataPoints = _service.GetAllByMarkAndSectionId(markId, sectionId);
+            var returnedMarkGeneralDataPoints = _service.GetAllBySectionId(sectionId);
 
             // Assert
             Assert.Equal(_markGeneralDataPoints.Where(
-                v => v.Mark.Id == markId && v.Section.Id == sectionId),
-                    returnedMarkGeneralDataPoints);
+                v => v.Section.Id == sectionId), returnedMarkGeneralDataPoints);
         }
 
         [Fact]
-        public void GetAllByMarkAndSectionId_ShouldReturnEmptyArray_WhenWrongValues()
+        public void GetAllBySectionId_ShouldReturnEmptyArray_WhenWrongValues()
         {
             // Arrange
-            int markId = _rnd.Next(1, _maxMarkId);
-            int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
+            int sectionId = _rnd.Next(1, TestData.markGeneralDataSections.Count());
 
             // Act
-            var returnedMarkGeneralDataPoints1 = _service.GetAllByMarkAndSectionId(999, sectionId);
-            var returnedMarkGeneralDataPoints2 = _service.GetAllByMarkAndSectionId(markId, 999);
+            var returnedMarkGeneralDataPoints = _service.GetAllBySectionId(999);
 
             // Assert
-            Assert.Empty(returnedMarkGeneralDataPoints1);
-            Assert.Empty(returnedMarkGeneralDataPoints2);
+            Assert.Empty(returnedMarkGeneralDataPoints);
         }
 
         [Fact]
         public void Create_ShouldCreateMarkGeneralDataPoint()
         {
             // Arrange
-            int markId = _rnd.Next(1, TestData.marks.Count());
-            int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
+            int sectionId = _rnd.Next(1, TestData.markGeneralDataSections.Count());
 
             var newMarkGeneralDataPoint = new MarkGeneralDataPoint
             {
@@ -143,19 +145,18 @@ namespace DocumentsKM.Tests
             };
 
             // Act
-            _service.Create(newMarkGeneralDataPoint, markId, sectionId);
+            _service.Create(newMarkGeneralDataPoint, sectionId);
 
             // Assert
             _repository.Verify(mock => mock.Add(It.IsAny<MarkGeneralDataPoint>()), Times.Once);
-            Assert.NotNull(newMarkGeneralDataPoint.Mark);
+            Assert.NotNull(newMarkGeneralDataPoint.Section);
         }
 
         [Fact]
         public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
-            int markId = _rnd.Next(1, TestData.marks.Count());
-            int sectionId = _rnd.Next(1, TestData.generalDataSections.Count());
+            int sectionId = _rnd.Next(1, TestData.markGeneralDataSections.Count());
 
             var newmarkGeneralDataPoint = new MarkGeneralDataPoint
             {
@@ -163,8 +164,8 @@ namespace DocumentsKM.Tests
             };
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Create(null, markId, sectionId));
-            Assert.Throws<ArgumentNullException>(() => _service.Create(newmarkGeneralDataPoint, markId, 999));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(null, sectionId));
+            Assert.Throws<ArgumentNullException>(() => _service.Create(newmarkGeneralDataPoint, 999));
 
             _repository.Verify(mock => mock.Add(It.IsAny<MarkGeneralDataPoint>()), Times.Never);
         }
@@ -173,7 +174,6 @@ namespace DocumentsKM.Tests
         public void Create_ShouldFailWithConflict_WhenConflictValues()
         {
             // Arrange
-            int conflictMarkId = _markGeneralDataPoints[0].Mark.Id;
             int conflictSectionId = _markGeneralDataPoints[0].Section.Id;
 
             var newMarkGeneralDataPoint = new MarkGeneralDataPoint
@@ -182,7 +182,7 @@ namespace DocumentsKM.Tests
             };
 
             // Act & Assert
-            Assert.Throws<ConflictException>(() => _service.Create(newMarkGeneralDataPoint, conflictMarkId, conflictSectionId));
+            Assert.Throws<ConflictException>(() => _service.Create(newMarkGeneralDataPoint, conflictSectionId));
 
             _repository.Verify(mock => mock.Add(It.IsAny<MarkGeneralDataPoint>()), Times.Never);
         }
@@ -192,7 +192,6 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _markGeneralDataPoints[0].Id;
-            int markId = _markGeneralDataPoints[0].Mark.Id;
             int sectionId = _markGeneralDataPoints[0].Section.Id;
             var newStringValue = "NewUpdate";
 
@@ -203,7 +202,7 @@ namespace DocumentsKM.Tests
 
             // Act
             _service.Update(
-                id, markId, sectionId, newMarkGeneralDataPointRequest);
+                id, sectionId, newMarkGeneralDataPointRequest);
 
             // Assert
             _repository.Verify(mock => mock.Update(It.IsAny<MarkGeneralDataPoint>()), Times.Once);
@@ -216,7 +215,6 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _markGeneralDataPoints[0].Id;
-            int markId = _markGeneralDataPoints[0].Mark.Id;
             int sectionId = _markGeneralDataPoints[0].Section.Id;
             var newStringValue = "NewUpdate";
 
@@ -227,13 +225,11 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Update(
-                id, markId, sectionId, null));
+                id, sectionId, null));
             Assert.Throws<ArgumentNullException>(() => _service.Update(
-                999, markId, sectionId, newMarkGeneralDataPointRequest));
+                999, sectionId, newMarkGeneralDataPointRequest));
             Assert.Throws<ArgumentNullException>(() => _service.Update(
-                id, 999, sectionId, newMarkGeneralDataPointRequest));
-            Assert.Throws<ArgumentNullException>(() => _service.Update(
-                id, markId, 999, newMarkGeneralDataPointRequest));
+                id, 999, newMarkGeneralDataPointRequest));
 
 
             _repository.Verify(mock => mock.Update(It.IsAny<MarkGeneralDataPoint>()), Times.Never);
@@ -244,7 +240,6 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _markGeneralDataPoints[0].Id;
-            int markId = _markGeneralDataPoints[0].Mark.Id;
             int sectionId = _markGeneralDataPoints[0].Section.Id;
 
             var newMarkGeneralDataPointRequest = new MarkGeneralDataPointUpdateRequest
@@ -254,7 +249,7 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Update(
-                id, markId, sectionId, newMarkGeneralDataPointRequest));
+                id, sectionId, newMarkGeneralDataPointRequest));
 
             _repository.Verify(mock => mock.Update(It.IsAny<MarkGeneralDataPoint>()), Times.Never);
         }
@@ -264,11 +259,10 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _markGeneralDataPoints[0].Id;
-            int markId = _markGeneralDataPoints[0].Mark.Id;
             int sectionId = _markGeneralDataPoints[0].Section.Id;
 
             // Act
-            _service.Delete(id, markId, sectionId);
+            _service.Delete(id, sectionId);
 
             // Assert
             _repository.Verify(mock => mock.Delete(It.IsAny<MarkGeneralDataPoint>()), Times.Once);
@@ -279,13 +273,11 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = _markGeneralDataPoints[0].Id;
-            int markId = _markGeneralDataPoints[0].Mark.Id;
             int sectionId = _markGeneralDataPoints[0].Section.Id;
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(999, markId, sectionId));
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(id, 999, sectionId));
-            Assert.Throws<ArgumentNullException>(() => _service.Delete(id, markId, 999));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(999, sectionId));
+            Assert.Throws<ArgumentNullException>(() => _service.Delete(id, 999));
 
             _repository.Verify(mock => mock.Delete(It.IsAny<MarkGeneralDataPoint>()), Times.Never);
         }

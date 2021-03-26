@@ -12,6 +12,8 @@ namespace DocumentsKM.Tests
     {
         private readonly Random _rnd = new Random();
 
+        private readonly int _maxUserId = 3;
+
         private ApplicationContext GetContext(List<GeneralDataSection> generalDataSections)
         {
             var builder = new DbContextOptionsBuilder<ApplicationContext>();
@@ -26,17 +28,19 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAll_ShouldReturnGeneralDataSections()
+        public void GetAllByUserId_ShouldReturnGeneralDataSections()
         {
             // Assert
             var context = GetContext(TestData.generalDataSections);
             var repo = new SqlGeneralDataSectionRepo(context);
 
+            int userId = _rnd.Next(1, _maxUserId);
+
             // Act
-            var generalDataSections = repo.GetAll();
+            var generalDataSections = repo.GetAllByUserId(userId);
 
             // Assert
-            Assert.Equal(TestData.generalDataSections, generalDataSections);
+            Assert.Equal(TestData.generalDataSections.Where(v => v.User.Id == userId), generalDataSections);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -74,6 +78,83 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Null(generalDataSection);
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void Add_ShouldAddgeneralDataSection()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataSections);
+            var repo = new SqlGeneralDataSectionRepo(context);
+
+            int userId = _rnd.Next(1, TestData.users.Count());
+            var generalDataSection = new GeneralDataSection
+            {
+                Name = "NewCreate",
+                User = TestData.users.SingleOrDefault(v => v.Id == userId),
+                OrderNum = 9,
+            };
+
+            // Act
+            repo.Add(generalDataSection);
+
+            // Assert
+            Assert.NotNull(repo.GetById(generalDataSection.Id));
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void Update_ShouldUpdategeneralDataSection()
+        {
+            // Arrange
+            var generalDataSections = new List<GeneralDataSection> { };
+            foreach (var mgds in TestData.generalDataSections)
+            {
+                generalDataSections.Add(new GeneralDataSection
+                {
+                    Id = mgds.Id,
+                    Name = mgds.Name,
+                    User = mgds.User,
+                    OrderNum = mgds.OrderNum,
+                });
+            }
+            var context = GetContext(generalDataSections);
+            var repo = new SqlGeneralDataSectionRepo(context);
+
+            int id = _rnd.Next(1, generalDataSections.Count());
+            var generalDataSection = generalDataSections.FirstOrDefault(v => v.Id == id);
+            generalDataSection.Name = "NewUpdate";
+
+            // Act
+            repo.Update(generalDataSection);
+
+            // Assert
+            Assert.Equal(generalDataSection.Name, repo.GetById(id).Name);
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void Delete_ShouldDeletegeneralDataSection()
+        {
+            // Arrange
+            var context = GetContext(TestData.generalDataSections);
+            var repo = new SqlGeneralDataSectionRepo(context);
+
+            int id = _rnd.Next(1, TestData.generalDataSections.Count());
+            var generalDataSection = TestData.generalDataSections.FirstOrDefault(v => v.Id == id);
+
+            // Act
+            repo.Delete(generalDataSection);
+
+            // Assert
+            Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
             context.Dispose();

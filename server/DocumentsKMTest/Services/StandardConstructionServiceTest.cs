@@ -15,8 +15,6 @@ namespace DocumentsKM.Tests
     {
         private readonly Mock<IStandardConstructionRepo> _repository = new Mock<IStandardConstructionRepo>();
         private readonly Mock<IStandardConstructionRepo> _updateRepository = new Mock<IStandardConstructionRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<ISpecificationRepo> _mockSpecificationRepo = new Mock<ISpecificationRepo>();
         private readonly IStandardConstructionService _service;
         private readonly IStandardConstructionService _updateService;
         private readonly Random _rnd = new Random();
@@ -308,6 +306,9 @@ namespace DocumentsKM.Tests
                 },
             };
 
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockSpecificationRepo = new Mock<ISpecificationRepo>();
+
             foreach (var sc in _standardConstructions)
             {
                 _updateStandardConstructions.Add(new StandardConstruction
@@ -332,10 +333,10 @@ namespace DocumentsKM.Tests
             }
             foreach (var specification in _specifications)
             {
-                _mockSpecificationRepo.Setup(mock =>
+                mockSpecificationRepo.Setup(mock =>
                     mock.GetById(specification.Id, false)).Returns(
                         _specifications.SingleOrDefault(v => v.Id == specification.Id));
-                _mockSpecificationRepo.Setup(mock =>
+                mockSpecificationRepo.Setup(mock =>
                     mock.GetById(specification.Id, true)).Returns(
                         _specifications.SingleOrDefault(v => v.Id == specification.Id));
 
@@ -358,7 +359,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var mark in _marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         _marks.SingleOrDefault(v => v.Id == mark.Id));
             }
@@ -372,12 +373,12 @@ namespace DocumentsKM.Tests
 
             _service = new StandardConstructionService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockSpecificationRepo.Object);
+                mockMarkRepo.Object,
+                mockSpecificationRepo.Object);
             _updateService = new StandardConstructionService(
                 _updateRepository.Object,
-                _mockMarkRepo.Object,
-                _mockSpecificationRepo.Object);
+                mockMarkRepo.Object,
+                mockSpecificationRepo.Object);
         }
 
         [Fact]

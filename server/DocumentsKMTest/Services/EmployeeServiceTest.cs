@@ -11,7 +11,7 @@ namespace DocumentsKM.Tests
 {
     public class EmployeeServiceTest
     {
-        private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
+        private readonly Mock<IEmployeeRepo> _repository = new Mock<IEmployeeRepo>();
         private readonly IEmployeeService _service;
         private readonly Random _rnd = new Random();
 
@@ -20,17 +20,17 @@ namespace DocumentsKM.Tests
             // Arrange
             foreach (var employee in TestData.employees)
             {
-                _mockEmployeeRepo.Setup(mock =>
+                _repository.Setup(mock =>
                     mock.GetById(employee.Id)).Returns(
                         TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
             }
             foreach (var department in TestData.departments)
             {
-                _mockEmployeeRepo.Setup(mock =>
+                _repository.Setup(mock =>
                     mock.GetAllByDepartmentId(department.Id)).Returns(
                         TestData.employees.Where(v => v.Department.Id == department.Id && v.IsActive));
 
-                _mockEmployeeRepo.Setup(mock =>
+                _repository.Setup(mock =>
                     mock.GetAllByDepartmentIdAndPositions(
                         department.Id, 1, 10)).Returns(
                             TestData.employees.Where(
@@ -39,17 +39,31 @@ namespace DocumentsKM.Tests
 
                 foreach (var position in TestData.positions)
                 {
-                    _mockEmployeeRepo.Setup(mock =>
+                    _repository.Setup(mock =>
                         mock.GetAllByDepartmentIdAndPosition(
                             department.Id, position.Id)).Returns(
                                 TestData.employees.Where(
                                     v => v.Department.Id == department.Id &&
                                     v.Position.Id == position.Id && v.IsActive));
 
-                    _mockEmployeeRepo.Setup(mock =>
+                    _repository.Setup(mock =>
                         mock.GetByDepartmentIdAndPosition(
                             department.Id, position.Id)).Returns(
                                 TestData.employees.FirstOrDefault(
+                                    v => v.Department.Id == department.Id &&
+                                    v.Position.Id == position.Id && v.IsActive));
+
+                    _repository.Setup(mock =>
+                        mock.GetAllByDepartmentIdAndPositions(
+                            department.Id, new int[] {position.Id, position.Id})).Returns(
+                                TestData.employees.Where(
+                                    v => v.Department.Id == department.Id &&
+                                    v.Position.Id == position.Id && v.IsActive));
+
+                    _repository.Setup(mock =>
+                        mock.GetAllByDepartmentIdAndPositions(
+                            department.Id, new int[] {position.Id, position.Id, position.Id, position.Id})).Returns(
+                                TestData.employees.Where(
                                     v => v.Department.Id == department.Id &&
                                     v.Position.Id == position.Id && v.IsActive));
                 }
@@ -58,13 +72,22 @@ namespace DocumentsKM.Tests
             IOptions<AppSettings> options = Options.Create<AppSettings>(new AppSettings()
             {
                 DepartmentHeadPosId = 7,
+                ActingDepartmentHeadPosId = 7,
+                DeputyDepartmentHeadPosId = 7,
+                ActingDeputyDepartmentHeadPosId = 7,
+
                 ChiefSpecialistPosId = 9,
+                ActingChiefSpecialistPosId = 9,
+
                 GroupLeaderPosId = 10,
+                ActingGroupLeaderPosId = 10,
+
                 MainBuilderPosId = 4,
+
                 ApprovalMinPosId = 1,
                 ApprovalMaxPosId = 10,
             });
-            _service = new EmployeeService(_mockEmployeeRepo.Object, options);
+            _service = new EmployeeService(_repository.Object, options);
         }
 
         [Fact]

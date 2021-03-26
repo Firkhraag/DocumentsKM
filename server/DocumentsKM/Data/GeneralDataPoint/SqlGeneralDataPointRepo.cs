@@ -14,18 +14,19 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<GeneralDataPoint> GetAllByUserAndSectionId(
-            int userId, int sectionId)
+        public IEnumerable<GeneralDataPoint> GetAllBySectionId(
+            int sectionId)
         {
             return _context.GeneralDataPoints.Where(
-                v => v.User.Id == userId && v.Section.Id == sectionId).OrderBy(
+                v => v.Section.Id == sectionId).OrderBy(
                     v => v.OrderNum).ToList();
         }
 
-        public IEnumerable<GeneralDataPoint> GetAllByUserId(int userId)
+        public IEnumerable<GeneralDataPoint> GetAllByUserId(
+            int userId)
         {
             return _context.GeneralDataPoints.Where(
-                v => v.User.Id == userId).OrderBy(
+                v => v.Section.User.Id == userId).OrderBy(
                     v => v.OrderNum).ToList();
         }
 
@@ -35,10 +36,10 @@ namespace DocumentsKM.Data
         }
 
         public GeneralDataPoint GetByUniqueKey(
-            int userId, int sectionId, string text)
+            int sectionId, string text)
         {
             return _context.GeneralDataPoints.SingleOrDefault(
-                v => v.User.Id == userId && v.Section.Id == sectionId && v.Text == text);
+                v => v.Section.Id == sectionId && v.Text == text);
         }
 
         public void Add(GeneralDataPoint generalDataPoint)

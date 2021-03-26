@@ -17,16 +17,16 @@ namespace DocumentsKM.Data
         public IEnumerable<MarkGeneralDataPoint> GetAllByMarkId(int markId)
         {
             return _context.MarkGeneralDataPoints.Where(
-                v => v.Mark.Id == markId).OrderBy(
+                v => v.Section.Mark.Id == markId).OrderBy(
                     v => v.Section.Id).ThenBy(
                         v => v.OrderNum).ToList();
         }
 
-        public IEnumerable<MarkGeneralDataPoint> GetAllByMarkAndSectionId(
-            int markId, int sectionId)
+        public IEnumerable<MarkGeneralDataPoint> GetAllBySectionId(
+            int sectionId)
         {
             return _context.MarkGeneralDataPoints.Where(
-                v => v.Mark.Id == markId && v.Section.Id == sectionId).OrderBy(
+                v => v.Section.Id == sectionId).OrderBy(
                     v => v.OrderNum).ToList();
         }
 
@@ -36,10 +36,10 @@ namespace DocumentsKM.Data
         }
 
         public MarkGeneralDataPoint GetByUniqueKey(
-            int markId, int sectionId, string text)
+            int sectionId, string text)
         {
             return _context.MarkGeneralDataPoints.SingleOrDefault(
-                v => v.Mark.Id == markId && v.Section.Id == sectionId && v.Text == text);
+                v => v.Section.Id == sectionId && v.Text == text);
         }
 
         public void Add(MarkGeneralDataPoint MarkgeneralDataPoint)
@@ -58,14 +58,6 @@ namespace DocumentsKM.Data
         {
             _context.MarkGeneralDataPoints.Remove(MarkgeneralDataPoint);
             _context.SaveChanges();
-        }
-
-        public IEnumerable<GeneralDataSection> GetSectionsByMarkId(int markId)
-        {
-            return _context.MarkGeneralDataPoints.Where(
-                v => v.Mark.Id == markId).ToList().Select(
-                    v => v.Section).GroupBy(v => v.Id).Select(
-                        v => v.FirstOrDefault()).OrderBy(v => v.OrderNum);
         }
     }
 }

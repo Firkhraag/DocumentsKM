@@ -15,9 +15,6 @@ namespace DocumentsKM.Tests
     {
         private readonly Mock<IConstructionBoltRepo> _repository = new Mock<IConstructionBoltRepo>();
         private readonly Mock<IConstructionBoltRepo> _updateRepository = new Mock<IConstructionBoltRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<IConstructionRepo> _mockConstructionRepo = new Mock<IConstructionRepo>();
-        private readonly Mock<IBoltDiameterRepo> _mockBoltDiameterRepo = new Mock<IBoltDiameterRepo>();
         private readonly IConstructionBoltService _service;
         private readonly IConstructionBoltService _updateService;
         private readonly Random _rnd = new Random();
@@ -534,6 +531,10 @@ namespace DocumentsKM.Tests
                 },
             };
 
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockConstructionRepo = new Mock<IConstructionRepo>();
+            var mockBoltDiameterRepo = new Mock<IBoltDiameterRepo>();
+
             foreach (var cb in _constructionBolts)
             {
                 _updateConstructionBolts.Add(new ConstructionBolt
@@ -559,10 +560,10 @@ namespace DocumentsKM.Tests
             }
             foreach (var construction in _constructions)
             {
-                _mockConstructionRepo.Setup(mock =>
+                mockConstructionRepo.Setup(mock =>
                     mock.GetById(construction.Id, false)).Returns(
                         _constructions.SingleOrDefault(v => v.Id == construction.Id));
-                _mockConstructionRepo.Setup(mock =>
+                mockConstructionRepo.Setup(mock =>
                     mock.GetById(construction.Id, true)).Returns(
                         _constructions.SingleOrDefault(v => v.Id == construction.Id));
 
@@ -589,14 +590,14 @@ namespace DocumentsKM.Tests
             }
             foreach (var diameter in _boltDiameters)
             {
-                _mockBoltDiameterRepo.Setup(mock =>
+                mockBoltDiameterRepo.Setup(mock =>
                     mock.GetById(diameter.Id)).Returns(
                         _boltDiameters.SingleOrDefault(
                             v => v.Id == diameter.Id));
             }
             foreach (var mark in _marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         _marks.SingleOrDefault(v => v.Id == mark.Id));
             }
@@ -610,14 +611,14 @@ namespace DocumentsKM.Tests
 
             _service = new ConstructionBoltService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockConstructionRepo.Object,
-                _mockBoltDiameterRepo.Object);
+                mockMarkRepo.Object,
+                mockConstructionRepo.Object,
+                mockBoltDiameterRepo.Object);
             _updateService = new ConstructionBoltService(
                 _updateRepository.Object,
-                _mockMarkRepo.Object,
-                _mockConstructionRepo.Object,
-                _mockBoltDiameterRepo.Object);
+                mockMarkRepo.Object,
+                mockConstructionRepo.Object,
+                mockBoltDiameterRepo.Object);
         }
 
         [Fact]

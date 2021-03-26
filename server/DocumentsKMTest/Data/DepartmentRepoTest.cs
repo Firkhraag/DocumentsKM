@@ -35,6 +35,22 @@ namespace DocumentsKM.Tests
             var departments = repo.GetAll();
 
             // Assert
+            Assert.Equal(TestData.departments, departments);
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void GetAllActive_ShouldReturnDepartments()
+        {
+            // Act
+            var context = GetContext(TestData.departments);
+            var repo = new SqlDepartmentRepo(context);
+
+            var departments = repo.GetAllActive();
+
+            // Assert
             Assert.Equal(TestData.departments.Where(v => v.IsActive), departments);
 
             context.Database.EnsureDeleted();
@@ -73,6 +89,85 @@ namespace DocumentsKM.Tests
 
             // Assert
             Assert.Null(department);
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void Add_ShouldAddDepartment()
+        {
+            // Arrange
+            var context = GetContext(TestData.departments);
+            var repo = new SqlDepartmentRepo(context);
+
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var department = new Department
+            {
+                Code = "NewCreate",
+                Name = "NewCreate",
+                ShortName = "NewCreate",
+                IsActive = true,
+            };
+
+            // Act
+            repo.Add(department);
+
+            // Assert
+            Assert.NotNull(repo.GetById(department.Id));
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void Update_ShouldUpdateDepartment()
+        {
+            // Arrange
+            var departments = new List<Department> { };
+            foreach (var d in TestData.departments)
+            {
+                departments.Add(new Department
+                {
+                    Id = d.Id,
+                    Code = d.Code,
+                    Name = d.Name,
+                    ShortName = d.ShortName,
+                    IsActive = d.IsActive,
+                });
+            }
+            var context = GetContext(departments);
+            var repo = new SqlDepartmentRepo(context);
+
+            int id = _rnd.Next(1, departments.Count());
+            var department = departments.FirstOrDefault(v => v.Id == id);
+            department.Name = "NewUpdate";
+
+            // Act
+            repo.Update(department);
+
+            // Assert
+            Assert.Equal(department.Name, repo.GetById(id).Name);
+
+            context.Database.EnsureDeleted();
+            context.Dispose();
+        }
+
+        [Fact]
+        public void Delete_ShouldDeleteDepartment()
+        {
+            // Arrange
+            var context = GetContext(TestData.departments);
+            var repo = new SqlDepartmentRepo(context);
+
+            int id = _rnd.Next(1, TestData.departments.Count());
+            var department = TestData.departments.FirstOrDefault(v => v.Id == id);
+
+            // Act
+            repo.Delete(department);
+
+            // Assert
+            Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
             context.Dispose();

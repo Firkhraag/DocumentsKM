@@ -16,13 +16,26 @@ namespace DocumentsKM.Tests
             var repository = new Mock<IDepartmentRepo>();
 
             repository.Setup(mock =>
-                mock.GetAll()).Returns(TestData.departments.Where(v => v.IsActive));
+                mock.GetAll()).Returns(TestData.departments);
+
+            repository.Setup(mock =>
+                mock.GetAllActive()).Returns(TestData.departments.Where(v => v.IsActive));
 
             _service = new DepartmentService(repository.Object);
         }
 
         [Fact]
         public void GetAll_ShouldReturnDepartments()
+        {
+            // Act
+            var returnedDepartments = _service.GetAll();
+
+            // Assert
+            Assert.Equal(TestData.departments.Where(v => v.IsActive), returnedDepartments);
+        }
+
+        [Fact]
+        public void GetAllActive_ShouldReturnDepartments()
         {
             // Act
             var returnedDepartments = _service.GetAll();

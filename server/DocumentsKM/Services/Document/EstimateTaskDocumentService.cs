@@ -338,8 +338,8 @@ namespace DocumentsKM.Services
                     WithSuperscript = true,
                 });
 
-                var points = _markGeneralDataPointRepo.GetAllByMarkAndSectionId(
-                    markId, _paintingGeneralDataSectionId);
+                var points = _markGeneralDataPointRepo.GetAllBySectionId(
+                    _paintingGeneralDataSectionId);
                 for (int i = 1; i < points.Count(); i++)
                 {
                     var pointText = points.ToList()[i].Text;

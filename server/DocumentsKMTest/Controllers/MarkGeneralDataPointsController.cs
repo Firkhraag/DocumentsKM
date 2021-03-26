@@ -9,14 +9,11 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    // TBD: Create, Update, Delete
     public class MarkGeneralDataPointsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
         private readonly Random _rnd = new Random();
-
-        private readonly int _maxMarkId = 3;
         private readonly int _maxSectionId = 3;
 
         public MarkGeneralDataPointsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
@@ -33,12 +30,11 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByMarkId_ShouldReturnOK()
+        public async Task GetAllBySectionId_ShouldReturnOK()
         {
             // Arrange
-            int markId = _rnd.Next(1, _maxMarkId);
             int sectionId = _rnd.Next(1, _maxSectionId);
-            var endpoint = $"/api/marks/{markId}/general-data-sections/{sectionId}/general-data-points";
+            var endpoint = $"/api/mark-general-data-sections/{sectionId}/mark-general-data-points";
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
@@ -48,12 +44,11 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByMarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        public async Task GetAllBySectionId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            int markId = _rnd.Next(1, _maxMarkId);
             int sectionId = _rnd.Next(1, _maxSectionId);
-            var endpoint = $"/api/marks/{markId}/general-data-sections/{sectionId}/general-data-points";
+            var endpoint = $"/api/mark-general-data-sections/{sectionId}/mark-general-data-points";
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);

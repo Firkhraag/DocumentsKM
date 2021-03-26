@@ -69,6 +69,7 @@ public class TestWebApplicationFactory<TStartup>
         context.ConstructionTypes.AddRange(TestData.constructionTypes);
         context.ConstructionSubtypes.AddRange(TestData.constructionSubtypes);
         context.GeneralDataSections.AddRange(TestData.generalDataSections);
+        context.MarkGeneralDataSections.AddRange(TestData.markGeneralDataSections);
         context.SheetNames.AddRange(TestData.sheetNames);
         context.DocTypes.AddRange(TestData.docTypes);
         context.LinkedDocTypes.AddRange(TestData.linkedDocTypes);

@@ -13,7 +13,6 @@ namespace DocumentsKM.Tests
     public class AttachedDocServiceTest
     {
         private readonly Mock<IAttachedDocRepo> _repository = new Mock<IAttachedDocRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
         private readonly IAttachedDocService _service;
         private readonly Random _rnd = new Random();
         private readonly List<AttachedDoc> _attachedDocs = new List<AttachedDoc> { };
@@ -21,6 +20,8 @@ namespace DocumentsKM.Tests
 
         public AttachedDocServiceTest()
         {
+            var mockMarkRepo = new Mock<IMarkRepo>();
+
             // Arrange
             foreach (var attachedDoc in TestData.attachedDocs)
             {
@@ -41,7 +42,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
@@ -67,7 +68,7 @@ namespace DocumentsKM.Tests
 
             _service = new AttachedDocService(
                 _repository.Object,
-                _mockMarkRepo.Object);
+                mockMarkRepo.Object);
         }
 
         [Fact]

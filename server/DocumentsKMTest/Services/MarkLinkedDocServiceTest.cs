@@ -13,8 +13,6 @@ namespace DocumentsKM.Tests
     public class MarkLinkedDocServiceTest
     {
         private readonly Mock<IMarkLinkedDocRepo> _mockMarkLinkedDocRepo = new Mock<IMarkLinkedDocRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<ILinkedDocRepo> _mockLinkedDocRepo = new Mock<ILinkedDocRepo>();
         private readonly IMarkLinkedDocService _service;
         private readonly Random _rnd = new Random();
         private readonly List<MarkLinkedDoc> _markLinkedDocs = new List<MarkLinkedDoc> { };
@@ -22,6 +20,9 @@ namespace DocumentsKM.Tests
 
         public MarkLinkedDocServiceTest()
         {
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockLinkedDocRepo = new Mock<ILinkedDocRepo>();
+
             // Arrange
             foreach (var markLinkedDoc in TestData.markLinkedDocs)
             {
@@ -40,7 +41,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
@@ -58,7 +59,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var ld in TestData.linkedDocs)
             {
-                _mockLinkedDocRepo.Setup(mock =>
+                mockLinkedDocRepo.Setup(mock =>
                     mock.GetById(ld.Id)).Returns(
                         TestData.linkedDocs.SingleOrDefault(v => v.Id == ld.Id));
             }
@@ -72,8 +73,8 @@ namespace DocumentsKM.Tests
 
             _service = new MarkLinkedDocService(
                 _mockMarkLinkedDocRepo.Object,
-                _mockMarkRepo.Object,
-                _mockLinkedDocRepo.Object);
+                mockMarkRepo.Object,
+                mockLinkedDocRepo.Object);
         }
 
         [Fact]

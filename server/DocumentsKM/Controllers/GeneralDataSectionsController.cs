@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using AutoMapper;
+using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -18,19 +21,93 @@ namespace DocumentsKM.Controllers
         private readonly IMapper _mapper;
 
         public GeneralDataSectionsController(
-            IGeneralDataSectionService generalDataSectionService,
+            IGeneralDataSectionService GeneralDataSectionService,
             IMapper mapper)
         {
-            _service = generalDataSectionService;
+            _service = GeneralDataSectionService;
             _mapper = mapper;
         }
 
-        [HttpGet, Route("general-data-sections")]
+        [HttpGet, Route("users/{userId}/general-data-sections")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<GeneralDataSection>> GetAll()
+        public ActionResult<IEnumerable<GeneralDataSectionResponse>> GetAllByUserId(
+            int userId)
         {
-            var sections = _service.GetAll();
-            return Ok(sections);
+            var sections = _service.GetAllByUserId(userId);
+            return Ok(_mapper.Map<IEnumerable<GeneralDataSectionResponse>>(sections));
+        }
+
+        [HttpPost, Route("users/{userId}/general-data-sections")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public ActionResult<GeneralDataSection> Create(int userId,
+            [FromBody] GeneralDataSectionCreateRequest generalDataSectionRequest)
+        {
+            var generalDataSectionModel = _mapper.Map<GeneralDataSection>(
+                generalDataSectionRequest);
+            try
+            {
+                _service.Create(
+                    generalDataSectionModel,
+                    userId);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (ConflictException)
+            {
+                return Conflict();
+            }
+            return Created($"general-data-sections/{generalDataSectionModel.Id}",
+                _mapper.Map<GeneralDataSectionResponse>(generalDataSectionModel));
+        }
+
+        [HttpPatch,
+            Route("users/{userId}/general-data-sections/{id}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public ActionResult Update(int userId, int id,
+            [FromBody] GeneralDataSectionUpdateRequest GeneralDataSectionRequest)
+        {
+            if (!GeneralDataSectionRequest.Validate())
+                return BadRequest();
+            try
+            {
+                _service.Update(id, userId, GeneralDataSectionRequest);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (ConflictException)
+            {
+                return Conflict();
+            }
+            return NoContent();
+        }
+
+        [HttpDelete,
+            Route("users/{userId}/general-data-sections/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult Delete(int userId, int id)
+        {
+            try
+            {
+                _service.Delete(id, userId);
+                return NoContent();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
         }
     }
 }
+

@@ -177,8 +177,8 @@ public class FetchService : IHostedService
         //     }
         // }, cancellationToken);
 
-        // return Task.CompletedTask;
-        return OnTest();
+        return Task.CompletedTask;
+        // return OnTest();
     }
 
     private int UntilNextExecution() => Math.Max(0, (int)_nextRun.Subtract(DateTime.Now).TotalMilliseconds);

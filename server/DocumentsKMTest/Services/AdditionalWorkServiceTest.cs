@@ -13,9 +13,6 @@ namespace DocumentsKM.Tests
     public class AdditionalWorkServiceTest
     {
         private readonly Mock<IAdditionalWorkRepo> _repository = new Mock<IAdditionalWorkRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
-        private readonly Mock<IDocRepo> _mockDocRepo = new Mock<IDocRepo>();
         private readonly IAdditionalWorkService _service;
         private readonly Random _rnd = new Random();
         private readonly List<AdditionalWork> _additionalWork = new List<AdditionalWork> { };
@@ -23,6 +20,10 @@ namespace DocumentsKM.Tests
 
         public AdditionalWorkServiceTest()
         {
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockEmployeeRepo = new Mock<IEmployeeRepo>();
+            var mockDocRepo = new Mock<IDocRepo>();
+
             // Arrange
             foreach (var additionalWork in TestData.additionalWork)
             {
@@ -43,7 +44,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
@@ -53,7 +54,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var employee in TestData.employees)
             {
-                _mockEmployeeRepo.Setup(mock =>
+                mockEmployeeRepo.Setup(mock =>
                     mock.GetById(employee.Id)).Returns(
                         TestData.employees.SingleOrDefault(v => v.Id == employee.Id));
 
@@ -70,7 +71,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var doc in TestData.docs)
             {
-                _mockDocRepo.Setup(mock =>
+                mockDocRepo.Setup(mock =>
                     mock.GetById(doc.Id)).Returns(
                         TestData.docs.SingleOrDefault(v => v.Id == doc.Id));
             }
@@ -84,9 +85,9 @@ namespace DocumentsKM.Tests
 
             _service = new AdditionalWorkService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockEmployeeRepo.Object,
-                _mockDocRepo.Object);
+                mockMarkRepo.Object,
+                mockEmployeeRepo.Object,
+                mockDocRepo.Object);
         }
 
         [Fact]

@@ -13,18 +13,19 @@ namespace DocumentsKM.Tests
     public class MarkServiceTest
     {
         private readonly Mock<IMarkRepo> _repository = new Mock<IMarkRepo>();
-        private readonly Mock<ISubnodeRepo> _mockSubnodeRepo = new Mock<ISubnodeRepo>();
-        private readonly Mock<IDepartmentRepo> _mockDepartmentRepo = new Mock<IDepartmentRepo>();
-        private readonly Mock<IEmployeeRepo> _mockEmployeeRepo = new Mock<IEmployeeRepo>();
-        private readonly Mock<IEstimateTaskRepo> _mockEstimateTaskRepo = new Mock<IEstimateTaskRepo>();
-        private readonly Mock<ISpecificationService> _mockSpecificationService = new Mock<ISpecificationService>();
-        private readonly Mock<IMarkGeneralDataPointService> _mockMarkGeneralDataPointService = new Mock<IMarkGeneralDataPointService>();
         private readonly IMarkService _service;
         private readonly Random _rnd = new Random();
         private readonly List<Mark> _marks = new List<Mark> { };
 
         public MarkServiceTest()
         {
+            var mockSubnodeRepo = new Mock<ISubnodeRepo>();
+            var mockDepartmentRepo = new Mock<IDepartmentRepo>();
+            var mockEmployeeRepo = new Mock<IEmployeeRepo>();
+            var mockEstimateTaskRepo = new Mock<IEstimateTaskRepo>();
+            var mockSpecificationService = new Mock<ISpecificationService>();
+            var mockMarkGeneralDataPointService = new Mock<IMarkGeneralDataPointService>();
+
             // Arrange
             foreach (var mark in TestData.marks)
             {
@@ -48,7 +49,7 @@ namespace DocumentsKM.Tests
             }
             foreach (var subnode in TestData.subnodes)
             {
-                _mockSubnodeRepo.Setup(mock =>
+                mockSubnodeRepo.Setup(mock =>
                     mock.GetById(subnode.Id)).Returns(
                         TestData.subnodes.SingleOrDefault(v => v.Id == subnode.Id));
                 _repository.Setup(mock =>
@@ -65,14 +66,14 @@ namespace DocumentsKM.Tests
             }
             foreach (var department in TestData.departments)
             {
-                _mockDepartmentRepo.Setup(mock =>
+                mockDepartmentRepo.Setup(mock =>
                     mock.GetById(department.Id)).Returns(
                         TestData.departments.SingleOrDefault(
                             v => v.Id == department.Id));
             }
             foreach (var employee in TestData.employees)
             {
-                _mockEmployeeRepo.Setup(mock =>
+                mockEmployeeRepo.Setup(mock =>
                     mock.GetById(employee.Id)).Returns(
                         TestData.employees.SingleOrDefault(
                             v => v.Id == employee.Id));
@@ -85,12 +86,12 @@ namespace DocumentsKM.Tests
 
             _service = new MarkService(
                 _repository.Object,
-                _mockSubnodeRepo.Object,
-                _mockDepartmentRepo.Object,
-                _mockEmployeeRepo.Object,
-                _mockEstimateTaskRepo.Object,
-                _mockSpecificationService.Object,
-                _mockMarkGeneralDataPointService.Object);
+                mockSubnodeRepo.Object,
+                mockDepartmentRepo.Object,
+                mockEmployeeRepo.Object,
+                mockEstimateTaskRepo.Object,
+                mockSpecificationService.Object,
+                mockMarkGeneralDataPointService.Object);
         }
 
         [Fact]

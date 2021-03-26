@@ -13,13 +13,6 @@ namespace DocumentsKM.Tests
     public class MarkOperatingConditionsServiceTest
     {
         private readonly Mock<IMarkOperatingConditionsRepo> _repository = new Mock<IMarkOperatingConditionsRepo>();
-        private readonly Mock<IMarkRepo> _mockMarkRepo = new Mock<IMarkRepo>();
-        private readonly Mock<IOperatingAreaRepo> _mockOperatingAreaRepo = new Mock<IOperatingAreaRepo>();
-        private readonly Mock<IGasGroupRepo> _mockGasGroupRepo = new Mock<IGasGroupRepo>();
-        private readonly Mock<IEnvAggressivenessRepo> _mockEnvAggressivenessRepo = new Mock<IEnvAggressivenessRepo>();
-        private readonly Mock<IConstructionMaterialRepo> _mockConstructionMaterialRepo = new Mock<IConstructionMaterialRepo>();
-        private readonly Mock<IPaintworkTypeRepo> _mockPaintworkTypeRepo = new Mock<IPaintworkTypeRepo>();
-        private readonly Mock<IHighTensileBoltsTypeRepo> _mockHighTensileBoltsTypeRepo = new Mock<IHighTensileBoltsTypeRepo>();
         private readonly IMarkOperatingConditionsService _service;
         private readonly Random _rnd = new Random();
         private readonly List<MarkOperatingConditions> _markOperatingConditions =
@@ -28,6 +21,14 @@ namespace DocumentsKM.Tests
 
         public MarkOperatingConditionsServiceTest()
         {
+            var mockMarkRepo = new Mock<IMarkRepo>();
+            var mockOperatingAreaRepo = new Mock<IOperatingAreaRepo>();
+            var mockGasGroupRepo = new Mock<IGasGroupRepo>();
+            var mockEnvAggressivenessRepo = new Mock<IEnvAggressivenessRepo>();
+            var mockConstructionMaterialRepo = new Mock<IConstructionMaterialRepo>();
+            var mockPaintworkTypeRepo = new Mock<IPaintworkTypeRepo>();
+            var mockHighTensileBoltsTypeRepo = new Mock<IHighTensileBoltsTypeRepo>();
+
             // Arrange
             foreach (var moc in TestData.markOperatingConditions)
             {
@@ -48,7 +49,7 @@ namespace DocumentsKM.Tests
 
             foreach (var mark in TestData.marks)
             {
-                _mockMarkRepo.Setup(mock =>
+                mockMarkRepo.Setup(mock =>
                     mock.GetById(mark.Id)).Returns(
                         TestData.marks.SingleOrDefault(v => v.Id == mark.Id));
 
@@ -58,39 +59,39 @@ namespace DocumentsKM.Tests
             }
             foreach (var envAggressiveness in TestData.envAggressiveness)
             {
-                _mockEnvAggressivenessRepo.Setup(mock =>
+                mockEnvAggressivenessRepo.Setup(mock =>
                     mock.GetById(envAggressiveness.Id)).Returns(
                         TestData.envAggressiveness.SingleOrDefault(
                             v => v.Id == envAggressiveness.Id));
             }
             foreach (var operatingArea in TestData.operatingAreas)
             {
-                _mockOperatingAreaRepo.Setup(mock =>
+                mockOperatingAreaRepo.Setup(mock =>
                     mock.GetById(operatingArea.Id)).Returns(
                         TestData.operatingAreas.SingleOrDefault(v => v.Id == operatingArea.Id));
             }
             foreach (var gasGroup in TestData.gasGroups)
             {
-                _mockGasGroupRepo.Setup(mock =>
+                mockGasGroupRepo.Setup(mock =>
                     mock.GetById(gasGroup.Id)).Returns(
                         TestData.gasGroups.SingleOrDefault(v => v.Id == gasGroup.Id));
             }
             foreach (var constructionMaterial in TestData.constructionMaterials)
             {
-                _mockConstructionMaterialRepo.Setup(mock =>
+                mockConstructionMaterialRepo.Setup(mock =>
                     mock.GetById(constructionMaterial.Id)).Returns(
                         TestData.constructionMaterials.SingleOrDefault(
                             v => v.Id == constructionMaterial.Id));
             }
             foreach (var paintworkType in TestData.paintworkTypes)
             {
-                _mockPaintworkTypeRepo.Setup(mock =>
+                mockPaintworkTypeRepo.Setup(mock =>
                     mock.GetById(paintworkType.Id)).Returns(
                         TestData.paintworkTypes.SingleOrDefault(v => v.Id == paintworkType.Id));
             }
             foreach (var highTensileBoltsType in TestData.highTensileBoltsTypes)
             {
-                _mockHighTensileBoltsTypeRepo.Setup(mock =>
+                mockHighTensileBoltsTypeRepo.Setup(mock =>
                     mock.GetById(highTensileBoltsType.Id)).Returns(
                         TestData.highTensileBoltsTypes.SingleOrDefault(
                             v => v.Id == highTensileBoltsType.Id));
@@ -103,13 +104,13 @@ namespace DocumentsKM.Tests
 
             _service = new MarkOperatingConditionsService(
                 _repository.Object,
-                _mockMarkRepo.Object,
-                _mockOperatingAreaRepo.Object,
-                _mockGasGroupRepo.Object,
-                _mockEnvAggressivenessRepo.Object,
-                _mockConstructionMaterialRepo.Object,
-                _mockPaintworkTypeRepo.Object,
-                _mockHighTensileBoltsTypeRepo.Object);
+                mockMarkRepo.Object,
+                mockOperatingAreaRepo.Object,
+                mockGasGroupRepo.Object,
+                mockEnvAggressivenessRepo.Object,
+                mockConstructionMaterialRepo.Object,
+                mockPaintworkTypeRepo.Object,
+                mockHighTensileBoltsTypeRepo.Object);
         }
 
         [Fact]

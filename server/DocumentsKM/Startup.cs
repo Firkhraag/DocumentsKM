@@ -167,6 +167,7 @@ namespace DocumentsKM
 
             services.AddScoped<IGeneralDataSectionService, GeneralDataSectionService>();
             services.AddScoped<IGeneralDataPointService, GeneralDataPointService>();
+            services.AddScoped<IMarkGeneralDataSectionService, MarkGeneralDataSectionService>();
             services.AddScoped<IMarkGeneralDataPointService, MarkGeneralDataPointService>();
 
             services.AddScoped<IDocumentService, DocumentService>();
@@ -238,6 +239,7 @@ namespace DocumentsKM
 
             services.AddScoped<IGeneralDataSectionRepo, SqlGeneralDataSectionRepo>();
             services.AddScoped<IGeneralDataPointRepo, SqlGeneralDataPointRepo>();
+            services.AddScoped<IMarkGeneralDataSectionRepo, SqlMarkGeneralDataSectionRepo>();
             services.AddScoped<IMarkGeneralDataPointRepo, SqlMarkGeneralDataPointRepo>();
 
             services.AddScoped<ICorrProtVariantRepo, SqlCorrProtVariantRepo>();
