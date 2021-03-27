@@ -10,6 +10,9 @@ namespace DocumentsKM.Data
         // Получить все пункты общих указаний марки по id раздела
         IEnumerable<MarkGeneralDataPoint> GetAllBySectionId(
             int sectionId);
+        // Получить все пункты общих указаний марки по разделу марки
+        IEnumerable<MarkGeneralDataPoint> GetAllByMarkIdAndSectionName(
+            int markId, string sectionName);
         // Получить пункт общих указаний марки по id
         MarkGeneralDataPoint GetById(int id);
         // Получить пункт общих указаний марки по unique key

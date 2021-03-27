@@ -30,6 +30,14 @@ namespace DocumentsKM.Data
                     v => v.OrderNum).ToList();
         }
 
+        public IEnumerable<MarkGeneralDataPoint> GetAllByMarkIdAndSectionName(
+            int markId, string sectionName)
+        {
+            return _context.MarkGeneralDataPoints.Where(
+                v => v.Section.Mark.Id == markId && v.Section.Name == sectionName).OrderBy(
+                    v => v.OrderNum).ToList();
+        }
+
         public MarkGeneralDataPoint GetById(int id)
         {
             return _context.MarkGeneralDataPoints.SingleOrDefault(v => v.Id == id);

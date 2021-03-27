@@ -6,6 +6,8 @@ import Select from 'react-select'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Trash } from 'react-bootstrap-icons'
+import { Files } from 'react-bootstrap-icons'
+import { PlusCircle } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import GeneralDataModel from '../../model/GeneralDataModel'
@@ -13,6 +15,7 @@ import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
+import { useUser } from '../../store/UserStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
@@ -22,16 +25,15 @@ import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 import { makeMarkName } from '../../util/make-name'
 
 const MarkGeneralData = () => {
-    const readOnlySectionIds = [7, 13]
-
 	const history = useHistory()
 	const mark = useMark()
+	const user = useUser()
 	const setPopup = useSetPopup()
 
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
 		section: null,
 		point: null,
-        sectionText: '',
+		sectionText: '',
 		pointText: '',
 	})
 	const [optionsObject, setOptionsObject] = useState({
@@ -57,26 +59,28 @@ const MarkGeneralData = () => {
 
 	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
-    const [isLeftErrMsg, setLeftErrMsg] = useState(true)
+	const [isLeftErrMsg, setLeftErrMsg] = useState(true)
+
+	const [refresh, setRefresh] = useState(false)
 
 	useEffect(() => {
-        if (mark != null && mark.id != null) {
-            const fetchData = async () => {
-                try {
-                    const sectionsResponse = await httpClient.get(
-                        `/marks/${mark.id}/mark-general-data-sections`
-                    )
-                    setOptionsObject({
-                        ...optionsObject,
-                        sections: sectionsResponse.data,
-                    })
-                } catch (e) {
-                    console.log('Failed to fetch the data', e)
-                }
-            }
-            fetchData()
-        }
-	}, [mark])
+		if (mark != null && mark.id != null) {
+			const fetchData = async () => {
+				try {
+					const sectionsResponse = await httpClient.get(
+						`/marks/${mark.id}/mark-general-data-sections`
+					)
+					setOptionsObject({
+						...optionsObject,
+						sections: sectionsResponse.data,
+					})
+				} catch (e) {
+					console.log('Failed to fetch the data', e)
+				}
+			}
+			fetchData()
+		}
+	}, [mark, refresh])
 
 	const onSectionSelect = async (id: number) => {
 		const v = getFromOptions(
@@ -111,7 +115,6 @@ const MarkGeneralData = () => {
 						...selectedObject,
 						section: v,
 						point: null,
-						pointText: '',
 						sectionText: v.name,
 					})
 				} catch (e) {
@@ -169,10 +172,66 @@ const MarkGeneralData = () => {
 		})
 	}
 
+	const onCopySectionClick = async (id: number, name: string) => {
+		setProcessIsRunning(true)
+		try {
+			await httpClient.post(
+				`/users/${user.id}/general-data-sections/copy`,
+				{
+					id: id,
+					name:
+						makeMarkName(
+							mark.subnode.node.project.baseSeries,
+							mark.subnode.node.code,
+							mark.subnode.code,
+							mark.code
+						) +
+						' ' +
+						name,
+				}
+			)
+		} catch (e) {
+			setLeftErrMsg(true)
+			if (e.response.status === 409) {
+				setErrMsg('Раздел с таким содержанием уже существует')
+				// setPopup(defaultPopup)
+				// setProcessIsRunning(false)
+				// return
+			} else {
+				setErrMsg('Произошла ошибка')
+				// setPopup(defaultPopup)
+				// setProcessIsRunning(false)
+				// return
+			}
+		}
+
+		// console.log(optionsObject.points.length)
+		// for (const p of optionsObject.points) {
+		//     try {
+		//         await httpClient.post(
+		//             `/general-data-sections/${id}/general-data-points`,
+		//             {
+		//                 text: p.text,
+		//             }
+		//         )
+		//     } catch (e) {
+		//         setLeftErrMsg(true)
+		//         setErrMsg('Произошла ошибка')
+		//         setPopup(defaultPopup)
+		//         setProcessIsRunning(false)
+		//         return
+		//     }
+		// }
+		setPopup(defaultPopup)
+		setProcessIsRunning(false)
+	}
+
 	const onSectionDeleteClick = async (row: number, id: number) => {
 		setProcessIsRunning(true)
 		try {
-			await httpClient.delete(`/marks/${mark.id}/mark-general-data-sections/${id}`)
+			await httpClient.delete(
+				`/marks/${mark.id}/mark-general-data-sections/${id}`
+			)
 
 			for (let s of optionsObject.sections) {
 				if (s.orderNum > optionsObject.sections[row].orderNum) {
@@ -185,7 +244,7 @@ const MarkGeneralData = () => {
 			setOptionsObject({
 				...optionsObject,
 				sections: arr,
-                points: [],
+				points: [],
 			})
 
 			if (
@@ -195,14 +254,14 @@ const MarkGeneralData = () => {
 				setSelectedObject({
 					...selectedObject,
 					section: null,
-                    point: null,
+					point: null,
 				})
 			}
-			setPopup(defaultPopup)
 		} catch (e) {
 			setLeftErrMsg(true)
 			setErrMsg('Произошла ошибка')
 		}
+		setPopup(defaultPopup)
 		setProcessIsRunning(false)
 	}
 
@@ -290,10 +349,10 @@ const MarkGeneralData = () => {
 					...selectedObject,
 					section: response.data,
 				})
-                setOptionsObject({
-                    ...optionsObject,
-                    points: [],
-                })
+				setOptionsObject({
+					...optionsObject,
+					points: [],
+				})
 			} catch (e) {
 				setLeftErrMsg(true)
 				if (e.response.status === 409) {
@@ -478,18 +537,20 @@ const MarkGeneralData = () => {
 		}
 	}
 
-    return (
+	return (
 		<div className="component-cnt flex-v-cent-h">
-            {isSectionsSelectionShown ? (
+			{isSectionsSelectionShown ? (
 				<SectionsSelectPopup
-					defaultSelectedSectionIds={optionsObject.sections.map(
-						(v) => v.id
+					defaultSelectedSectionNames={optionsObject.sections.map(
+						(v) => v.name
 					)}
 					close={() => setSectionsSelectionShown(false)}
 					optionsObject={optionsObject}
 					setOptionsObject={setOptionsObject}
 					selectedObject={selectedObject}
 					setSelectedObject={setSelectedObject}
+					refresh={refresh}
+					setRefresh={setRefresh}
 				/>
 			) : null}
 			{isPointsSelectionShown ? (
@@ -503,7 +564,7 @@ const MarkGeneralData = () => {
 					setOptionsObject={setOptionsObject}
 					selectedObject={selectedObject}
 					setSelectedObject={setSelectedObject}
-                    cachedPoints={cachedPoints}
+					cachedPoints={cachedPoints}
 				/>
 			) : null}
 			<h1 className="text-centered">Состав общих указаний марки</h1>
@@ -533,20 +594,22 @@ const MarkGeneralData = () => {
 												'. ' +
 												s.name}
 										</p>
-										{readOnlySectionIds.includes(
-											s.id
-										) ? null : (
+										<div className="flex">
+											{/* <div onClick={() => onCopySectionClick(s.id, s.name)} className="trash-area">
+                                                <Files color="#666" size={22} />
+                                            </div> */}
 											<div
 												onClick={() =>
 													setPopup({
 														isShown: true,
-														msg: `Вы действительно хотите удалить раздел № ${
+														msg: `Вы действительно хотите добавить раздел № ${
 															index + 1
-														}?`,
-														onAccept: () => onSectionDeleteClick(
-															index,
-															s.id
-														),
+														} в шаблоны пользователя?`,
+														onAccept: () =>
+															onCopySectionClick(
+																s.id,
+																s.name
+															),
 														onCancel: () =>
 															setPopup(
 																defaultPopup
@@ -555,58 +618,104 @@ const MarkGeneralData = () => {
 												}
 												className="trash-area"
 											>
-												<Trash color="#666" size={22} />
+												<Files color="#666" size={22} />
 											</div>
-										)}
+											{
+												<div
+													onClick={() =>
+														setPopup({
+															isShown: true,
+															msg: `Вы действительно хотите удалить раздел № ${
+																index + 1
+															}?`,
+															onAccept: () =>
+																onSectionDeleteClick(
+																	index,
+																	s.id
+																),
+															onCancel: () =>
+																setPopup(
+																	defaultPopup
+																),
+														})
+													}
+													className="trash-area"
+												>
+													<Trash
+														color="#666"
+														size={22}
+													/>
+												</div>
+											}
+										</div>
 									</div>
 								)
 							})}
 						</div>
 					</div>
 
-                    <Form.Group className="flex-cent-v mrg-top-2">
-						<Form.Label
-							className="bold no-bot-mrg"
-							htmlFor="sectionOrderNum"
-							style={{ marginRight: '1em' }}
-						>
-							Номер
-						</Form.Label>
-						<Select
-							inputId="sectionOrderNum"
-							maxMenuHeight={250}
-							isSearchable={true}
-							placeholder=""
-							noOptionsMessage={() => 'Номер не найден'}
-							className="num-field-width"
-							isDisabled={
-								selectedObject.section == null ? true : false
-							}
-							onChange={(selectedOption) =>
-								onSectionNumChange(
-									(selectedOption as any)?.value
-								)
-							}
-							value={
-								selectedObject.section == null
-									? null
-									: {
-											value: selectedObject.section.id,
-											label:
-												selectedObject.section.orderNum,
-									  }
-							}
-							options={[
-								...Array(optionsObject.sections.length).keys(),
-							].map((v) => {
-								return {
-									value: v + 1,
-									label: v + 1,
+					<div className="space-between">
+						<Form.Group className="flex-cent-v mrg-top-2">
+							<Form.Label
+								className="bold no-bot-mrg"
+								htmlFor="sectionOrderNum"
+								style={{ marginRight: '1em' }}
+							>
+								Номер
+							</Form.Label>
+
+							<Select
+								inputId="sectionOrderNum"
+								maxMenuHeight={250}
+								isSearchable={true}
+								placeholder=""
+								noOptionsMessage={() => 'Номер не найден'}
+								className="num-field-width"
+								isDisabled={
+									selectedObject.section == null
+										? true
+										: false
 								}
-							})}
-							styles={reactSelectStyle}
-						/>
-					</Form.Group>
+								onChange={(selectedOption) =>
+									onSectionNumChange(
+										(selectedOption as any)?.value
+									)
+								}
+								value={
+									selectedObject.section == null
+										? null
+										: {
+												value:
+													selectedObject.section.id,
+												label:
+													selectedObject.section
+														.orderNum,
+										  }
+								}
+								options={[
+									...Array(
+										optionsObject.sections.length
+									).keys(),
+								].map((v) => {
+									return {
+										value: v + 1,
+										label: v + 1,
+									}
+								})}
+								styles={reactSelectStyle}
+							/>
+						</Form.Group>
+						<div
+							onClick={() => setSectionsSelectionShown(true)}
+							className="pointer"
+						>
+							<PlusCircle
+								color={'#666'}
+								size={28}
+								style={{ marginTop: '1.5em' }}
+							/>
+						</div>
+					</div>
 					<Form.Group>
 						<Form.Label className="bold" htmlFor="section_title">
 							Раздел
@@ -615,14 +724,8 @@ const MarkGeneralData = () => {
 							id="section_title"
 							type="text"
 							value={selectedObject.sectionText}
-							readOnly={
-								selectedObject.section != null &&
-								readOnlySectionIds.includes(
-									selectedObject.section.id
-								)
-							}
 							onChange={onSectionTextChange}
-                            autoComplete="off"
+							autoComplete="off"
 						/>
 					</Form.Group>
 					{isLeftErrMsg ? (
@@ -635,11 +738,7 @@ const MarkGeneralData = () => {
 							onClick={onUpdateSectionButtonClick}
 							disabled={
 								selectedObject.section == null ||
-								processIsRunning ||
-								(selectedObject.section != null &&
-									readOnlySectionIds.includes(
-										selectedObject.section.id
-									))
+								processIsRunning
 							}
 						>
 							Изменить
@@ -648,7 +747,7 @@ const MarkGeneralData = () => {
 							variant="secondary"
 							className="flex-grow mrg-left"
 							onClick={onCreateSectionButtonClick}
-                            disabled={processIsRunning}
+							disabled={processIsRunning}
 						>
 							Добавить
 						</Button>
@@ -678,7 +777,7 @@ const MarkGeneralData = () => {
 										>
 											{(index + 1).toString() +
 												'. ' +
-												truncateText(p.text, 50, null)}
+												truncateText(p.text, 55, null)}
 										</p>
 										<div
 											onClick={() =>
@@ -755,14 +854,36 @@ const MarkGeneralData = () => {
 									styles={reactSelectStyle}
 								/>
 							</Form.Group>
-							<div style={{ marginTop: '1.66em' }}>
-								<span className="bold">Символы:</span> °C –
+							<div
+								onClick={
+									selectedObject.section == null
+										? null
+										: () => setPointsSelectionShown(true)
+								}
+								className={
+									selectedObject.section == null
+										? ''
+										: 'pointer'
+								}
+							>
+								<PlusCircle
+									color={
+										selectedObject.section == null
+											? '#ccc'
+											: '#666'
+									}
+									size={28}
+									style={{ marginTop: '1.5em' }}
+								/>
 							</div>
 						</div>
 						<Form.Group className="no-bot-mrg">
-							<Form.Label className="bold" htmlFor="text">
-								Пункт
-							</Form.Label>
+							<div className="flex">
+								<Form.Label className="bold" htmlFor="text">
+									Пункт
+								</Form.Label>
+								<p style={{ marginLeft: 10 }}>(°C –)</p>
+							</div>
 							<Form.Control
 								id="text"
 								as="textarea"
@@ -778,6 +899,18 @@ const MarkGeneralData = () => {
 								hide={() => setErrMsg('')}
 							/>
 						)}
+
+						<Button
+							variant="secondary"
+							className="btn-mrg-top-2 full-width"
+							onClick={() => setPointsSelectionShown(true)}
+							disabled={
+								selectedObject.section == null ? true : false
+							}
+						>
+							Изменить
+						</Button>
+
 						<div className="flex btn-mrg-top-2">
 							<Button
 								variant="secondary"
@@ -794,9 +927,7 @@ const MarkGeneralData = () => {
 								variant="secondary"
 								className="flex-grow mrg-left"
 								onClick={onCreatePointButtonClick}
-								disabled={
-									createBtnDisabled || processIsRunning
-								}
+								disabled={createBtnDisabled || processIsRunning}
 							>
 								Добавить
 							</Button>
@@ -804,14 +935,14 @@ const MarkGeneralData = () => {
 					</div>
 				</div>
 			</div>
-            <Button
-                variant="secondary"
-                className="full-width btn-mrg-top-2"
-                onClick={onDownloadButtonClick}
-                disabled={processIsRunning}
-            >
-                Скачать документ
-            </Button>
+			<Button
+				variant="secondary"
+				className="full-width btn-mrg-top-2"
+				onClick={onDownloadButtonClick}
+				disabled={processIsRunning}
+			>
+				Скачать документ
+			</Button>
 		</div>
 	)
 }

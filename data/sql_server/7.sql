@@ -1,7 +1,7 @@
 Create Table Marks (
 	Id Int Identity(1, 1) Primary Key,
 	Code Varchar(40) Not Null,
-	Name Varchar(255) Not Null,
+	Name Nvarchar(255) Not Null,
 	SubnodeId Int Not Null,
 	DepartmentId Smallint Not Null,
 	Signed1Id Int,

@@ -21,8 +21,6 @@ const UserGeneralData = () => {
 	const user = useUser()
 	const setPopup = useSetPopup()
 
-	const readOnlySectionIds = [7, 13]
-
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
 		section: null,
 		point: null,
@@ -99,7 +97,6 @@ const UserGeneralData = () => {
 						...selectedObject,
 						section: v,
 						point: null,
-						pointText: '',
 						sectionText: v.name,
 					})
 				} catch (e) {
@@ -160,7 +157,9 @@ const UserGeneralData = () => {
 	const onSectionDeleteClick = async (row: number, id: number) => {
 		setProcessIsRunning(true)
 		try {
-			await httpClient.delete(`/users/${user.id}/general-data-sections/${id}`)
+			await httpClient.delete(
+				`/users/${user.id}/general-data-sections/${id}`
+			)
 
 			for (let s of optionsObject.sections) {
 				if (s.orderNum > optionsObject.sections[row].orderNum) {
@@ -173,7 +172,7 @@ const UserGeneralData = () => {
 			setOptionsObject({
 				...optionsObject,
 				sections: arr,
-                points: [],
+				points: [],
 			})
 
 			if (
@@ -183,7 +182,7 @@ const UserGeneralData = () => {
 				setSelectedObject({
 					...selectedObject,
 					section: null,
-                    point: null,
+					point: null,
 				})
 			}
 			setPopup(defaultPopup)
@@ -278,10 +277,10 @@ const UserGeneralData = () => {
 					...selectedObject,
 					section: response.data,
 				})
-                setOptionsObject({
-                    ...optionsObject,
-                    points: [],
-                })
+				setOptionsObject({
+					...optionsObject,
+					points: [],
+				})
 			} catch (e) {
 				setLeftErrMsg(true)
 				if (e.response.status === 409) {
@@ -322,11 +321,11 @@ const UserGeneralData = () => {
 			}
 
 			cachedPoints.delete(selectedObject.section.id)
-			setPopup(defaultPopup)
 		} catch (e) {
 			setLeftErrMsg(false)
 			setErrMsg('Произошла ошибка')
 		}
+		setPopup(defaultPopup)
 		setProcessIsRunning(false)
 	}
 
@@ -460,9 +459,7 @@ const UserGeneralData = () => {
 												'. ' +
 												s.name}
 										</p>
-										{readOnlySectionIds.includes(
-											s.id
-										) ? null : (
+										{
 											<div
 												onClick={() =>
 													setPopup({
@@ -470,10 +467,11 @@ const UserGeneralData = () => {
 														msg: `Вы действительно хотите удалить раздел № ${
 															index + 1
 														}?`,
-														onAccept: () => onSectionDeleteClick(
-															index,
-															s.id
-														),
+														onAccept: () =>
+															onSectionDeleteClick(
+																index,
+																s.id
+															),
 														onCancel: () =>
 															setPopup(
 																defaultPopup
@@ -484,14 +482,14 @@ const UserGeneralData = () => {
 											>
 												<Trash color="#666" size={22} />
 											</div>
-										)}
+										}
 									</div>
 								)
 							})}
 						</div>
 					</div>
 
-                    <Form.Group className="flex-cent-v mrg-top-2">
+					<Form.Group className="flex-cent-v mrg-top-2">
 						<Form.Label
 							className="bold no-bot-mrg"
 							htmlFor="sectionOrderNum"
@@ -542,14 +540,8 @@ const UserGeneralData = () => {
 							id="section_title"
 							type="text"
 							value={selectedObject.sectionText}
-							readOnly={
-								selectedObject.section != null &&
-								readOnlySectionIds.includes(
-									selectedObject.section.id
-								)
-							}
 							onChange={onSectionTextChange}
-                            autoComplete="off"
+							autoComplete="off"
 						/>
 					</Form.Group>
 					{isLeftErrMsg ? (
@@ -562,11 +554,7 @@ const UserGeneralData = () => {
 							onClick={onUpdateSectionButtonClick}
 							disabled={
 								selectedObject.section == null ||
-								processIsRunning ||
-								(selectedObject.section != null &&
-									readOnlySectionIds.includes(
-										selectedObject.section.id
-									))
+								processIsRunning
 							}
 						>
 							Изменить
@@ -575,7 +563,7 @@ const UserGeneralData = () => {
 							variant="secondary"
 							className="flex-grow mrg-left"
 							onClick={onCreateSectionButtonClick}
-                            disabled={processIsRunning}
+							disabled={processIsRunning}
 						>
 							Добавить
 						</Button>
@@ -605,7 +593,7 @@ const UserGeneralData = () => {
 										>
 											{(index + 1).toString() +
 												'. ' +
-												truncateText(p.text, 50, null)}
+												truncateText(p.text, 55, null)}
 										</p>
 										<div
 											onClick={() =>
@@ -721,9 +709,7 @@ const UserGeneralData = () => {
 								variant="secondary"
 								className="flex-grow mrg-left"
 								onClick={onCreatePointButtonClick}
-								disabled={
-									createBtnDisabled || processIsRunning
-								}
+								disabled={createBtnDisabled || processIsRunning}
 							>
 								Добавить
 							</Button>

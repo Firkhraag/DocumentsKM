@@ -71,7 +71,7 @@ namespace DocumentsKM.Services
             var generalDataSections = new List<GeneralDataSection> { };
             foreach (var id in sectionIds)
             {
-                var generalDataSection = _generalDataSectionRepo.GetById(id);
+                var generalDataSection = _generalDataSectionRepo.GetById(id, true);
                 if (generalDataSection == null)
                     throw new ArgumentNullException(nameof(generalDataSection));
                 generalDataSections.Add(generalDataSection);
@@ -104,6 +104,19 @@ namespace DocumentsKM.Services
                         markGeneralDataSection.OrderNum = 1;
                     else
                         markGeneralDataSection.OrderNum = (Int16)(currentSections.Max(v => v.OrderNum) + 1);
+
+                    var markGeneralDataPoints = new List<MarkGeneralDataPoint>(){};
+                    foreach (var p in s.GeneralDataPoints)
+                    {
+                        markGeneralDataPoints.Add(new MarkGeneralDataPoint
+                        {
+                            Section = markGeneralDataSection,
+                            Text = p.Text,
+                            OrderNum = p.OrderNum,
+                        });
+                    }
+                    markGeneralDataSection.MarkGeneralDataPoints = markGeneralDataPoints;
+                    
                     _repository.Add(markGeneralDataSection);
                     currentSections.Add(markGeneralDataSection);
                 }

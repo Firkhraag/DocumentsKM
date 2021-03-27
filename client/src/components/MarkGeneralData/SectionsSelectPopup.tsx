@@ -8,6 +8,7 @@ import httpClient from '../../axios'
 import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import { useMark } from '../../store/MarkStore'
+import { useUser } from '../../store/UserStore'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 
 type IOptionsObject = {
@@ -23,23 +24,28 @@ type ISelectionObject = {
 }
 
 type PopupProps = {
-	defaultSelectedSectionIds: number[]
+	defaultSelectedSectionNames: string[]
 	close: () => void
 	optionsObject: IOptionsObject
 	setOptionsObject: (optionObject: IOptionsObject) => void
 	selectedObject: ISelectionObject
 	setSelectedObject: (selectionObject: ISelectionObject) => void
+    refresh: boolean
+    setRefresh: (r: boolean) => void
 }
 
 const SectionsSelectPopup = ({
-	defaultSelectedSectionIds,
+	defaultSelectedSectionNames,
 	close,
 	optionsObject,
 	setOptionsObject,
 	selectedObject,
 	setSelectedObject,
+    refresh,
+    setRefresh,
 }: PopupProps) => {
 	const mark = useMark()
+    const user = useUser()
 
 	const [sections, setSections] = useState<GeneralDataSection[]>([])
 	const [selectedSections, setSelectedSections] = useState<
@@ -53,9 +59,9 @@ const SectionsSelectPopup = ({
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (refs.length > 0 && sections.length > 0) {
+            if (sections.length > 0) {
 				for (const [i, s] of sections.entries()) {
-					if (defaultSelectedSectionIds.includes(s.id)) {
+					if (defaultSelectedSectionNames.includes(s.name)) {
 						const inputElement = refs[i].current as any
 						if (inputElement) {
 							inputElement.checked = true
@@ -68,12 +74,14 @@ const SectionsSelectPopup = ({
 			const fetchData = async () => {
 				try {
 					const sectionsResponse = await httpClient.get(
-						`/general-data-sections`
+						`/users/${user.id}/general-data-sections`
 					)
 					for (let _ of sectionsResponse.data) {
 						refs.push(createRef())
 					}
-					setSections(sectionsResponse.data)
+                    if (sectionsResponse.data.length > 0) {
+                        setSections(sectionsResponse.data)
+                    }
 				} catch (e) {
 					console.log('Failed to fetch the data')
 				}
@@ -99,19 +107,29 @@ const SectionsSelectPopup = ({
 		setProcessIsRunning(true)
 		try {
 			await httpClient.patch(
-				`/marks/${mark.id}/general-data-points`,
+				`users/${user.id}/marks/${mark.id}/mark-general-data-sections`,
 				selectedSections.map((v) => v.id)
 			)
-			setOptionsObject({
-				...optionsObject,
-				sections: selectedSections.sort((a, b) => a.id - b.id),
-				points: [],
-			})
-			setSelectedObject({
-				...selectedObject,
-				section: null,
-				point: null,
-			})
+            setSelectedObject({
+                ...selectedObject,
+                point: null,
+                section: null,
+            })
+            setOptionsObject({
+                sections: [],
+                points: [],
+            })
+            setRefresh(!refresh)
+			// setOptionsObject({
+			// 	...optionsObject,
+			// 	sections: selectedSections.sort((a, b) => a.id - b.id),
+			// 	points: [],
+			// })
+			// setSelectedObject({
+			// 	...selectedObject,
+			// 	section: null,
+			// 	point: null,
+			// })
 			close()
 		} catch (e) {
 			setErrMsg('Произошла ошибка')
@@ -123,7 +141,7 @@ const SectionsSelectPopup = ({
 		<div className="div-container component-cnt-div white-bg selection-popup shadow p-3 mb-5 rounded">
 			<div className="full-width">
 				<label className="bold no-bot-mrg">Разделы</label>
-				<div className="flex-v general-data-selection mrg-top">
+				<div className="flex-v general-data-selection mrg-top" style={{height: 333}}>
 					{sections.map((s, index) => {
 						return (
 							<div

@@ -15,5 +15,7 @@ namespace DocumentsKM.Services
             GeneralDataSectionUpdateRequest generalDataSection);
         // Удалить раздел общих указаний марки
         void Delete(int id, int userId);
+        // Скопировать раздел с пунктами у марки
+        void Copy(int userId, GeneralDataSectionCopyRequest generalDataSectionRequest);
     }
 }

@@ -18,6 +18,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             var mockUserRepo = new Mock<IUserRepo>();
+            var mockMarkGeneralDataSectionRepo = new Mock<IMarkGeneralDataSectionRepo>();
 
             foreach (var user in TestData.users)
             {
@@ -32,7 +33,9 @@ namespace DocumentsKM.Tests
             }
 
             _service = new GeneralDataSectionService(
-                _repository.Object, mockUserRepo.Object);
+                _repository.Object,
+                mockMarkGeneralDataSectionRepo.Object,
+                mockUserRepo.Object);
         }
 
         [Fact]

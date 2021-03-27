@@ -15,6 +15,7 @@ namespace DocumentsKM.Services
     public class GeneralDataDocumentService : IGeneralDataDocumentService
     {
         private readonly int _sheetDocTypeId = 1;
+        private readonly string _conditionsSectionName = "Характеристики конструкций";
         
         private readonly IMarkRepo _markRepo;
         private readonly IMarkApprovalRepo _markApprovalRepo;
@@ -405,7 +406,7 @@ namespace DocumentsKM.Services
                     numberingProperties, spacingBetweenLines, indentation);
                 var newPara = new Paragraph(paragraphProperties);
 
-                if (item.Section.Id == 7)
+                if (item.Section.Name == _conditionsSectionName)
                 {
                     if (pointText.Contains("коэффициент надежности по ответственности"))
                         pointText = pointText.Replace("{}", markOperatingConditions.SafetyCoeff.ToString());

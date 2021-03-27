@@ -108,6 +108,32 @@ namespace DocumentsKM.Controllers
                 return NotFound();
             }
         }
+
+        [HttpPost, Route("users/{userId}/general-data-sections/copy")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public ActionResult<GeneralDataSection> Copy(int userId,
+            [FromBody] GeneralDataSectionCopyRequest generalDataSectionRequest)
+        {
+            try
+            {
+                _service.Copy(
+                    userId,
+                    generalDataSectionRequest);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (ConflictException)
+            {
+                return Conflict();
+            }
+            return Ok();
+        }
     }
 }
 

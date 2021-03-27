@@ -57,7 +57,7 @@ const PointsSelectPopup = ({
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (refs.length > 0 && points.length > 0) {
+            if (points.length > 0) {
 				for (const [i, s] of points.entries()) {
 					if (defaultSelectedPointTexts.includes(s.text)) {
 						const inputElement = refs[i].current as any
@@ -69,20 +69,22 @@ const PointsSelectPopup = ({
 				}
 				return
 			}
-			const fetchData = async () => {
-				try {
-					const pointsResponse = await httpClient.get(
-						`/users/${user.id}/general-data-sections/${sectionId}/general-data-points`
-					)
-					for (let _ of pointsResponse.data) {
-						refs.push(createRef())
-					}
-					setPoints(pointsResponse.data)
-				} catch (e) {
-					console.log('Failed to fetch the data')
-				}
-			}
-			fetchData()
+			// const fetchData = async () => {
+			// 	try {
+			// 		const pointsResponse = await httpClient.get(
+			// 			`/general-data-sections/${sectionId}/general-data-points`
+			// 		)
+			// 		for (let _ of pointsResponse.data) {
+			// 			refs.push(createRef())
+			// 		}
+            //         if (pointsResponse.data.length > 0) {
+            //             setPoints(pointsResponse.data)
+            //         }
+			// 	} catch (e) {
+			// 		console.log('Failed to fetch the data')
+			// 	}
+			// }
+			// fetchData()
 		}
 	}, [mark, points])
 
@@ -103,7 +105,7 @@ const PointsSelectPopup = ({
 		setProcessIsRunning(true)
 		try {
 			const addedPointsResponse = await httpClient.patch(
-				`/users/${user.id}/marks/${mark.id}/general-data-sections/${sectionId}/general-data-points`,
+				`/users/${user.id}/mark-general-data-sections/${sectionId}/mark-general-data-points`,
 				selectedPoints.map((v) => v.id)
 			)
 			setSelectedObject({
@@ -127,7 +129,7 @@ const PointsSelectPopup = ({
 		<div className="div-container component-cnt-div white-bg selection-popup shadow p-3 mb-5 rounded">
 			<div className="full-width">
 				<label className="bold no-bot-mrg">Разделы</label>
-				<div className="flex-v general-data-selection mrg-top">
+				<div className="flex-v general-data-selection mrg-top" style={{height: 333}}>
 					{points.map((p, index) => {
 						return (
 							<div

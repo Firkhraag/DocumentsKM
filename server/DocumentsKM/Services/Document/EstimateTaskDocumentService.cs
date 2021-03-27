@@ -14,7 +14,7 @@ namespace DocumentsKM.Services
 {
     public class EstimateTaskDocumentService : IEstimateTaskDocumentService
     {
-        private readonly int _paintingGeneralDataSectionId = 13;
+        private readonly string _paintingGeneralDataSectionName = "Антикоррозионная защита";
         
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
@@ -338,8 +338,8 @@ namespace DocumentsKM.Services
                     WithSuperscript = true,
                 });
 
-                var points = _markGeneralDataPointRepo.GetAllBySectionId(
-                    _paintingGeneralDataSectionId);
+                var points = _markGeneralDataPointRepo.GetAllByMarkIdAndSectionName(
+                    markId, _paintingGeneralDataSectionName);
                 for (int i = 1; i < points.Count(); i++)
                 {
                     var pointText = points.ToList()[i].Text;
