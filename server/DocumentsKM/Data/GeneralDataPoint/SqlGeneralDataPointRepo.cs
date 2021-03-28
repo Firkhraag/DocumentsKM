@@ -21,6 +21,14 @@ namespace DocumentsKM.Data
                 v => v.Section.Id == sectionId).OrderBy(
                     v => v.OrderNum).ToList();
         }
+        
+        public IEnumerable<GeneralDataPoint> GetAllByUserIdAndSectionName(
+            int userId, string sectionName)
+        {
+            return _context.GeneralDataPoints.Where(
+                v => v.Section.User.Id == userId && v.Section.Name == sectionName).OrderBy(
+                    v => v.OrderNum).ToList();
+        }
 
         public IEnumerable<GeneralDataPoint> GetAllByUserId(
             int userId)

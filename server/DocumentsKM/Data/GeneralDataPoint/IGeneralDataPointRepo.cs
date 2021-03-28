@@ -8,6 +8,9 @@ namespace DocumentsKM.Data
         // Получить все пункты общих указаний по id раздела
         IEnumerable<GeneralDataPoint> GetAllBySectionId(
             int sectionId);
+        // Получить все пункты общих указаний по id пользователя и названию раздела
+        IEnumerable<GeneralDataPoint> GetAllByUserIdAndSectionName(
+            int userId, string sectionName);
         // Получить все пункты общих указаний по id пользователя
         IEnumerable<GeneralDataPoint> GetAllByUserId(
             int userId);

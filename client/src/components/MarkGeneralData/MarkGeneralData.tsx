@@ -556,6 +556,7 @@ const MarkGeneralData = () => {
 			{isPointsSelectionShown ? (
 				<PointsSelectPopup
 					sectionId={selectedObject.section.id}
+					sectionName={selectedObject.section.name}
 					defaultSelectedPointTexts={optionsObject.points.map(
 						(v) => v.text
 					)}
@@ -899,18 +900,7 @@ const MarkGeneralData = () => {
 								hide={() => setErrMsg('')}
 							/>
 						)}
-
-						<Button
-							variant="secondary"
-							className="btn-mrg-top-2 full-width"
-							onClick={() => setPointsSelectionShown(true)}
-							disabled={
-								selectedObject.section == null ? true : false
-							}
-						>
-							Изменить
-						</Button>
-
+                        
 						<div className="flex btn-mrg-top-2">
 							<Button
 								variant="secondary"

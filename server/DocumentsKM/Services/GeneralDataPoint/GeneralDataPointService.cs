@@ -29,6 +29,12 @@ namespace DocumentsKM.Services
             return _repository.GetAllBySectionId(sectionId);
         }
 
+        public IEnumerable<GeneralDataPoint> GetAllByUserIdAndSectionName(
+            int userId, string sectionName)
+        {
+            return _repository.GetAllByUserIdAndSectionName(userId, sectionName);
+        }
+
         public void Create(
             GeneralDataPoint generalDataPoint,
             int sectionId)

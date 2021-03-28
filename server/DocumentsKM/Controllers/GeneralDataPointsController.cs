@@ -38,6 +38,16 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<GeneralDataPointResponse>>(points));
         }
 
+        [HttpGet,
+            Route("users/{userId}/general-data-sections/{sectionName}/general-data-points")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<GeneralDataPointResponse>> GetAllByUserIdAndSectionName(
+            int userId, string sectionName)
+        {
+            var points = _service.GetAllByUserIdAndSectionName(userId, sectionName);
+            return Ok(_mapper.Map<IEnumerable<GeneralDataPointResponse>>(points));
+        }
+
         [HttpPost,
             Route("general-data-sections/{sectionId}/general-data-points")]
         [Consumes(MediaTypeNames.Application.Json)]

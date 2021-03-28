@@ -25,6 +25,7 @@ type ISelectionObject = {
 
 type PopupProps = {
 	sectionId: number
+	sectionName: string
 	defaultSelectedPointTexts: string[]
 	close: () => void
 	optionsObject: IOptionsObject
@@ -36,6 +37,7 @@ type PopupProps = {
 
 const PointsSelectPopup = ({
 	sectionId,
+	sectionName,
 	defaultSelectedPointTexts,
 	close,
 	optionsObject,
@@ -69,22 +71,22 @@ const PointsSelectPopup = ({
 				}
 				return
 			}
-			// const fetchData = async () => {
-			// 	try {
-			// 		const pointsResponse = await httpClient.get(
-			// 			`/general-data-sections/${sectionId}/general-data-points`
-			// 		)
-			// 		for (let _ of pointsResponse.data) {
-			// 			refs.push(createRef())
-			// 		}
-            //         if (pointsResponse.data.length > 0) {
-            //             setPoints(pointsResponse.data)
-            //         }
-			// 	} catch (e) {
-			// 		console.log('Failed to fetch the data')
-			// 	}
-			// }
-			// fetchData()
+			const fetchData = async () => {
+				try {
+					const pointsResponse = await httpClient.get(
+						`/users/${user.id}/general-data-sections/${sectionName}/general-data-points`
+					)
+					for (let _ of pointsResponse.data) {
+						refs.push(createRef())
+					}
+                    if (pointsResponse.data.length > 0) {
+                        setPoints(pointsResponse.data)
+                    }
+				} catch (e) {
+					console.log('Failed to fetch the data')
+				}
+			}
+			fetchData()
 		}
 	}, [mark, points])
 
