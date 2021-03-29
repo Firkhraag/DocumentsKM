@@ -10,6 +10,46 @@
     width: 13vw;
 }
 
+.add-work-name-col-width {
+    width: 300px;
+}
+
+.completed-num-col-width {
+    width: 180px;
+}
+
+.mark-data-input-width1 {
+    width: 530px !important;
+}
+
+.mark-data-input-width2 {
+    width: 500px !important;
+}
+
+.construction-input-width {
+    width: 520px !important;
+}
+
+.bolt-input-width {
+    width: 460px !important;
+}
+
+.standard-construction-input-width {
+    width: 460px !important;
+}
+
+.doc-input-width {
+    width: 530px !important;
+}
+
+.operating-conditions-input-width {
+    width: 480px !important;
+}
+
+.additional-work-input-width {
+    width: 500px !important;
+}
+
 .border-radius {
     border-radius: 0.25rem;
 }

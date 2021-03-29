@@ -20,12 +20,10 @@ public class FetchService : IHostedService
     private DateTime _nextRun;
 
     // Cron time string format
-    // Minute Hour DayOfTheMonth Month DayOfTheWeek
+    // Second Minute Hour DayOfTheMonth Month DayOfTheWeek
 
-    // // Daily at 1 am
-    // private const string Schedule = "0 0 1 * * *";
-    // Each minute
-    private const string Schedule = "1 * * * * *";
+    // Daily at 1 am
+    private const string Schedule = "0 0 1 * * *";
 
     private readonly IHttpClientFactory _clientFactory;
     private readonly IServiceScopeFactory _serviceScopeFactory;

@@ -1,7 +1,7 @@
 // Global
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import Select from 'react-select'
+import Select, { createFilter } from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -14,8 +14,9 @@ import httpClient from '../../axios'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { makeMarkName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
-import { reactSelectStyle } from '../../util/react-select-style'
+import { reactSelectStyle, optimizedReactSelectStyle } from '../../util/react-select-style'
 import { useSetMark } from '../../store/MarkStore'
+import { optimizeSelect } from '../../util/optimize-select'
 
 type MarkSelectProps = {
 	setSubnode: (v: Subnode) => void
@@ -424,8 +425,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 					/>
 				</Form.Group>
 
-				<div className="flex mrg-top-2">
-					<Form.Group className="no-bot-mrg">
+				<Form.Group className="no-bot-mrg">
 						<Form.Label htmlFor="project">Базовая серия</Form.Label>
 						<Select
 							inputId="project"
@@ -434,6 +434,49 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 							isSearchable={true}
 							placeholder="Выберите базовую серию"
 							noOptionsMessage={() => 'Базовые серии не найдены'}
+							filterOption={createFilter({ ignoreAccents: false })}
+							components={optimizeSelect.components}
+							onChange={(selectedOption) =>
+								onProjectSelect((selectedOption as any)?.value)
+							}
+							value={
+								selectedObject.project == null
+									? null
+									: {
+											value: selectedObject.project.id,
+											label:
+												selectedObject.project
+													.baseSeries === ''
+													? '-'
+													: selectedObject.project
+															.baseSeries,
+									  }
+							}
+							options={optionsObject.projects.map((p) => {
+								return {
+									value: p.id,
+									label:
+										p.baseSeries === ''
+											? '-'
+											: p.baseSeries + ' ' + p.name,
+								}
+							})}
+							styles={optimizedReactSelectStyle}
+						/>
+					</Form.Group>
+
+				<div className="flex mrg-top-2">
+					{/* <Form.Group className="no-bot-mrg">
+						<Form.Label htmlFor="project">Базовая серия</Form.Label>
+						<Select
+							inputId="project"
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Выберите базовую серию"
+							noOptionsMessage={() => 'Базовые серии не найдены'}
+							filterOption={createFilter({ ignoreAccents: false })}
+							components={optimizeSelect.components}
 							className="input-width-2"
 							onChange={(selectedOption) =>
 								onProjectSelect((selectedOption as any)?.value)
@@ -462,8 +505,8 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 							})}
 							styles={reactSelectStyle}
 						/>
-					</Form.Group>
-					<Form.Group className="mrg-left no-bot-mrg">
+					</Form.Group> */}
+					<Form.Group className="no-bot-mrg">
 						<Form.Label htmlFor="node">Узел</Form.Label>
 						<Select
 							inputId="node"
@@ -490,7 +533,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 							options={optionsObject.nodes.map((n) => {
 								return {
 									value: n.id,
-									label: (n.code === '' ? '-' : n.code) + ' ' + n.name,
+									label: n.code === '' ? '-' : n.code,
 								}
 							})}
 							styles={reactSelectStyle}
@@ -525,7 +568,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 							options={optionsObject.subnodes.map((s) => {
 								return {
 									value: s.id,
-									label: (s.code === '' ? '-' : s.code) + ' ' + s.name,
+									label: s.code === '' ? '-' : s.code,
 								}
 							})}
 							styles={reactSelectStyle}
