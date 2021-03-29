@@ -35,7 +35,7 @@ namespace DocumentsKM.Services
                     project.Name, node.Name, subnode.Name, mark.Name);
 
                 AddMarkInfo(wordDoc, complexName, objectName, markName);
-                AddChiefEngineer(wordDoc, mark.Subnode.Node.ChiefEngineer.Name);
+                AddChiefEngineer(wordDoc, mark.Subnode.Node.ChiefEngineer);
                 AddYear(wordDoc);
             }
         }

@@ -31,6 +31,12 @@ namespace DocumentsKM.Data
                 v => v.Node).SingleOrDefault(v => v.Id == id);
         }
 
+        public Subnode GetByUniqueKey(int nodeId, string code)
+        {
+            return _context.Subnodes.SingleOrDefault(
+                v => v.NodeId == nodeId && v.Code == code);
+        }
+
         public void Add(Subnode subnode)
         {
             _context.Subnodes.Add(subnode);

@@ -56,7 +56,6 @@ namespace DocumentsKM.Models
         public DateTime? IssueDate { get; set; }
 
         public Int16? NumOfVolumes { get; set; }
-        public string PaintworkType { get; set; }
         public string Note { get; set; }
         public Int16? FireHazardCategoryId { get; set; }
         public Boolean? PTransport { get; set; }

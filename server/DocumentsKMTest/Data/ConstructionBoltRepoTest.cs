@@ -168,7 +168,7 @@ namespace DocumentsKM.Tests
                     Project = _projects[0],
                     Code = "11",
                     Name = "Name 1",
-                    ChiefEngineer = _employees[0],
+                    ChiefEngineer = "CE1",
                 },
                 new Node
                 {
@@ -176,7 +176,7 @@ namespace DocumentsKM.Tests
                     Project = _projects[1],
                     Code = "22",
                     Name = "Name 2",
-                    ChiefEngineer = _employees[1],
+                    ChiefEngineer = "CE2",
                 },
             };
             _subnodes = new List<Subnode>

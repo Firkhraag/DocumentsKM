@@ -11,6 +11,8 @@ namespace DocumentsKM.Data
         IEnumerable<Node> GetAllByProjectId(int projectId);
         // Получить узел по id
         Node GetById(int id);
+        // Получить узел по unique key
+        Node GetByUniqueKey(int projectId, string code);
         // Добавить узел
         void Add(Node node);
         // Обновить узел

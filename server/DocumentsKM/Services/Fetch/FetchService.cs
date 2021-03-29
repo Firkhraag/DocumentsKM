@@ -128,54 +128,54 @@ public class FetchService : IHostedService
             Log.Information("Nodes were fetched successfully");
 
             Log.Information("Fetching subnodes");
-            var subnodes = archiveService.GetNodes();
+            var subnodes = archiveService.GetSubnodes();
             var subnodeService = scope.ServiceProvider.GetRequiredService<ISubnodeService>();
             subnodeService.UpdateAll(subnodes.ToList());
             Log.Information("Subnodes were fetched successfully");
         }
     }
 
-    public async Task OnTest()
-    {
-        using (var scope = _serviceScopeFactory.CreateScope())
-        {
-            const string baseUrl = Secrets.PERSONNEL_URL;
-            var client = _clientFactory.CreateClient();
+    // public async Task OnTest()
+    // {
+    //     using (var scope = _serviceScopeFactory.CreateScope())
+    //     {
+    //         const string baseUrl = Secrets.PERSONNEL_URL;
+    //         var client = _clientFactory.CreateClient();
 
-            Log.Information("Fetching staff");
-            var staffUrl = baseUrl + "staff";
-            var staffRequest = new HttpRequestMessage(HttpMethod.Get, staffUrl);
-            staffRequest.Headers.Add("Accept", "application/json");
-            var response = await client.SendAsync(staffRequest);
-            if (response.IsSuccessStatusCode)
-            {
-                using var responseStream = await response.Content.ReadAsStreamAsync();
-                var employees = await JsonSerializer.DeserializeAsync<IEnumerable<EmployeeFetched>>(
-                    responseStream,
-                    new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true,
-                    });
-                var employeeService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
-                employeeService.UpdateAll(employees.ToList());
-            }
-            else
-                Log.Fatal("Error while fetching staff");
-            Log.Information("Staff was fetched successfully");
-        }
-    }
+    //         Log.Information("Fetching staff");
+    //         var staffUrl = baseUrl + "staff";
+    //         var staffRequest = new HttpRequestMessage(HttpMethod.Get, staffUrl);
+    //         staffRequest.Headers.Add("Accept", "application/json");
+    //         var response = await client.SendAsync(staffRequest);
+    //         if (response.IsSuccessStatusCode)
+    //         {
+    //             using var responseStream = await response.Content.ReadAsStreamAsync();
+    //             var employees = await JsonSerializer.DeserializeAsync<IEnumerable<EmployeeFetched>>(
+    //                 responseStream,
+    //                 new JsonSerializerOptions
+    //                 {
+    //                     PropertyNameCaseInsensitive = true,
+    //                 });
+    //             var employeeService = scope.ServiceProvider.GetRequiredService<IEmployeeService>();
+    //             employeeService.UpdateAll(employees.ToList());
+    //         }
+    //         else
+    //             Log.Fatal("Error while fetching staff");
+    //         Log.Information("Staff was fetched successfully");
+    //     }
+    // }
 
     public virtual Task StartAsync(CancellationToken cancellationToken)
     {
-        // Task.Run(async () =>
-        // {
-        //     while (!cancellationToken.IsCancellationRequested)
-        //     {
-        //         await Task.Delay(UntilNextExecution(), cancellationToken);
-        //         await OnGet();
-        //         _nextRun = _crontabSchedule.GetNextOccurrence(DateTime.Now);
-        //     }
-        // }, cancellationToken);
+        Task.Run(async () =>
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(UntilNextExecution(), cancellationToken);
+                await OnGet();
+                _nextRun = _crontabSchedule.GetNextOccurrence(DateTime.Now);
+            }
+        }, cancellationToken);
 
         return Task.CompletedTask;
         // return OnTest();

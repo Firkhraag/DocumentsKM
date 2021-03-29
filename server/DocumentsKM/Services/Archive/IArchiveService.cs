@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Services
@@ -8,8 +7,8 @@ namespace DocumentsKM.Services
     {
         IEnumerable<Project> GetProjects();
 
-        IEnumerable<ArchiveNode> GetNodes();
+        IEnumerable<Node> GetNodes();
 
-        IEnumerable<ArchiveNode> GetSubnodes();
+        IEnumerable<Subnode> GetSubnodes();
     }
 }

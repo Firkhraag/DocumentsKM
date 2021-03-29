@@ -14,6 +14,7 @@ namespace DocumentsKM.Models
         [Required]
         [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
+        public Int32 ProjectId { get; set; }
 
         // Код
         [Required]
@@ -21,13 +22,11 @@ namespace DocumentsKM.Models
         public string Code { get; set; }
 
         // Название
-        [Required]
         [MaxLength(255)]
         public string Name { get; set; }
 
         // ГИП
-        [Required]
-        [ForeignKey("ChiefEngineerId")]
-        public virtual Employee ChiefEngineer { get; set; }
+        [MaxLength(255)]
+        public string ChiefEngineer { get; set; }
     }
 }

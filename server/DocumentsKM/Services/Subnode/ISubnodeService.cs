@@ -1,4 +1,3 @@
-using DocumentsKM.Dtos;
 using DocumentsKM.Models;
 using System.Collections.Generic;
 
@@ -13,6 +12,6 @@ namespace DocumentsKM.Services
         Subnode GetById(int id);
 
         // Обновить все подузлы
-        void UpdateAll(List<ArchiveNode> subnodesFetched);
+        void UpdateAll(List<Subnode> subnodesFetched);
     }
 }

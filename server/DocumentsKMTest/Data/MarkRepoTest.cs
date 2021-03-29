@@ -223,7 +223,6 @@ namespace DocumentsKM.Tests
                     Signed2Id = m.Signed2Id,
                     IssueDate = m.IssueDate,
                     NumOfVolumes = m.NumOfVolumes,
-                    PaintworkType = m.PaintworkType,
                     Note = m.Note,
                     FireHazardCategoryId = m.FireHazardCategoryId,
                     PTransport = m.PTransport,

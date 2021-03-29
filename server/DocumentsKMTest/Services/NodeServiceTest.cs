@@ -16,6 +16,7 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             var repository = new Mock<INodeRepo>();
+            var mockProjectRepo = new Mock<IProjectRepo>();
 
             foreach (var project in TestData.projects)
             {
@@ -24,7 +25,9 @@ namespace DocumentsKM.Tests
                         TestData.nodes.Where(v => v.Project.Id == project.Id));
             }
 
-            _service = new NodeService(repository.Object);
+            _service = new NodeService(
+                repository.Object,
+                mockProjectRepo.Object);
         }
 
         [Fact]

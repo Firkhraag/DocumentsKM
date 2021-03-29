@@ -17,7 +17,7 @@ Create Table Marks (
 	FireHazardCategoryId Smallint,
 	PTransport Bit,
 	PSite Bit,
-	Unique (Code, SubnodeId),
+	Unique (SubnodeId, Code),
 	Constraint FK_Subnode_Mark Foreign Key(SubnodeId) References Subnodes(Id),
 	Constraint FK_ChiefSpecialist_Mark Foreign Key(ChiefSpecialistId) References Employees(Id),
 	Constraint FK_GroupLeader_Mark Foreign Key(GroupLeaderId) References Employees(Id),

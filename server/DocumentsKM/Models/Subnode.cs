@@ -14,6 +14,7 @@ namespace DocumentsKM.Models
         [Required]
         [ForeignKey("NodeId")]
         public virtual Node Node { get; set; }
+        public Int32 NodeId { get; set; }
 
         // Код
         [Required]
@@ -21,7 +22,6 @@ namespace DocumentsKM.Models
         public string Code { get; set; }
 
         // Название
-        [Required]
         [MaxLength(255)]
         public string Name { get; set; }
     }

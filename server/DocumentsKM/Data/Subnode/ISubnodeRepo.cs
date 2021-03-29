@@ -11,6 +11,8 @@ namespace DocumentsKM.Data
         IEnumerable<Subnode> GetAllByNodeId(int nodeId);
         // Получить подузел по id
         Subnode GetById(int id);
+        // Получить подузел по unique key
+        Subnode GetByUniqueKey(int nodeId, string code);
         // Добавить подузел
         void Add(Subnode subnode);
         // Обновить подузел

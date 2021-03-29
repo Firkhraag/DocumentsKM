@@ -65,7 +65,7 @@ namespace DocumentsKM.Services
                 Word.ReplaceText(wordDoc, "A", markName);
                 Word.ReplaceText(wordDoc, "B", complexName);
                 Word.ReplaceText(wordDoc, "C", objectName);
-                Word.ReplaceText(wordDoc, "D", mark.Subnode.Node.ChiefEngineer.Name);
+                Word.ReplaceText(wordDoc, "D", mark.Subnode.Node.ChiefEngineer);
                 Word.ReplaceText(wordDoc, "E", mark.GroupLeader.Name);
                 Word.ReplaceText(
                     wordDoc, "F", mark.IssueDate.GetValueOrDefault().ToString("dd.MM.yyyy"));

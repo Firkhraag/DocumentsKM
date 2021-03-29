@@ -201,7 +201,7 @@ namespace DocumentsKM.Tests
                 Project = projects[0],
                 Code = "11",
                 Name = "Name 1",
-                ChiefEngineer = employees[0],
+                ChiefEngineer = "CE1",
             },
             new Node
             {
@@ -209,7 +209,7 @@ namespace DocumentsKM.Tests
                 Project = projects[1],
                 Code = "22",
                 Name = "Name 2",
-                ChiefEngineer = employees[1],
+                ChiefEngineer = "CE2",
             },
         };
 

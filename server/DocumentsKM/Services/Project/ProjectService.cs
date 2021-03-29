@@ -29,6 +29,7 @@ namespace DocumentsKM.Services
             //     if (!projectsFetched.Select(v => v.Id).Contains(project.Id))
             //         _repository.Delete(project);
             // }
+            
             foreach (var projectFetched in projectsFetched.Where(v => v.Name != null && v.BaseSeries != null))
             {
                 var foundProject = projects.SingleOrDefault(v => v.Id == projectFetched.Id);
@@ -41,6 +42,7 @@ namespace DocumentsKM.Services
                 else
                 {
                     var wasChanged = false;
+                    var uniqueKeyWasChanged = false;
                     var name = projectFetched.Name.Trim();
                     if (foundProject.Name != name)
                     {
@@ -48,13 +50,22 @@ namespace DocumentsKM.Services
                         wasChanged = true;
                     }
                     var baseSeries = projectFetched.BaseSeries.Trim();
-                    if (foundProject.Name != name)
+                    if (foundProject.Name != baseSeries)
                     {
-                        foundProject.Name = name;
+                        foundProject.BaseSeries = baseSeries;
                         wasChanged = true;
+                        uniqueKeyWasChanged = true;
                     }
                     if (wasChanged)
+                    {
+                        if (uniqueKeyWasChanged)
+                        {
+                            var uniqueKeyViolation = _repository.GetByUniqueKey(baseSeries);
+                            if (uniqueKeyViolation != null)
+                                return;
+                        }
                         _repository.Update(foundProject);
+                    }
                 }
             }
         }

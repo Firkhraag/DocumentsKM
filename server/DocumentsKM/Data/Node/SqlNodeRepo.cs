@@ -29,6 +29,12 @@ namespace DocumentsKM.Data
             return _context.Nodes.SingleOrDefault(v => v.Id == id);
         }
 
+        public Node GetByUniqueKey(int projectId, string code)
+        {
+            return _context.Nodes.SingleOrDefault(
+                v => v.ProjectId == projectId && v.Code == code);
+        }
+
         public void Add(Node node)
         {
             _context.Nodes.Add(node);
