@@ -44,9 +44,6 @@ namespace DocumentsKM.Services
             var mark = _markRepo.GetById(markId);
             if (mark == null)
                 throw new ArgumentNullException(nameof(mark));
-            var subnode = mark.Subnode;
-            var node = subnode.Node;
-            var project = node.Project;
 
             var sheets = _docService.GetAllSheetsByMarkId(markId).ToList();
             var docs = _docService.GetAllAttachedByMarkId(markId).ToList();
@@ -57,15 +54,10 @@ namespace DocumentsKM.Services
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
-                var markName = MarkHelper.MakeMarkName(
-                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
-                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
-                    project.Name, node.Name, subnode.Name, mark.Name);
-
-                Word.ReplaceText(wordDoc, "A", markName);
-                Word.ReplaceText(wordDoc, "B", complexName);
-                Word.ReplaceText(wordDoc, "C", objectName);
-                Word.ReplaceText(wordDoc, "D", mark.Subnode.Node.ChiefEngineer);
+                Word.ReplaceText(wordDoc, "A", mark.Designation);
+                Word.ReplaceText(wordDoc, "B", mark.ComplexName);
+                Word.ReplaceText(wordDoc, "C", mark.ObjectName);
+                Word.ReplaceText(wordDoc, "D", mark.ChiefEngineerName);
                 Word.ReplaceText(wordDoc, "E", mark.GroupLeader.Name);
                 Word.ReplaceText(
                     wordDoc, "F", mark.IssueDate.GetValueOrDefault().ToString("dd.MM.yyyy"));
@@ -75,8 +67,8 @@ namespace DocumentsKM.Services
                 AppendToAttachedDocsTable(wordDoc, attachedDocs);
                 AppendToAdditionalWorkTable(wordDoc, additionalWork);
 
-                Word.AppendToMainSmallFooterTable(wordDoc, markName);
-                Word.AppendToSmallFooterTable(wordDoc, markName);
+                Word.AppendToMainSmallFooterTable(wordDoc, mark.Designation);
+                Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
             }
         }
 

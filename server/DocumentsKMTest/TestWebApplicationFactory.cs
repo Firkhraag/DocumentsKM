@@ -74,9 +74,6 @@ public class TestWebApplicationFactory<TStartup>
         context.DocTypes.AddRange(TestData.docTypes);
         context.LinkedDocTypes.AddRange(TestData.linkedDocTypes);
 
-        context.Projects.AddRange(TestData.projects);
-        context.Nodes.AddRange(TestData.nodes);
-        context.Subnodes.AddRange(TestData.subnodes);
         context.Marks.AddRange(TestData.marks);
         context.MarkApprovals.AddRange(TestData.markApprovals);
 

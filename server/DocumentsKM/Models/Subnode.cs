@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
@@ -12,8 +11,6 @@ namespace DocumentsKM.Models
 
         // Узел
         [Required]
-        [ForeignKey("NodeId")]
-        public virtual Node Node { get; set; }
         public Int32 NodeId { get; set; }
 
         // Код

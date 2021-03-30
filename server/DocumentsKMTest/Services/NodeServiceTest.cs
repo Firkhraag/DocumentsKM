@@ -1,47 +1,47 @@
-using System;
-using System.Linq;
-using DocumentsKM.Data;
-using DocumentsKM.Services;
-using Moq;
-using Xunit;
+// using System;
+// using System.Linq;
+// using DocumentsKM.Data;
+// using DocumentsKM.Services;
+// using Moq;
+// using Xunit;
 
-namespace DocumentsKM.Tests
-{
-    public class NodeServiceTest
-    {
-        private readonly INodeService _service;
-        private readonly Random _rnd = new Random();
+// namespace DocumentsKM.Tests
+// {
+//     public class NodeServiceTest
+//     {
+//         private readonly INodeService _service;
+//         private readonly Random _rnd = new Random();
 
-        public NodeServiceTest()
-        {
-            // Arrange
-            var repository = new Mock<INodeRepo>();
-            var mockProjectRepo = new Mock<IProjectRepo>();
+//         public NodeServiceTest()
+//         {
+//             // Arrange
+//             var repository = new Mock<INodeRepo>();
+//             var mockProjectRepo = new Mock<IProjectRepo>();
 
-            foreach (var project in TestData.projects)
-            {
-                repository.Setup(mock =>
-                    mock.GetAllByProjectId(project.Id)).Returns(
-                        TestData.nodes.Where(v => v.Project.Id == project.Id));
-            }
+//             foreach (var project in TestData.projects)
+//             {
+//                 repository.Setup(mock =>
+//                     mock.GetAllByProjectId(project.Id)).Returns(
+//                         TestData.nodes.Where(v => v.Project.Id == project.Id));
+//             }
 
-            _service = new NodeService(
-                repository.Object,
-                mockProjectRepo.Object);
-        }
+//             _service = new NodeService(
+//                 repository.Object,
+//                 mockProjectRepo.Object);
+//         }
 
-        [Fact]
-        public void GetAllByProjectId_ShouldReturnNodes()
-        {
-            // Arrange
-            int projectId = _rnd.Next(1, TestData.projects.Count());
+//         [Fact]
+//         public void GetAllByProjectId_ShouldReturnNodes()
+//         {
+//             // Arrange
+//             int projectId = _rnd.Next(1, TestData.projects.Count());
 
-            // Act
-            var returnedNodes = _service.GetAllByProjectId(projectId);
+//             // Act
+//             var returnedNodes = _service.GetAllByProjectId(projectId);
 
-            // Assert
-            Assert.Equal(TestData.nodes.Where(v => v.Project.Id == projectId),
-                returnedNodes);
-        }
-    }
-}
+//             // Assert
+//             Assert.Equal(TestData.nodes.Where(v => v.Project.Id == projectId),
+//                 returnedNodes);
+//         }
+//     }
+// }

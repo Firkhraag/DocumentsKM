@@ -29,12 +29,7 @@ const Home = () => {
 			link.href = url
 			link.setAttribute(
 				'download',
-				`${makeMarkName(
-					mark.subnode.node.project.baseSeries,
-					mark.subnode.node.code,
-					mark.subnode.code,
-					mark.code
-				)}_ВМП.docx`
+				`${mark.designation}_ВМП.docx`
 			)
 			document.body.appendChild(link)
 			link.click()
@@ -60,12 +55,7 @@ const Home = () => {
 			link.href = url
 			link.setAttribute(
 				'download',
-				`${makeMarkName(
-					mark.subnode.node.project.baseSeries,
-					mark.subnode.node.code,
-					mark.subnode.code,
-					mark.code
-				)}_ВБ.docx`
+				`${mark.designation}_ВБ.docx`
 			)
 			document.body.appendChild(link)
 			link.click()
@@ -91,12 +81,7 @@ const Home = () => {
 			link.href = url
 			link.setAttribute(
 				'download',
-				`${makeMarkName(
-					mark.subnode.node.project.baseSeries,
-					mark.subnode.node.code,
-					mark.subnode.code,
-					mark.code
-				)}_СМ.docx`
+				`${mark.designation}_СМ.docx`
 			)
 			document.body.appendChild(link)
 			link.click()
@@ -122,12 +107,7 @@ const Home = () => {
 			link.href = url
 			link.setAttribute(
 				'download',
-				`${makeMarkName(
-					mark.subnode.node.project.baseSeries,
-					mark.subnode.node.code,
-					mark.subnode.code,
-					mark.code
-				)}_РР-обл_тит.docx`
+				`${mark.designation}_РР-обл_тит.docx`
 			)
 			document.body.appendChild(link)
 			link.click()
@@ -148,12 +128,7 @@ const Home = () => {
 			link.href = url
 			link.setAttribute(
 				'download',
-				`${makeMarkName(
-					mark.subnode.node.project.baseSeries,
-					mark.subnode.node.code,
-					mark.subnode.code,
-					mark.code
-				)}_РР-листы.docx`
+				`${mark.designation}_РР-листы.docx`
 			)
 			document.body.appendChild(link)
 			link.click()

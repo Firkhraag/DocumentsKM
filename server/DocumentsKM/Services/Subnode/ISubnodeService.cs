@@ -10,8 +10,5 @@ namespace DocumentsKM.Services
 
         // Получить подузел по id
         Subnode GetById(int id);
-
-        // Обновить все подузлы
-        void UpdateAll(List<Subnode> subnodesFetched);
     }
 }

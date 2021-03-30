@@ -1,11 +1,13 @@
-import Subnode from './Subnode'
 import Department from './Department'
 import Employee from './Employee'
 
 interface IMark {
 	id: number
-	subnode: Subnode
 	code: string
+	designation: string
+	chiefEngineer: string
+	complexName: string
+	objectName: string
 	name: string
 	department: Department
 	chiefSpecialist: Employee
@@ -15,8 +17,11 @@ interface IMark {
 
 class Mark {
 	id: number
-	subnode: Subnode
 	code: string
+	designation: string
+	chiefEngineer: string
+	complexName: string
+	objectName: string
 	name: string
 	department: Department
 	chiefSpecialist: Employee
@@ -25,8 +30,11 @@ class Mark {
 
 	constructor(obj?: IMark) {
 		this.id = (obj && obj.id) || 0
-		this.subnode = (obj && obj.subnode) || null
 		this.code = (obj && obj.code) || ''
+		this.designation = (obj && obj.designation) || ''
+		this.chiefEngineer = (obj && obj.chiefEngineer) || ''
+		this.complexName = (obj && obj.complexName) || ''
+		this.objectName = (obj && obj.objectName) || ''
 		this.name = (obj && obj.name) || ''
 		this.department = (obj && obj.department) || null
 		this.chiefSpecialist = (obj && obj.chiefSpecialist) || null

@@ -125,7 +125,7 @@ namespace DocumentsKM.Services
             trCells = trArr[8].Descendants<TableCell>().ToList();
             tc = trCells[1];
             p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(mark.Subnode.Node.ChiefEngineer, 22));
+            p.Append(GetTextElement(mark.ChiefEngineerName, 22));
 
             // trCells = trArr[9].Descendants<TableCell>().ToList();
             // tc = trCells[1];

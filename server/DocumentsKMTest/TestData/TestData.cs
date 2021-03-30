@@ -198,18 +198,18 @@ namespace DocumentsKM.Tests
             new Node
             {
                 Id = 1,
-                Project = projects[0],
+                ProjectId = projects[0].Id,
                 Code = "11",
                 Name = "Name 1",
-                ChiefEngineer = "CE1",
+                ChiefEngineerName = "CE1",
             },
             new Node
             {
                 Id = 2,
-                Project = projects[1],
+                ProjectId = projects[1].Id,
                 Code = "22",
                 Name = "Name 2",
-                ChiefEngineer = "CE2",
+                ChiefEngineerName = "CE2",
             },
         };
 
@@ -236,7 +236,7 @@ namespace DocumentsKM.Tests
             new Mark
             {
                 Id = 1,
-                Subnode = subnodes[0],
+                SubnodeId = subnodes[0].Id,
                 Code = "KM1",
                 Name = "Name 1",
                 Department = departments[0],
@@ -245,7 +245,7 @@ namespace DocumentsKM.Tests
             new Mark
             {
                 Id = 2,
-                Subnode = subnodes[0],
+                SubnodeId = subnodes[0].Id,
                 Code = "KM2",
                 Name = "Name 2",
                 Department = departments[0],
@@ -254,7 +254,7 @@ namespace DocumentsKM.Tests
             new Mark
             {
                 Id = 3,
-                Subnode = subnodes[1],
+                SubnodeId = subnodes[1].Id,
                 Code = "KM3",
                 Name = "Name 3",
                 Department = departments[1],
@@ -263,7 +263,7 @@ namespace DocumentsKM.Tests
             new Mark
             {
                 Id = 4,
-                Subnode = subnodes[1],
+                SubnodeId = subnodes[1].Id,
                 Code = "KM4",
                 Name = "Name 4",
                 Department = departments[1],

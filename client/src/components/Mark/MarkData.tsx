@@ -67,8 +67,11 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 					setSelectedObject({
 						id: 0,
 						code: newMarkCodeResponse.data,
+						designation: '',
 						name: '',
-						subnode: subnodeForCreate,
+						complexName: '',
+						chiefEngineer: '',
+						objectName: '',
 						department: null,
 						chiefSpecialist: null,
 						groupLeader: null,
@@ -291,7 +294,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 				const response = await httpClient.post(`/users/${user.id}/marks`, {
 					code: selectedObject.code,
 					name: selectedObject.name,
-					subnodeId: selectedObject.subnode.id,
+					subnodeId: subnodeForCreate.id,
 					departmentId: selectedObject.department.id,
 					chiefSpecialistId: selectedObject.chiefSpecialist?.id,
 					groupLeaderId: selectedObject.groupLeader?.id,
@@ -391,19 +394,13 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							value={
 								isCreateMode
 									? makeMarkName(
-											selectedObject.subnode.node.project
-												.baseSeries,
-											selectedObject.subnode.node.code,
-											selectedObject.subnode.code,
-											selectedObject.code
-									  )
-									: makeMarkName(
-											mark.subnode.node.project
-												.baseSeries,
-											mark.subnode.node.code,
-											mark.subnode.code,
-											mark.code
-									  )
+										subnodeForCreate.node.project
+											.baseSeries,
+										subnodeForCreate.node.code,
+										subnodeForCreate.code,
+										selectedObject.code
+								  	)
+									: mark.designation
 							}
 							readOnly={true}
 						/>
@@ -417,18 +414,13 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							value={
 								isCreateMode
 									? makeComplexAndObjectName(
-											selectedObject.subnode.node.project
-												.name,
-											selectedObject.subnode.node.name,
-											selectedObject.subnode.name,
-											selectedObject.name
-									  ).complexName
-									: makeComplexAndObjectName(
-											mark.subnode.node.project.name,
-											mark.subnode.node.name,
-											mark.subnode.name,
-											mark.name
-									  ).complexName
+										subnodeForCreate.node.project
+											.name,
+										subnodeForCreate.node.name,
+										subnodeForCreate.name,
+										selectedObject.name
+								  ).complexName
+									: mark.complexName
 							}
 							readOnly={true}
 						/>
@@ -442,18 +434,13 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							value={
 								isCreateMode
 									? makeComplexAndObjectName(
-											selectedObject.subnode.node.project
-												.name,
-											selectedObject.subnode.node.name,
-											selectedObject.subnode.name,
-											selectedObject.name
-									  ).objectName
-									: makeComplexAndObjectName(
-											mark.subnode.node.project.name,
-											mark.subnode.node.name,
-											mark.subnode.name,
-											mark.name
-									  ).objectName
+										subnodeForCreate.node.project
+											.name,
+										subnodeForCreate.node.name,
+										subnodeForCreate.name,
+										selectedObject.name
+								  ).objectName
+									: mark.objectName
 							}
 							readOnly={true}
 						/>
@@ -469,9 +456,9 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							className="mark-data-input-width1"
 							value={
 								isCreateMode
-									? selectedObject.subnode.node.chiefEngineer
+									? subnodeForCreate.node.chiefEngineer
 											.fullname
-									: mark.subnode.node.chiefEngineer.fullname
+									: mark.chiefEngineer
 							}
 							readOnly={true}
 						/>

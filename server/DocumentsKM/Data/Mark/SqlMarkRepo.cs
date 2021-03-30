@@ -22,7 +22,7 @@ namespace DocumentsKM.Data
         public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
         {
             return _context.Marks.Where(
-                v => v.Subnode.Id == subnodeId).ToList();
+                v => v.SubnodeId == subnodeId).ToList();
         }
 
         public Mark GetById(int id)
@@ -33,7 +33,7 @@ namespace DocumentsKM.Data
         public Mark GetByUniqueKey(int subnodeId, string code)
         {
             return _context.Marks.SingleOrDefault(
-                v => v.Subnode.Id == subnodeId && v.Code == code);
+                v => v.SubnodeId == subnodeId && v.Code == code);
         }
 
         public void Add(Mark mark)

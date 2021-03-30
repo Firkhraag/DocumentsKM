@@ -61,7 +61,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 					) as number[]
 					for (let id of recentMarkIds) {
 						const markResponse = await httpClient.get(
-							`/marks/${id}/parents`
+							`/marks/${id}`
 						)
 						recentMarks.push(markResponse.data)
 					}
@@ -337,9 +337,6 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 			return
 		}
 		const mark = selectedObject.mark
-		mark.subnode = selectedObject.subnode
-		mark.subnode.node = selectedObject.node
-		mark.subnode.node.project = selectedObject.project
 		localStorage.setItem('selectedMarkId', mark.id.toString())
 
 		const filteredRecentMarks = optionsObject.recentMarks.filter(
@@ -352,11 +349,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		let resStr = JSON.stringify(filteredRecentMarks.map((m) => m.id))
 		localStorage.setItem('recentMarkIds', resStr)
 
-		const m = selectedObject.mark
-		m.subnode = selectedObject.subnode
-		m.subnode.node = selectedObject.node
-		m.subnode.node.project = selectedObject.project
-		setMark(m)
+		setMark(selectedObject.mark)
 		history.push('/')
 	}
 
@@ -399,26 +392,13 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 								? null
 								: {
 										value: selectedObject.recentMark.id,
-										label: makeMarkName(
-											selectedObject.recentMark.subnode
-												.node.project.baseSeries,
-											selectedObject.recentMark.subnode
-												.node.code,
-											selectedObject.recentMark.subnode
-												.code,
-											selectedObject.recentMark.code
-										),
+										label: selectedObject.recentMark.designation,
 								  }
 						}
 						options={optionsObject.recentMarks.map((m) => {
 							return {
 								value: m.id,
-								label: makeMarkName(
-									m.subnode.node.project.baseSeries,
-									m.subnode.node.code,
-									m.subnode.code,
-									m.code
-								),
+								label: m.designation,
 							}
 						})}
 						styles={reactSelectStyle}

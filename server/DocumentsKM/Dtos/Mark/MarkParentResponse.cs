@@ -1,9 +1,9 @@
-using DocumentsKM.Models;
+// using DocumentsKM.Models;
 
-namespace DocumentsKM.Dtos
-{
-    public class MarkParentResponse : MarkBaseResponse
-    {
-        public Subnode Subnode { get; set; }
-    }
-}
+// namespace DocumentsKM.Dtos
+// {
+//     public class MarkParentResponse : MarkBaseResponse
+//     {
+//         public Subnode Subnode { get; set; }
+//     }
+// }

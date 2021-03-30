@@ -30,11 +30,11 @@ namespace DocumentsKM.Controllers
 
         [HttpGet, Route("subnodes/{subnodeId}/marks")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<MarkBaseResponse>> GetAllBySubnodeId(
+        public ActionResult<IEnumerable<MarkResponse>> GetAllBySubnodeId(
             int subnodeId)
         {
             var marks = _service.GetAllBySubnodeId(subnodeId);
-            return Ok(_mapper.Map<IEnumerable<MarkBaseResponse>>(marks));
+            return Ok(_mapper.Map<IEnumerable<MarkResponse>>(marks));
         }
 
         [HttpGet, Route("marks/{id}")]
@@ -45,17 +45,6 @@ namespace DocumentsKM.Controllers
             var mark = _service.GetById(id);
             if (mark != null)
                 return Ok(_mapper.Map<MarkResponse>(mark));
-            return NotFound();
-        }
-
-        [HttpGet, Route("marks/{id}/parents")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<MarkParentResponse> GetMarkParentResponseById(int id)
-        {
-            var mark = _service.GetById(id);
-            if (mark != null)
-                return Ok(_mapper.Map<MarkParentResponse>(mark));
             return NotFound();
         }
 

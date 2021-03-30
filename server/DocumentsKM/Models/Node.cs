@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
@@ -12,8 +11,6 @@ namespace DocumentsKM.Models
 
         // Проект
         [Required]
-        [ForeignKey("ProjectId")]
-        public virtual Project Project { get; set; }
         public Int32 ProjectId { get; set; }
 
         // Код
@@ -27,6 +24,6 @@ namespace DocumentsKM.Models
 
         // ГИП
         [MaxLength(255)]
-        public string ChiefEngineer { get; set; }
+        public string ChiefEngineerName { get; set; }
     }
 }

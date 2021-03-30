@@ -2,7 +2,9 @@ namespace DocumentsKM.Helpers
 {
     public class AppSettings
     {
+        // JWT SECRET
         public string JWTSecret { get; set; }
+        // Сколько дней живет JWT token
         public int TokenExpireTimeInDays { get; set; }
 
         // Начальник отдела

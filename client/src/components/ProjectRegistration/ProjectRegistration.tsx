@@ -81,12 +81,7 @@ const ProjectRegistration = () => {
 				link.href = url
 				link.setAttribute(
 					'download',
-					`${makeMarkName(
-						mark.subnode.node.project.baseSeries,
-						mark.subnode.node.code,
-						mark.subnode.code,
-						mark.code
-					)}_ЛР.docx`
+					`${mark.designation}_ЛР.docx`
 				)
 				document.body.appendChild(link)
 				link.click()

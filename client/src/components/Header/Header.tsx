@@ -41,12 +41,7 @@ const Header = () => {
 			<div className="bold header-link-pad">
 				{mark == null
 					? '-'
-					: makeMarkName(
-							mark.subnode.node.project.baseSeries,
-							mark.subnode.node.code,
-							mark.subnode.code,
-							mark.code
-					  )}
+					: mark.designation}
 			</div>
 			<div id="user-cnt" className="profile-icon-cnt relative">
 				<Drawer

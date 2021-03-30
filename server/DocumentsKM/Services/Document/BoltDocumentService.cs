@@ -32,9 +32,6 @@ namespace DocumentsKM.Services
             var mark = _markRepo.GetById(markId);
             if (mark == null)
                 throw new ArgumentNullException(nameof(mark));
-            var subnode = mark.Subnode;
-            var node = subnode.Node;
-            var project = node.Project;
 
             var constructionBolts = _constructionBoltRepo.GetAllByMarkId(markId);
             var boltLengths = new List<BoltLength> {};
@@ -48,11 +45,9 @@ namespace DocumentsKM.Services
             }
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
-                var markName = MarkHelper.MakeMarkName(
-                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
                 AppendToTable(wordDoc, constructionBolts.ToList(), boltLengths);
-                Word.AppendToSmallFooterTable(wordDoc, markName);
-                Word.AppendToMainSmallFooterTable(wordDoc, markName);
+                Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
+                Word.AppendToMainSmallFooterTable(wordDoc, mark.Designation);
             }
         }
 

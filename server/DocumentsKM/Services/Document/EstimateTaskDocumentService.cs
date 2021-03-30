@@ -68,9 +68,6 @@ namespace DocumentsKM.Services
             var mark = _markRepo.GetById(markId);
             if (mark == null)
                 throw new ArgumentNullException(nameof(mark));
-            var subnode = mark.Subnode;
-            var node = subnode.Node;
-            var project = node.Project;
 
             var departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
                 mark.Department.Id, _appSettings.DepartmentHeadPosId);
@@ -107,11 +104,6 @@ namespace DocumentsKM.Services
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
-                var markName = MarkHelper.MakeMarkName(
-                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
-                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
-                    project.Name, node.Name, subnode.Name, mark.Name);
-
                 AppendText(wordDoc, estTask.TaskText);
 
                 var arr = new List<ListText>
@@ -381,14 +373,14 @@ namespace DocumentsKM.Services
 
                 Word.AppendToBigFooterTable(
                     wordDoc,
-                    markName,
-                    complexName,
-                    objectName,
+                    mark.Designation,
+                    mark.ComplexName,
+                    mark.ObjectName,
                     -1,
                     mark,
                     markApprovals.ToList(),
                     departmentHead);
-                Word.AppendToSmallFooterTable(wordDoc, markName);
+                Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
             }
         }
 

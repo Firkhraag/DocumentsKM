@@ -28,12 +28,7 @@ const OtherAttachedDocData = ({
 			? {
 					id: -1,
 					designation:
-						makeMarkName(
-							mark.subnode.node.project.baseSeries,
-							mark.subnode.node.code,
-							mark.subnode.code,
-							mark.code
-						) + '.ЛС',
+						mark.designation + '.ЛС',
 					name: 'Локальная смета',
 					note: '',
 			  }

@@ -1,6 +1,5 @@
 using DocumentsKM.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DocumentsKM.Data
 {
@@ -8,39 +7,10 @@ namespace DocumentsKM.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> opt) : base(opt) {}
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-
-            // builder.Entity<Entity>()
-            //     .Property(e => e.Field)
-            //     .HasColumnType("SMALLINT");
-
-            // Composite primary key
-            builder.Entity<MarkApproval>().HasIndex(
-                e => new { e.MarkId, e.EmployeeId }).IsUnique();
-
-            // // Unique constrains
-            // builder.Entity<User>()
-            //     .HasIndex(e => e.Login)
-            //     .IsUnique();
-
-            // builder.Entity<Entity>()
-            //     .HasIndex(e => e.BaseSeries)
-            //     .IsUnique();
-            // builder.Entity<Entity>().HasIndex(e => new { e.SubnodeId, e.Code }).IsUnique();
-
-            // Default datetime
-            // builder.Entity<Mark>().Property(e => e.EditedDate).HasDefaultValueSql("now()");
-        }
-
         // Other services data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Position> Positions { get; set; }
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<Node> Nodes { get; set; }
-        public DbSet<Subnode> Subnodes { get; set; }
         public DbSet<User> Users { get; set; }
 
         // Current service data

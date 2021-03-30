@@ -55,9 +55,6 @@ namespace DocumentsKM.Services
             if (mark == null)
                 throw new ArgumentNullException(nameof(mark));
             var markApprovals = _markApprovalRepo.GetAllByMarkId(markId);
-            var subnode = mark.Subnode;
-            var node = subnode.Node;
-            var project = node.Project;
 
             var departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
                 mark.Department.Id, _appSettings.DepartmentHeadPosId);
@@ -82,12 +79,7 @@ namespace DocumentsKM.Services
             var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
-            {
-                var markName = MarkHelper.MakeMarkName(
-                    project.BaseSeries, node.Code, subnode.Code, mark.Code);
-                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
-                    project.Name, node.Name, subnode.Name, mark.Name);
-                    
+            {  
                 AppendList(wordDoc, markGeneralDataPoints, opCond);
                 AppendToSheetTable(wordDoc, sheets.ToList());
                 AppendToLinkedAndAttachedDocsTable(
@@ -96,14 +88,14 @@ namespace DocumentsKM.Services
                     _attachedDocRepo.GetAllByMarkId(markId).ToList());
                 Word.AppendToBigFooterTable(
                     wordDoc,
-                    markName,
-                    complexName,
-                    objectName,
+                    mark.Designation,
+                    mark.ComplexName,
+                    mark.ObjectName,
                     sheets.Count(),
                     mark,
                     markApprovals.ToList(),
                     departmentHead);
-                Word.AppendToSmallFooterTable(wordDoc, markName);
+                Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
             }
         }
 

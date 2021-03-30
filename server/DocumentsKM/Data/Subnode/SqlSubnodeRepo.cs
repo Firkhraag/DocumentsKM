@@ -1,7 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
+using System.Data.SqlClient;
+using Dapper;
+using DocumentsKM.Helpers;
 using DocumentsKM.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data
 {
@@ -14,45 +16,49 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<Subnode> GetAll()
-        {
-            return _context.Subnodes.ToList();
-        }
-
         public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
         {
-            return _context.Subnodes.Where(
-                v => v.Node.Id == nodeId).ToList();
+            var query = $@"select 
+                            [Подузел] as Id, 
+                            [КодПодуз] as Code,
+                            [НазвПодузла] as Name,
+                            [Узел] as NodeId
+                        from [Подузлы] where [КодПодуз] is not null and [Узел] = {nodeId}";
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                var subnodes = db.Query<Subnode>(query);
+                return subnodes;
+            }
         }
 
         public Subnode GetById(int id)
         {
-            return _context.Subnodes.Include(
-                v => v.Node).SingleOrDefault(v => v.Id == id);
+            var query = $@"select 
+                            [Подузел] as Id, 
+                            [КодПодуз] as Code,
+                            [НазвПодузла] as Name,
+                            [Узел] as NodeId
+                        from [Подузлы] where [Подузел] = {id}";
+
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                return db.QuerySingle<Subnode>(query);
+            }
         }
 
         public Subnode GetByUniqueKey(int nodeId, string code)
         {
-            return _context.Subnodes.SingleOrDefault(
-                v => v.NodeId == nodeId && v.Code == code);
-        }
+            var query = $@"select 
+                            [Подузел] as Id, 
+                            [КодПодуз] as Code,
+                            [НазвПодузла] as Name,
+                            [Узел] as NodeId
+                        from [Подузлы] where [Узел] = {nodeId} and [КодПодуз] = {code}";
 
-        public void Add(Subnode subnode)
-        {
-            _context.Subnodes.Add(subnode);
-            _context.SaveChanges();
-        }
-
-        public void Update(Subnode subnode)
-        {
-            _context.Entry(subnode).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void Delete(Subnode subnode)
-        {
-            _context.Subnodes.Remove(subnode);
-            _context.SaveChanges();
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                return db.QuerySingle<Subnode>(query);
+            }
         }
     }
 }

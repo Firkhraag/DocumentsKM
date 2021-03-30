@@ -222,12 +222,7 @@ const EstimateTaskDocument = () => {
 			link.href = url
 			link.setAttribute(
 				'download',
-				`${makeMarkName(
-					mark.subnode.node.project.baseSeries,
-					mark.subnode.node.code,
-					mark.subnode.code,
-					mark.code
-				)}_ЗдСМ.docx`
+				`${mark.designation}_ЗдСМ.docx`
 			)
 			document.body.appendChild(link)
 			link.click()

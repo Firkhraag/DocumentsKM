@@ -12,18 +12,34 @@ namespace DocumentsKM.Models
 
         // Подузел
         [Required]
-        [ForeignKey("SubnodeId")]
-        public virtual Subnode Subnode { get; set; }
+        public Int32 SubnodeId { get; set; }
+
+        // Обозначение
+        [Required]
+        [MaxLength(30)]
+        public string Designation { get; set; }
 
         // Код
         [Required]
-        [MaxLength(40)]
+        [MaxLength(30)]
         public string Code { get; set; }
+
+        // Название комплекса
+        [MaxLength(255)]
+        public string ComplexName { get; set; }
+
+        // Название объекта
+        [MaxLength(255)]
+        public string ObjectName { get; set; }
 
         // Название
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
+
+        // ГИП
+        [MaxLength(255)]
+        public string ChiefEngineerName { get; set; }
 
         // Отдел
         [Required]
@@ -48,17 +64,19 @@ namespace DocumentsKM.Models
         // Дата редактирования
         public DateTime? EditedDate { get; set; }
 
-        // Тут где-то ГИП, где-то начальник отдела
-        public Int32? Signed1Id { get; set; }
-        public Int32? Signed2Id { get; set; }
+        // Подп1
+        public Int32? SignedId { get; set; }
 
         // Дата выдачи
         public DateTime? IssueDate { get; set; }
 
+        // Количество томов
         public Int16? NumOfVolumes { get; set; }
+
+        // Примечание
         public string Note { get; set; }
+
+        // Категория пожарной опасности
         public Int16? FireHazardCategoryId { get; set; }
-        public Boolean? PTransport { get; set; }
-        public Boolean? PSite { get; set; }
     }
 }

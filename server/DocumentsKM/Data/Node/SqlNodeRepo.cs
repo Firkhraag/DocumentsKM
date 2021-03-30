@@ -1,7 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
+using System.Data.SqlClient;
+using Dapper;
+using DocumentsKM.Helpers;
 using DocumentsKM.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data
 {
@@ -14,43 +16,51 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<Node> GetAll()
-        {
-            return _context.Nodes.ToList();
-        }
-
         public IEnumerable<Node> GetAllByProjectId(int projectId)
         {
-            return _context.Nodes.Where(v => v.Project.Id == projectId).ToList();
+            var query = $@"select 
+                            [Узел] as Id, 
+                            [КодУзла] as Code, 
+                            [НазвУзла] as Name,
+                            [Проект] as ProjectId,
+                            [ГИП] as ChiefEngineerName
+                        from [Узлы] where [КодУзла] is not null and [Проект] = {projectId}";
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                return db.Query<Node>(query);
+            }
         }
 
         public Node GetById(int id)
         {
-            return _context.Nodes.SingleOrDefault(v => v.Id == id);
+            var query = $@"select 
+                            [Узел] as Id, 
+                            [КодУзла] as Code, 
+                            [НазвУзла] as Name,
+                            [Проект] as ProjectId,
+                            [ГИП] as ChiefEngineerName
+                        from [Узлы] where [Узел] = {id}";
+
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                return db.QuerySingle<Node>(query);
+            }
         }
 
         public Node GetByUniqueKey(int projectId, string code)
         {
-            return _context.Nodes.SingleOrDefault(
-                v => v.ProjectId == projectId && v.Code == code);
-        }
+            var query = $@"select 
+                            [Узел] as Id, 
+                            [КодУзла] as Code, 
+                            [НазвУзла] as Name,
+                            [Проект] as ProjectId,
+                            [ГИП] as ChiefEngineerName
+                        from [Узлы] where [Проект] = {projectId} and [КодУзла] = {code}";
 
-        public void Add(Node node)
-        {
-            _context.Nodes.Add(node);
-            _context.SaveChanges();
-        }
-
-        public void Update(Node node)
-        {
-            _context.Entry(node).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void Delete(Node node)
-        {
-            _context.Nodes.Remove(node);
-            _context.SaveChanges();
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                return db.QuerySingle<Node>(query);
+            }
         }
     }
 }

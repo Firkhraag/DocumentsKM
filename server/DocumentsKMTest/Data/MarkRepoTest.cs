@@ -20,7 +20,6 @@ namespace DocumentsKM.Tests
             var context = new ApplicationContext(options);
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            context.Subnodes.AddRange(TestData.subnodes);
             context.Marks.AddRange(marks);
             context.SaveChanges();
             return context;
@@ -56,7 +55,7 @@ namespace DocumentsKM.Tests
             var marks = repo.GetAllBySubnodeId(subnodeId);
 
             // Assert
-            Assert.Equal(TestData.marks.Where(v => v.Subnode.Id == subnodeId), marks);
+            Assert.Equal(TestData.marks.Where(v => v.SubnodeId == subnodeId), marks);
 
             context.Database.EnsureDeleted();
             context.Dispose();
@@ -123,7 +122,7 @@ namespace DocumentsKM.Tests
             var repo = new SqlMarkRepo(context);
 
             var id = 1;
-            var subnodeId = TestData.marks[0].Subnode.Id;
+            var subnodeId = TestData.marks[0].SubnodeId;
             var code = TestData.marks[0].Code;
 
             // Act
@@ -143,7 +142,7 @@ namespace DocumentsKM.Tests
             var context = GetContext(TestData.marks);
             var repo = new SqlMarkRepo(context);
 
-            var subnodeId = TestData.marks[0].Subnode.Id;
+            var subnodeId = TestData.marks[0].SubnodeId;
             var code = TestData.marks[0].Code;
 
             // Act
@@ -172,9 +171,7 @@ namespace DocumentsKM.Tests
             int normContrId = _rnd.Next(1, TestData.employees.Count());
             var mark = new Mark
             {
-                Subnode = TestData.subnodes.SingleOrDefault(
-                    v => v.Id == subnodeId
-                ),
+                SubnodeId = subnodeId,
                 Code = "NewCreate",
                 Name = "NewCreate",
                 Department = TestData.departments.SingleOrDefault(
@@ -211,7 +208,7 @@ namespace DocumentsKM.Tests
                 marks.Add(new Mark
                 {
                     Id = m.Id,
-                    Subnode = m.Subnode,
+                    SubnodeId = m.SubnodeId,
                     Code = m.Code,
                     Name = m.Name,
                     Department = m.Department,
@@ -219,14 +216,12 @@ namespace DocumentsKM.Tests
                     GroupLeader = m.GroupLeader,
                     NormContr = m.NormContr,
                     EditedDate = m.EditedDate,
-                    Signed1Id = m.Signed1Id,
-                    Signed2Id = m.Signed2Id,
+                    SignedId = m.SignedId,
+                    ChiefEngineerName = m.ChiefEngineerName,
                     IssueDate = m.IssueDate,
                     NumOfVolumes = m.NumOfVolumes,
                     Note = m.Note,
                     FireHazardCategoryId = m.FireHazardCategoryId,
-                    PTransport = m.PTransport,
-                    PSite = m.PSite,
                 });
             }
             var context = GetContext(marks);

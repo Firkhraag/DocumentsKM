@@ -12,6 +12,8 @@ namespace DocumentsKM.Services
     {
         private readonly IMarkRepo _repository;
         private readonly ISubnodeRepo _subnodeRepo;
+        private readonly INodeRepo _nodeRepo;
+        private readonly IProjectRepo _projectRepo;
         private readonly IDepartmentRepo _departmentRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IEstimateTaskRepo _estimateTaskRepo;
@@ -21,6 +23,8 @@ namespace DocumentsKM.Services
         public MarkService(
             IMarkRepo markRepo,
             ISubnodeRepo subnodeRepo,
+            INodeRepo nodeRepo,
+            IProjectRepo projectRepo,
             IDepartmentRepo departmentRepo,
             IEmployeeRepo employeeRepo,
             IEstimateTaskRepo estimateTaskRepo,
@@ -29,6 +33,8 @@ namespace DocumentsKM.Services
         {
             _repository = markRepo;
             _subnodeRepo = subnodeRepo;
+            _nodeRepo = nodeRepo;
+            _projectRepo = projectRepo;
             _departmentRepo = departmentRepo;
             _employeeRepo = employeeRepo;
             _estimateTaskRepo = estimateTaskRepo;
@@ -90,7 +96,21 @@ namespace DocumentsKM.Services
             if (uniqueConstraintViolationCheck != null)
                 throw new ConflictException(nameof(uniqueConstraintViolationCheck));
 
-            mark.Subnode = subnode;
+            mark.SubnodeId = subnodeId;
+
+            var node = _nodeRepo.GetById(subnode.NodeId);
+            mark.ChiefEngineerName = node.ChiefEngineerName;
+
+            var project = _projectRepo.GetById(node.ProjectId);
+
+            mark.Designation = MarkHelper.MakeMarkName(
+                project.BaseSeries, node.Code, subnode.Code, mark.Code);
+
+            // Add func
+            (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(project.Name, node.Name, subnode.Name, mark.Name);
+            mark.ComplexName = complexName;
+            mark.ObjectName = objectName;
+
             var department = _departmentRepo.GetById(departmentId);
             if (department == null)
                 throw new ArgumentNullException(nameof(department));
@@ -132,9 +152,7 @@ namespace DocumentsKM.Services
             _estimateTaskRepo.Add(new EstimateTask
             {
                 Mark = mark,
-                TaskText = "Разработать сметную документацию к чертежам " + MarkHelper.MakeMarkName(
-                    subnode.Node.Project.BaseSeries, subnode.Node.Code, subnode.Code, mark.Code
-                ) + "\nСостав и объемы работ:",
+                TaskText = "Разработать сметную документацию к чертежам " + mark.Designation + "\nСостав и объемы работ:",
             });
 
             _markGeneralDataPointService.AddDefaultPoints(userId, mark);
@@ -152,38 +170,12 @@ namespace DocumentsKM.Services
             if (mark.Name != null)
                 foundMark.Name = mark.Name;
             
-            if ((mark.Code != null) && (mark.SubnodeId != null))
-            {
-                foundMark.Code = mark.Code;
-
-                var subnode = _subnodeRepo.GetById(mark.SubnodeId.GetValueOrDefault());
-                if (subnode == null)
-                    throw new ArgumentNullException(nameof(subnode));
-                foundMark.Subnode = subnode;
-
-                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
-                    subnode.Id, mark.Code);
-                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            }
-            else if (mark.Code != null)
+            if (mark.Code != null)
             {
                 foundMark.Code = mark.Code;
 
                 var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
-                    foundMark.Subnode.Id, mark.Code);
-                if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
-                    throw new ConflictException(nameof(uniqueConstraintViolationCheck));
-            }
-            else if (mark.SubnodeId != null)
-            {
-                var subnode = _subnodeRepo.GetById(mark.SubnodeId.GetValueOrDefault());
-                if (subnode == null)
-                    throw new ArgumentNullException(nameof(subnode));
-                foundMark.Subnode = subnode;
-
-                var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
-                    subnode.Id, foundMark.Code);
+                    foundMark.SubnodeId, mark.Code);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
             }

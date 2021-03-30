@@ -21,7 +21,6 @@ namespace DocumentsKM.Tests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            context.Projects.AddRange(TestData.projects);
             context.ConstructionSubtypes.AddRange(constructionSubtypes);
             context.SaveChanges();
             return context;

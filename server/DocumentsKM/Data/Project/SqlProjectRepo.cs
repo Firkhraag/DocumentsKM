@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Dapper;
+using DocumentsKM.Helpers;
 using DocumentsKM.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data
 {
@@ -16,36 +20,46 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Project> GetAll()
         {
-            return _context.Projects.ToList();
+            const string query = @"select 
+                                    [Проект] as Id, 
+                                    [БазСерия] as BaseSeries,
+                                    [Название] as Name
+                                from [Проекты] where [Название] is not null and [БазСерия] is not null";
+
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                var projects = db.Query<Project>(query);
+                projects = projects.Where(v => Regex.IsMatch(v.Name, "^М[1-9]*"));
+                return projects;
+            }
         }
 
         public Project GetById(int id)
         {
-            return _context.Projects.SingleOrDefault(v => v.Id == id);
+            var query = $@"select 
+                            [Проект] as Id, 
+                            [БазСерия] as BaseSeries,
+                            [Название] as Name
+                        from [Проекты] where [Проект] = {id}";
+
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                return db.QuerySingle<Project>(query);
+            }
         }
 
         public Project GetByUniqueKey(string baseSeries)
         {
-            return _context.Projects.SingleOrDefault(
-                v => v.BaseSeries == baseSeries);
-        }
+            var query = $@"select 
+                            [Проект] as Id, 
+                            [БазСерия] as BaseSeries,
+                            [Название] as Name
+                        from [Проекты] where [БазСерия] = {baseSeries}";
 
-        public void Add(Project project)
-        {
-            _context.Projects.Add(project);
-            _context.SaveChanges();
-        }
-
-        public void Update(Project project)
-        {
-            _context.Entry(project).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void Delete(Project project)
-        {
-            _context.Projects.Remove(project);
-            _context.SaveChanges();
+            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
+            {
+                return db.QuerySingle<Project>(query);
+            }
         }
     }
 }
