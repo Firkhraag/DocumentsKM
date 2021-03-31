@@ -23,7 +23,8 @@ namespace DocumentsKM.Data
             const string query = @"select 
                                     [Проект] as Id, 
                                     [БазСерия] as BaseSeries,
-                                    [Название] as Name
+                                    [Название] as Name,
+                                    [ОснНадпСмещ] as Bias
                                 from [Проекты] where [Название] is not null and [БазСерия] is not null";
 
             using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
@@ -39,7 +40,8 @@ namespace DocumentsKM.Data
             var query = $@"select 
                             [Проект] as Id, 
                             [БазСерия] as BaseSeries,
-                            [Название] as Name
+                            [Название] as Name,
+                            [ОснНадпСмещ] as Bias
                         from [Проекты] where [Проект] = {id}";
 
             using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
@@ -53,7 +55,8 @@ namespace DocumentsKM.Data
             var query = $@"select 
                             [Проект] as Id, 
                             [БазСерия] as BaseSeries,
-                            [Название] as Name
+                            [Название] as Name,
+                            [ОснНадпСмещ] as Bias
                         from [Проекты] where [БазСерия] = {baseSeries}";
 
             using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))

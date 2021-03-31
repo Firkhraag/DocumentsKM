@@ -16,6 +16,8 @@ logs/
 
 .hgignore
 
+.hg/
+
 .ipynb_checkpoints/
 
 coverage.cobertura.xml

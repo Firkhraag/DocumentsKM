@@ -91,7 +91,7 @@ const AuthApp = () => {
 								<div className="full-width div-container">
 									<MarkData
 										isCreateMode={false}
-										subnodeForCreate={subnode}
+										currentSubnode={subnode}
 									/>
 								</div>
 							</Route>
@@ -99,7 +99,7 @@ const AuthApp = () => {
 								<div className="full-width div-container">
 									<MarkData
 										isCreateMode={true}
-										subnodeForCreate={subnode}
+										currentSubnode={subnode}
 									/>
 								</div>
 							</Route>

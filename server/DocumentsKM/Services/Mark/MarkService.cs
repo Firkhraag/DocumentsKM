@@ -107,7 +107,8 @@ namespace DocumentsKM.Services
                 project.BaseSeries, node.Code, subnode.Code, mark.Code);
 
             // Add func
-            (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(project.Name, node.Name, subnode.Name, mark.Name);
+            (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
+                project.Name, node.Name, subnode.Name, mark.Name, project.Bias);
             mark.ComplexName = complexName;
             mark.ObjectName = objectName;
 

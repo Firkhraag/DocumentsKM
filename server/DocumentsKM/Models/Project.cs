@@ -18,5 +18,9 @@ namespace DocumentsKM.Models
         [Required]
         [MaxLength(20)]
         public string BaseSeries { get; set; }
+
+        // Смещение основной надписи
+        [Required]
+        public Int16 Bias { get; set; }
     }
 }

@@ -43,10 +43,41 @@ namespace DocumentsKM.Helpers
             string projectName,
             string nodeName,
             string subnodeName,
-            string markName)
+            string markName,
+            int bias)
         {
             var complexName = projectName;
-            var objectName = nodeName + ". " + subnodeName + ". " + markName;
+            var objectName = "";
+            var firstPartAdded = false;
+            if (nodeName != "" && nodeName != null)
+            {
+                objectName += nodeName;
+                firstPartAdded = true;
+            }
+            if (subnodeName != "" && subnodeName != null)
+            {
+                if (firstPartAdded)
+                    objectName += ". ";
+                else
+                    firstPartAdded = true;
+                objectName += subnodeName;
+            }
+            if (markName != "" && markName != null)
+            {
+                if (firstPartAdded)
+                    objectName += ". ";
+                objectName += markName;
+            }
+            if (bias > 0)
+            {
+                complexName = projectName + ". " + objectName.Substring(0, bias -2);
+                objectName = objectName.Substring(bias, objectName.Length);
+            }
+            else if (bias < 0)
+            {
+                complexName = projectName.Substring(0, projectName.Length + bias - 2);
+                objectName = projectName.Substring(projectName.Length + bias) + ". " + objectName;
+            }
 
             return (complexName, objectName);
         }

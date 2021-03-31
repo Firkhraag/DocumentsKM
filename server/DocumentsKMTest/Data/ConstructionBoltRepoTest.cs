@@ -184,14 +184,14 @@ namespace DocumentsKM.Tests
                 new Subnode
                 {
                     Id = 1,
-                    Node = _nodes[0],
+                    NodeId = _nodes[0].Id,
                     Code = "Code1",
                     Name = "Name 1",
                 },
                 new Subnode
                 {
                     Id = 2,
-                    Node = _nodes[1],
+                    NodeId = _nodes[1].Id,
                     Code = "Code2",
                     Name = "Name 2",
                 },
@@ -682,7 +682,7 @@ namespace DocumentsKM.Tests
             var context = GetContext();
             var repo = new SqlConstructionBoltRepo(context);
 
-            int constructionId = _rnd.Next(1, _marks.Count());
+            int constructionId = _rnd.Next(1, _constructions.Count());
             int diameterId = _rnd.Next(1, _boltDiameters.Count());
             var constructionBolt = new ConstructionBolt
             {

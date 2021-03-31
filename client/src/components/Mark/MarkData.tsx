@@ -20,11 +20,11 @@ import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
 
 type MarkDataProps = {
-	subnodeForCreate: Subnode
+	currentSubnode: Subnode
 	isCreateMode: boolean
 }
 
-const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
+const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 	const defaultOptionsObject = {
 		departments: [] as Department[],
 		chiefSpecialists: [] as Employee[],
@@ -48,7 +48,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 
 	useEffect(() => {
 		if (isCreateMode) {
-			if (subnodeForCreate == null) {
+			if (currentSubnode == null) {
 				history.push('/marks')
 				return
 			}
@@ -58,7 +58,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 						'/departments'
 					)
 					const newMarkCodeResponse = await httpClient.get(
-						`/subnodes/${subnodeForCreate.id}/new-mark-code`
+						`/subnodes/${currentSubnode.id}/new-mark-code`
 					)
 					setOptionsObject({
 						...defaultOptionsObject,
@@ -294,7 +294,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 				const response = await httpClient.post(`/users/${user.id}/marks`, {
 					code: selectedObject.code,
 					name: selectedObject.name,
-					subnodeId: subnodeForCreate.id,
+					subnodeId: currentSubnode.id,
 					departmentId: selectedObject.department.id,
 					chiefSpecialistId: selectedObject.chiefSpecialist?.id,
 					groupLeaderId: selectedObject.groupLeader?.id,
@@ -394,10 +394,10 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							value={
 								isCreateMode
 									? makeMarkName(
-										subnodeForCreate.node.project
+										currentSubnode.node.project
 											.baseSeries,
-										subnodeForCreate.node.code,
-										subnodeForCreate.code,
+										currentSubnode.node.code,
+										currentSubnode.code,
 										selectedObject.code
 								  	)
 									: mark.designation
@@ -414,11 +414,12 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							value={
 								isCreateMode
 									? makeComplexAndObjectName(
-										subnodeForCreate.node.project
+										currentSubnode.node.project
 											.name,
-										subnodeForCreate.node.name,
-										subnodeForCreate.name,
-										selectedObject.name
+										currentSubnode.node.name,
+										currentSubnode.name,
+										selectedObject.name,
+										currentSubnode.node.project.bias
 								  ).complexName
 									: mark.complexName
 							}
@@ -434,11 +435,12 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							value={
 								isCreateMode
 									? makeComplexAndObjectName(
-										subnodeForCreate.node.project
+										currentSubnode.node.project
 											.name,
-										subnodeForCreate.node.name,
-										subnodeForCreate.name,
-										selectedObject.name
+										currentSubnode.node.name,
+										currentSubnode.name,
+										selectedObject.name,
+										currentSubnode.node.project.bias
 								  ).objectName
 									: mark.objectName
 							}
@@ -456,7 +458,7 @@ const MarkData = ({ isCreateMode, subnodeForCreate }: MarkDataProps) => {
 							className="mark-data-input-width1"
 							value={
 								isCreateMode
-									? subnodeForCreate.node.chiefEngineer
+									? currentSubnode.node.chiefEngineer
 											.fullname
 									: mark.chiefEngineer
 							}

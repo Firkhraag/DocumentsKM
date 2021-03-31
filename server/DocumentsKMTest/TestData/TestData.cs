@@ -218,14 +218,14 @@ namespace DocumentsKM.Tests
             new Subnode
             {
                 Id = 1,
-                Node = nodes[0],
+                NodeId = nodes[0].Id,
                 Code = "Code1",
                 Name = "Name 1",
             },
             new Subnode
             {
                 Id = 2,
-                Node = nodes[1],
+                NodeId = nodes[1].Id,
                 Code = "Code2",
                 Name = "Name 2",
             },
