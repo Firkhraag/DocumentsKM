@@ -7,8 +7,9 @@ namespace DocumentsKM.Dtos
     {
         public Int32 Id { get; set; }
         public string Code { get; set; }
+        public string Designation { get; set; }
         public virtual Department Department { get; set; }
-        public string ChiefEngineer { get; set; }
+        public string ChiefEngineerName { get; set; }
         public string Name { get; set; }
         public string ComplexName { get; set; }
         public string ObjectName { get; set; }

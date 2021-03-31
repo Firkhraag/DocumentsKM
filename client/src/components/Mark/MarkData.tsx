@@ -70,7 +70,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 						designation: '',
 						name: '',
 						complexName: '',
-						chiefEngineer: '',
+						chiefEngineerName: '',
 						objectName: '',
 						department: null,
 						chiefSpecialist: null,
@@ -460,7 +460,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 								isCreateMode
 									? currentSubnode.node.chiefEngineer
 											.fullname
-									: mark.chiefEngineer
+									: mark.chiefEngineerName
 							}
 							readOnly={true}
 						/>

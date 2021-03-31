@@ -106,7 +106,6 @@ namespace DocumentsKM.Services
             mark.Designation = MarkHelper.MakeMarkName(
                 project.BaseSeries, node.Code, subnode.Code, mark.Code);
 
-            // Add func
             (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
                 project.Name, node.Name, subnode.Name, mark.Name, project.Bias);
             mark.ComplexName = complexName;
@@ -168,8 +167,27 @@ namespace DocumentsKM.Services
             var foundMark = _repository.GetById(id);
             if (foundMark == null)
                 throw new ArgumentNullException(nameof(foundMark));
+
+            Subnode subnode = null;
+            Node node = null;
+            Project project = null;
+            var archiveWasFetched = false;
+
             if (mark.Name != null)
+            {
                 foundMark.Name = mark.Name;
+
+                subnode = _subnodeRepo.GetById(foundMark.SubnodeId);
+                node = _nodeRepo.GetById(subnode.NodeId);
+                project = _projectRepo.GetById(node.ProjectId);
+
+                (var complexName, var objectName) = MarkHelper.MakeComplexAndObjectName(
+                    project.Name, node.Name, subnode.Name, mark.Name, project.Bias);
+                foundMark.ComplexName = complexName;
+                foundMark.ObjectName = objectName;
+
+                archiveWasFetched = true;
+            }
             
             if (mark.Code != null)
             {
@@ -179,6 +197,15 @@ namespace DocumentsKM.Services
                     foundMark.SubnodeId, mark.Code);
                 if (uniqueConstraintViolationCheck != null && uniqueConstraintViolationCheck.Id != id)
                     throw new ConflictException(nameof(uniqueConstraintViolationCheck));
+
+                if (!archiveWasFetched)
+                {
+                    subnode = _subnodeRepo.GetById(foundMark.SubnodeId);
+                    node = _nodeRepo.GetById(subnode.NodeId);
+                    project = _projectRepo.GetById(node.ProjectId);
+                }
+
+                foundMark.Designation = MarkHelper.MakeMarkName(project.BaseSeries, node.Code, subnode.Code, mark.Code);
             }
 
             if (mark.DepartmentId != null)

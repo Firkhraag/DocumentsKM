@@ -340,22 +340,24 @@ const EstimateTaskDocument = () => {
 					/>
 				</div>
 				<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
-				<Button
-					variant="secondary"
-					className="full-width btn-mrg-top-2"
-					onClick={onChangeButtonClick}
-					disabled={processIsRunning}
-				>
-					Сохранить изменения
-				</Button>
-				<Button
-					variant="secondary"
-					className="full-width btn-mrg-top-2"
-					onClick={onDownloadButtonClick}
-					disabled={processIsRunning}
-				>
-					Скачать документ
-				</Button>
+				<div className="flex btn-mrg-top-2">
+					<Button
+						variant="secondary"
+						className="full-width"
+						onClick={onChangeButtonClick}
+						disabled={processIsRunning}
+					>
+						Сохранить изменения
+					</Button>
+					<Button
+						variant="secondary"
+						className="full-width mrg-left"
+						onClick={onDownloadButtonClick}
+						disabled={processIsRunning}
+					>
+						Скачать документ
+					</Button>
+				</div>
 			</div>
 		</div>
 	)

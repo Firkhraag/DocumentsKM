@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Dapper;
 using DocumentsKM.Helpers;
 using DocumentsKM.Models;
@@ -25,13 +23,13 @@ namespace DocumentsKM.Data
                                     [БазСерия] as BaseSeries,
                                     [Название] as Name,
                                     [ОснНадпСмещ] as Bias
-                                from [Проекты] where [Название] is not null and [БазСерия] is not null";
+                                from [Проекты] where [Название] is not null
+                                and [БазСерия] is not null
+                                and [БазСерия] like 'М[1-9]%'";
 
             using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
             {
-                var projects = db.Query<Project>(query);
-                projects = projects.Where(v => Regex.IsMatch(v.Name, "^М[1-9]*"));
-                return projects;
+                return db.Query<Project>(query);
             }
         }
 

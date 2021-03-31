@@ -5,7 +5,7 @@ interface IMark {
 	id: number
 	code: string
 	designation: string
-	chiefEngineer: string
+	chiefEngineerName: string
 	complexName: string
 	objectName: string
 	name: string
@@ -19,7 +19,7 @@ class Mark {
 	id: number
 	code: string
 	designation: string
-	chiefEngineer: string
+	chiefEngineerName: string
 	complexName: string
 	objectName: string
 	name: string
@@ -32,7 +32,7 @@ class Mark {
 		this.id = (obj && obj.id) || 0
 		this.code = (obj && obj.code) || ''
 		this.designation = (obj && obj.designation) || ''
-		this.chiefEngineer = (obj && obj.chiefEngineer) || ''
+		this.chiefEngineerName = (obj && obj.chiefEngineerName) || ''
 		this.complexName = (obj && obj.complexName) || ''
 		this.objectName = (obj && obj.objectName) || ''
 		this.name = (obj && obj.name) || ''
