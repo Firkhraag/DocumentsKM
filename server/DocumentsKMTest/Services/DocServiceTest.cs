@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Data;
 using DocumentsKM.Dtos;
+using DocumentsKM.Helpers;
 using DocumentsKM.Models;
 using DocumentsKM.Services;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -88,11 +90,17 @@ namespace DocumentsKM.Tests
             _repository.Setup(mock =>
                 mock.Delete(It.IsAny<Doc>())).Verifiable();
 
+            IOptions<AppSettings> options = Options.Create<AppSettings>(new AppSettings()
+            {
+                SheetDocTypeId = 1,
+            });
+
             _service = new DocService(
                 _repository.Object,
                 mockMarkRepo.Object,
                 mockEmployeeRepo.Object,
-                mockDocTypeRepo.Object);
+                mockDocTypeRepo.Object,
+                options);
         }
 
         [Fact]

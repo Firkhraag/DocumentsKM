@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using Dapper;
-using DocumentsKM.Helpers;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
@@ -11,9 +9,13 @@ namespace DocumentsKM.Data
     {
         private readonly ApplicationContext _context;
 
-        public SqlProjectRepo(ApplicationContext context)
+        private readonly IDbConnection _dbConnection;
+
+        public SqlProjectRepo(ApplicationContext context,
+            IDbConnection dbConnection)
         {
             _context = context;
+            _dbConnection = dbConnection;
         }
 
         public IEnumerable<Project> GetAll()
@@ -27,10 +29,7 @@ namespace DocumentsKM.Data
                                 and [БазСерия] is not null
                                 and [БазСерия] like 'М[1-9]%'";
 
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                return db.Query<Project>(query);
-            }
+            return _dbConnection.Query<Project>(query);
         }
 
         public Project GetById(int id)
@@ -42,10 +41,7 @@ namespace DocumentsKM.Data
                             [ОснНадпСмещ] as Bias
                         from [Проекты] where [Проект] = {id}";
 
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                return db.QuerySingle<Project>(query);
-            }
+            return _dbConnection.QuerySingle<Project>(query);
         }
 
         public Project GetByUniqueKey(string baseSeries)
@@ -57,10 +53,7 @@ namespace DocumentsKM.Data
                             [ОснНадпСмещ] as Bias
                         from [Проекты] where [БазСерия] = {baseSeries}";
 
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                return db.QuerySingle<Project>(query);
-            }
+            return _dbConnection.QuerySingle<Project>(query);
         }
     }
 }

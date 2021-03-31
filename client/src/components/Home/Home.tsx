@@ -6,7 +6,6 @@ import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
-import { makeMarkName } from '../../util/make-name'
 // Style
 import './Home.css'
 

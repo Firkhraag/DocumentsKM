@@ -14,7 +14,6 @@ namespace DocumentsKM.Services
 {
     public class GeneralDataDocumentService : IGeneralDataDocumentService
     {
-        private readonly int _sheetDocTypeId = 1;
         private readonly string _conditionsSectionName = "Характеристики конструкций";
         
         private readonly IMarkRepo _markRepo;
@@ -76,7 +75,7 @@ namespace DocumentsKM.Services
             var markGeneralDataPoints = _markGeneralDataPointRepo.GetAllByMarkId(
                 markId).OrderByDescending(
                     v => v.Section.OrderNum).ThenByDescending(v => v.OrderNum);
-            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _sheetDocTypeId);
+            var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _appSettings.SheetDocTypeId);
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {  

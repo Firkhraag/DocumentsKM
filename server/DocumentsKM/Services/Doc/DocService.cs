@@ -3,29 +3,31 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
+using DocumentsKM.Helpers;
+using Microsoft.Extensions.Options;
 
 namespace DocumentsKM.Services
 {
     public class DocService : IDocService
     {
-        // Id листа основного комплекта из справочника типов документов
-        private readonly int _sheetDocTypeId = 1;
-
         private readonly IDocRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IDocTypeRepo _docTypeRepo;
+        private readonly AppSettings _appSettings;
 
         public DocService(
             IDocRepo docRepo,
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
-            IDocTypeRepo docTypeRepo)
+            IDocTypeRepo docTypeRepo,
+            IOptions<AppSettings> appSettings)
         {
             _repository = docRepo;
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
             _docTypeRepo = docTypeRepo;
+            _appSettings = appSettings.Value;
         }
 
         public IEnumerable<Doc> GetAllByMarkId(int markId)
@@ -36,13 +38,13 @@ namespace DocumentsKM.Services
         public IEnumerable<Doc> GetAllSheetsByMarkId(int markId)
         {
             return _repository.GetAllByMarkIdAndDocType(
-                markId, _sheetDocTypeId);
+                markId, _appSettings.SheetDocTypeId);
         }
 
         public IEnumerable<Doc> GetAllAttachedByMarkId(int markId)
         {
             return _repository.GetAllByMarkIdAndNotDocType(
-                markId, _sheetDocTypeId);
+                markId, _appSettings.SheetDocTypeId);
         }
 
         public void Create(

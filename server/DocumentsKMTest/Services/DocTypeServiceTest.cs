@@ -1,6 +1,8 @@
 using System.Linq;
 using DocumentsKM.Data;
+using DocumentsKM.Helpers;
 using DocumentsKM.Services;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -22,7 +24,12 @@ namespace DocumentsKM.Tests
                         TestData.docTypes.Where(v => v.Id != docType.Id));
             }
 
-            _service = new DocTypeService(repository.Object);
+            IOptions<AppSettings> options = Options.Create<AppSettings>(new AppSettings()
+            {
+                SheetDocTypeId = 1,
+            });
+
+            _service = new DocTypeService(repository.Object, options);
         }
 
         [Fact]

@@ -1,6 +1,10 @@
 using System.IO;
 using DocumentFormat.OpenXml.Packaging;
 using System;
+using DocumentsKM.Data;
+using DocumentsKM.Helpers;
+using Microsoft.Extensions.Options;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -15,6 +19,9 @@ namespace DocumentsKM.Services
         private readonly IEstimationTitleDocumentService _estimationTitleDocumentService;
         private readonly IEstimationPagesDocumentService _estimationPagesDocumentService;
 
+        private readonly IDocRepo _docRepo;
+        private readonly AppSettings _appSettings;
+
         public DocumentService(
             IGeneralDataDocumentService generalDataDocumentService,
             ISpecificationDocumentService specificationDocumentService,
@@ -23,7 +30,9 @@ namespace DocumentsKM.Services
             IEstimateTaskDocumentService estimateTaskDocumentService,
             IProjectRegistrationDocumentService projectRegistrationDocumentService,
             IEstimationTitleDocumentService estimationTitleDocumentService,
-            IEstimationPagesDocumentService estimationPagesDocumentService)
+            IEstimationPagesDocumentService estimationPagesDocumentService,
+            IDocRepo docRepo,
+            IOptions<AppSettings> appSettings)
         {
             _generalDataDocumentService = generalDataDocumentService;
             _specificationDocumentService = specificationDocumentService;
@@ -33,6 +42,8 @@ namespace DocumentsKM.Services
             _projectRegistrationDocumentService = projectRegistrationDocumentService;
             _estimationTitleDocumentService = estimationTitleDocumentService;
             _estimationPagesDocumentService = estimationPagesDocumentService;
+            _docRepo = docRepo;
+            _appSettings = appSettings.Value;
         }
 
         public MemoryStream GetGeneralDataDocument(int markId)
@@ -48,6 +59,13 @@ namespace DocumentsKM.Services
             var memory = GetStreamFromTemplate("word\\template_specification.docx");
             _specificationDocumentService.PopulateDocument(markId, memory);
             memory.Seek(0, SeekOrigin.Begin);
+
+            // Auto add
+            // var docs = _docRepo.GetAllByMarkIdAndDocType(markId, _appSettings.SpecificationDocTypeId);
+            // if (docs.Count() == 0)
+            // {
+                
+            // }
             return memory;
         }
 
@@ -56,6 +74,13 @@ namespace DocumentsKM.Services
             var memory = GetStreamFromTemplate("word\\template_construction.docx");
             _constructionDocumentService.PopulateDocument(markId, memory);
             memory.Seek(0, SeekOrigin.Begin);
+
+            // Auto add
+            // var docs = _docRepo.GetAllByMarkIdAndDocType(markId, _appSettings.ConstructionDocTypeId);
+            // if (docs.Count() == 0)
+            // {
+                
+            // }
             return memory;
         }
 
@@ -83,28 +108,6 @@ namespace DocumentsKM.Services
             return memory;
         }
 
-        private MemoryStream GetStreamFromTemplate(string inputPath)
-        {
-            MemoryStream documentStream;
-            using (Stream stream = File.OpenRead(inputPath))
-            {
-                documentStream = new MemoryStream((int)stream.Length);
-                stream.CopyTo(documentStream);
-                documentStream.Position = 0L;
-            }
-            using (WordprocessingDocument template = WordprocessingDocument.Open(documentStream, true))
-            {
-                template.ChangeDocumentType(DocumentFormat.OpenXml.WordprocessingDocumentType.Document);
-                MainDocumentPart mainPart = template.MainDocumentPart;
-                // mainPart.DocumentSettingsPart.AddExternalRelationship(
-                //     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate",
-                // new Uri(inputPath, UriKind.Absolute));
-
-                mainPart.Document.Save();
-            }
-            return documentStream;
-        }
-
         public MemoryStream GetEstimationDocumentTitle(int markId)
         {
             var memory = GetStreamFromTemplate("word\\template_estimation_title.docx");
@@ -119,6 +122,24 @@ namespace DocumentsKM.Services
             _estimationPagesDocumentService.PopulateDocument(markId, memory);
             memory.Seek(0, SeekOrigin.Begin);
             return memory;
+        }
+
+        private MemoryStream GetStreamFromTemplate(string inputPath)
+        {
+            MemoryStream documentStream;
+            using (Stream stream = File.OpenRead(inputPath))
+            {
+                documentStream = new MemoryStream((int)stream.Length);
+                stream.CopyTo(documentStream);
+                documentStream.Position = 0L;
+            }
+            using (WordprocessingDocument template = WordprocessingDocument.Open(documentStream, true))
+            {
+                template.ChangeDocumentType(DocumentFormat.OpenXml.WordprocessingDocumentType.Document);
+                MainDocumentPart mainPart = template.MainDocumentPart;
+                mainPart.Document.Save();
+            }
+            return documentStream;
         }
     }
 }

@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using Dapper;
-using DocumentsKM.Helpers;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
@@ -11,9 +9,13 @@ namespace DocumentsKM.Data
     {
         private readonly ApplicationContext _context;
 
-        public SqlSubnodeRepo(ApplicationContext context)
+        private readonly IDbConnection _dbConnection;
+
+        public SqlSubnodeRepo(ApplicationContext context,
+            IDbConnection dbConnection)
         {
             _context = context;
+            _dbConnection = dbConnection;
         }
 
         public IEnumerable<Subnode> GetAllByNodeId(int nodeId)
@@ -24,11 +26,7 @@ namespace DocumentsKM.Data
                             [НазвПодузла] as Name,
                             [Узел] as NodeId
                         from [Подузлы] where [КодПодуз] is not null and [Узел] = {nodeId}";
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                var subnodes = db.Query<Subnode>(query);
-                return subnodes;
-            }
+            return _dbConnection.Query<Subnode>(query);
         }
 
         public Subnode GetById(int id)
@@ -40,10 +38,7 @@ namespace DocumentsKM.Data
                             [Узел] as NodeId
                         from [Подузлы] where [Подузел] = {id}";
 
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                return db.QuerySingle<Subnode>(query);
-            }
+            return _dbConnection.QuerySingle<Subnode>(query);
         }
 
         public Subnode GetByUniqueKey(int nodeId, string code)
@@ -55,10 +50,7 @@ namespace DocumentsKM.Data
                             [Узел] as NodeId
                         from [Подузлы] where [Узел] = {nodeId} and [КодПодуз] = {code}";
 
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                return db.QuerySingle<Subnode>(query);
-            }
+            return _dbConnection.QuerySingle<Subnode>(query);
         }
     }
 }

@@ -2,9 +2,8 @@
 	margin: 2em;
 	display: grid;
 	grid-row-gap: 30px;
-	grid-column-gap: 20px;
-	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-	justify-items: center;
+	grid-column-gap: 33px;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .home-cnt-header {

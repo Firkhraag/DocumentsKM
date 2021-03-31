@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DocumentsKM.Services;
 using DocumentsKM.Helpers;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace DocumentsKM
 {
@@ -91,7 +93,11 @@ namespace DocumentsKM
                 };
             });
 
-            // Подключение к базе данных SqlServer
+              // Подключение к базе данных ArchDocT
+            services.AddTransient<IDbConnection>((s) => new SqlConnection(
+                this.Configuration.GetConnectionString("ArchiveConnectionString")));
+
+            // Подключение к базе данных DocumentsKM
             services.AddDbContext<ApplicationContext>(
                 opt => opt.UseLazyLoadingProxies()
                     .UseSqlServer(

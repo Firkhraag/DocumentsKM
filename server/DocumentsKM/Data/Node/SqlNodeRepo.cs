@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using Dapper;
-using DocumentsKM.Helpers;
 using DocumentsKM.Models;
 
 namespace DocumentsKM.Data
@@ -11,9 +9,13 @@ namespace DocumentsKM.Data
     {
         private readonly ApplicationContext _context;
 
-        public SqlNodeRepo(ApplicationContext context)
+        private readonly IDbConnection _dbConnection;
+
+        public SqlNodeRepo(ApplicationContext context,
+            IDbConnection dbConnection)
         {
             _context = context;
+            _dbConnection = dbConnection;
         }
 
         public IEnumerable<Node> GetAllByProjectId(int projectId)
@@ -25,10 +27,7 @@ namespace DocumentsKM.Data
                             [Проект] as ProjectId,
                             [ГИП] as ChiefEngineerName
                         from [Узлы] where [КодУзла] is not null and [Проект] = {projectId}";
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                return db.Query<Node>(query);
-            }
+            return _dbConnection.Query<Node>(query);
         }
 
         public Node GetById(int id)
@@ -41,10 +40,7 @@ namespace DocumentsKM.Data
                             [ГИП] as ChiefEngineerName
                         from [Узлы] where [Узел] = {id}";
 
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                return db.QuerySingle<Node>(query);
-            }
+            return _dbConnection.QuerySingle<Node>(query);
         }
 
         public Node GetByUniqueKey(int projectId, string code)
@@ -57,10 +53,7 @@ namespace DocumentsKM.Data
                             [ГИП] as ChiefEngineerName
                         from [Узлы] where [Проект] = {projectId} and [КодУзла] = {code}";
 
-            using(IDbConnection db = new SqlConnection(Secrets.ARCHIVE_CONNECTION_STRING))
-            {
-                return db.QuerySingle<Node>(query);
-            }
+            return _dbConnection.QuerySingle<Node>(query);
         }
     }
 }
