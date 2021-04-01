@@ -5,7 +5,7 @@ Create Table Marks (
 	ChiefEngineerName varchar(255),
 	ComplexName Nvarchar(255) Not Null,
 	ObjectName Nvarchar(255) Not Null,
-	Name Nvarchar(255) Not Null,
+	Name Nvarchar(255),
 	SubnodeId Int Not Null,
 	DepartmentId Smallint Not Null,
 	SignedId Int,

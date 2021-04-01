@@ -288,10 +288,6 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 			setErrMsg('Пожалуйста, введите шифр марки')
 			return false
 		}
-		if (selectedObject.name === '') {
-			setErrMsg('Пожалуйста, введите наименование марки')
-			return false
-		}
 		if (selectedObject.department == null) {
 			setErrMsg('Пожалуйста, выберите отдел')
 			return false

@@ -33,7 +33,6 @@ namespace DocumentsKM.Models
         public string ObjectName { get; set; }
 
         // Название
-        [Required]
         [MaxLength(255)]
         public string Name { get; set; }
 

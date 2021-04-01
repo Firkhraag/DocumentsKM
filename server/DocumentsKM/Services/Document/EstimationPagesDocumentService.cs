@@ -44,7 +44,9 @@ namespace DocumentsKM.Services
                 departmentHead = _employeeRepo.GetByDepartmentIdAndPosition(
                 mark.Department.Id, _appSettings.ActingDeputyDepartmentHeadPosId);
             if (departmentHead == null)
-                throw new ConflictException();
+                departmentHead = new Employee{
+                    Name = "",
+                };
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {

@@ -9,7 +9,6 @@ namespace DocumentsKM.Dtos
         [MaxLength(40)]
         public string Code { get; set; }
 
-        [Required]
         [MaxLength(255)]
         public string Name { get; set; }
 
