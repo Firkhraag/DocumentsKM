@@ -6,8 +6,6 @@ data/*.json
 
 node_modules/
 
-Secrets.cs
-
 server/DocumentsKM/ClientApp/dist/
 
 bin/

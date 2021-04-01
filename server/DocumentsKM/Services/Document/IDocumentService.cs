@@ -7,9 +7,9 @@ namespace DocumentsKM.Services
         // Получить документ общих указаний
         MemoryStream GetGeneralDataDocument(int markId);
         // Получить спецификацию металла
-        MemoryStream GetSpecificationDocument(int markId);
+        MemoryStream GetSpecificationDocument(int markId, int userId);
         // Получить ведомость металлоконструкций
-        MemoryStream GetConstructionDocument(int markId);
+        MemoryStream GetConstructionDocument(int markId, int userId);
         // Получить ведомость высокопрочных болтов
         MemoryStream GetBoltDocument(int markId);
         // Получить задание на смету

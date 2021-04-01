@@ -27,5 +27,13 @@ namespace DocumentsKM.Controllers
             var projects = _service.GetAll();
             return Ok(projects);
         }
+
+        [HttpGet, Route("projects/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<Project>> GetById(int id)
+        {
+            var project = _service.GetById(id);
+            return Ok(project);
+        }
     }
 }

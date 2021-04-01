@@ -10,9 +10,9 @@ import Project from '../../model/Project'
 import Node from '../../model/Node'
 import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
+import RecentMark from '../../model/RecentMark'
 import httpClient from '../../axios'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
-import { makeMarkName } from '../../util/make-name'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle, optimizedReactSelectStyle } from '../../util/react-select-style'
 import { useSetMark } from '../../store/MarkStore'
@@ -44,6 +44,8 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 	const [selectedObject, setSelectedObject] = useState(defaultSelectedObject)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
+	const [recentMarks, setRecentMarks] = useState([] as RecentMark[])
+
 	const cachedNodes = useState(new Map<number, Node[]>())[0]
 	const cachedSubnodes = useState(new Map<number, Subnode[]>())[0]
 	const cachedMarks = useState(new Map<number, Mark[]>())[0]
@@ -54,17 +56,18 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		const fetchData = async () => {
 			let recentMarks = [] as Mark[]
 			try {
-				const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
-				if (recentMarkIdsStr != null) {
-					const recentMarkIds = JSON.parse(
-						recentMarkIdsStr
-					) as number[]
-					for (let id of recentMarkIds) {
-						const markResponse = await httpClient.get(
-							`/marks/${id}`
-						)
-						recentMarks.push(markResponse.data)
-					}
+				const recentMarkStr = localStorage.getItem('recentMark')
+				if (recentMarkStr != null) {
+					const recentMark = JSON.parse(
+						recentMarkStr
+					) as RecentMark[]
+					const marksResponse = await httpClient.post(`/marks/recent`, {
+						ids: recentMark.map(m => m.id),
+					})
+					recentMarks = [] as Mark[]
+					marksResponse.data.forEach(
+						(v: Mark) => recentMarks[recentMark.map(m => m.id).indexOf(v.id)] = v)
+					setRecentMarks(recentMark)
 				}
 			} catch (e) {
 				console.log('Failed to get recent marks or subnodes')
@@ -99,19 +102,28 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 			selectedObject.mark
 		)
 		if (v != null) {
-			const s = v.subnode
-			const n = s.node
-			const p = n.project
+			const rm = recentMarks.find(v => v.id == id)
 			try {
 				const nodesResponse = await httpClient.get(
-					`/projects/${p.id}/nodes`
+					`/projects/${rm.projectId}/nodes`
 				)
 				const subnodesResponse = await httpClient.get(
-					`/nodes/${n.id}/subnodes`
+					`/nodes/${rm.nodeId}/subnodes`
 				)
 				const marksResponse = await httpClient.get(
-					`/subnodes/${s.id}/marks`
+					`/subnodes/${rm.subnodeId}/marks`
 				)
+
+				const projectResponse = await httpClient.get(
+					`/projects/${rm.projectId}`
+				)
+				const nodeResponse = await httpClient.get(
+					`/nodes/${rm.nodeId}`
+				)
+				const subnodeResponse = await httpClient.get(
+					`/subnodes/${rm.subnodeId}`
+				)
+
 				setOptionsObject({
 					...defaultOptionsObject,
 					recentMarks: optionsObject.recentMarks,
@@ -120,19 +132,71 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 					subnodes: subnodesResponse.data,
 					marks: marksResponse.data,
 				})
+
+				setSelectedObject({
+					...defaultSelectedObject,
+					recentMark: v,
+					project: projectResponse.data,
+					node: nodeResponse.data,
+					subnode: subnodeResponse.data,
+					mark: v,
+				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
 			}
-			setSelectedObject({
-				...defaultSelectedObject,
-				recentMark: v,
-				project: p,
-				node: n,
-				subnode: s,
-				mark: v,
-			})
 		}
 	}
+
+	// const onRecentMarkSelect = async (id: number) => {
+	// 	if (id == null) {
+	// 		setOptionsObject({
+	// 			...defaultOptionsObject,
+	// 		})
+	// 		setSelectedObject({
+	// 			...defaultSelectedObject,
+	// 		})
+	// 		return
+	// 	}
+	// 	const v = getFromOptions(
+	// 		id,
+	// 		optionsObject.recentMarks,
+	// 		selectedObject.mark
+	// 	)
+	// 	if (v != null) {
+	// 		const s = v.subnode
+	// 		const n = v.node
+	// 		const p = v.project
+	// 		try {
+	// 			const nodesResponse = await httpClient.get(
+	// 				`/projects/${p.id}/nodes`
+	// 			)
+	// 			const subnodesResponse = await httpClient.get(
+	// 				`/nodes/${n.id}/subnodes`
+	// 			)
+	// 			const marksResponse = await httpClient.get(
+	// 				`/subnodes/${s.id}/marks`
+	// 			)
+	// 			setOptionsObject({
+	// 				...defaultOptionsObject,
+	// 				recentMarks: optionsObject.recentMarks,
+	// 				projects: optionsObject.projects,
+	// 				nodes: nodesResponse.data,
+	// 				subnodes: subnodesResponse.data,
+	// 				marks: marksResponse.data,
+	// 			})
+	// 		} catch (e) {
+	// 			setErrMsg('Произошла ошибка')
+	// 		}
+	// 		setSelectedObject({
+	// 			...defaultSelectedObject,
+	// 			recentMark: v,
+	// 			project: p,
+	// 			node: n,
+	// 			subnode: s,
+	// 			mark: v,
+	// 		})
+	// 	}
+	// }
 
 	const onProjectSelect = async (id: number) => {
 		if (id == null) {
@@ -343,11 +407,16 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 			(m) => m.id !== mark.id
 		)
 		if (filteredRecentMarks.length >= 5) {
-			filteredRecentMarks.shift()
+			filteredRecentMarks.pop()
 		}
 		filteredRecentMarks.unshift(mark)
-		let resStr = JSON.stringify(filteredRecentMarks.map((m) => m.id))
-		localStorage.setItem('recentMarkIds', resStr)
+		let resStr = JSON.stringify(filteredRecentMarks.map((m) => new RecentMark({
+			id: m.id,
+			projectId: selectedObject.project.id,
+			nodeId: selectedObject.node.id,
+			subnodeId: selectedObject.subnode.id,
+		})))
+		localStorage.setItem('recentMark', resStr)
 
 		setMark(selectedObject.mark)
 		history.push('/')

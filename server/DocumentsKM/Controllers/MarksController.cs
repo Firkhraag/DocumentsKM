@@ -37,6 +37,15 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<MarkResponse>>(marks));
         }
 
+        [HttpPost, Route("marks/recent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<MarkResponse>> GetAllRecentByIds(
+            [FromBody] IdsRequest idsRequest)
+        {
+            var marks = _service.GetAllByIds(idsRequest.Ids);
+            return Ok(_mapper.Map<IEnumerable<MarkResponse>>(marks));
+        }
+
         [HttpGet, Route("marks/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -69,13 +78,13 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
-        [HttpPost, Route("users/{userId}/marks")]
+        [HttpPost, Route("users/{userId}/subnodes/{subnodeId}/marks")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<MarkResponse> Create(
-            int userId, [FromBody] MarkCreateRequest markRequest)
+        public ActionResult Create(
+            int userId, int subnodeId, [FromBody] MarkCreateRequest markRequest)
         {
             var markModel = _mapper.Map<Mark>(markRequest);
             try
@@ -83,7 +92,7 @@ namespace DocumentsKM.Controllers
                 _service.Create(
                     markModel,
                     userId,
-                    markRequest.SubnodeId,
+                    subnodeId,
                     markRequest.DepartmentId,
                     markRequest.ChiefSpecialistId,
                     markRequest.GroupLeaderId,

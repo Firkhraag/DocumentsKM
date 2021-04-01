@@ -6,9 +6,6 @@ namespace DocumentsKM.Dtos
     public class MarkCreateRequest
     {
         [Required]
-        public Int32 SubnodeId { get; set; }
-
-        [Required]
         [MaxLength(40)]
         public string Code { get; set; }
 
@@ -21,8 +18,6 @@ namespace DocumentsKM.Dtos
 
         public Int32? ChiefSpecialistId { get; set; }
         public Int32? GroupLeaderId { get; set; }
-
-        [Required]
         public Int32? NormContrId { get; set; }
 
         public MarkCreateRequest()

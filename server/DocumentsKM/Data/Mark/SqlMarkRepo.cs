@@ -19,6 +19,11 @@ namespace DocumentsKM.Data
             return _context.Marks.ToList();
         }
 
+        public IEnumerable<Mark> GetAllByIds(List<int> ids)
+        {
+            return _context.Marks.Where(v => ids.Contains(v.Id)).ToList();
+        }
+
         public IEnumerable<Mark> GetAllBySubnodeId(int subnodeId)
         {
             return _context.Marks.Where(

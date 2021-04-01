@@ -3,7 +3,6 @@ import axios from 'axios'
 const httpClient = axios.create({
 	baseURL: 'https://localhost:5001/api',
 	withCredentials: true,
-	timeout: 3000,
 })
 
 httpClient.interceptors.request.use((config) => {

@@ -12,6 +12,7 @@ import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
+import RecentMark from '../../model/RecentMark'
 import { useMark, useSetMark } from '../../store/MarkStore'
 import { useUser } from '../../store/UserStore'
 import { makeMarkName, makeComplexAndObjectName } from '../../util/make-name'
@@ -64,28 +65,39 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 						...defaultOptionsObject,
 						departments: departmentsResponse.data,
 					})
-					setSelectedObject({
-						id: 0,
-						code: newMarkCodeResponse.data,
-						designation: '',
-						name: '',
-						complexName: '',
-						chiefEngineerName: '',
-						objectName: '',
-						department: null,
-						chiefSpecialist: null,
-						groupLeader: null,
-						normContr: null,
-					})
+					
                     if (isCreateMode) {
                         const defaultValuesResponse = await httpClient.get(
                             `/users/${user.id}/default-values`
                         )
-                        setSelectedObject({
-                            ...selectedObject,
-                            department: defaultValuesResponse.data.department,
-                        })
-                    }
+						setSelectedObject({
+							id: 0,
+							code: newMarkCodeResponse.data,
+							designation: '',
+							name: '',
+							complexName: '',
+							chiefEngineerName: '',
+							objectName: '',
+							department: defaultValuesResponse.data.department,
+							chiefSpecialist: null,
+							groupLeader: null,
+							normContr: null,
+						})
+                    } else {
+						setSelectedObject({
+							id: 0,
+							code: newMarkCodeResponse.data,
+							designation: '',
+							name: '',
+							complexName: '',
+							chiefEngineerName: '',
+							objectName: '',
+							department: null,
+							chiefSpecialist: null,
+							groupLeader: null,
+							normContr: null,
+						})
+					}
 				} catch (e) {
 					console.log('Failed to fetch departments')
 				}
@@ -291,32 +303,70 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				const response = await httpClient.post(`/users/${user.id}/marks`, {
+				const response = await httpClient.post(`/users/${user.id}/subnodes/${currentSubnode.id}/marks`, {
 					code: selectedObject.code,
 					name: selectedObject.name,
-					subnodeId: currentSubnode.id,
 					departmentId: selectedObject.department.id,
 					chiefSpecialistId: selectedObject.chiefSpecialist?.id,
 					groupLeaderId: selectedObject.groupLeader?.id,
-					normContrId: selectedObject.normContr.id,
+					normContrId: selectedObject.normContr?.id,
 				})
-				localStorage.setItem('selectedMarkId', response.data.id)
 
-				const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
-				if (recentMarkIdsStr != null) {
-					const recentMarkIds = JSON.parse(
-						recentMarkIdsStr
-					) as number[]
 
-					if (recentMarkIds.length >= 5) {
-						recentMarkIds.shift()
-					}
-					recentMarkIds.unshift(response.data.id)
-					let resStr = JSON.stringify(recentMarkIds)
-					localStorage.setItem('recentMarkIds', resStr)
-					setMark(response.data)
-					history.push('/')
+				localStorage.setItem('selectedMarkId', response.data.id.toString())
+
+				let recentMarks = [] as RecentMark[]
+				const recentMarkStr = localStorage.getItem('recentMark')
+				if (recentMarkStr != null) {
+					recentMarks = JSON.parse(
+						recentMarkStr
+					) as RecentMark[]
 				}
+
+				if (recentMarks.length >= 5) {
+					recentMarks.pop()
+				}
+				recentMarks.unshift(response.data)
+				let resStr = JSON.stringify(recentMarks.map((m) => new RecentMark({
+					id: m.id,
+					projectId: currentSubnode.node.project.id,
+					nodeId: currentSubnode.node.id,
+					subnodeId: currentSubnode.id,
+				})))
+				localStorage.setItem('recentMark', resStr)
+
+
+				// localStorage.setItem('selectedMarkId', response.data.id)
+
+				// const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
+				// if (recentMarkIdsStr != null) {
+				// 	const recentMarkIds = JSON.parse(
+				// 		recentMarkIdsStr
+				// 	) as number[]
+
+				// 	if (recentMarkIds.length >= 5) {
+				// 		recentMarkIds.shift()
+				// 	}
+				// 	recentMarkIds.unshift(response.data.id)
+				// 	let resStr = JSON.stringify(recentMarkIds)
+				// 	localStorage.setItem('recentMarkIds', resStr)
+				// }
+
+				// const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
+				// if (recentMarkIdsStr != null) {
+				// 	const recentMarkIds = JSON.parse(
+				// 		recentMarkIdsStr
+				// 	) as number[]
+
+				// 	if (recentMarkIds.length >= 5) {
+				// 		recentMarkIds.shift()
+				// 	}
+				// 	recentMarkIds.unshift(response.data.id)
+				// 	let resStr = JSON.stringify(recentMarkIds)
+				// 	localStorage.setItem('recentMarkIds', resStr)
+				// }
+				setMark(response.data)
+				history.push('/')
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Марка с таким кодом уже существует')
@@ -458,7 +508,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 							className="mark-data-input-width1"
 							value={
 								isCreateMode
-									? currentSubnode.node.chiefEngineer
+									? currentSubnode.node.chiefEngineerName
 											.fullname
 									: mark.chiefEngineerName
 							}

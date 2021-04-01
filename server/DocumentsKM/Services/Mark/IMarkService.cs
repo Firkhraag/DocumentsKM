@@ -9,6 +9,8 @@ namespace DocumentsKM.Services
     {
         // Получить все марки по id подузла
         IEnumerable<Mark> GetAllBySubnodeId(int subnodeId);
+        // Получить все марки по ids
+        IEnumerable<Mark> GetAllByIds(List<int> ids);
         // Получить марку по id
         Mark GetById(int id);
         // Получить код для создания новой марки

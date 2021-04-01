@@ -7,6 +7,15 @@ namespace DocumentsKM.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> opt) : base(opt) {}
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Mark>().Property(e => e.EditedDate).HasColumnType("datetime");
+            builder.Entity<Mark>().Property(e => e.IssueDate).HasColumnType("datetime");
+            builder.Entity<Specification>().Property(e => e.CreatedDate).HasColumnType("datetime");
+        }
+
         // Other services data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }

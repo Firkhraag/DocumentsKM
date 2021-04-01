@@ -17,5 +17,10 @@ namespace DocumentsKM.Services
         {
             return _repository.GetAllByProjectId(projectId);
         }
+
+        public Node GetById(int id)
+        {
+            return _repository.GetById(id);
+        }
     }
 }

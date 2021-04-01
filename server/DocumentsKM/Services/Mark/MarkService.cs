@@ -47,6 +47,11 @@ namespace DocumentsKM.Services
             return _repository.GetAllBySubnodeId(subnodeId);
         }
 
+        public IEnumerable<Mark> GetAllByIds(List<int> ids)
+        {
+            return _repository.GetAllByIds(ids);
+        }
+
         public Mark GetById(int id)
         {
             return _repository.GetById(id);
@@ -60,11 +65,12 @@ namespace DocumentsKM.Services
             var newNum = 1;
             foreach (var code in codes)
             {
-                Int16.Parse(code);
                 var n = string.Empty;
                 for (int i = 0; i < code.Length; i++)
                     if (Char.IsDigit(code[i]))
                         n += code[i];
+                    else
+                        break;
 
                 if (n.Length > 0)
                 {
@@ -145,6 +151,8 @@ namespace DocumentsKM.Services
                     throw new ConflictException(nameof(departmentId));
                 mark.NormContr = normContr;
             }
+
+            mark.EditedDate = DateTime.Now;
             
             _repository.Add(mark);
             _specificationService.Create(mark.Id);

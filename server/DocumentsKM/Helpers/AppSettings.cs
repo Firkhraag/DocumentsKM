@@ -7,6 +7,9 @@ namespace DocumentsKM.Helpers
         // Сколько дней живет JWT token
         public int TokenExpireTimeInDays { get; set; }
 
+        // Personnel API
+        public string PersonnelUrl { get; set; }
+
         // Листы основного комплекта
         public int SheetDocTypeId { get; set; }
         // Спецификация металлопроката

@@ -6,11 +6,13 @@ import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
 import { useMark } from '../../store/MarkStore'
+import { useUser } from '../../store/UserStore'
 // Style
 import './Home.css'
 
 const Home = () => {
 	const mark = useMark()
+	const user = useUser()
 
 	const [processIsRunning, setProcessIsRunning] = useState(false)
 
@@ -18,7 +20,7 @@ const Home = () => {
 		setProcessIsRunning(true)
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/construction-document`,
+				`/users/${user.id}/marks/${mark.id}/construction-document`,
 				{
 					responseType: 'blob',
 				}
@@ -69,7 +71,7 @@ const Home = () => {
 		setProcessIsRunning(true)
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/spec-document`,
+				`/users/${user.id}/marks/${mark.id}/spec-document`,
 				{
 					responseType: 'blob',
 				}

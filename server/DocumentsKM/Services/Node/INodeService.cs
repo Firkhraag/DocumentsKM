@@ -7,5 +7,7 @@ namespace DocumentsKM.Services
     {
         // Получить все узлы по id проекта
         IEnumerable<Node> GetAllByProjectId(int projectId);
+        // Получить узел по id
+        Node GetById(int id);
     }
 }

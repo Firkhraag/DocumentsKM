@@ -5,6 +5,7 @@ using DocumentsKM.Data;
 using DocumentsKM.Helpers;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using DocumentsKM.Models;
 
 namespace DocumentsKM.Services
 {
@@ -19,7 +20,10 @@ namespace DocumentsKM.Services
         private readonly IEstimationTitleDocumentService _estimationTitleDocumentService;
         private readonly IEstimationPagesDocumentService _estimationPagesDocumentService;
 
+        private readonly IMarkRepo _markRepo;
         private readonly IDocRepo _docRepo;
+        private readonly IDocTypeRepo _docTypeRepo;
+        private readonly IDefaultValuesRepo _defaultValuesRepo;
         private readonly AppSettings _appSettings;
 
         public DocumentService(
@@ -31,7 +35,10 @@ namespace DocumentsKM.Services
             IProjectRegistrationDocumentService projectRegistrationDocumentService,
             IEstimationTitleDocumentService estimationTitleDocumentService,
             IEstimationPagesDocumentService estimationPagesDocumentService,
+            IMarkRepo markRepo,
             IDocRepo docRepo,
+            IDocTypeRepo docTypeRepo,
+            IDefaultValuesRepo defaultValuesRepo,
             IOptions<AppSettings> appSettings)
         {
             _generalDataDocumentService = generalDataDocumentService;
@@ -42,7 +49,10 @@ namespace DocumentsKM.Services
             _projectRegistrationDocumentService = projectRegistrationDocumentService;
             _estimationTitleDocumentService = estimationTitleDocumentService;
             _estimationPagesDocumentService = estimationPagesDocumentService;
+            _markRepo = markRepo;
             _docRepo = docRepo;
+            _docTypeRepo = docTypeRepo;
+            _defaultValuesRepo = defaultValuesRepo;
             _appSettings = appSettings.Value;
         }
 
@@ -54,33 +64,23 @@ namespace DocumentsKM.Services
             return memory;
         }
 
-        public MemoryStream GetSpecificationDocument(int markId)
+        public MemoryStream GetSpecificationDocument(int markId, int userId)
         {
             var memory = GetStreamFromTemplate("word\\template_specification.docx");
             _specificationDocumentService.PopulateDocument(markId, memory);
             memory.Seek(0, SeekOrigin.Begin);
 
-            // Auto add
-            // var docs = _docRepo.GetAllByMarkIdAndDocType(markId, _appSettings.SpecificationDocTypeId);
-            // if (docs.Count() == 0)
-            // {
-                
-            // }
+            AddDoc(markId, userId, _appSettings.SpecificationDocTypeId);
             return memory;
         }
 
-        public MemoryStream GetConstructionDocument(int markId)
+        public MemoryStream GetConstructionDocument(int markId, int userId)
         {
             var memory = GetStreamFromTemplate("word\\template_construction.docx");
             _constructionDocumentService.PopulateDocument(markId, memory);
             memory.Seek(0, SeekOrigin.Begin);
 
-            // Auto add
-            // var docs = _docRepo.GetAllByMarkIdAndDocType(markId, _appSettings.ConstructionDocTypeId);
-            // if (docs.Count() == 0)
-            // {
-                
-            // }
+            AddDoc(markId, userId, _appSettings.ConstructionDocTypeId);
             return memory;
         }
 
@@ -140,6 +140,43 @@ namespace DocumentsKM.Services
                 mainPart.Document.Save();
             }
             return documentStream;
+        }
+
+        // Добавить прилагаемый документ, если он не существует
+        private void AddDoc(int markId, int userId, int docTypeId)
+        {
+            var docs = _docRepo.GetAllByMarkIdAndDocType(markId, docTypeId);
+            if (docs.Count() == 0)
+            {
+                int maxNum = 0;
+                foreach (var s in docs)
+                {
+                    if (s.Num > maxNum)
+                        maxNum = s.Num;
+                }
+
+                var mark = _markRepo.GetById(markId);
+                var docType = _docTypeRepo.GetById(docTypeId);
+                var defaultValues = _defaultValuesRepo.GetByUserId(userId);
+
+                var doc = new Doc
+                {
+                    Mark = mark,
+                    Num = (Int16)(maxNum + 1),
+                    Type = docType,
+                    Name = docType.Name,
+                    Form  = 1,
+                    Creator = defaultValues.Creator,
+                    Inspector = defaultValues.Inspector,
+                    NormContr  = defaultValues.NormContr,
+                    ReleaseNum = 1,
+                    NumOfPages = 1,
+                };
+                _docRepo.Add(doc);
+
+                mark.EditedDate = DateTime.Now;
+                _markRepo.Update(mark);
+            }
         }
     }
 }

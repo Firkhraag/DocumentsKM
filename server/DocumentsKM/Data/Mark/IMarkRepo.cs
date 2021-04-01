@@ -7,6 +7,8 @@ namespace DocumentsKM.Data
     {
         // Получить все марки
         IEnumerable<Mark> GetAll();
+        // Получить все марки по ids
+        IEnumerable<Mark> GetAllByIds(List<int> ids);
         // Получить все марки по id подузла
         IEnumerable<Mark> GetAllBySubnodeId(int subnodeId);
         // Получить марку по id

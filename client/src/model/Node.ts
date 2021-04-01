@@ -6,7 +6,7 @@ interface INode {
 	project: Project
 	code: string
 	name: string
-	chiefEngineer: Employee
+	chiefEngineerName: Employee
 }
 
 class Node {
@@ -14,14 +14,14 @@ class Node {
 	project: Project
 	code: string
 	name: string
-	chiefEngineer: Employee
+	chiefEngineerName: Employee
 
 	constructor(obj?: INode) {
 		this.id = (obj && obj.id) || 0
 		this.project = (obj && obj.project) || null
 		this.code = (obj && obj.code) || ''
 		this.name = (obj && obj.name) || ''
-		this.chiefEngineer = (obj && obj.chiefEngineer) || null
+		this.chiefEngineerName = (obj && obj.chiefEngineerName) || null
 	}
 }
 

@@ -22,6 +22,7 @@ namespace DocumentsKM.Tests
             var mockMarkRepo = new Mock<IMarkRepo>();
             var mockMarkGeneralDataSectionRepo = new Mock<IMarkGeneralDataSectionRepo>();
             var mockGeneralDataPointRepo = new Mock<IGeneralDataPointRepo>();
+            var mockGeneralDataSectionRepo = new Mock<IGeneralDataSectionRepo>();
 
             // Arrange
             foreach (var mgdp in TestData.markGeneralDataPoints)
@@ -103,7 +104,8 @@ namespace DocumentsKM.Tests
                 _repository.Object,
                 mockMarkRepo.Object,
                 mockMarkGeneralDataSectionRepo.Object,
-                mockGeneralDataPointRepo.Object);
+                mockGeneralDataPointRepo.Object,
+                mockGeneralDataSectionRepo.Object);
         }
 
         [Fact]

@@ -33,5 +33,13 @@ namespace DocumentsKM.Controllers
             var nodes = _service.GetAllByProjectId(projectId);
             return Ok(_mapper.Map<IEnumerable<NodeResponse>>(nodes));
         }
+
+        [HttpGet, Route("nodes/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<NodeResponse>> GetById(int id)
+        {
+            var node = _service.GetById(id);
+            return Ok(_mapper.Map<NodeResponse>(node));
+        }
     }
 }

@@ -41,13 +41,13 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        [HttpGet, Route("marks/{markId}/spec-document")]
+        [HttpGet, Route("users/{userId}/marks/{markId}/spec-document")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetSpecificationDocument(int markId)
+        public IActionResult GetSpecificationDocument(int markId, int userId)
         {
             try
             {
-                var file = _service.GetSpecificationDocument(markId);
+                var file = _service.GetSpecificationDocument(markId, userId);
                 return File(
                     file,
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -59,13 +59,13 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        [HttpGet, Route("marks/{markId}/construction-document")]
+        [HttpGet, Route("users/{userId}/marks/{markId}/construction-document")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetConstructionDocument(int markId)
+        public IActionResult GetConstructionDocument(int markId, int userId)
         {
             try
             {
-                var file = _service.GetConstructionDocument(markId);
+                var file = _service.GetConstructionDocument(markId, userId);
                 return File(
                     file,
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
