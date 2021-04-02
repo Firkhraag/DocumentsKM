@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -151,6 +151,11 @@ const OtherAttachedDocData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
+			<div className="hanging-routes">
+				<Link to="/other-attached-docs">
+					Прилагаемые документы
+				</Link>
+			</div>
 			<h1 className="text-centered">
 				{isCreateMode
 					? 'Создание прочего прилагаемого документа'

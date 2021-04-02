@@ -91,13 +91,14 @@ const ConstructionTable = ({
 
 	const onPasteClick = async () => {
 		try {
-			await httpClient.post(
+			const response = await httpClient.post(
 				`/specifications/${specificationId}/construction-copy`,
 				{
 					id: copiedConstruction.id,
 				}
 			)
 			var arr = [...constructionsState.constructions]
+			arr.push(response.data)
 			arr.sort((v) => v.type.id)
 			setConstructionsState({
                 ...constructionsState,
@@ -111,7 +112,6 @@ const ConstructionTable = ({
 	return (
 		<div>
 			<h2 className="bold text-centered">Перечень видов конструкций</h2>
-
 			<div className="full-width">
 				<PlusCircle
 					onClick={() =>

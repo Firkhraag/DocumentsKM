@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -282,6 +282,12 @@ const SheetData = ({ sheet, isCreateMode }: SheetDataProps) => {
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
+			<div className="hanging-routes">
+				<Link to="/sheets">
+					Листы основного комплекта
+				</Link>
+			</div>
+			
 			<h1 className="text-centered">
 				{isCreateMode
 					? 'Создание листа основного комплекта'

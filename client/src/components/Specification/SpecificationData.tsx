@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -79,6 +79,9 @@ const SpecificationData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
+			<div className="hanging-routes">
+				<Link to="/specifications">Выпуски спецификаций</Link>
+			</div>
 			<h1 className="text-centered">Данные выпуска спецификации</h1>
 			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
 				<div className="space-between">

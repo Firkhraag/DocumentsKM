@@ -33,8 +33,8 @@ namespace DocumentsKM.Controllers
         public ActionResult<IEnumerable<ConstructionResponse>> GetAllBySpecificationId(
             int specificationId)
         {
-            var docs = _service.GetAllBySpecificationId(specificationId);
-            return Ok(_mapper.Map<IEnumerable<ConstructionResponse>>(docs));
+            var constructions = _service.GetAllBySpecificationId(specificationId);
+            return Ok(_mapper.Map<IEnumerable<ConstructionResponse>>(constructions));
         }
 
         [HttpPost, Route("specifications/{specificationId}/constructions")]
@@ -111,7 +111,7 @@ namespace DocumentsKM.Controllers
 
         [HttpPost, Route("specifications/{specificationId}/construction-copy")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -121,9 +121,11 @@ namespace DocumentsKM.Controllers
         {
             try
             {
-                _service.Copy(
+                var construction = _service.Copy(
                     idRequest.Id,
                     specificationId);
+                return Created($"constructions/{construction.Id}",
+                    _mapper.Map<ConstructionResponse>(construction));
             }
             catch (ArgumentNullException)
             {
@@ -133,7 +135,6 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return NoContent();
         }
     }
 }

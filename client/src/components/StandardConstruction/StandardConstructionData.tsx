@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -211,6 +211,10 @@ const StandardConstructionData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
+			<div className="hanging-routes">
+				<Link to="/specifications">Выпуски спецификаций</Link>
+				<Link onClick={() => setScroll(2)} to={`/specifications/${specificationId}`}>Типовые конструкции</Link>
+			</div>
 			<h1 className="text-centered">
 				{isCreateMode
 					? 'Создание типовой конструкции'

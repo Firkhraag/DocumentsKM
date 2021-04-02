@@ -90,6 +90,8 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		if (id == null) {
 			setOptionsObject({
 				...defaultOptionsObject,
+				projects: optionsObject.projects,
+				recentMarks: optionsObject.recentMarks,
 			})
 			setSelectedObject({
 				...defaultSelectedObject,

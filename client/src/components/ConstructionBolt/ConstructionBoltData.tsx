@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -219,6 +219,11 @@ const ConstructionBoltData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
+			<div className="hanging-routes">
+				<Link to="/specifications">Выпуски спецификаций</Link>
+				<Link onClick={() => setScroll(1)} to={`/specifications/${specificationId}`}>Виды конструкций</Link>
+				<Link onClick={() => setScroll(4)} to={`/specifications/${specificationId}/constructions/${constructionId}`}>Высокопрочные болты</Link>
+			</div>
 			<h1 className="text-centered">
 				{isCreateMode
 					? 'Создание высокопрочного болта'

@@ -189,7 +189,7 @@ namespace DocumentsKM.Services
             _markRepo.Update(foundMark);
         }
 
-        public void Copy(
+        public Construction Copy(
             int constructionId,
             int specificationId)
         {
@@ -238,6 +238,8 @@ namespace DocumentsKM.Services
             var foundMark = _markRepo.GetById(foundSpecification.Mark.Id);
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
+
+            return construction;
         }
     }
 }

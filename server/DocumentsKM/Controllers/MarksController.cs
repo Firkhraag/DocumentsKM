@@ -38,6 +38,7 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpPost, Route("marks/recent")]
+        [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<MarkResponse>> GetAllRecentByIds(
             [FromBody] IdsRequest idsRequest)

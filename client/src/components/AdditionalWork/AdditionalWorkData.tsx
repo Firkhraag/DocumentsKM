@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -190,6 +190,11 @@ const AdditionalWorkData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
+			<div className="hanging-routes">
+				<Link to="/additional-work">
+					Учет дополнительных работ
+				</Link>
+			</div>
 			<h1 className="text-centered">
 				Учет дополнительных проектных работ
 			</h1>

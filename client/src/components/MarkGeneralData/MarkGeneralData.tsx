@@ -22,9 +22,10 @@ import truncateText from '../../util/truncate'
 import SectionsSelectPopup from './SectionsSelectPopup'
 import PointsSelectPopup from './PointsSelectPopup'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
-import { makeMarkName } from '../../util/make-name'
 
 const MarkGeneralData = () => {
+	const corrProtSectionName = "Антикоррозионная защита"
+
 	const history = useHistory()
 	const mark = useMark()
 	const user = useUser()
@@ -82,13 +83,20 @@ const MarkGeneralData = () => {
 		}
 	}, [mark, refresh])
 
-	const onSectionSelect = async (id: number) => {
+	const onSectionSelect = async (id: number, name: string) => {
 		const v = getFromOptions(
 			id,
 			optionsObject.sections,
 			selectedObject.section
 		)
 		if (v != null) {
+			var pText = selectedObject.pointText
+            if (name == corrProtSectionName) {
+                const pointText = await httpClient.get(
+                    `/marks/${mark.id}/corr-prot-point`
+                )
+                pText = pointText.data.result
+            }
 			if (cachedPoints.has(v.id)) {
 				setOptionsObject({
 					...optionsObject,
@@ -98,7 +106,7 @@ const MarkGeneralData = () => {
 					...selectedObject,
 					section: v,
 					point: null,
-					pointText: '',
+					pointText: pText,
 					sectionText: v.name,
 				})
 			} else {
@@ -115,6 +123,7 @@ const MarkGeneralData = () => {
 						...selectedObject,
 						section: v,
 						point: null,
+						pointText: pText,
 						sectionText: v.name,
 					})
 				} catch (e) {
@@ -189,34 +198,10 @@ const MarkGeneralData = () => {
 			setLeftErrMsg(true)
 			if (e.response.status === 409) {
 				setErrMsg('Раздел с таким содержанием уже существует')
-				// setPopup(defaultPopup)
-				// setProcessIsRunning(false)
-				// return
 			} else {
 				setErrMsg('Произошла ошибка')
-				// setPopup(defaultPopup)
-				// setProcessIsRunning(false)
-				// return
 			}
 		}
-
-		// console.log(optionsObject.points.length)
-		// for (const p of optionsObject.points) {
-		//     try {
-		//         await httpClient.post(
-		//             `/general-data-sections/${id}/general-data-points`,
-		//             {
-		//                 text: p.text,
-		//             }
-		//         )
-		//     } catch (e) {
-		//         setLeftErrMsg(true)
-		//         setErrMsg('Произошла ошибка')
-		//         setPopup(defaultPopup)
-		//         setProcessIsRunning(false)
-		//         return
-		//     }
-		// }
 		setPopup(defaultPopup)
 		setProcessIsRunning(false)
 	}
@@ -574,7 +559,7 @@ const MarkGeneralData = () => {
 												? 'pointer selection-text selected-bg flex'
 												: 'pointer selection-text flex'
 										}
-										onClick={() => onSectionSelect(s.id)}
+										onClick={() => onSectionSelect(s.id, s.name)}
 										key={s.id}
 									>
 										<p

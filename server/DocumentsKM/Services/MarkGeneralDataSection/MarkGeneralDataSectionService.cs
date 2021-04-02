@@ -12,16 +12,19 @@ namespace DocumentsKM.Services
         private readonly IMarkGeneralDataSectionRepo _repository;
         private readonly IMarkRepo _markRepo;
         private readonly IGeneralDataSectionRepo _generalDataSectionRepo;
+        private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
 
         public MarkGeneralDataSectionService(
             IMarkGeneralDataSectionRepo markGeneralDataSectionRepo,
             IMarkRepo markRepo,
             IGeneralDataSectionRepo generalDataSectionRepo,
-            IGeneralDataPointRepo generalDataPointRepo)
+            IGeneralDataPointRepo generalDataPointRepo,
+            IMarkGeneralDataPointRepo markGeneralDataPointRepo)
         {
             _repository = markGeneralDataSectionRepo;
             _markRepo = markRepo;
             _generalDataSectionRepo = generalDataSectionRepo;
+            _markGeneralDataPointRepo = markGeneralDataPointRepo;
         }
 
         public IEnumerable<MarkGeneralDataSection> GetAllByMarkId(int markId)
@@ -105,19 +108,31 @@ namespace DocumentsKM.Services
                     else
                         markGeneralDataSection.OrderNum = (Int16)(currentSections.Max(v => v.OrderNum) + 1);
 
-                    var markGeneralDataPoints = new List<MarkGeneralDataPoint>(){};
+                    // var markGeneralDataPoints = new List<MarkGeneralDataPoint>(){};
+                    // foreach (var p in s.GeneralDataPoints)
+                    // {
+                    //     markGeneralDataPoints.Add(new MarkGeneralDataPoint
+                    //     {
+                    //         Section = markGeneralDataSection,
+                    //         Text = p.Text,
+                    //         OrderNum = p.OrderNum,
+                    //     });
+                    // }
+
+                    // markGeneralDataSection.MarkGeneralDataPoints = markGeneralDataPoints;
+                    
+                    _repository.Add(markGeneralDataSection);
+
                     foreach (var p in s.GeneralDataPoints)
                     {
-                        markGeneralDataPoints.Add(new MarkGeneralDataPoint
+                        _markGeneralDataPointRepo.Add(new MarkGeneralDataPoint
                         {
                             Section = markGeneralDataSection,
                             Text = p.Text,
                             OrderNum = p.OrderNum,
                         });
                     }
-                    markGeneralDataSection.MarkGeneralDataPoints = markGeneralDataPoints;
                     
-                    _repository.Add(markGeneralDataSection);
                     currentSections.Add(markGeneralDataSection);
                 }
             }

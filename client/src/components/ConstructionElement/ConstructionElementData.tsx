@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -280,12 +280,16 @@ const ConstructionElementData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
+			<div className="hanging-routes">
+				<Link to="/specifications">Выпуски спецификаций</Link>
+				<Link onClick={() => setScroll(1)} to={`/specifications/${specificationId}`}>Виды конструкций</Link>
+				<Link onClick={() => setScroll(3)} to={`/specifications/${specificationId}/constructions/${constructionId}`}>Перечень элементов</Link>
+			</div>
 			<h1 className="text-centered">
 				{isCreateMode
 					? 'Создание элемента конструкции'
 					: 'Данные элемента конструкции'}
 			</h1>
-
 			<div className="flex">
 				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
 					<Form.Group>

@@ -37,12 +37,23 @@ namespace DocumentsKM.Services
         public string GetWholeString(int markId)
         {
             Process(markId);
-            return protectionString + "\n" + paintworkString + "\n" + installationString + "\n" + factoryString + "\n" + cleaningString;
+            var finalString = protectionString;
+            if (paintworkString != "")
+                finalString += "\n" + paintworkString;
+            if (installationString != "")
+                finalString += "\n" + installationString;
+            if (factoryString != "")
+                finalString += "\n" + factoryString;
+            if (cleaningString != "")
+                finalString += "\n" + cleaningString;
+            return finalString;
         }
 
         public void Process(int markId)
         {
             var conditions = _markOperatingConditionsRepo.GetByMarkId(markId);
+            if (conditions == null)
+                return;
             var corrProtMethod = _corrProtMethodRepo.GetByAggressivenessAndMaterialId(
                 conditions.EnvAggressiveness.Id,
                 conditions.ConstructionMaterial.Id);
@@ -62,13 +73,13 @@ namespace DocumentsKM.Services
                 conditions.ConstructionMaterial.Id,
                 conditions.GasGroup.Id,
                 conditions.OperatingArea.Id);
-            if (corrProtVariant.Status == 2)
+            if (corrProtVariant == null || corrProtVariant.Status == 3) {
+                paintworkString = "# При заданной зоне эксплуатации, группе газов, агрессивности и материале конструкций окраска лакокрасочными материалами не возможна";
+                return;
+            } else if (corrProtVariant.Status == 2)
             {
                 paintworkString = "# Окраска лакокрасочными материалами не требуется.";
 	            cleaningString = "# Степень очистки поверхности стальных конструкций от окислов - " + corrProtVariant.CleaningDegree.Name + ".";
-                return;
-            } else if (corrProtVariant.Status == 3) {
-                paintworkString = "# При заданной зоне эксплуатации, группе газов, агрессивности и материале конструкций окраска лакокрасочными материалами не возможна";
                 return;
             }
             FinalStep(conditions);

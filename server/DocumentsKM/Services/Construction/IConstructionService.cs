@@ -20,7 +20,7 @@ namespace DocumentsKM.Services
         // Удалить вид конструкции
         void Delete(int id);
         // Скопировать вид конструкции в выпуск спецификации
-        void Copy(
+        Construction Copy(
             int constructionId,
             int specificationId);
     }

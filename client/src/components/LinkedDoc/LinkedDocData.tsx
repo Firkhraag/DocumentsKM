@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -239,6 +239,11 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt">
+			<div className="hanging-routes">
+				<Link to="/linked-docs">
+					Ссылочные документы
+				</Link>
+			</div>
 			<h1 className="text-centered">
 				{isCreateMode
 					? 'Добавление ссылочного документа'
@@ -333,7 +338,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 							options={optionsObject.docs.map((d) => {
 								return {
 									value: d.id,
-									label: d.code,
+									label: d.code + " " + d.name,
 								}
 							})}
 							styles={reactSelectStyle}

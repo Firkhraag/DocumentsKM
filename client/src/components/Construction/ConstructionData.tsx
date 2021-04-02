@@ -1,6 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
@@ -314,6 +314,7 @@ const ConstructionData = ({
 							selectedObject.hasFlangedConnections,
 					}
 				)
+				setScroll(1)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -394,6 +395,7 @@ const ConstructionData = ({
 					`/constructions/${selectedObject.id}`,
 					object
 				)
+				setScroll(1)
 				history.push(`/specifications/${specificationId}`)
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -410,6 +412,10 @@ const ConstructionData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
+			<div className="hanging-routes">
+				<Link to="/specifications">Выпуски спецификаций</Link>
+				<Link onClick={() => setScroll(1)} to={`/specifications/${specificationId}`}>Виды конструкций</Link>
+			</div>
 			<h1 className="text-centered">
 				{isCreateMode
 					? 'Создание вида конструкции'
