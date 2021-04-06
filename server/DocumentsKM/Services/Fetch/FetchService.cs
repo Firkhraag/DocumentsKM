@@ -116,6 +116,7 @@ public class FetchService : IHostedService
         }
     }
 
+    // DEBUG
     // public async Task OnTest()
     // {
     //     using (var scope = _serviceScopeFactory.CreateScope())
@@ -159,7 +160,6 @@ public class FetchService : IHostedService
         }, cancellationToken);
 
         return Task.CompletedTask;
-
         // return OnTest();
     }
 

@@ -330,37 +330,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 					subnodeId: currentSubnode.id,
 				})))
 				localStorage.setItem('recentMark', resStr)
-
-
-				// localStorage.setItem('selectedMarkId', response.data.id)
-
-				// const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
-				// if (recentMarkIdsStr != null) {
-				// 	const recentMarkIds = JSON.parse(
-				// 		recentMarkIdsStr
-				// 	) as number[]
-
-				// 	if (recentMarkIds.length >= 5) {
-				// 		recentMarkIds.shift()
-				// 	}
-				// 	recentMarkIds.unshift(response.data.id)
-				// 	let resStr = JSON.stringify(recentMarkIds)
-				// 	localStorage.setItem('recentMarkIds', resStr)
-				// }
-
-				// const recentMarkIdsStr = localStorage.getItem('recentMarkIds')
-				// if (recentMarkIdsStr != null) {
-				// 	const recentMarkIds = JSON.parse(
-				// 		recentMarkIdsStr
-				// 	) as number[]
-
-				// 	if (recentMarkIds.length >= 5) {
-				// 		recentMarkIds.shift()
-				// 	}
-				// 	recentMarkIds.unshift(response.data.id)
-				// 	let resStr = JSON.stringify(recentMarkIds)
-				// 	localStorage.setItem('recentMarkIds', resStr)
-				// }
+				
 				setMark(response.data)
 				history.push('/')
 			} catch (e) {
@@ -410,8 +380,11 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 					setProcessIsRunning(false)
 					return
 				}
-				await httpClient.patch(`/marks/${selectedObject.id}`, object)
-				setMark(selectedObject)
+				const designationResponse = await httpClient.patch(`/marks/${selectedObject.id}`, object)
+				setMark({
+					...selectedObject,
+					designation: designationResponse.data.designation,
+				})
 				history.push('/')
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {

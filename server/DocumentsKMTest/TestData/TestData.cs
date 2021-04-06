@@ -1435,6 +1435,18 @@ namespace DocumentsKM.Tests
                 Name = "S3",
                 Mark = marks[2],
             },
+            new MarkGeneralDataSection
+            {
+                Id = 4,
+                Name = "S4",
+                Mark = marks[1],
+            },
+            new MarkGeneralDataSection
+            {
+                Id = 5,
+                Name = "S5",
+                Mark = marks[1],
+            },
         };
 
         public static readonly List<MarkGeneralDataPoint> markGeneralDataPoints = new List<MarkGeneralDataPoint>

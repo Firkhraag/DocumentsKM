@@ -3,6 +3,7 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
+using System.Linq;
 
 namespace DocumentsKM.Services
 {
@@ -22,6 +23,13 @@ namespace DocumentsKM.Services
         public IEnumerable<AttachedDoc> GetAllByMarkId(int markId)
         {
             return _repository.GetAllByMarkId(markId);
+        }
+
+        public string GetNewDesignation(int markId){
+            var designations = _repository.GetAllByMarkId(markId).Select(v => v.Designation);
+            if (designations.Count() == 0)
+                return "ЛС";
+            return $"ЛС{designations.Count()}";
         }
 
         public void Create(

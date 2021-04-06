@@ -58,8 +58,8 @@ namespace DocumentsKM.Services
                 new int[] {_appSettings.GroupLeaderPosId, _appSettings.ActingGroupLeaderPosId});
             var normContrs = _repository.GetAllByDepartmentIdAndPositions(
                 departmentId,
-                _appSettings.ApprovalMinPosId,
-                _appSettings.ApprovalMaxPosId);
+                _appSettings.NormContrMinPosId,
+                _appSettings.NormContrMaxPosId);
             return (departmentHead, chiefSpecialists, groupLeaders, normContrs);
         }
 

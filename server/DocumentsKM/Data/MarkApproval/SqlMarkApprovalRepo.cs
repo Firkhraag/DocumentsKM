@@ -16,7 +16,7 @@ namespace DocumentsKM.Data
         public IEnumerable<MarkApproval> GetAllByMarkId(int markId)
         {
             return _context.MarkApprovals.Where(
-                v => v.Mark.Id == markId).ToList();
+                v => v.Mark.Id == markId).OrderBy(v => v.Id).ToList();
         }
 
         public void Add(MarkApproval markApproval)

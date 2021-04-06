@@ -115,7 +115,7 @@ namespace DocumentsKM.Controllers
 
         [HttpPatch, Route("marks/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult Update(int id, [FromBody] MarkUpdateRequest markRequest)
@@ -126,7 +126,8 @@ namespace DocumentsKM.Controllers
                 return BadRequest();
             try
             {
-                _service.Update(id, markRequest);
+                var designation =_service.Update(id, markRequest);
+                return Ok(new { Designation = designation });
             }
             catch (ArgumentNullException)
             {
@@ -136,7 +137,6 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return NoContent();
         }
     }
 }

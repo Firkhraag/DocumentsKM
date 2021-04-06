@@ -8,6 +8,8 @@ namespace DocumentsKM.Services
     {
         // Получить все прочие прилагаемые документы по id марки
         IEnumerable<AttachedDoc> GetAllByMarkId(int markId);
+        // Получить обозначение для создания новой локальной сметы
+        string GetNewDesignation(int markId);
         // Создать новый прочий прилагаемый документ
         void Create(
             AttachedDoc attachedDoc,

@@ -46,5 +46,9 @@ namespace DocumentsKM.Helpers
         // Согласования
         public int ApprovalMinPosId { get; set; }
         public int ApprovalMaxPosId { get; set; }
+
+        // Нормоконтроль
+        public int NormContrMinPosId { get; set; }
+        public int NormContrMaxPosId { get; set; }
     }
 }

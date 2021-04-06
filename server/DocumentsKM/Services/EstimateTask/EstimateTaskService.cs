@@ -2,7 +2,6 @@ using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
 using DocumentsKM.Dtos;
-using Serilog;
 
 namespace DocumentsKM.Services
 {

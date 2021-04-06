@@ -2,7 +2,6 @@ using System;
 using System.Net.Mime;
 using AutoMapper;
 using DocumentsKM.Dtos;
-using DocumentsKM.Models;
 using DocumentsKM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

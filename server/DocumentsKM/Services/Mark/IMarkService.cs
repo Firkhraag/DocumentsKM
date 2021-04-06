@@ -24,7 +24,7 @@ namespace DocumentsKM.Services
             int? groupLeaderId,
             int? normContrId);
         // Изменить марку
-        void Update(int id, MarkUpdateRequest mark);
+        string Update(int id, MarkUpdateRequest mark);
         // Обновить дату выдачи проекта на текущую
         void UpdateIssueDate(Mark mark);
         // Обновить дату выдачи проекта

@@ -120,16 +120,6 @@ const SectionsSelectPopup = ({
                 points: [],
             })
             setRefresh(!refresh)
-			// setOptionsObject({
-			// 	...optionsObject,
-			// 	sections: selectedSections.sort((a, b) => a.id - b.id),
-			// 	points: [],
-			// })
-			// setSelectedObject({
-			// 	...selectedObject,
-			// 	section: null,
-			// 	point: null,
-			// })
 			close()
 		} catch (e) {
 			setErrMsg('Произошла ошибка')

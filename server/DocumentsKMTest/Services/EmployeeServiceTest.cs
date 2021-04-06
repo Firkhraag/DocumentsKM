@@ -86,6 +86,9 @@ namespace DocumentsKM.Tests
 
                 ApprovalMinPosId = 1,
                 ApprovalMaxPosId = 10,
+
+                NormContrMinPosId = 1,
+                NormContrMaxPosId = 10,
             });
             _service = new EmployeeService(_repository.Object, options);
         }
@@ -156,7 +159,7 @@ namespace DocumentsKM.Tests
             var maxNormContrPos = 10;
 
             // Act
-            (var departmentHead, var chiefSpecialists, var groupLeaders, var mainBuilders) =
+            (var departmentHead, var chiefSpecialists, var groupLeaders, var normContrs) =
                 _service.GetMarkMainEmployeesByDepartmentId(departmentId);
 
             // Assert
@@ -176,7 +179,7 @@ namespace DocumentsKM.Tests
                 v => v.Position.Id >= minNormContrPos &&
                 v.Position.Id <= maxNormContrPos &&
                 v.Department.Id == departmentId &&
-                v.IsActive), mainBuilders);
+                v.IsActive), normContrs);
         }
     }
 }

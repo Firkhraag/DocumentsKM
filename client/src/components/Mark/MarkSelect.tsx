@@ -149,57 +149,6 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		}
 	}
 
-	// const onRecentMarkSelect = async (id: number) => {
-	// 	if (id == null) {
-	// 		setOptionsObject({
-	// 			...defaultOptionsObject,
-	// 		})
-	// 		setSelectedObject({
-	// 			...defaultSelectedObject,
-	// 		})
-	// 		return
-	// 	}
-	// 	const v = getFromOptions(
-	// 		id,
-	// 		optionsObject.recentMarks,
-	// 		selectedObject.mark
-	// 	)
-	// 	if (v != null) {
-	// 		const s = v.subnode
-	// 		const n = v.node
-	// 		const p = v.project
-	// 		try {
-	// 			const nodesResponse = await httpClient.get(
-	// 				`/projects/${p.id}/nodes`
-	// 			)
-	// 			const subnodesResponse = await httpClient.get(
-	// 				`/nodes/${n.id}/subnodes`
-	// 			)
-	// 			const marksResponse = await httpClient.get(
-	// 				`/subnodes/${s.id}/marks`
-	// 			)
-	// 			setOptionsObject({
-	// 				...defaultOptionsObject,
-	// 				recentMarks: optionsObject.recentMarks,
-	// 				projects: optionsObject.projects,
-	// 				nodes: nodesResponse.data,
-	// 				subnodes: subnodesResponse.data,
-	// 				marks: marksResponse.data,
-	// 			})
-	// 		} catch (e) {
-	// 			setErrMsg('Произошла ошибка')
-	// 		}
-	// 		setSelectedObject({
-	// 			...defaultSelectedObject,
-	// 			recentMark: v,
-	// 			project: p,
-	// 			node: n,
-	// 			subnode: s,
-	// 			mark: v,
-	// 		})
-	// 	}
-	// }
-
 	const onProjectSelect = async (id: number) => {
 		if (id == null) {
 			setOptionsObject({

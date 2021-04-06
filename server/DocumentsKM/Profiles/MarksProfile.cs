@@ -7,8 +7,6 @@ namespace DocumentsKM.Profiles
     {
         public MarksProfile()
         {
-            // CreateMap<Mark, MarkBaseResponse>();
-            // CreateMap<Mark, MarkParentResponse>();
             CreateMap<Mark, MarkResponse>();
             CreateMap<MarkCreateRequest, Mark>();
         }

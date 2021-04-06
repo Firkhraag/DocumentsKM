@@ -13,15 +13,15 @@ using Xunit;
 
 namespace DocumentsKM.Tests
 {
-    public class GeneralDataSectionsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    public class MarkGeneralDataSectionsControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
     {
         private readonly HttpClient _authHttpClient;
         private readonly HttpClient _httpClient;
         private readonly Random _rnd = new Random();
 
-        private readonly int _maxUserId = 3;
+        private readonly int _maxMarkId = 3;
 
-        public GeneralDataSectionsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        public MarkGeneralDataSectionsControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
         {
             _httpClient = factory.WithWebHostBuilder(builder =>
             {
@@ -37,12 +37,12 @@ namespace DocumentsKM.Tests
         // ------------------------------------GET------------------------------------
 
         [Fact]
-        public async Task GetAllByUserId_ShouldReturnOK()
+        public async Task GetAllBymarkId_ShouldReturnOK()
         {
             // Arrange
-            int userId = _rnd.Next(1, _maxUserId);
+            int markId = _rnd.Next(1, _maxMarkId);
 
-            var endpoint = $"/api/users/{userId}/general-data-sections";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections";
 
             // Act
             var response = await _httpClient.GetAsync(endpoint);
@@ -52,12 +52,12 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public async Task GetAllByUserId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        public async Task GetAllBymarkId_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            int userId = _rnd.Next(1, _maxUserId);
+            int markId = _rnd.Next(1, _maxMarkId);
 
-            var endpoint = $"/api/users/{userId}/general-data-sections";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections";
 
             // Act
             var response = await _authHttpClient.GetAsync(endpoint);
@@ -72,14 +72,14 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnCreated()
         {
             // Arrange
-            int userId = 1;
-            var generalDataSectionRequest = new GeneralDataSectionCreateRequest
+            int markId = 1;
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionCreateRequest
             {
                 Name = "NewCreate",
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/general-data-sections";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections";
 
             // Act
             var response = await _httpClient.PostAsync(endpoint, httpContent);
@@ -92,15 +92,15 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
         {
             // Arrange
-            int userId = 1;
-            var wrongGeneralDataSectionRequest = new GeneralDataSectionCreateRequest
+            int markId = 1;
+            var wrongMarkGeneralDataSectionRequest = new MarkGeneralDataSectionCreateRequest
             {
                 Name = "",
             };
 
-            string json = JsonSerializer.Serialize(wrongGeneralDataSectionRequest);
+            string json = JsonSerializer.Serialize(wrongMarkGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/general-data-sections";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections";
 
             // Act
             var response = await _httpClient.PostAsync(endpoint, httpContent);
@@ -113,13 +113,13 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnNotFound_WhenWrongValue()
         {
             // Arrange
-            var generalDataSectionRequest = new GeneralDataSectionCreateRequest
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionCreateRequest
             {
                 Name = "NewCreate",
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{999}/general-data-sections";
+            var endpoint = $"/api/marks/{999}/mark-general-data-sections";
 
             // Act
             var response = await _httpClient.PostAsync(endpoint, httpContent);
@@ -132,15 +132,15 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnConflict_WhenConflictValues()
         {
             // Arrange
-            int userId = TestData.generalDataSections[0].User.Id;
-            string name = TestData.generalDataSections[0].Name;
-            var generalDataSectionRequest = new GeneralDataSectionCreateRequest
+            int markId = TestData.markGeneralDataSections[0].Mark.Id;
+            string name = TestData.markGeneralDataSections[0].Name;
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionCreateRequest
             {
                 Name = name,
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/general-data-sections";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections";
 
             // Act
             var response = await _httpClient.PostAsync(endpoint, httpContent);
@@ -153,14 +153,14 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            int userId = 1;
-            var generalDataSectionRequest = new GeneralDataSectionCreateRequest
+            int markId = 1;
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionCreateRequest
             {
                 Name = "NewCreate",
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/general-data-sections";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections";
 
             // Act
             var response = await _authHttpClient.PostAsync(endpoint, httpContent);
@@ -176,15 +176,15 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int userId = 1;
-            var generalDataSectionRequest = new GeneralDataSectionUpdateRequest
+            int markId = 1;
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionUpdateRequest
             {
                 Name = "NewUpdate",
                 OrderNum = 15,
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/general-data-sections/{id}";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections/{id}";
 
             // Act
             var response = await _httpClient.PatchAsync(endpoint, httpContent);
@@ -198,14 +198,14 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int userId = 1;
-            var generalDataSectionRequest = new GeneralDataSectionUpdateRequest
+            int markId = 1;
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionUpdateRequest
             {
                 Name = "",
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/general-data-sections/{id}";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections/{id}";
 
             // Act
             var response = await _httpClient.PatchAsync(endpoint, httpContent);
@@ -219,16 +219,16 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int userId = 1;
-            var generalDataSectionRequest = new GeneralDataSectionUpdateRequest
+            int markId = 1;
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionUpdateRequest
             {
                 Name = "NewUpdate",
                 OrderNum = 15,
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint1 = $"/api/users/{999}/general-data-sections/{id}";
-            var endpoint2 = $"/api/users/{userId}/general-data-sections/{999}";
+            var endpoint1 = $"/api/marks/{999}/mark-general-data-sections/{id}";
+            var endpoint2 = $"/api/marks/{markId}/mark-general-data-sections/{999}";
 
             // Act
             var response1 = await _httpClient.PatchAsync(endpoint1, httpContent);
@@ -244,14 +244,14 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 5;
-            int userId = TestData.generalDataSections.SingleOrDefault(v => v.Id == 4).User.Id;
-            var generalDataSectionRequest = new GeneralDataSectionUpdateRequest
+            int markId = TestData.markGeneralDataSections.SingleOrDefault(v => v.Id == 4).Mark.Id;
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionUpdateRequest
             {
-                Name = TestData.generalDataSections.SingleOrDefault(v => v.Id == 4).Name,
+                Name = TestData.markGeneralDataSections.SingleOrDefault(v => v.Id == 4).Name,
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/general-data-sections/{id}";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections/{id}";
 
             // Act
             var response = await _httpClient.PatchAsync(endpoint, httpContent);
@@ -265,15 +265,15 @@ namespace DocumentsKM.Tests
         {
             // Arrange
             int id = 1;
-            int userId = 1;
-            var generalDataSectionRequest = new GeneralDataSectionUpdateRequest
+            int markId = 1;
+            var markGeneralDataSectionRequest = new MarkGeneralDataSectionUpdateRequest
             {
                 Name = "NewUpdate",
                 OrderNum = 15,
             };
-            string json = JsonSerializer.Serialize(generalDataSectionRequest);
+            string json = JsonSerializer.Serialize(markGeneralDataSectionRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/general-data-sections/{id}";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections/{id}";
 
             // Act
             var response = await _authHttpClient.PatchAsync(endpoint, httpContent);
@@ -288,9 +288,9 @@ namespace DocumentsKM.Tests
         public async Task Delete_ShouldReturnNoContent()
         {
             // Arrange
-            int userId = 1;
+            int markId = 1;
             int id = 2;
-            var endpoint = $"/api/users/{userId}/general-data-sections/{id}";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections/{id}";
 
             // Act
             var response = await _httpClient.DeleteAsync(endpoint);
@@ -303,8 +303,8 @@ namespace DocumentsKM.Tests
         public async Task Delete_ShouldReturnNotFound_WhenWrongId()
         {
             // Arrange
-            int userId = 1;
-            var endpoint = $"/api/users/{userId}/general-data-sections/{999}";
+            int markId = 1;
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections/{999}";
 
             // Act
             var response = await _httpClient.DeleteAsync(endpoint);
@@ -317,9 +317,9 @@ namespace DocumentsKM.Tests
         public async Task Delete_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            int userId = 1;
+            int markId = 1;
             int id = 2;
-            var endpoint = $"/api/users/{userId}/general-data-sections/{id}";
+            var endpoint = $"/api/marks/{markId}/mark-general-data-sections/{id}";
 
             // Act
             var response = await _authHttpClient.DeleteAsync(endpoint);

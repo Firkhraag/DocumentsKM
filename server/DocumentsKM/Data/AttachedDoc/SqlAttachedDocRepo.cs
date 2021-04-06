@@ -17,7 +17,7 @@ namespace DocumentsKM.Data
         public IEnumerable<AttachedDoc> GetAllByMarkId(int markId)
         {
             return _context.AttachedDocs.Where(
-                v => v.Mark.Id == markId).ToList();
+                v => v.Mark.Id == markId).OrderBy(v => v.Id).ToList();
         }
 
         public AttachedDoc GetById(int id)

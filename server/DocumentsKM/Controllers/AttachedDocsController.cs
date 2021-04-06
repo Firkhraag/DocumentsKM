@@ -37,6 +37,14 @@ namespace DocumentsKM.Controllers
             return Ok(_mapper.Map<IEnumerable<AttachedDocResponse>>(docs));
         }
 
+        [HttpGet, Route("marks/{markId}/attached-docs/new-designation")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<string> GetNewDesignation(int markId)
+        {
+            var code = _service.GetNewDesignation(markId);
+            return Ok(code);
+        }
+
         [HttpPost, Route("marks/{markId}/attached-docs")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]

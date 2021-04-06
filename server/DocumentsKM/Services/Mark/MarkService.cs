@@ -166,7 +166,7 @@ namespace DocumentsKM.Services
             _markGeneralDataPointService.AddDefaultPoints(userId, mark);
         }
 
-        public void Update(
+        public string Update(
             int id,
             MarkUpdateRequest mark)
         {
@@ -196,7 +196,8 @@ namespace DocumentsKM.Services
 
                 archiveWasFetched = true;
             }
-            
+
+            var designation = foundMark.Designation;
             if (mark.Code != null)
             {
                 foundMark.Code = mark.Code;
@@ -213,7 +214,8 @@ namespace DocumentsKM.Services
                     project = _projectRepo.GetById(node.ProjectId);
                 }
 
-                foundMark.Designation = MarkHelper.MakeMarkName(project.BaseSeries, node.Code, subnode.Code, mark.Code);
+                designation = MarkHelper.MakeMarkName(project.BaseSeries, node.Code, subnode.Code, mark.Code);
+                foundMark.Designation = designation;
             }
 
             if (mark.DepartmentId != null)
@@ -271,6 +273,8 @@ namespace DocumentsKM.Services
             }
             foundMark.EditedDate = DateTime.Now;
             _repository.Update(foundMark);
+
+            return designation;
         }
 
         public void UpdateIssueDate(Mark mark)

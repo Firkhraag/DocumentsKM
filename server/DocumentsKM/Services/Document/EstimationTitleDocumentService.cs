@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using System;
-using DocumentsKM.Helpers;
 using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace DocumentsKM.Services

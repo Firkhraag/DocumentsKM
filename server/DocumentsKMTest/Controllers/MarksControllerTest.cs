@@ -1,516 +1,489 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-// using System.Net;
-// using System.Net.Http;
-// using System.Text;
-// using System.Text.Json;
-// using System.Threading.Tasks;
-// using DocumentsKM.Dtos;
-// using Microsoft.AspNetCore.Authorization.Policy;
-// using Microsoft.AspNetCore.TestHost;
-// using Microsoft.Extensions.DependencyInjection;
-// using Xunit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using DocumentsKM.Dtos;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
-// namespace DocumentsKM.Tests
-// {
-//     public class MarksControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
-//     {
-//         private readonly HttpClient _authHttpClient;
-//         private readonly HttpClient _httpClient;
-//         private readonly Random _rnd = new Random();
+namespace DocumentsKM.Tests
+{
+    public class MarksControllerTest : IClassFixture<TestWebApplicationFactory<DocumentsKM.Startup>>
+    {
+        private readonly HttpClient _authHttpClient;
+        private readonly HttpClient _httpClient;
+        private readonly Random _rnd = new Random();
 
-//         private class UpdateRequest
-//         {
-//             public int Id { set; get; }
-//             public MarkUpdateRequest Body { set; get; }
-//         }
+        private class UpdateRequest
+        {
+            public int Id { set; get; }
+            public MarkUpdateRequest Body { set; get; }
+        }
 
-//         public MarksControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
-//         {
-//             _httpClient = factory.WithWebHostBuilder(builder =>
-//             {
-//                 builder.ConfigureTestServices(services =>
-//                 {
-//                     services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
-//                 });
-//             }).CreateClient();
+        private class CreateRequest
+        {
+            public int SubnodeId { set; get; }
+            public MarkCreateRequest Body { set; get; }
+        }
+
+        public MarksControllerTest(TestWebApplicationFactory<DocumentsKM.Startup> factory)
+        {
+            _httpClient = factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
             
-//             _authHttpClient = factory.CreateClient();
-//         }
+            _authHttpClient = factory.CreateClient();
+        }
 
-//         // ------------------------------------GET------------------------------------
+        // ------------------------------------GET------------------------------------
 
-//         [Fact]
-//         public async Task GetAllBySubnodeId_ShouldReturnOK()
-//         {
-//             // Arrange
-//             int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
-//             var endpoint = $"/api/subnodes/{subnodeId}/marks";
+        [Fact]
+        public async Task GetAllBySubnodeId_ShouldReturnOK()
+        {
+            // Arrange
+            int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
+            var endpoint = $"/api/subnodes/{subnodeId}/marks";
 
-//             // Act
-//             var response = await _httpClient.GetAsync(endpoint);
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-//         }
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
 
-//         [Fact]
-//         public async Task GetAllBySubnodeId_ShouldReturnUnauthorized_WhenNoAccessToken()
-//         {
-//             // Arrange
-//             int markId = _rnd.Next(1, TestData.marks.Count());
-//             var endpoint = $"/api/marks/{markId}/mark-linked-docs";
+        [Fact]
+        public async Task GetAllBySubnodeId_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int markId = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{markId}/mark-linked-docs";
 
-//             // Act
-//             var response = await _authHttpClient.GetAsync(endpoint);
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-//         }
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
 
-//         [Fact]
-//         public async Task GetById_ShouldReturnOK()
-//         {
-//             // Arrange
-//             int id = _rnd.Next(1, TestData.marks.Count());
-//             var endpoint = $"/api/marks/{id}";
+        [Fact]
+        public async Task GetById_ShouldReturnOK()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{id}";
 
-//             // Act
-//             var response = await _httpClient.GetAsync(endpoint);
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-//         }
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
 
-//         [Fact]
-//         public async Task GetById_ShouldReturnNotFound_WhenWrongId()
-//         {
-//             // Arrange
-//             int wrongId = 999;
-//             var endpoint = $"/api/marks/{wrongId}";
+        [Fact]
+        public async Task GetById_ShouldReturnNotFound_WhenWrongId()
+        {
+            // Arrange
+            int wrongId = 999;
+            var endpoint = $"/api/marks/{wrongId}";
 
-//             // Act
-//             var response = await _httpClient.GetAsync(endpoint);
+            // Act
+            var response = await _httpClient.GetAsync(endpoint);
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-//         }
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
 
-//         [Fact]
-//         public async Task GetById_ShouldReturnUnauthorized_WhenNoAccessToken()
-//         {
-//             // Arrange
-//             int id = _rnd.Next(1, TestData.marks.Count());
-//             var endpoint = $"/api/marks/{id}/parents";
+        [Fact]
+        public async Task GetById_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            int id = _rnd.Next(1, TestData.marks.Count());
+            var endpoint = $"/api/marks/{id}";
 
-//             // Act
-//             var response = await _authHttpClient.GetAsync(endpoint);
+            // Act
+            var response = await _authHttpClient.GetAsync(endpoint);
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-//         }
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
 
-//         [Fact]
-//         public async Task GetMarkParentResponseById_ShouldReturnOK()
-//         {
-//             // Arrange
-//             int id = _rnd.Next(1, TestData.marks.Count());
-//             var endpoint = $"/api/marks/{id}/parents";
+        // ------------------------------------POST------------------------------------
 
-//             // Act
-//             var response = await _httpClient.GetAsync(endpoint);
+        // [Fact]
+        // public async Task Create_ShouldReturnCreated()
+        // {
+        //     // Arrange
+        //     var userId = 1;
+        //     short subnodeId = 1;
+        //     short departmentId = 1;
+        //     var normContrId = 1;
+        //     var markRequest = new MarkCreateRequest
+        //     {
+        //         Code = "NewCreate",
+        //         Name = "NewCreate",
+        //         DepartmentId = departmentId,
+        //         NormContrId = normContrId,
+        //     };
+        //     string json = JsonSerializer.Serialize(markRequest);
+        //     var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+        //     var endpoint = $"/api/users/{userId}/subnodes/{subnodeId}/marks";
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-//         }
+        //     // Act
+        //     var response = await _httpClient.PostAsync(endpoint, httpContent);
 
-//         [Fact]
-//         public async Task GetMarkParentResponseById_ShouldReturnUnauthorized_WhenNoAccessToken()
-//         {
-//             // Arrange
-//             int id = _rnd.Next(1, TestData.marks.Count());
-//             var endpoint = $"/api/marks/{id}/parents";
+        //     // Assert
+        //     Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        // }
 
-//             // Act
-//             var response = await _authHttpClient.GetAsync(endpoint);
+        // [Fact]
+        // public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
+        // {
+        //     // Arrange
+        //     var userId = 1;
+        //     short subnodeId = 1;
+        //     short departmentId = 1;
+        //     var normContrId = 1;
+        //     var wrongMarkRequests = new List<MarkCreateRequest>
+        //     {
+        //         new MarkCreateRequest
+        //         {
+        //             Code = "",
+        //             Name = "NewCreate",
+        //             DepartmentId = departmentId,
+        //             NormContrId = normContrId,
+        //         },
+        //     };
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-//         }
+        //     var endpoint = $"/api/users/{userId}/subnodes/{subnodeId}/marks";
+        //     foreach (var wrongMarkRequest in wrongMarkRequests)
+        //     {
+        //         var json = JsonSerializer.Serialize(wrongMarkRequest);
+        //         var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-//         // ------------------------------------POST------------------------------------
+        //         // Act
+        //         var response = await _httpClient.PostAsync(endpoint, httpContent);
 
-//         [Fact]
-//         public async Task Create_ShouldReturnCreated()
-//         {
-//             // Arrange
-//             var userId = 1;
-//             short subnodeId = 1;
-//             short departmentId = 1;
-//             var normContrId = 1;
-//             var markRequest = new MarkCreateRequest
-//             {
-//                 SubnodeId = subnodeId,
-//                 Code = "NewCreate",
-//                 Name = "NewCreate",
-//                 DepartmentId = departmentId,
-//                 NormContrId = normContrId,
-//             };
-//             string json = JsonSerializer.Serialize(markRequest);
-//             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-//             var endpoint = $"/api/users/{userId}/marks";
+        //         // Assert
+        //         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        //     }
+        // }
 
-//             // Act
-//             var response = await _httpClient.PostAsync(endpoint, httpContent);
+        // [Fact]
+        // public async Task Create_ShouldReturnNotFound_WhenWrongValues()
+        // {
+        //     // Arrange
+        //     var userId = 1;
+        //     short subnodeId = 1;
+        //     short departmentId = 1;
+        //     var normContrId = 1;
+        //     var groupLeaderId = 1;
+        //     var chiefSpecialistId = 1;
+        //     var wrongMarkRequests = new List<CreateRequest>
+        //     {
+        //         new CreateRequest
+        //         {
+        //             SubnodeId = 999,
+        //             Body = new MarkCreateRequest
+        //             {
+        //                 Code = "NewCreate2",
+        //                 Name = "NewCreate2",
+        //                 DepartmentId = departmentId,
+        //                 ChiefSpecialistId = chiefSpecialistId,
+        //                 GroupLeaderId = groupLeaderId,
+        //                 NormContrId = normContrId,
+        //             },
+        //         },
+        //         new CreateRequest
+        //         {
+        //             SubnodeId = subnodeId,
+        //             Body = new MarkCreateRequest
+        //             {
+        //                 Code = "NewCreate2",
+        //                 Name = "NewCreate2",
+        //                 DepartmentId = 999,
+        //                 ChiefSpecialistId = chiefSpecialistId,
+        //                 GroupLeaderId = groupLeaderId,
+        //                 NormContrId = normContrId,
+        //             },
+        //         },
+        //         new CreateRequest
+        //         {
+        //             SubnodeId = subnodeId,
+        //             Body = new MarkCreateRequest
+        //             {
+        //                 Code = "NewCreate2",
+        //                 Name = "NewCreate2",
+        //                 DepartmentId = departmentId,
+        //                 ChiefSpecialistId = 999,
+        //                 GroupLeaderId = groupLeaderId,
+        //                 NormContrId = normContrId,
+        //             },
+        //         },
+        //         new CreateRequest
+        //         {
+        //             SubnodeId = subnodeId,
+        //             Body = new MarkCreateRequest
+        //             {
+        //                 Code = "NewCreate2",
+        //                 Name = "NewCreate2",
+        //                 DepartmentId = departmentId,
+        //                 ChiefSpecialistId = chiefSpecialistId,
+        //                 GroupLeaderId = 999,
+        //                 NormContrId = normContrId,
+        //             },
+        //         },
+        //         new CreateRequest
+        //         {
+        //             SubnodeId = subnodeId,
+        //             Body = new MarkCreateRequest
+        //             {
+        //                 Code = "NewCreate2",
+        //                 Name = "NewCreate2",
+        //                 DepartmentId = departmentId,
+        //                 ChiefSpecialistId = chiefSpecialistId,
+        //                 GroupLeaderId = groupLeaderId,
+        //                 NormContrId = 999,
+        //             },
+        //         },
+        //     };
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-//         }
+        //     foreach (var wrongMarkRequest in wrongMarkRequests)
+        //     {
+        //         var json = JsonSerializer.Serialize(wrongMarkRequest.Body);
+        //         var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+        //         var endpoint = $"/api/users/{userId}/subnodes/{wrongMarkRequest.SubnodeId}/marks";
 
-//         [Fact]
-//         public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
-//         {
-//             // Arrange
-//             var userId = 1;
-//             short subnodeId = 1;
-//             short departmentId = 1;
-//             var normContrId = 1;
-//             var wrongMarkRequests = new List<MarkCreateRequest>
-//             {
-//                 new MarkCreateRequest
-//                 {
-//                     SubnodeId = subnodeId,
-//                     Code = "",
-//                     Name = "NewCreate",
-//                     DepartmentId = departmentId,
-//                     NormContrId = normContrId,
-//                 },
-//                 new MarkCreateRequest
-//                 {
-//                     SubnodeId = subnodeId,
-//                     Code = "NewCreate",
-//                     Name = "",
-//                     DepartmentId = departmentId,
-//                     NormContrId = normContrId,
-//                 },
-//             };
 
-//             var endpoint = $"/api/users/{userId}/marks";
-//             foreach (var wrongMarkRequest in wrongMarkRequests)
-//             {
-//                 var json = JsonSerializer.Serialize(wrongMarkRequest);
-//                 var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+        //         // Act
+        //         var response = await _httpClient.PostAsync(endpoint, httpContent);
 
-//                 // Act
-//                 var response = await _httpClient.PostAsync(endpoint, httpContent);
+        //         // Assert
+        //         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        //     }
+        // }
 
-//                 // Assert
-//                 Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-//             }
-//         }
+        // [Fact]
+        // public async Task Create_ShouldReturnConflict_WhenEmployeesAndDepartmentDontMatchOrConflictValues()
+        // {
+        //     // Arrange
+        //     var userId = 1;
+        //     short subnodeId = 1;
+        //     short departmentId = 1;
+        //     var chiefSpecialistId = 1;
+        //     var groupLeaderId = 2;
+        //     var normContrId = 3;
 
-//         [Fact]
-//         public async Task Create_ShouldReturnNotFound_WhenWrongValues()
-//         {
-//             // Arrange
-//             var userId = 1;
-//             short subnodeId = 1;
-//             short departmentId = 1;
-//             var normContrId = 1;
-//             var groupLeaderId = 1;
-//             var chiefSpecialistId = 1;
-//             var wrongMarkRequests = new List<MarkCreateRequest>
-//             {
-//                 new MarkCreateRequest
-//                 {
-//                     SubnodeId = 999,
-//                     Code = "NewCreate2",
-//                     Name = "NewCreate2",
-//                     DepartmentId = departmentId,
-//                     ChiefSpecialistId = chiefSpecialistId,
-//                     GroupLeaderId = groupLeaderId,
-//                     NormContrId = normContrId,
-//                 },
-//                 new MarkCreateRequest
-//                 {
-//                     SubnodeId = subnodeId,
-//                     Code = "NewCreate2",
-//                     Name = "NewCreate2",
-//                     DepartmentId = 999,
-//                     ChiefSpecialistId = chiefSpecialistId,
-//                     GroupLeaderId = groupLeaderId,
-//                     NormContrId = normContrId,
-//                 },
-//                 new MarkCreateRequest
-//                 {
-//                     SubnodeId = subnodeId,
-//                     Code = "NewCreate2",
-//                     Name = "NewCreate2",
-//                     DepartmentId = departmentId,
-//                     ChiefSpecialistId = 999,
-//                     GroupLeaderId = groupLeaderId,
-//                     NormContrId = normContrId,
-//                 },
-//                 new MarkCreateRequest
-//                 {
-//                     SubnodeId = subnodeId,
-//                     Code = "NewCreate2",
-//                     Name = "NewCreate2",
-//                     DepartmentId = departmentId,
-//                     ChiefSpecialistId = chiefSpecialistId,
-//                     GroupLeaderId = 999,
-//                     NormContrId = normContrId,
-//                 },
-//                  new MarkCreateRequest
-//                 {
-//                     SubnodeId = subnodeId,
-//                     Code = "NewCreate2",
-//                     Name = "NewCreate2",
-//                     DepartmentId = departmentId,
-//                     ChiefSpecialistId = chiefSpecialistId,
-//                     GroupLeaderId = groupLeaderId,
-//                     NormContrId = 999,
-//                 },
-//             };
+        //     var wrongMarkRequests = new List<MarkCreateRequest>
+        //     {
+        //         new MarkCreateRequest
+        //         {
+        //             Code = TestData.marks[0].Code,
+        //             Name = "NewCreate",
+        //             DepartmentId = departmentId,
+        //             ChiefSpecialistId = chiefSpecialistId,
+        //             GroupLeaderId = groupLeaderId,
+        //             NormContrId = normContrId,
+        //         },
+        //         new MarkCreateRequest
+        //         {
+        //             Code = "NewCreate",
+        //             Name = "NewCreate",
+        //             DepartmentId = departmentId,
+        //             ChiefSpecialistId = chiefSpecialistId,
+        //             GroupLeaderId = groupLeaderId,
+        //             NormContrId = normContrId,
+        //         },
+        //     };
 
-//             var endpoint = $"/api/users/{userId}/marks";
-//             foreach (var wrongMarkRequest in wrongMarkRequests)
-//             {
-//                 var json = JsonSerializer.Serialize(wrongMarkRequest);
-//                 var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+        //     var endpoint = $"/api/users/{userId}/subnodes/{subnodeId}/marks";
+        //     foreach (var wrongMarkRequest in wrongMarkRequests)
+        //     {
+        //         var json = JsonSerializer.Serialize(wrongMarkRequest);
+        //         var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-//                 // Act
-//                 var response = await _httpClient.PostAsync(endpoint, httpContent);
+        //         // Act
+        //         var response = await _httpClient.PostAsync(endpoint, httpContent);
 
-//                 // Assert
-//                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-//             }
-//         }
+        //         // Assert
+        //         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        //     }
+        // }
 
-//         [Fact]
-//         public async Task Create_ShouldReturnConflict_WhenEmployeesAndDepartmentDontMatchOrConflictValues()
-//         {
-//             // Arrange
-//             var userId = 1;
-//             short subnodeId = 1;
-//             short departmentId = 1;
-//             var chiefSpecialistId = 1;
-//             var groupLeaderId = 2;
-//             var normContrId = 3;
+        [Fact]
+        public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            var userId = 1;
+            short subnodeId = 1;
+            short departmentId = 1;
+            var normContrId = 1;
+            var markRequest = new MarkCreateRequest
+            {
+                Code = "NewCreate",
+                Name = "NewCreate",
+                DepartmentId = departmentId,
+                NormContrId = normContrId,
+            };
+            string json = JsonSerializer.Serialize(markRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/users/{userId}/subnodes/{subnodeId}/marks";
 
-//             var wrongMarkRequests = new List<MarkCreateRequest>
-//             {
-//                 new MarkCreateRequest
-//                 {
-//                     SubnodeId = TestData.marks[0].Subnode.Id,
-//                     Code = TestData.marks[0].Code,
-//                     Name = "NewCreate",
-//                     DepartmentId = departmentId,
-//                     ChiefSpecialistId = chiefSpecialistId,
-//                     GroupLeaderId = groupLeaderId,
-//                     NormContrId = normContrId,
-//                 },
-//                 new MarkCreateRequest
-//                 {
-//                     SubnodeId = subnodeId,
-//                     Code = "NewCreate",
-//                     Name = "NewCreate",
-//                     DepartmentId = departmentId,
-//                     ChiefSpecialistId = chiefSpecialistId,
-//                     GroupLeaderId = groupLeaderId,
-//                     NormContrId = normContrId,
-//                 },
-//             };
+            // Act
+            var response = await _authHttpClient.PostAsync(endpoint, httpContent);
 
-//             var endpoint = $"/api/users/{userId}/marks";
-//             foreach (var wrongMarkRequest in wrongMarkRequests)
-//             {
-//                 var json = JsonSerializer.Serialize(wrongMarkRequest);
-//                 var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
 
-//                 // Act
-//                 var response = await _httpClient.PostAsync(endpoint, httpContent);
+        // ------------------------------------PATCH------------------------------------
 
-//                 // Assert
-//                 Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
-//             }
-//         }
+        // [Fact]
+        // public async Task Update_ShouldReturnNoContent()
+        // {
+        //     // Arrange
+        //     var id = 1;
+        //     var markRequest = new MarkUpdateRequest
+        //     {
+        //         Name = "NewUpdate",
+        //     };
+        //     string json = JsonSerializer.Serialize(markRequest);
+        //     var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+        //     var endpoint = $"/api/marks/{id}";
 
-//         [Fact]
-//         public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
-//         {
-//             // Arrange
-//             var userId = 1;
-//             short subnodeId = 1;
-//             short departmentId = 1;
-//             var normContrId = 1;
-//             var markRequest = new MarkCreateRequest
-//             {
-//                 SubnodeId = subnodeId,
-//                 Code = "NewCreate",
-//                 Name = "NewCreate",
-//                 DepartmentId = departmentId,
-//                 NormContrId = normContrId,
-//             };
-//             string json = JsonSerializer.Serialize(markRequest);
-//             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-//             var endpoint = $"/api/users/{userId}/marks";
+        //     // Act
+        //     var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
-//             // Act
-//             var response = await _authHttpClient.PostAsync(endpoint, httpContent);
+        //     // Assert
+        //     Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        // }
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-//         }
+        [Fact]
+        public async Task Update_ShouldReturnBadRequest_WhenWrongValues()
+        {
+            // Arrange
+            int id = 1;
+            var endpoint = $"/api/marks/{id}";
 
-//         // ------------------------------------PATCH------------------------------------
+            var httpContent = new StringContent("", Encoding.UTF8, "application/json");
 
-//         [Fact]
-//         public async Task Update_ShouldReturnNoContent()
-//         {
-//             // Arrange
-//             var id = 1;
-//             var markRequest = new MarkUpdateRequest
-//             {
-//                 Name = "NewUpdate",
-//             };
-//             string json = JsonSerializer.Serialize(markRequest);
-//             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-//             var endpoint = $"/api/marks/{id}";
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
-//             // Act
-//             var response = await _httpClient.PatchAsync(endpoint, httpContent);
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-//         }
+        [Fact]
+        public async Task Update_ShouldReturnNotFound_WhenWrongValues()
+        {
+            // Arrange
+            int id = 1;
+            var wrongMarkRequests = new List<UpdateRequest>
+            {
+                new UpdateRequest
+                {
+                    Id = 999,
+                    Body = new MarkUpdateRequest
+                    {
+                        Name = "NewUpdate",
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        DepartmentId = 999,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        ChiefSpecialistId = 999,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        GroupLeaderId = 999,
+                    },
+                },
+                new UpdateRequest
+                {
+                    Id = id,
+                    Body = new MarkUpdateRequest
+                    {
+                        NormContrId = 999,
+                    },
+                },
+            };
 
-//         [Fact]
-//         public async Task Update_ShouldReturnBadRequest_WhenWrongValues()
-//         {
-//             // Arrange
-//             int id = 1;
-//             var endpoint = $"/api/marks/{id}";
+            foreach (var wrongMarkRequest in wrongMarkRequests)
+            {
+                var json = JsonSerializer.Serialize(wrongMarkRequest.Body);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var endpoint = $"/api/marks/{wrongMarkRequest.Id}";
 
-//             var httpContent = new StringContent("", Encoding.UTF8, "application/json");
+                // Act
+                var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
-//             // Act
-//             var response = await _httpClient.PatchAsync(endpoint, httpContent);
+                // Assert
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
 
-//             // Assert
-//             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-//         }
+        [Fact]
+        public async Task Update_ShouldReturnConflict_WhenConflictValues()
+        {
+            // Arrange
+            int id = 2;
+            var markRequest = new MarkUpdateRequest
+            {
+                Code = TestData.marks[0].Code,
+            };
+            string json = JsonSerializer.Serialize(markRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks/{id}";
 
-//         [Fact]
-//         public async Task Update_ShouldReturnNotFound_WhenWrongValues()
-//         {
-//             // Arrange
-//             int id = 1;
-//             var wrongMarkRequests = new List<UpdateRequest>
-//             {
-//                 new UpdateRequest
-//                 {
-//                     Id = 999,
-//                     Body = new MarkUpdateRequest
-//                     {
-//                         Name = "NewUpdate",
-//                     },
-//                 },
-//                 new UpdateRequest
-//                 {
-//                     Id = id,
-//                     Body = new MarkUpdateRequest
-//                     {
-//                         SubnodeId = 999,
-//                     },
-//                 },
-//                 new UpdateRequest
-//                 {
-//                     Id = id,
-//                     Body = new MarkUpdateRequest
-//                     {
-//                         DepartmentId = 999,
-//                     },
-//                 },
-//                 new UpdateRequest
-//                 {
-//                     Id = id,
-//                     Body = new MarkUpdateRequest
-//                     {
-//                         ChiefSpecialistId = 999,
-//                     },
-//                 },
-//                 new UpdateRequest
-//                 {
-//                     Id = id,
-//                     Body = new MarkUpdateRequest
-//                     {
-//                         GroupLeaderId = 999,
-//                     },
-//                 },
-//                 new UpdateRequest
-//                 {
-//                     Id = id,
-//                     Body = new MarkUpdateRequest
-//                     {
-//                         NormContrId = 999,
-//                     },
-//                 },
-//             };
+            // Act
+            var response = await _httpClient.PatchAsync(endpoint, httpContent);
 
-//             foreach (var wrongMarkRequest in wrongMarkRequests)
-//             {
-//                 var json = JsonSerializer.Serialize(wrongMarkRequest.Body);
-//                 var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-//                 var endpoint = $"/api/marks/{wrongMarkRequest.Id}";
+            // Assert
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        }
 
-//                 // Act
-//                 var response = await _httpClient.PatchAsync(endpoint, httpContent);
+        [Fact]
+        public async Task Update_ShouldReturnUnauthorized_WhenNoAccessToken()
+        {
+            // Arrange
+            var id = 1;
+            var markRequest = new MarkUpdateRequest
+            {
+                Name = "NewUpdate",
+            };
+            string json = JsonSerializer.Serialize(markRequest);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = $"/api/marks/{id}";
 
-//                 // Assert
-//                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-//             }
-//         }
+            // Act
+            var response = await _authHttpClient.PatchAsync(endpoint, httpContent);
 
-//         [Fact]
-//         public async Task Update_ShouldReturnConflict_WhenConflictValues()
-//         {
-//             // Arrange
-//             int id = 2;
-//             var markRequest = new MarkUpdateRequest
-//             {
-//                 Code = TestData.marks[0].Code,
-//             };
-//             string json = JsonSerializer.Serialize(markRequest);
-//             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-//             var endpoint = $"/api/marks/{id}";
-
-//             // Act
-//             var response = await _httpClient.PatchAsync(endpoint, httpContent);
-
-//             // Assert
-//             Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
-//         }
-
-//         [Fact]
-//         public async Task Update_ShouldReturnUnauthorized_WhenNoAccessToken()
-//         {
-//             // Arrange
-//             var id = 1;
-//             var markRequest = new MarkUpdateRequest
-//             {
-//                 Name = "NewUpdate",
-//             };
-//             string json = JsonSerializer.Serialize(markRequest);
-//             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-//             var endpoint = $"/api/marks/{id}";
-
-//             // Act
-//             var response = await _authHttpClient.PatchAsync(endpoint, httpContent);
-
-//             // Assert
-//             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-//         }
-//     }
-// }
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+    }
+}

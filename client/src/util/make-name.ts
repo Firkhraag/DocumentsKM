@@ -22,6 +22,8 @@ export const makeMarkName = (
 		if (overhaul !== '') {
 			markName += `-${overhaul}`
 		}
+	} else if (overhaul !== '') {
+		markName += `-${overhaul}`
 	}
 	if (markCode !== '-' && markCode !== '' && markCode != null) {
 		markName += `-${markCode}`
@@ -60,7 +62,7 @@ export const makeComplexAndObjectName = (
 	}
 	if (bias > 0) {
 		complexName = projectName + '. ' + objectName.substring(0, bias -2)
-		objectName = objectName.substring(bias, objectName.length)
+		objectName = objectName.substring(bias)
 	} else if (bias < 0) {
 		complexName = projectName.substring(0, projectName.length + bias - 2)
 		objectName = projectName.substring(projectName.length + bias) + '. ' + objectName

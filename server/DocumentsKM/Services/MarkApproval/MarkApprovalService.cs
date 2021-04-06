@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using DocumentsKM.Models;
 using DocumentsKM.Data;
 using System;
-using System.Text.Json;
-using Serilog;
 
 namespace DocumentsKM.Services
 {

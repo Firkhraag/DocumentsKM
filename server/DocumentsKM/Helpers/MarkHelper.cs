@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text;
+using Serilog;
 
 namespace DocumentsKM.Helpers
 {
@@ -32,12 +33,59 @@ namespace DocumentsKM.Helpers
                     markName.Append($"-{overhaul}");
                 }
             }
+            else if (overhaul != "")
+            {
+                markName.Append($"-{overhaul}");
+            }
             if (markCode != "-" && markCode != "")
             {
                 markName.Append($"-{markCode}");
             }
             return markName.ToString();
         }
+
+        // public static (string, string) MakeComplexAndObjectName(
+        //     string projectName,
+        //     string nodeName,
+        //     string subnodeName,
+        //     string markName,
+        //     int bias)
+        // {
+        //     var complexName = projectName;
+        //     var objectName = "";
+        //     var firstPartAdded = false;
+        //     if (nodeName != "" && nodeName != null)
+        //     {
+        //         objectName += nodeName;
+        //         firstPartAdded = true;
+        //     }
+        //     if (subnodeName != "" && subnodeName != null)
+        //     {
+        //         if (firstPartAdded)
+        //             objectName += ". ";
+        //         else
+        //             firstPartAdded = true;
+        //         objectName += subnodeName;
+        //     }
+        //     if (markName != "" && markName != null)
+        //     {
+        //         if (firstPartAdded)
+        //             objectName += ". ";
+        //         objectName += markName;
+        //     }
+        //     if (bias > 0)
+        //     {
+        //         complexName = projectName + ". " + objectName.Substring(0, bias -2);
+        //         objectName = objectName.Substring(bias, objectName.Length);
+        //     }
+        //     else if (bias < 0)
+        //     {
+        //         complexName = projectName.Substring(0, projectName.Length + bias - 2);
+        //         objectName = projectName.Substring(projectName.Length + bias) + ". " + objectName;
+        //     }
+
+        //     return (complexName, objectName);
+        // }
 
         public static (string, string) MakeComplexAndObjectName(
             string projectName,
@@ -46,32 +94,38 @@ namespace DocumentsKM.Helpers
             string markName,
             int bias)
         {
-            var complexName = projectName;
-            var objectName = "";
+            var objectNameBuilder = new StringBuilder("", 255);
+
             var firstPartAdded = false;
             if (nodeName != "" && nodeName != null)
             {
-                objectName += nodeName;
+                objectNameBuilder.Append(nodeName);
                 firstPartAdded = true;
             }
             if (subnodeName != "" && subnodeName != null)
             {
                 if (firstPartAdded)
-                    objectName += ". ";
+                    objectNameBuilder.Append(". ");
                 else
                     firstPartAdded = true;
-                objectName += subnodeName;
+                objectNameBuilder.Append(subnodeName);
             }
             if (markName != "" && markName != null)
             {
                 if (firstPartAdded)
-                    objectName += ". ";
-                objectName += markName;
+                    objectNameBuilder.Append(". ");
+                objectNameBuilder.Append(markName);
             }
+
+            var complexName = projectName;
+            var objectName = objectNameBuilder.ToString();
+            Log.Information(complexName);
+            Log.Information(objectName);
+            Log.Information(bias.ToString());
             if (bias > 0)
             {
                 complexName = projectName + ". " + objectName.Substring(0, bias -2);
-                objectName = objectName.Substring(bias, objectName.Length);
+                objectName = objectName.Substring(bias);
             }
             else if (bias < 0)
             {

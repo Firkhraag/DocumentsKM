@@ -1,5 +1,4 @@
 using System;
-using AutoMapper;
 using DocumentsKM.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

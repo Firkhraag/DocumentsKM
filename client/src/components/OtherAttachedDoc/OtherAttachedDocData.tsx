@@ -27,8 +27,7 @@ const OtherAttachedDocData = ({
 		isCreateMode
 			? {
 					id: -1,
-					designation:
-						mark.designation + '.ЛС',
+					designation: '',
 					name: 'Локальная смета',
 					note: '',
 			  }
@@ -43,6 +42,22 @@ const OtherAttachedDocData = ({
 			if (selectedObject == null) {
 				history.push('/other-attached-docs')
 				return
+			}
+			if (isCreateMode) {
+				const fetchData = async () => {
+					try {
+						const newDesignationResponse = await httpClient.get(
+							`/marks/${mark.id}/attached-docs/new-designation`
+						)
+						setSelectedObject({
+							...selectedObject,
+							designation: mark.designation + '.' + newDesignationResponse.data,
+						})
+					} catch (e) {
+						console.log('Failed to fetch designation')
+					}
+				}
+				fetchData()
 			}
 		}
 	}, [mark])

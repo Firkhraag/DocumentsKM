@@ -42,7 +42,7 @@ namespace DocumentsKM.Tests
             var markApprovals = repo.GetAllByMarkId(markId);
 
             // Assert
-            Assert.Equal(TestData.markApprovals.Where(v => v.Mark.Id == markId),
+            Assert.Equal(TestData.markApprovals.Where(v => v.Mark.Id == markId).OrderBy(v => v.Id),
                 markApprovals);
 
             context.Database.EnsureDeleted();
