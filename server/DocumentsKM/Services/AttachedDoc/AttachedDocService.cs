@@ -29,7 +29,33 @@ namespace DocumentsKM.Services
             var designations = _repository.GetAllByMarkId(markId).Select(v => v.Designation);
             if (designations.Count() == 0)
                 return "ЛС";
-            return $"ЛС{designations.Count()}";
+
+            var newNum = 1;
+            foreach (var designation in designations)
+            {
+                var n = string.Empty;
+                for (int i = designation.Length - 1; i > 0; i--)
+                    if (Char.IsDigit(designation[i]))
+                        n += designation[i];
+                    else
+                        break;
+
+                if (n.Length > 0)
+                {
+                    int v;
+                    if (n.Length > 1)
+                    {
+                        var arr = n.ToCharArray();
+                        Array.Reverse(arr);
+                        v = int.Parse(new string(arr));
+                    }
+                    else
+                        v = int.Parse(n);
+                    if (v >= newNum)
+                        newNum = v + 1;
+                }
+            }
+            return $"ЛС{newNum}";
         }
 
         public void Create(

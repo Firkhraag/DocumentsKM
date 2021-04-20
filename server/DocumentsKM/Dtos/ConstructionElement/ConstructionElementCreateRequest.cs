@@ -14,5 +14,8 @@ namespace DocumentsKM.Dtos
         [Required]
         [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Length { get; set; }
+
+        [MaxLength(100)]
+        public string ArithmeticExpression { get; set; }
     }
 }

@@ -64,9 +64,11 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 					const marksResponse = await httpClient.post(`/marks/recent`, {
 						ids: recentMark.map(m => m.id),
 					})
+					console.log(marksResponse.data)
 					recentMarks = [] as Mark[]
 					marksResponse.data.forEach(
 						(v: Mark) => recentMarks[recentMark.map(m => m.id).indexOf(v.id)] = v)
+					console.log(recentMark)
 					setRecentMarks(recentMark)
 				}
 			} catch (e) {
@@ -341,7 +343,7 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		}
 	}
 
-	const onSelectMarkButtonClick = () => {
+	const onMarkSelectButtonClick = () => {
 		if (
 			selectedObject.mark == null ||
 			selectedObject.subnode == null ||
@@ -354,26 +356,45 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		const mark = selectedObject.mark
 		localStorage.setItem('selectedMarkId', mark.id.toString())
 
-		const filteredRecentMarks = optionsObject.recentMarks.filter(
-			(m) => m.id !== mark.id
-		)
-		if (filteredRecentMarks.length >= 5) {
-			filteredRecentMarks.pop()
+		// const filteredRecentMarks = optionsObject.recentMarks.filter(
+		// 	(m) => m.id !== mark.id
+		// )
+		// if (filteredRecentMarks.length >= 5) {
+		// 	filteredRecentMarks.pop()
+		// }
+		// filteredRecentMarks.unshift(new RecentMark({
+		// 	id: m.id,
+		// 	projectId: selectedObject.project.id,
+		// 	nodeId: selectedObject.node.id,
+		// 	subnodeId: selectedObject.subnode.id,
+		// }))
+		// let resStr = JSON.stringify(filteredRecentMarks)
+		// localStorage.setItem('recentMark', resStr)
+
+		let recentMarks = [] as RecentMark[]
+		const recentMarkStr = localStorage.getItem('recentMark')
+		if (recentMarkStr != null) {
+			recentMarks = JSON.parse(
+				recentMarkStr
+			) as RecentMark[]
 		}
-		filteredRecentMarks.unshift(mark)
-		let resStr = JSON.stringify(filteredRecentMarks.map((m) => new RecentMark({
-			id: m.id,
+		if (recentMarks.length >= 5) {
+			recentMarks.pop()
+		}
+		recentMarks.unshift(new RecentMark({
+			id: selectedObject.mark.id,
 			projectId: selectedObject.project.id,
 			nodeId: selectedObject.node.id,
 			subnodeId: selectedObject.subnode.id,
-		})))
+		}))
+		let resStr = JSON.stringify(recentMarks)
 		localStorage.setItem('recentMark', resStr)
 
 		setMark(selectedObject.mark)
 		history.push('/')
 	}
 
-	const onCreateMarkButtonClick = () => {
+	const onMarkCreateButtonClick = () => {
 		if (
 			selectedObject.subnode == null ||
 			selectedObject.node == null ||
@@ -613,14 +634,16 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 					<Button
 						variant="secondary"
 						className="flex-grow"
-						onClick={onSelectMarkButtonClick}
+						onClick={onMarkSelectButtonClick}
+						disabled={selectedObject.mark == null}
 					>
 						Выбрать
 					</Button>
 					<Button
 						variant="secondary"
 						className="flex-grow mrg-left"
-						onClick={onCreateMarkButtonClick}
+						onClick={onMarkCreateButtonClick}
+						disabled={selectedObject.subnode == null}
 					>
 						Создать
 					</Button>

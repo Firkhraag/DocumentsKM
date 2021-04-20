@@ -1,10 +1,10 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { X } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import Employee from '../../model/Employee'
@@ -17,52 +17,56 @@ import getFromOptions from '../../util/get-from-options'
 import getNullableFieldValue from '../../util/get-field-value'
 import { reactSelectStyle } from '../../util/react-select-style'
 
-type DevelopingAttachedDocDataProps = {
-	developingAttachedDoc: Doc
+type IDevelopingAttachedDocDataProps = {
+	doc: Doc
 	isCreateMode: boolean
 }
 
+type DevelopingAttachedDocDataProps = {
+	docData: IDevelopingAttachedDocDataProps
+	setDocData: (d: IDevelopingAttachedDocDataProps) => void
+	docs: Doc[]
+	setDocs: (a: Doc[]) => void
+}
+
 const DevelopingAttachedDocData = ({
-	developingAttachedDoc,
-	isCreateMode,
+	docData,
+	setDocData,
+	docs,
+	setDocs,
 }: DevelopingAttachedDocDataProps) => {
 	const defaultOptionsObject = {
 		types: [] as DocType[],
 		employees: [] as Employee[],
 	}
 
-	const history = useHistory()
 	const mark = useMark()
 	const user = useUser()
 
-	const [selectedObject, setSelectedObject] = useState<Doc>(
-		isCreateMode
-			? {
-					id: -1,
-					num: 1,
-					numOfPages: 1,
-					form: 0.125,
-					name: '',
-					type: null,
-					creator: null,
-					inspector: null,
-					normContr: null,
-					releaseNum: 0,
-					note: '',
-			  }
-			: developingAttachedDoc
-	)
+	const defaultSelectedObject = {
+		id: -1,
+		num: 1,
+		numOfPages: 1,
+		form: 0.125,
+		name: '',
+		type: null,
+		creator: null,
+		inspector: null,
+		normContr: null,
+		releaseNum: 0,
+		note: '',
+  	} as Doc
+
+	const [selectedObject, setSelectedObject] = useState<Doc>(null)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 
 	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
+	const [fetched, setFetched] = useState(false)
+
 	useEffect(() => {
-		if (mark != null && mark.id != null) {
-			if (selectedObject == null) {
-				history.push('/developing-attached-docs')
-				return
-			}
+		if (!fetched || docData.doc == null) {
 			const fetchData = async () => {
 				try {
 					const docTypesResponse = await httpClient.get(
@@ -75,15 +79,15 @@ const DevelopingAttachedDocData = ({
 						employees: employeesResponse.data,
 						types: docTypesResponse.data,
 					})
-                    if (isCreateMode) {
-                        const defaultValuesResponse = await httpClient.get(
+                    if (docData.isCreateMode) {
+                        const valuesResponse = await httpClient.get(
                             `/users/${user.id}/default-values`
                         )
                         setSelectedObject({
-                            ...selectedObject,
-                            creator: defaultValuesResponse.data.creator,
-                            inspector: defaultValuesResponse.data.inspector,
-                            normContr: defaultValuesResponse.data.normContr,
+                            ...defaultSelectedObject,
+                            creator: valuesResponse.data.creator,
+                            inspector: valuesResponse.data.inspector,
+                            normContr: valuesResponse.data.normContr,
                         })
                     }
 				} catch (e) {
@@ -91,8 +95,15 @@ const DevelopingAttachedDocData = ({
 				}
 			}
 			fetchData()
+			setFetched(true)
 		}
-	}, [mark])
+		if (docData.doc != null) {
+			setSelectedObject({
+				...defaultSelectedObject,
+				...docData.doc,
+			})
+		}
+	}, [docData])
 
 	const onCodeSelect = async (id: number) => {
 		if (id == null) {
@@ -117,7 +128,7 @@ const DevelopingAttachedDocData = ({
 		})
 	}
 
-	const onNumOfPagesChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onNumOfPagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const v = parseInt(event.currentTarget.value)
 		setSelectedObject({
 			...selectedObject,
@@ -133,7 +144,7 @@ const DevelopingAttachedDocData = ({
 		})
 	}
 
-	const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+	const onNoteChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			note: event.currentTarget.value,
@@ -236,7 +247,7 @@ const DevelopingAttachedDocData = ({
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				await httpClient.post(`/marks/${mark.id}/docs`, {
+				const idResponse = await httpClient.post(`/marks/${mark.id}/docs`, {
 					typeId: selectedObject.type.id,
 					name: selectedObject.name,
 					numOfPages: selectedObject.numOfPages,
@@ -246,7 +257,16 @@ const DevelopingAttachedDocData = ({
 					normContrId: selectedObject.normContr?.id,
 					note: selectedObject.note,
 				})
-				history.push('/developing-attached-docs')
+				const arr = [...docs]
+				arr.push({
+					...selectedObject,
+					id: idResponse.data.id,
+				})
+				setDocs(arr)
+				setDocData({
+					doc: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
 				setProcessIsRunning(false)
@@ -262,47 +282,55 @@ const DevelopingAttachedDocData = ({
 			try {
 				const object = {
 					typeId:
-						selectedObject.type.id === developingAttachedDoc.type.id
+						selectedObject.type.id === docData.doc.type.id
 							? undefined
 							: selectedObject.type.id,
 					name:
-						selectedObject.name === developingAttachedDoc.name
+						selectedObject.name === docData.doc.name
 							? undefined
 							: selectedObject.name,
 					numOfPages:
 						selectedObject.numOfPages ===
-						developingAttachedDoc.numOfPages
+						docData.doc.numOfPages
 							? undefined
 							: selectedObject.numOfPages,
 					form:
-						selectedObject.form === developingAttachedDoc.form
+						selectedObject.form === docData.doc.form
 							? undefined
 							: selectedObject.form,
 					creatorId:
 						selectedObject.creator.id ===
-						developingAttachedDoc.creator.id
+						docData.doc.creator.id
 							? undefined
 							: selectedObject.creator.id,
 					inspectorId: getNullableFieldValue(
 						selectedObject.inspector,
-						developingAttachedDoc.inspector
+						docData.doc.inspector
 					),
 					normContrId: getNullableFieldValue(
 						selectedObject.normContr,
-						developingAttachedDoc.normContr
+						docData.doc.normContr
 					),
 					note:
-						selectedObject.note === developingAttachedDoc.note
+						(selectedObject.note === docData.doc.note) || (selectedObject.note === '' && docData.doc.note == null)
 							? undefined
 							: selectedObject.note,
 				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
-				}
 				await httpClient.patch(`/docs/${selectedObject.id}`, object)
-				history.push('/developing-attached-docs')
+				
+				const arr = []
+				for (const v of docs) {
+					if (v.id == selectedObject.id) {
+						arr.push(selectedObject)
+						continue
+					}
+					arr.push(v)
+				}
+				setDocs(arr)
+				setDocData({
+					doc: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
 				setProcessIsRunning(false)
@@ -314,23 +342,18 @@ const DevelopingAttachedDocData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
-			<div className="hanging-routes">
-				<Link to="/developing-attached-docs">
-					Прилагаемые документы
-				</Link>
-			</div>
-			<h1 className="text-centered">
-				{isCreateMode
-					? 'Создание прилагаемого документа'
-					: 'Данные прилагаемого документа'}
-			</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-				<Form.Group className="space-between-cent-v">
-					<Form.Label
-						className="no-bot-mrg"
-						htmlFor="code"
-						style={{ marginRight: '1em' }}
-					>
+			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div relative">
+				<div className="pointer absolute"
+					style={{top: 5, right: 8}}
+					onClick={() => setDocData({
+						doc: null,
+						isCreateMode: false,
+					})}
+				>
+					<X color="#666" size={33} />
+				</div>
+				<Form.Group>
+					<Form.Label htmlFor="code">
 						Шифр документа
 					</Form.Label>
 					<Select
@@ -340,7 +363,7 @@ const DevelopingAttachedDocData = ({
 						isSearchable={true}
 						placeholder="Выбор шифр документа"
 						noOptionsMessage={() => 'Шифры не найдены'}
-						className="doc-input-width"
+						// className="doc-input-width"
 						onChange={(selectedOption) =>
 							onCodeSelect((selectedOption as any)?.value)
 						}
@@ -388,12 +411,12 @@ const DevelopingAttachedDocData = ({
 						placeholder="Введите число листов"
 						autoComplete="off"
 						className="doc-input-width"
-						defaultValue={
+						value={
 							isNaN(selectedObject.numOfPages)
 								? ''
 								: selectedObject.numOfPages
 						}
-						onBlur={onNumOfPagesChange}
+						onChange={onNumOfPagesChange}
 					/>
 				</Form.Group>
 
@@ -537,8 +560,8 @@ const DevelopingAttachedDocData = ({
 						rows={4}
 						style={{ resize: 'none' }}
 						placeholder="Не введено"
-						defaultValue={selectedObject.note}
-						onBlur={onNoteChange}
+						value={selectedObject.note}
+						onChange={onNoteChange}
 					/>
 				</Form.Group>
 
@@ -548,11 +571,46 @@ const DevelopingAttachedDocData = ({
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
 					onClick={
-						isCreateMode ? onCreateButtonClick : onChangeButtonClick
+						docData.isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
-					disabled={processIsRunning}
+					disabled={processIsRunning || (!docData.isCreateMode && !Object.values({
+						typeId:
+							selectedObject.type.id === docData.doc.type.id
+								? undefined
+								: selectedObject.type.id,
+						name:
+							selectedObject.name === docData.doc.name
+								? undefined
+								: selectedObject.name,
+						numOfPages:
+							selectedObject.numOfPages ===
+							docData.doc.numOfPages
+								? undefined
+								: selectedObject.numOfPages,
+						form:
+							selectedObject.form === docData.doc.form
+								? undefined
+								: selectedObject.form,
+						creatorId:
+							selectedObject.creator.id ===
+							docData.doc.creator.id
+								? undefined
+								: selectedObject.creator.id,
+						inspectorId: getNullableFieldValue(
+							selectedObject.inspector,
+							docData.doc.inspector
+						),
+						normContrId: getNullableFieldValue(
+							selectedObject.normContr,
+							docData.doc.normContr
+						),
+						note:
+							(selectedObject.note === docData.doc.note) || (selectedObject.note === '' && docData.doc.note == null)
+								? undefined
+								: selectedObject.note,
+					}).some((x) => x !== undefined))}
 				>
-					{isCreateMode
+					{docData.isCreateMode
 						? 'Создать разрабатываемый прилагаемый документ'
 						: 'Сохранить изменения'}
 				</Button>

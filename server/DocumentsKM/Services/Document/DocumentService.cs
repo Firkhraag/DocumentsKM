@@ -116,10 +116,10 @@ namespace DocumentsKM.Services
             return memory;
         }
 
-        public MemoryStream GetEstimationDocumentPages(int markId)
+        public MemoryStream GetEstimationDocumentPages(int markId, int numOfPages)
         {
             var memory = GetStreamFromTemplate("word\\template_estimation_pages.docx");
-            _estimationPagesDocumentService.PopulateDocument(markId, memory);
+            _estimationPagesDocumentService.PopulateDocument(markId, numOfPages, memory);
             memory.Seek(0, SeekOrigin.Begin);
             return memory;
         }

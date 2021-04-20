@@ -1,10 +1,10 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { X } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
@@ -15,12 +15,25 @@ import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 import LinkedDocType from '../../model/LinkedDocType'
 
-type LinkedDocDataProps = {
+type ILinkedDocDataProps = {
 	markLinkedDoc: MarkLinkedDoc
 	isCreateMode: boolean
 }
 
-const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
+type LinkedDocDataProps = {
+	linkedDocData: ILinkedDocDataProps
+	setLinkedDocData: (d: ILinkedDocDataProps) => void
+	linkedDocs: MarkLinkedDoc[]
+	setLinkedDocs: (a: MarkLinkedDoc[]) => void
+}
+
+const LinkedDocData = ({
+	linkedDocData,
+	setLinkedDocData,
+	linkedDocs,
+	setLinkedDocs,
+}: LinkedDocDataProps) => {
+
 	const defaultOptionsObject = {
 		types: [] as LinkedDocType[],
 		docs: [] as LinkedDoc[],
@@ -33,18 +46,15 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		type: null,
 	} as LinkedDoc
 
-	const history = useHistory()
+	const defaultSelectedObject = {
+		id: -1,
+		linkedDoc: defaultLinkedDoc,
+		note: '',
+	} as MarkLinkedDoc
+
 	const mark = useMark()
 
-	const [selectedObject, setSelectedObject] = useState<MarkLinkedDoc>(
-		isCreateMode
-			? {
-					id: -1,
-					linkedDoc: defaultLinkedDoc,
-					note: '',
-			  }
-			: markLinkedDoc
-	)
+	const [selectedObject, setSelectedObject] = useState<MarkLinkedDoc>(null)
 	const [optionsObject, setOptionsObject] = useState(defaultOptionsObject)
 	const cachedDocs = useState(new Map<number, LinkedDoc[]>())[0]
 
@@ -52,41 +62,45 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 	const [errMsg, setErrMsg] = useState('')
 
 	useEffect(() => {
-		if (mark != null && mark.id != null) {
-			if (selectedObject == null) {
-				history.push('/linked-docs')
-				return
-			}
-			const fetchData = async () => {
-				try {
-					const linkedDocTypesResponse = await httpClient.get(
-						`/linked-doc-types`
+		const fetchData = async () => {
+			try {
+				const linkedDocTypesResponse = await httpClient.get(
+					`/linked-doc-types`
+				)
+				if (!linkedDocData.isCreateMode) {
+					const linkedDocsResponse = await httpClient.get(
+						`/linked-docs-types/${linkedDocData.markLinkedDoc.linkedDoc.type.id}/docs`
 					)
-					if (!isCreateMode) {
-						const linkedDocsResponse = await httpClient.get(
-							`/linked-docs-types/${markLinkedDoc.linkedDoc.type.id}/docs`
-						)
-						cachedDocs.set(
-							markLinkedDoc.linkedDoc.id,
-							linkedDocsResponse.data
-						)
-						setOptionsObject({
-							types: linkedDocTypesResponse.data,
-							docs: linkedDocsResponse.data,
-						})
-					} else {
-						setOptionsObject({
-							...defaultOptionsObject,
-							types: linkedDocTypesResponse.data,
-						})
-					}
-				} catch (e) {
-					console.log('Failed to fetch the data')
+					cachedDocs.set(
+						linkedDocData.markLinkedDoc.linkedDoc.id,
+						linkedDocsResponse.data
+					)
+					setOptionsObject({
+						types: linkedDocTypesResponse.data,
+						docs: linkedDocsResponse.data,
+					})
+				} else {
+					setOptionsObject({
+						...defaultOptionsObject,
+						types: linkedDocTypesResponse.data,
+					})
 				}
+			} catch (e) {
+				console.log('Failed to fetch the data', e)
 			}
-			fetchData()
 		}
-	}, [mark])
+		fetchData()
+		if (linkedDocData.markLinkedDoc != null) {
+			setSelectedObject({
+				...defaultSelectedObject,
+				...linkedDocData.markLinkedDoc,
+			})
+		} else {
+			setSelectedObject({
+				...defaultSelectedObject,
+			})
+		}
+	}, [linkedDocData])
 
 	const onTypeSelect = async (id: number) => {
 		if (id == null) {
@@ -158,7 +172,7 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		}
 	}
 
-	const onNoteChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+	const onNoteChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			note: event.currentTarget.value,
@@ -181,11 +195,20 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				await httpClient.post(`/marks/${mark.id}/mark-linked-docs`, {
+				const idResponse = await httpClient.post(`/marks/${mark.id}/mark-linked-docs`, {
 					linkedDocId: selectedObject.linkedDoc.id,
 					note: selectedObject.note,
 				})
-				history.push('/linked-docs')
+				const arr = [...linkedDocs]
+				arr.push({
+					...selectedObject,
+					id: idResponse.data.id,
+				})
+				setLinkedDocs(arr)
+				setLinkedDocData({
+					markLinkedDoc: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Данный ссылочный документ уже добавлен к марке')
@@ -206,11 +229,11 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 				const object = {
 					linkedDocId:
 						selectedObject.linkedDoc.id ===
-						markLinkedDoc.linkedDoc.id
+						linkedDocData.markLinkedDoc.linkedDoc.id
 							? undefined
 							: selectedObject.linkedDoc.id,
 					note:
-						selectedObject.note === markLinkedDoc.note
+						(selectedObject.note === linkedDocData.markLinkedDoc.note) || (selectedObject.note === '' && linkedDocData.markLinkedDoc.note == null)
 							? undefined
 							: selectedObject.note,
 				}
@@ -223,7 +246,20 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 					`/mark-linked-docs/${selectedObject.id}`,
 					object
 				)
-				history.push('/linked-docs')
+
+				const arr = []
+				for (const v of linkedDocs) {
+					if (v.id == selectedObject.id) {
+						arr.push(selectedObject)
+						continue
+					}
+					arr.push(v)
+				}
+				setLinkedDocs(arr)
+				setLinkedDocData({
+					markLinkedDoc: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Данный ссылочный документ уже добавлен к марке')
@@ -239,39 +275,17 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt">
-			<div className="hanging-routes">
-				<Link to="/linked-docs">
-					Ссылочные документы
-				</Link>
-			</div>
-			<h1 className="text-centered">
-				{isCreateMode
-					? 'Добавление ссылочного документа'
-					: 'Данные ссылочного документа'}
-			</h1>
 			<div className="flex">
-				<div className="info-area shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
-					<Form.Group>
-						<Form.Label>Обозначение</Form.Label>
-						<Form.Control
-							type="text"
-							value={selectedObject.linkedDoc.designation}
-							readOnly={true}
-						/>
-					</Form.Group>
-					<Form.Group className="no-bot-mrg">
-						<Form.Label>Наименование</Form.Label>
-						<Form.Control
-							as="textarea"
-							rows={4}
-							style={{ resize: 'none' }}
-							value={selectedObject.linkedDoc.name}
-							readOnly={true}
-						/>
-					</Form.Group>
-				</div>
-
-				<div className="shadow p-3 mb-5 bg-white rounded mrg-left component-width component-cnt-div">
+				<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div relative">
+					<div className="pointer absolute"
+						style={{top: 5, right: 8}}
+						onClick={() => setLinkedDocData({
+							markLinkedDoc: null,
+							isCreateMode: false,
+						})}
+					>
+						<X color="#666" size={33} />
+					</div>
 					<Form.Group>
 						<Form.Label className="no-bot-mrg" htmlFor="type">
 							Вид
@@ -356,8 +370,8 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 							rows={4}
 							style={{ resize: 'none' }}
 							placeholder="Не введено"
-							defaultValue={selectedObject.note}
-							onBlur={onNoteChange}
+							value={selectedObject.note}
+							onChange={onNoteChange}
 						/>
 					</Form.Group>
 
@@ -367,16 +381,47 @@ const LinkedDocData = ({ markLinkedDoc, isCreateMode }: LinkedDocDataProps) => {
 						variant="secondary"
 						className="btn-mrg-top-2 full-width"
 						onClick={
-							isCreateMode
+							linkedDocData.isCreateMode
 								? onCreateButtonClick
 								: onChangeButtonClick
 						}
-						disabled={processIsRunning}
+						disabled={processIsRunning || (!linkedDocData.isCreateMode && !Object.values({
+							linkedDocId:
+								selectedObject.linkedDoc.id ===
+								linkedDocData.markLinkedDoc.linkedDoc.id
+									? undefined
+									: selectedObject.linkedDoc.id,
+							note:
+								(selectedObject.note === linkedDocData.markLinkedDoc.note) || (selectedObject.note === '' && linkedDocData.markLinkedDoc.note == null)
+									? undefined
+									: selectedObject.note,
+						}).some((x) => x !== undefined))}
 					>
-						{isCreateMode
+						{linkedDocData.isCreateMode
 							? 'Добавить ссылочный документ'
 							: 'Сохранить изменения'}
 					</Button>
+				</div>
+
+				<div className="info-area shadow p-3 mb-5 bg-white rounded component-width component-cnt-div mrg-left">
+					<Form.Group>
+						<Form.Label>Обозначение</Form.Label>
+						<Form.Control
+							type="text"
+							value={selectedObject.linkedDoc.designation}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group className="no-bot-mrg">
+						<Form.Label>Наименование</Form.Label>
+						<Form.Control
+							as="textarea"
+							rows={4}
+							style={{ resize: 'none' }}
+							value={selectedObject.linkedDoc.name}
+							readOnly={true}
+						/>
+					</Form.Group>
 				</div>
 			</div>
 		</div>

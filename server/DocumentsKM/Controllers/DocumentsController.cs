@@ -157,13 +157,13 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        [HttpGet, Route("marks/{markId}/estimation-document-pages")]
+        [HttpGet, Route("marks/{markId}/estimation-document-pages/{numOfPages}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetEstimationDocumentPages(int markId)
+        public IActionResult GetEstimationDocumentPages(int markId, int numOfPages)
         {
             try
             {
-                var file = _service.GetEstimationDocumentPages(markId);
+                var file = _service.GetEstimationDocumentPages(markId, numOfPages);
                 return File(
                     file,
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",

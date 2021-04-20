@@ -69,7 +69,7 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"docs/{attachedDocModel.Id}", null);
+            return Created($"docs/{attachedDocModel.Id}", new { Id = attachedDocModel.Id });
         }
 
         [HttpPatch, Route("attached-docs/{id}")]

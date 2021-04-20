@@ -64,7 +64,7 @@ namespace DocumentsKM.Controllers
                 return Conflict();
             }
             return Created(
-                $"standard-constructions/{standardConstructionModel.Id}", null);
+                $"standard-constructions/{standardConstructionModel.Id}", new { Id = standardConstructionModel.Id });
         }
 
         [HttpPatch, Route("standard-constructions/{id}")]

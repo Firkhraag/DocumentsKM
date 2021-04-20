@@ -1,10 +1,10 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { X } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
@@ -14,44 +14,59 @@ import ProfileType from '../../model/ProfileType'
 import Steel from '../../model/Steel'
 import Profile from '../../model/Profile'
 import { useMark } from '../../store/MarkStore'
-import { useSetScroll } from '../../store/ScrollStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 
-type ConstructionElementDataProps = {
+type IConstructionElementDataProps = {
 	constructionElement: ConstructionElement
 	isCreateMode: boolean
-	specificationId: number
+}
+
+type ConstructionElementDataProps = {
+	constructionElementData: IConstructionElementDataProps
+	setConstructionElementData: (d: IConstructionElementDataProps) => void
+	constructionElements: ConstructionElement[]
+	setConstructionElements: (a: ConstructionElement[]) => void
 	constructionId: number
 }
 
 const ConstructionElementData = ({
-	constructionElement,
-	isCreateMode,
-	specificationId,
-	constructionId,
+	constructionElementData,
+	setConstructionElementData,
+	constructionElements,
+	setConstructionElements,
+	constructionId
 }: ConstructionElementDataProps) => {
-	const history = useHistory()
 	const mark = useMark()
-	const setScroll = useSetScroll()
 
 	const profileType8Name = 'тонколистовая сталь'
 	const profileType6Name = 'толстолистовая сталь'
 
-	const [selectedObject, setSelectedObject] = useState<ConstructionElement>(
-		isCreateMode
-			? {
-					id: -1,
-					profileClass: null,
-					profile: null,
-					steel: null,
-					length: NaN,
-			  }
-			: {
-					...constructionElement,
-					profileClass: constructionElement.profile.class,
-			  }
-	)
+	const defaultSelectedObject = {
+		id: -1,
+		profileClass: null,
+		profile: null,
+		steel: null,
+		length: NaN,
+		arithmeticExpression: '',
+  } as ConstructionElement
+
+  const [selectedObject, setSelectedObject] = useState<ConstructionElement>(null)
+
+	// const [selectedObject, setSelectedObject] = useState<ConstructionElement>(
+	// 	isCreateMode
+	// 		? {
+	// 				id: -1,
+	// 				profileClass: null,
+	// 				profile: null,
+	// 				steel: null,
+	// 				length: NaN,
+	// 		  }
+	// 		: {
+	// 				...constructionElement,
+	// 				profileClass: constructionElement.profile.class,
+	// 		  }
+	// )
 	const [optionsObject, setOptionsObject] = useState({
 		profileClasses: [] as ProfileClass[],
 		profileTypes: [] as ProfileType[],
@@ -66,48 +81,53 @@ const ConstructionElementData = ({
 	const [thickness, setThickness] = useState<number>(null)
 
 	useEffect(() => {
-		if (mark != null && mark.id != null) {
-			if (selectedObject == null || specificationId == -1) {
-				history.push('/specifications')
-				return
-			}
-			const fetchData = async () => {
-				try {
-					const profileClassesResponse = await httpClient.get(
-						`/profile-classes`
+		const fetchData = async () => {
+			try {
+				const profileClassesResponse = await httpClient.get(
+					`/profile-classes`
+				)
+				const steelResponse = await httpClient.get(`/steel`)
+
+				setOptionsObject({
+					...optionsObject,
+					profileClasses: profileClassesResponse.data,
+					steel: steelResponse.data,
+				})
+
+				if (!constructionElementData.isCreateMode) {
+					const profilesResponse = await httpClient.get(
+						`/profile-classes/${constructionElementData.constructionElement.profile.class.id}/profiles`
 					)
-					const steelResponse = await httpClient.get(`/steel`)
-
 					setOptionsObject({
 						...optionsObject,
 						profileClasses: profileClassesResponse.data,
 						steel: steelResponse.data,
+						profiles: profilesResponse.data,
 					})
-
-					if (!isCreateMode) {
-						const profilesResponse = await httpClient.get(
-							`/profile-classes/${selectedObject.profileClass.id}/profiles`
-						)
-						setOptionsObject({
-							...optionsObject,
-							profileClasses: profileClassesResponse.data,
-							steel: steelResponse.data,
-							profiles: profilesResponse.data,
-						})
-						return
-					}
-					setOptionsObject({
-						...optionsObject,
-						profileClasses: profileClassesResponse.data,
-						steel: steelResponse.data,
-					})
-				} catch (e) {
-					console.log('Failed to fetch the data')
+					return
 				}
+				setOptionsObject({
+					...optionsObject,
+					profileClasses: profileClassesResponse.data,
+					steel: steelResponse.data,
+				})
+			} catch (e) {
+				console.log('Failed to fetch the data')
 			}
-			fetchData()
 		}
-	}, [mark])
+		fetchData()
+		if (constructionElementData.constructionElement != null) {
+			setSelectedObject({
+				...defaultSelectedObject,
+				...constructionElementData.constructionElement,
+				profileClass: constructionElementData.constructionElement.profile.class,
+			})
+		} else {
+			setSelectedObject({
+				...defaultSelectedObject,
+			})
+		}
+	}, [constructionElementData])
 
 	const onProfileClassSelect = async (id: number) => {
 		if (id == null) {
@@ -169,11 +189,27 @@ const ConstructionElementData = ({
 		}
 	}
 
-	const onLengthChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onLengthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			length: parseFloat(event.currentTarget.value),
 		})
+	}
+
+	const onArithmeticExpressionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		try {
+			length = eval(event.currentTarget.value)
+			setSelectedObject({
+				...selectedObject,
+				length: length,
+				arithmeticExpression: event.currentTarget.value,
+			})
+		} catch (e) {
+			setSelectedObject({
+				...selectedObject,
+				arithmeticExpression: event.currentTarget.value,
+			})
+		}
 	}
 
 	const onSteelSelect = (id: number) => {
@@ -216,7 +252,7 @@ const ConstructionElementData = ({
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				await httpClient.post(
+				const idResponse = await httpClient.post(
 					`/constructions/${constructionId}/elements`,
 					{
 						profileId: selectedObject.profile.id,
@@ -224,10 +260,16 @@ const ConstructionElementData = ({
 						length: selectedObject.length,
 					}
 				)
-				setScroll(3)
-				history.push(
-					`/specifications/${specificationId}/constructions/${constructionId}`
-				)
+				const arr = [...constructionElements]
+				arr.push({
+					...selectedObject,
+					id: idResponse.data.id,
+				})
+				setConstructionElements(arr)
+				setConstructionElementData({
+					constructionElement: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
 				setProcessIsRunning(false)
@@ -244,31 +286,35 @@ const ConstructionElementData = ({
 				const object = {
 					profileId:
 						selectedObject.profile.id ===
-						constructionElement.profile.id
+						constructionElementData.constructionElement.profile.id
 							? undefined
 							: selectedObject.profile.id,
 					steelId:
-						selectedObject.steel.id === constructionElement.steel.id
+						selectedObject.steel.id === constructionElementData.constructionElement.steel.id
 							? undefined
 							: selectedObject.steel.id,
 					length:
-						selectedObject.length === constructionElement.length
+						selectedObject.length === constructionElementData.constructionElement.length
 							? undefined
 							: selectedObject.length,
-				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
 				}
 				await httpClient.patch(
 					`/construction-elements/${selectedObject.id}`,
 					object
 				)
-				setScroll(3)
-				history.push(
-					`/specifications/${specificationId}/constructions/${constructionId}`
-				)
+				const arr = []
+				for (const v of constructionElements) {
+					if (v.id == selectedObject.id) {
+						arr.push(selectedObject)
+						continue
+					}
+					arr.push(v)
+				}
+				setConstructionElements(arr)
+				setConstructionElementData({
+					constructionElement: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
 				setProcessIsRunning(false)
@@ -280,100 +326,17 @@ const ConstructionElementData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
-			<div className="hanging-routes">
-				<Link to="/specifications">Выпуски спецификаций</Link>
-				<Link onClick={() => setScroll(1)} to={`/specifications/${specificationId}`}>Виды конструкций</Link>
-				<Link onClick={() => setScroll(3)} to={`/specifications/${specificationId}/constructions/${constructionId}`}>Перечень элементов</Link>
-			</div>
-			<h1 className="text-centered">
-				{isCreateMode
-					? 'Создание элемента конструкции'
-					: 'Данные элемента конструкции'}
-			</h1>
 			<div className="flex">
-				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
-					<Form.Group>
-						<Form.Label>Символ профиля</Form.Label>
-						<Form.Control
-							type="text"
-							value={
-								selectedObject.profile == null
-									? ''
-									: selectedObject.profile.symbol
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-
-					<Form.Group>
-						<Form.Label>Вес 1 м профиля, кг</Form.Label>
-						<Form.Control
-							type="text"
-							value={
-								selectedObject.profile == null
-									? ''
-									: selectedObject.profileClass.id == 16 ||
-									  selectedObject.profileClass.id == 17
-									? Math.round(
-											0.00785 *
-												width *
-												thickness *
-												1000000000
-									  ) / 1000000000
-									: selectedObject.profile.weight
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-
-					<Form.Group>
-						<Form.Label>
-							Площадь развернутой поверхности 1 м профиля, 100 м
-							<sup>2</sup>
-						</Form.Label>
-						<Form.Control
-							type="text"
-							autoComplete="off"
-							value={
-								selectedObject.profile == null
-									? ''
-									: selectedObject.profileClass.id == 16 ||
-									  selectedObject.profileClass.id == 17
-									? Math.round(
-											0.00002 *
-												(width + thickness) *
-												1000000000
-									  ) / 1000000000
-									: Math.round(
-											selectedObject.profile.area *
-												0.01 *
-												1000000000
-									  ) / 1000000000
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-
-					<Form.Group>
-						<Form.Label>Тип профиля</Form.Label>
-						<Form.Control
-							type="text"
-							value={
-								selectedObject.profile == null
-									? ''
-									: selectedObject.profileClass.id == 16 ||
-									  selectedObject.profileClass.id == 17
-									? width < 4
-										? profileType8Name
-										: profileType6Name
-									: selectedObject.profile.type.name
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-				</div>
-
-				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
+			<div className="shadow p-3 bg-white rounded component-width component-cnt-div relative">
+					<div className="pointer absolute"
+						style={{top: 5, right: 8}}
+						onClick={() => setConstructionElementData({
+							constructionElement: null,
+							isCreateMode: false,
+						})}
+					>
+						<X color="#666" size={33} />
+					</div>
 					<Form.Group>
 						<Form.Label htmlFor="profileClass">
 							Вид профиля
@@ -476,21 +439,39 @@ const ConstructionElementData = ({
 					</Form.Group>
 
 					<Form.Group className="no-bot-mrg">
-						<Form.Label htmlFor="length">
-							Длина (м) или площадь (м<sup>2</sup>)
-						</Form.Label>
-						<Form.Control
-							id="length"
-							type="text"
-							placeholder="Введите длину или площадь элемента"
-							autoComplete="off"
-							defaultValue={
-								isNaN(selectedObject.length)
-									? ''
-									: selectedObject.length
-							}
-							onBlur={onLengthChange}
-						/>
+						<div className="space-between">
+							<Form.Label htmlFor="length">
+								Длина (м) или площадь (м<sup>2</sup>)
+							</Form.Label>
+							<Form.Label htmlFor="arithmeticExpression">
+								Арифметическое выражение
+							</Form.Label>
+						</div>
+						<div className="space-between">
+							<Form.Control
+								id="length"
+								type="text"
+								placeholder="Введите длину или площадь элемента"
+								style={{width: 350}}
+								autoComplete="off"
+								value={
+									isNaN(selectedObject.length)
+										? ''
+										: selectedObject.length
+								}
+								onChange={onLengthChange}
+							/>
+
+							<Form.Control
+								id="arithmeticExpression"
+								type="text"
+								placeholder="Введите выражение"
+								autoComplete="off"
+								style={{marginLeft: 10}}
+								value={selectedObject.arithmeticExpression}
+								onChange={onArithmeticExpressionChange}
+							/>
+						</div>
 					</Form.Group>
 
 					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
@@ -499,16 +480,112 @@ const ConstructionElementData = ({
 						variant="secondary"
 						className="btn-mrg-top-2 full-width"
 						onClick={
-							isCreateMode
+							constructionElementData.isCreateMode
 								? onCreateButtonClick
 								: onChangeButtonClick
 						}
-						disabled={processIsRunning}
+						disabled={processIsRunning || (!constructionElementData.isCreateMode && !Object.values({
+							profileId:
+								selectedObject.profile.id ===
+								constructionElementData.constructionElement.profile.id
+									? undefined
+									: selectedObject.profile.id,
+							steelId:
+								selectedObject.steel.id === constructionElementData.constructionElement.steel.id
+									? undefined
+									: selectedObject.steel.id,
+							length:
+								selectedObject.length === constructionElementData.constructionElement.length
+									? undefined
+									: selectedObject.length,
+						}).some((x) => x !== undefined))}
 					>
-						{isCreateMode
+						{constructionElementData.isCreateMode
 							? 'Добавить элемент конструкции'
 							: 'Сохранить изменения'}
 					</Button>
+				</div>
+
+				<div className="info-area shadow p-3 mrg-left bg-white rounded component-width component-cnt-div">
+					<Form.Group>
+						<Form.Label>Символ профиля</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								selectedObject.profile == null
+									? ''
+									: selectedObject.profile.symbol
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+
+					<Form.Group>
+						<Form.Label>Вес 1 м профиля, кг</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								selectedObject.profile == null
+									? ''
+									: selectedObject.profileClass.id == 16 ||
+									  selectedObject.profileClass.id == 17
+									? Math.round(
+											0.00785 *
+												width *
+												thickness *
+												1000000000
+									  ) / 1000000000
+									: selectedObject.profile.weight
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+
+					<Form.Group>
+						<Form.Label>
+							Площадь развернутой поверхности 1 м профиля, 100 м
+							<sup>2</sup>
+						</Form.Label>
+						<Form.Control
+							type="text"
+							autoComplete="off"
+							value={
+								selectedObject.profile == null
+									? ''
+									: selectedObject.profileClass.id == 16 ||
+									  selectedObject.profileClass.id == 17
+									? Math.round(
+											0.00002 *
+												(width + thickness) *
+												1000000000
+									  ) / 1000000000
+									: Math.round(
+											selectedObject.profile.area *
+												0.01 *
+												1000000000
+									  ) / 1000000000
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+
+					<Form.Group>
+						<Form.Label>Тип профиля</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								selectedObject.profile == null
+									? ''
+									: selectedObject.profileClass.id == 16 ||
+									  selectedObject.profileClass.id == 17
+									? width < 4
+										? profileType8Name
+										: profileType6Name
+									: selectedObject.profile.type.name
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
 				</div>
 			</div>
 		</div>

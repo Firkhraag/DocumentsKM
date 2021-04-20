@@ -1,6 +1,5 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -8,29 +7,28 @@ import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
+import AdditionalWorkData from './AdditionalWorkData'
 import { useMark } from '../../store/MarkStore'
 import AdditionalWork from '../../model/AdditionalWork'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
+import { getEmployeeShortName } from '../../util/get-employee-short-name'
 
-type AdditionalWorkTableProps = {
-	setAdditionalWork: (w: AdditionalWork) => void
-}
-
-const AdditionalWorkTable = ({
-	setAdditionalWork,
-}: AdditionalWorkTableProps) => {
+const AdditionalWorkTable = () => {
 	const reviewCoeff = 0.4
 	const valuationCoeff = 0.05
 	const orderCoeff = 0.004
 	const valuationPagesCoeff = 8
 
 	const mark = useMark()
-	const history = useHistory()
 	const setPopup = useSetPopup()
 
 	const [additionalWorkArray, setAdditionalWorkArray] = useState(
 		[] as AdditionalWork[]
 	)
+	const [additionalWorkData, setAdditionalWorkData] = useState({
+		isCreateMode: false,
+		additionalWork: null,
+	})
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -55,6 +53,10 @@ const AdditionalWorkTable = ({
 			arr.splice(row, 1)
 			setAdditionalWorkArray(arr)
 			setPopup(defaultPopup)
+			setAdditionalWorkData({
+				additionalWork: null,
+				isCreateMode: false,
+			})
 		} catch (e) {
 			console.log('Error')
 		}
@@ -65,8 +67,19 @@ const AdditionalWorkTable = ({
 			<h1 className="text-centered">
 				Учет дополнительных проектных работ
 			</h1>
+			{additionalWorkData.isCreateMode || additionalWorkData.additionalWork != null ? <AdditionalWorkData 
+				additionalWorkData={additionalWorkData}
+				setAdditionalWorkData={setAdditionalWorkData}
+				additionalWorkArray={additionalWorkArray}
+				setAdditionalWorkArray={setAdditionalWorkArray} /> : null}
 			<PlusCircle
-				onClick={() => history.push('/additional-work-add')}
+				onClick={() => {
+					setAdditionalWorkData({
+						isCreateMode: true,
+						additionalWork: null,
+					})
+					window.scrollTo(0, 0)
+				}}
 				color="#666"
 				size={28}
 				className="pointer"
@@ -109,7 +122,7 @@ const AdditionalWorkTable = ({
 					{additionalWorkArray.map((v, index) => {
 						return (
 							<tr key={index}>
-								<td className="add-work-name-col-width">{v.employee.fullname}</td>
+								<td className="add-work-name-col-width">{getEmployeeShortName(v.employee.fullname)}</td>
 								<td>{v.valuation === 0 ? '' : v.valuation}</td>
 								<td>
 									{v.valuation === 0
@@ -151,8 +164,11 @@ const AdditionalWorkTable = ({
 								</td>
 								<td
 									onClick={() => {
-										setAdditionalWork(v)
-										history.push(`/additional-work/${v.id}`)
+										setAdditionalWorkData({
+											isCreateMode: false,
+											additionalWork: v,
+										})
+										window.scrollTo(0, 0)
 									}}
 									className="pointer action-cell-width text-centered"
 								>

@@ -58,7 +58,7 @@ namespace DocumentsKM.Controllers
                     constructionElementRequest.ProfileId,
                     constructionElementRequest.SteelId);
                 return Created(
-                    $"construction-elements/{constructionElementModel.Id}", null);
+                    $"construction-elements/{constructionElementModel.Id}", new { Id = constructionElementModel.Id });
             }
             catch (ArgumentNullException)
             {

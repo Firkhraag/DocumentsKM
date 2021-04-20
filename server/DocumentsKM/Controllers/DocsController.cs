@@ -70,7 +70,7 @@ namespace DocumentsKM.Controllers
                 return NotFound();
             }
             return Created(
-                $"docs/{docModel.Id}", null);
+                $"docs/{docModel.Id}", new { Id = docModel.Id });
         }
 
         [HttpPatch, Route("docs/{id}")]

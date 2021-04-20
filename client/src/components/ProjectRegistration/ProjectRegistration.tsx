@@ -9,7 +9,6 @@ import Button from 'react-bootstrap/Button'
 import httpClient from '../../axios'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
-import { makeMarkName } from '../../util/make-name'
 
 const ProjectRegistration = () => {
 	const history = useHistory()

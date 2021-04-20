@@ -56,7 +56,7 @@ namespace DocumentsKM.Controllers
                     constructionBoltModel,
                     constructionId,
                     constructionBoltRequest.DiameterId);
-                return Created($"construction-bolts/{constructionBoltModel.Id}", null);
+                return Created($"construction-bolts/{constructionBoltModel.Id}", new { Id = constructionBoltModel.Id });
             }
             catch (ArgumentNullException)
             {

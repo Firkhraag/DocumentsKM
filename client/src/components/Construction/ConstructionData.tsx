@@ -11,7 +11,6 @@ import Construction from '../../model/Construction'
 import ConstructionType from '../../model/ConstructionType'
 import ConstructionSubtype from '../../model/ConstructionSubtype'
 import WeldingControl from '../../model/WeldingControl'
-import ConstructionBolt from '../../model/ConstructionBolt'
 import ConstructionElement from '../../model/ConstructionElement'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
@@ -27,16 +26,12 @@ type ConstructionDataProps = {
 	construction: Construction
 	isCreateMode: boolean
 	specificationId: number
-	setConstructionBolt: (b: ConstructionBolt) => void
-	setConstructionElement: (ce: ConstructionElement) => void
 }
 
 const ConstructionData = ({
 	construction,
 	isCreateMode,
 	specificationId,
-	setConstructionBolt,
-	setConstructionElement,
 }: ConstructionDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
@@ -194,7 +189,7 @@ const ConstructionData = ({
 		})
 	}
 
-	const onValuationChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onValuationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			valuation: event.currentTarget.value,
@@ -202,7 +197,7 @@ const ConstructionData = ({
 	}
 
 	const onStandardAlbumCodeChange = (
-		event: React.FormEvent<HTMLInputElement>
+		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		setSelectedObject({
 			...selectedObject,
@@ -211,7 +206,7 @@ const ConstructionData = ({
 	}
 
 	const onNumOfStandardConstructionsChange = (
-		event: React.FormEvent<HTMLInputElement>
+		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		setSelectedObject({
 			...selectedObject,
@@ -220,7 +215,7 @@ const ConstructionData = ({
 	}
 
 	const onPaintworkCoeffChange = (
-		event: React.FormEvent<HTMLInputElement>
+		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		setSelectedObject({
 			...selectedObject,
@@ -386,11 +381,6 @@ const ConstructionData = ({
 							? undefined
 							: selectedObject.hasFlangedConnections,
 				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
-				}
 				await httpClient.patch(
 					`/constructions/${selectedObject.id}`,
 					object
@@ -515,8 +505,8 @@ const ConstructionData = ({
 						placeholder="Не введено"
 						autoComplete="off"
 						className="construction-input-width"
-						defaultValue={selectedObject.valuation}
-						onBlur={onValuationChange}
+						value={selectedObject.valuation}
+						onChange={onValuationChange}
 					/>
 				</Form.Group>
 
@@ -533,8 +523,8 @@ const ConstructionData = ({
 						placeholder="Не введено"
 						autoComplete="off"
 						className="construction-input-width"
-						defaultValue={selectedObject.standardAlbumCode}
-						onBlur={onStandardAlbumCodeChange}
+						value={selectedObject.standardAlbumCode}
+						onChange={onStandardAlbumCodeChange}
 					/>
 				</Form.Group>
 
@@ -551,8 +541,8 @@ const ConstructionData = ({
 						placeholder="Не введено"
 						autoComplete="off"
 						className="construction-input-width"
-						defaultValue={selectedObject.numOfStandardConstructions}
-						onBlur={onNumOfStandardConstructionsChange}
+						value={selectedObject.numOfStandardConstructions}
+						onChange={onNumOfStandardConstructionsChange}
 					/>
 				</Form.Group>
 
@@ -568,9 +558,9 @@ const ConstructionData = ({
 						type="text"
 						placeholder="Не введено"
 						autoComplete="off"
-						defaultValue={selectedObject.paintworkCoeff}
+						value={selectedObject.paintworkCoeff}
 						className="construction-input-width"
-						onBlur={onPaintworkCoeffChange}
+						onChange={onPaintworkCoeffChange}
 					/>
 				</Form.Group>
 
@@ -666,7 +656,59 @@ const ConstructionData = ({
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
-					disabled={processIsRunning}
+					disabled={processIsRunning || (!isCreateMode && !Object.values({
+						name:
+							selectedObject.name === construction.name
+								? undefined
+								: selectedObject.name,
+						typeId:
+							selectedObject.type.id === construction.type.id
+								? undefined
+								: selectedObject.type.id,
+						subtypeId: getNullableFieldValue(
+							selectedObject.subtype,
+							construction.subtype
+						),
+						valuation:
+							selectedObject.valuation === construction.valuation
+								? undefined
+								: selectedObject.valuation,
+						standardAlbumCode:
+							selectedObject.standardAlbumCode ===
+							construction.standardAlbumCode
+								? undefined
+								: selectedObject.standardAlbumCode,
+						numOfStandardConstructions:
+							selectedObject.numOfStandardConstructions ===
+							construction.numOfStandardConstructions
+								? undefined
+								: selectedObject.numOfStandardConstructions,
+						paintworkCoeff:
+							selectedObject.paintworkCoeff ===
+							construction.paintworkCoeff
+								? undefined
+								: selectedObject.paintworkCoeff,
+						weldingControlId:
+							selectedObject.weldingControl.id ===
+							construction.weldingControl.id
+								? undefined
+								: selectedObject.weldingControl.id,
+						hasEdgeBlunting:
+							selectedObject.hasEdgeBlunting ===
+							construction.hasEdgeBlunting
+								? undefined
+								: selectedObject.hasEdgeBlunting,
+						hasDynamicLoad:
+							selectedObject.hasDynamicLoad ===
+							construction.hasDynamicLoad
+								? undefined
+								: selectedObject.hasDynamicLoad,
+						hasFlangedConnections:
+							selectedObject.hasFlangedConnections ===
+							construction.hasFlangedConnections
+								? undefined
+								: selectedObject.hasFlangedConnections,
+					}).some((x) => x !== undefined))}
 				>
 					{isCreateMode
 						? 'Добавить вид конструкции'
@@ -676,16 +718,12 @@ const ConstructionData = ({
 
 			{isCreateMode ? null : (
 				<ConstructionElementTable
-					specificationId={specificationId}
 					constructionId={selectedObject.id}
-					setConstructionElement={setConstructionElement}
 				/>
 			)}
 			{isCreateMode ? null : (
 				<ConstructionBoltTable
-					specificationId={specificationId}
 					constructionId={selectedObject.id}
-					setConstructionBolt={setConstructionBolt}
 				/>
 			)}
 		</div>

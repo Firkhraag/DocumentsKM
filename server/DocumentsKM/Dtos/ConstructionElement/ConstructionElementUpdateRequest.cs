@@ -12,11 +12,15 @@ namespace DocumentsKM.Dtos
         [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float? Length { get; set; }
 
+        [MaxLength(100)]
+        public string ArithmeticExpression { get; set; }
+
         public ConstructionElementUpdateRequest()
         {
             ProfileId = null;
             SteelId = null;
             Length = null;
+            ArithmeticExpression = null;
         }
     }
 }

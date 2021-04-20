@@ -29,5 +29,9 @@ namespace DocumentsKM.Models
         [Required]
         [Range(0, 65535, ErrorMessage = "Value should be greater than or equal to 0")]
         public float Length { get; set; }
+
+        // Арифметическое выражение
+        [MaxLength(255)]
+        public string ArithmeticExpression { get; set; }
     }
 }

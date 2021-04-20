@@ -1,6 +1,5 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -8,71 +7,55 @@ import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
+import ConstructionElementData from './ConstructionElementData'
 import { useMark } from '../../store/MarkStore'
-import { useScroll, useSetScroll } from '../../store/ScrollStore'
 import ConstructionElement from '../../model/ConstructionElement'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type ConstructionElementTableProps = {
-	setConstructionElement: (cb: ConstructionElement) => void
-	specificationId: number
 	constructionId: number
 }
 
 const ConstructionElementTable = ({
-	setConstructionElement,
-	specificationId,
 	constructionId,
 }: ConstructionElementTableProps) => {
 	const mark = useMark()
-	const history = useHistory()
 	const setPopup = useSetPopup()
-	const scroll = useScroll()
-	const setScroll = useSetScroll()
 
-	const [constructionElementsState, setConstructionElementsState] = useState({
-		constructionElements: [] as ConstructionElement[],
-		isPopulated: false,
+	const [constructionElements, setConstructionElements] = useState([] as ConstructionElement[])
+
+	const [constructionElementData, setConstructionElementData] = useState({
+		isCreateMode: false,
+		constructionElement: null,
 	})
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (constructionElementsState.isPopulated) {
-				if (scroll === 3) {
-					window.scrollTo(0, 1000)
-				} else if (scroll === 4) {
-					window.scrollTo(0, 9999)
-				}
-				setScroll(0)
-				return
-			}
 			const fetchData = async () => {
 				try {
 					const constructionElementsResponse = await httpClient.get(
 						`/constructions/${constructionId}/elements`
 					)
-					setConstructionElementsState({
-						constructionElements: constructionElementsResponse.data as ConstructionElement[],
-						isPopulated: true,
-					})
+					setConstructionElements(constructionElementsResponse.data)
 				} catch (e) {
 					console.log('Failed to fetch the data', e)
 				}
 			}
 			fetchData()
 		}
-	}, [mark, constructionElementsState])
+	}, [mark])
 
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/construction-elements/${id}`)
-			var arr = [...constructionElementsState.constructionElements]
+			var arr = [...constructionElements]
 			arr.splice(row, 1)
-			setConstructionElementsState({
-				...constructionElementsState,
-				constructionElements: arr,
-			})
+			setConstructionElements(arr)
 			setPopup(defaultPopup)
+			setConstructionElementData({
+				constructionElement: null,
+				isCreateMode: false,
+			})
 		} catch (e) {
 			console.log('Error')
 		}
@@ -81,15 +64,23 @@ const ConstructionElementTable = ({
 	return (
 		<div>
 			<h2 className="bold text-centered">Перечень элементов</h2>
+			{constructionElementData.isCreateMode || constructionElementData.constructionElement != null ? <ConstructionElementData 
+				constructionElementData={constructionElementData}
+				setConstructionElementData={setConstructionElementData}
+				constructionElements={constructionElements}
+				setConstructionElements={setConstructionElements}
+				constructionId={constructionId} /> : null}
 			<PlusCircle
+				onClick={() => {
+					setConstructionElementData({
+						isCreateMode: true,
+						constructionElement: null,
+					})
+					// window.scrollTo(0, 0)
+				}}
 				color="#666"
 				size={28}
 				className="pointer"
-				onClick={() =>
-					history.push(
-						`/specifications/${specificationId}/constructions/${constructionId}/element-create`
-					)
-				}
 			/>
 			<Table bordered striped className="mrg-top no-bot-mrg">
 				<thead>
@@ -99,15 +90,17 @@ const ConstructionElementTable = ({
 							Вид профиля
 						</th>
 						<th>Имя профиля</th>
+						<th>Символ</th>
 						<th>Марка стали</th>
 						<th>Длина площадь</th>
+						<th>Вес 1 м</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					{constructionElementsState.constructionElements.map(
+					{constructionElements.map(
 						(ce, index) => {
 							return (
 								<tr key={index}>
@@ -116,14 +109,17 @@ const ConstructionElementTable = ({
 										{ce.profile.class.name}
 									</td>
 									<td>{ce.profile.name}</td>
+									<td>{ce.profile.symbol}</td>
 									<td>{ce.steel.name}</td>
 									<td>{ce.length}</td>
+									<td>{ce.profile.weight}</td>
 									<td
 										onClick={() => {
-											setConstructionElement(ce)
-											history.push(
-												`/specifications/${specificationId}/constructions/${constructionId}/elements/${ce.id}`
-											)
+											setConstructionElementData({
+												isCreateMode: false,
+												constructionElement: ce,
+											})
+											// window.scrollTo(0, 0)
 										}}
 										className="pointer action-cell-width text-centered"
 									>

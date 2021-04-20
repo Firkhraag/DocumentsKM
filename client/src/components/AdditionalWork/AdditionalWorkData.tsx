@@ -1,10 +1,10 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { X } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import Employee from '../../model/Employee'
@@ -14,41 +14,45 @@ import { useMark } from '../../store/MarkStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 
-type AdditionalWorkDataProps = {
+type IAdditionalWorkDataProps = {
 	additionalWork: AdditionalWork
 	isCreateMode: boolean
 }
 
+type AdditionalWorkDataProps = {
+	additionalWorkData: IAdditionalWorkDataProps
+	setAdditionalWorkData: (d: IAdditionalWorkDataProps) => void
+	additionalWorkArray: AdditionalWork[]
+	setAdditionalWorkArray: (a: AdditionalWork[]) => void
+}
+
 const AdditionalWorkData = ({
-	additionalWork,
-	isCreateMode,
+	additionalWorkData,
+	setAdditionalWorkData,
+	additionalWorkArray,
+	setAdditionalWorkArray,
 }: AdditionalWorkDataProps) => {
-	const history = useHistory()
 	const mark = useMark()
 
-	const [selectedObject, setSelectedObject] = useState<AdditionalWork>(
-		isCreateMode
-			? {
-					id: 0,
-					employee: null,
-					valuation: 0,
-					metalOrder: 0,
-					drawingsCompleted: 0,
-					drawingsCheck: 0,
-			  }
-			: additionalWork
-	)
+	const defaultSelectedObject = {
+		id: 0,
+		employee: null,
+		valuation: 0,
+		metalOrder: 0,
+		drawingsCompleted: 0,
+		drawingsCheck: 0,
+	} as AdditionalWork
+
+	const [selectedObject, setSelectedObject] = useState<AdditionalWork>(null)
 	const [employees, setEmployees] = useState([] as Employee[])
 
 	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
+	const [fetched, setFetched] = useState(false)
+
 	useEffect(() => {
-		if (mark != null && mark.id != null) {
-			if (selectedObject == null) {
-				history.push('/additional-work')
-				return
-			}
+		if (!fetched) {
 			const fetchData = async () => {
 				try {
 					const employeesResponse = await httpClient.get(
@@ -60,8 +64,19 @@ const AdditionalWorkData = ({
 				}
 			}
 			fetchData()
+			setFetched(true)
 		}
-	}, [mark])
+		if (additionalWorkData.additionalWork != null) {
+			setSelectedObject({
+				...defaultSelectedObject,
+				...additionalWorkData.additionalWork,
+			})
+		} else {
+			setSelectedObject({
+				...defaultSelectedObject,
+			})
+		}
+	}, [additionalWorkData])
 
 	const onEmployeeSelect = async (id: number) => {
 		if (id == null) {
@@ -79,14 +94,14 @@ const AdditionalWorkData = ({
 		}
 	}
 
-	const onValuationChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onValuationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			valuation: parseInt(event.currentTarget.value),
 		})
 	}
 
-	const onOrderChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onOrderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			metalOrder: parseInt(event.currentTarget.value),
@@ -127,12 +142,21 @@ const AdditionalWorkData = ({
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				await httpClient.post(`/marks/${mark.id}/additional-work`, {
+				const idResponse = await httpClient.post(`/marks/${mark.id}/additional-work`, {
 					employeeId: selectedObject.employee.id,
 					valuation: selectedObject.valuation,
 					metalOrder: selectedObject.metalOrder,
 				})
-				history.push('/additional-work')
+				const arr = [...additionalWorkArray]
+				arr.push({
+					...selectedObject,
+					id: idResponse.data.id,
+				})
+				setAdditionalWorkArray(arr)
+				setAdditionalWorkData({
+					additionalWork: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Исполнитель уже существует')
@@ -153,28 +177,36 @@ const AdditionalWorkData = ({
 				const object = {
 					employeeId:
 						selectedObject.employee.id ===
-						additionalWork.employee.id
+						additionalWorkData.additionalWork.employee.id
 							? undefined
 							: selectedObject.employee.id,
 					valuation:
-						selectedObject.valuation === additionalWork.valuation
+						selectedObject.valuation === additionalWorkData.additionalWork.valuation
 							? undefined
 							: selectedObject.valuation,
 					metalOrder:
-						selectedObject.metalOrder === additionalWork.metalOrder
+						selectedObject.metalOrder === additionalWorkData.additionalWork.metalOrder
 							? undefined
 							: selectedObject.metalOrder,
-				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
 				}
 				await httpClient.patch(
 					`/additional-work/${selectedObject.id}`,
 					object
 				)
-				history.push('/additional-work')
+
+				const arr = []
+				for (const v of additionalWorkArray) {
+					if (v.id == selectedObject.id) {
+						arr.push(selectedObject)
+						continue
+					}
+					arr.push(v)
+				}
+				setAdditionalWorkArray(arr)
+				setAdditionalWorkData({
+					additionalWork: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Исполнитель уже существует')
@@ -190,15 +222,16 @@ const AdditionalWorkData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
-			<div className="hanging-routes">
-				<Link to="/additional-work">
-					Учет дополнительных работ
-				</Link>
-			</div>
-			<h1 className="text-centered">
-				Учет дополнительных проектных работ
-			</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
+			<div className="shadow custom-p-3 mb-5 bg-white rounded component-width component-cnt-div relative">
+				<div className="pointer absolute"
+					style={{top: 5, right: 8}}
+					onClick={() => setAdditionalWorkData({
+						additionalWork: null,
+						isCreateMode: false,
+					})}
+				>
+					<X color="#666" size={33} />
+				</div>
 				<Form.Group className="space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
@@ -248,12 +281,12 @@ const AdditionalWorkData = ({
 						placeholder="Введите число листов"
 						autoComplete="off"
 						className="additional-work-input-width"
-						defaultValue={
+						value={
 							isNaN(selectedObject.valuation)
 								? ''
 								: selectedObject.valuation
 						}
-						onBlur={onValuationChange}
+						onChange={onValuationChange}
 					/>
 				</Form.Group>
 
@@ -270,12 +303,12 @@ const AdditionalWorkData = ({
 						placeholder="Введите число строк"
 						autoComplete="off"
 						className="additional-work-input-width"
-						defaultValue={
+						value={
 							isNaN(selectedObject.metalOrder)
 								? ''
 								: selectedObject.metalOrder
 						}
-						onBlur={onOrderChange}
+						onChange={onOrderChange}
 					/>
 				</Form.Group>
 
@@ -285,11 +318,25 @@ const AdditionalWorkData = ({
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
 					onClick={
-						isCreateMode ? onCreateButtonClick : onChangeButtonClick
+						additionalWorkData.isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
-					disabled={processIsRunning}
+					disabled={processIsRunning || (!additionalWorkData.isCreateMode && !Object.values({
+						employeeId:
+							selectedObject.employee.id ===
+							additionalWorkData.additionalWork.employee.id
+								? undefined
+								: selectedObject.employee.id,
+						valuation:
+							selectedObject.valuation === additionalWorkData.additionalWork.valuation
+								? undefined
+								: selectedObject.valuation,
+						metalOrder:
+							selectedObject.metalOrder === additionalWorkData.additionalWork.metalOrder
+								? undefined
+								: selectedObject.metalOrder,
+					}).some((x) => x !== undefined))}
 				>
-					{isCreateMode
+					{additionalWorkData.isCreateMode
 						? 'Добавить исполнителя'
 						: 'Сохранить изменения'}
 				</Button>

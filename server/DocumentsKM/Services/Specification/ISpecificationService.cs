@@ -8,6 +8,8 @@ namespace DocumentsKM.Services
     {
         // Получить все выпуски спецификаций по id марки
         IEnumerable<Specification> GetAllByMarkId(int markId);
+        // Получить текущий выпуск спецификации по id марки
+        Specification GetCurrentByMarkId(int markId);
         // Создать новый выпуск спецификации
         Specification Create(int markId);
         // Обновить выпуск спецификации

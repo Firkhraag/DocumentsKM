@@ -8,7 +8,6 @@ import Button from 'react-bootstrap/Button'
 import httpClient from '../../axios'
 import Specification from '../../model/Specification'
 import Construction from '../../model/Construction'
-import StandardConstruction from '../../model/StandardConstruction'
 import { useMark } from '../../store/MarkStore'
 import ConstructionTable from '../Construction/ConstructionTable'
 import StandardConstructionTable from '../StandardConstruction/StandardConstructionTable'
@@ -19,7 +18,6 @@ type SpecificationDataProps = {
 	setConstruction: (c: Construction) => void
 	copiedConstruction: Construction
 	setCopiedConstruction: (c: Construction) => void
-	setStandardConstruction: (sc: StandardConstruction) => void
 }
 
 const SpecificationData = ({
@@ -27,7 +25,6 @@ const SpecificationData = ({
 	setConstruction,
 	copiedConstruction,
 	setCopiedConstruction,
-	setStandardConstruction,
 }: SpecificationDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
@@ -44,7 +41,7 @@ const SpecificationData = ({
 	}, [mark])
 
 	const onNoteChange = async (
-		event: React.FormEvent<HTMLTextAreaElement>
+		event: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
 		setSelectedObject({
 			...selectedObject,
@@ -57,14 +54,9 @@ const SpecificationData = ({
 		try {
 			const object = {
 				note:
-					selectedObject.note === specification.note
+					(selectedObject.note === specification.note) || (selectedObject.note === '' && specification.note == null)
 						? undefined
 						: selectedObject.note,
-			}
-			if (!Object.values(object).some((x) => x !== undefined)) {
-				setErrMsg('Изменения осутствуют')
-				setProcessIsRunning(false)
-				return
 			}
 			await httpClient.patch(
 				`/specifications/${selectedObject.id}`,
@@ -118,8 +110,8 @@ const SpecificationData = ({
 						rows={4}
 						style={{ resize: 'none' }}
 						placeholder="Не введено"
-						defaultValue={selectedObject.note}
-						onBlur={onNoteChange}
+						value={selectedObject.note}
+						onChange={onNoteChange}
 					/>
 				</Form.Group>
 
@@ -129,7 +121,12 @@ const SpecificationData = ({
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
 					onClick={onChangeButtonClick}
-					disabled={processIsRunning}
+					disabled={processIsRunning || (specification != null && !Object.values({
+						note:
+							(selectedObject.note === specification.note) || (selectedObject.note === '' && specification.note == null)
+								? undefined
+								: selectedObject.note,
+					}).some((x) => x !== undefined))}
 				>
 					Сохранить изменения
 				</Button>
@@ -142,7 +139,6 @@ const SpecificationData = ({
 				specificationId={selectedObject.id}
 			/>
 			<StandardConstructionTable
-				setStandardConstruction={setStandardConstruction}
 				specificationId={selectedObject.id}
 			/>
 		</div>

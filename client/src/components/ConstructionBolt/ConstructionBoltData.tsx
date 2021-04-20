@@ -1,60 +1,60 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { X } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import ConstructionBolt from '../../model/ConstructionBolt'
 import BoltDiameter from '../../model/BoltDiameter'
 import { useMark } from '../../store/MarkStore'
-import { useSetScroll } from '../../store/ScrollStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 
-type ConstructionBoltDataProps = {
+type IConstructionBoltDataProps = {
 	constructionBolt: ConstructionBolt
 	isCreateMode: boolean
-	specificationId: number
+}
+
+type ConstructionBoltDataProps = {
+	constructionBoltData: IConstructionBoltDataProps
+	setConstructionBoltData: (d: IConstructionBoltDataProps) => void
+	constructionBolts: ConstructionBolt[]
+	setConstructionBolts: (a: ConstructionBolt[]) => void
 	constructionId: number
 }
 
 const ConstructionBoltData = ({
-	constructionBolt,
-	isCreateMode,
-	specificationId,
-	constructionId,
+	constructionBoltData,
+	setConstructionBoltData,
+	constructionBolts,
+	setConstructionBolts,
+	constructionId
 }: ConstructionBoltDataProps) => {
-	const history = useHistory()
 	const mark = useMark()
-	const setScroll = useSetScroll()
 
-	const [selectedObject, setSelectedObject] = useState<ConstructionBolt>(
-		isCreateMode
-			? {
-					id: -1,
-					diameter: null,
-					packet: NaN,
-					num: NaN,
-					nutNum: NaN,
-					washerNum: NaN,
-			  }
-			: constructionBolt
-	)
+	const defaultSelectedObject = {
+		id: -1,
+		diameter: null,
+		packet: NaN,
+		num: NaN,
+		nutNum: 1,
+		washerNum: 2,
+  	} as ConstructionBolt
+
+	const [selectedObject, setSelectedObject] = useState<ConstructionBolt>(null)
 	const [optionsObject, setOptionsObject] = useState([] as BoltDiameter[])
 
 	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
+	const [fetched, setFetched] = useState(false)
+
 	useEffect(() => {
-		if (mark != null && mark.id != null) {
-			if (selectedObject == null || specificationId == -1) {
-				history.push('/specifications')
-				return
-			}
+		if (!fetched) {
 			const fetchData = async () => {
 				try {
 					const boltDiametersResponse = await httpClient.get(
@@ -66,8 +66,19 @@ const ConstructionBoltData = ({
 				}
 			}
 			fetchData()
+			setFetched(true)
 		}
-	}, [mark])
+		if (constructionBoltData.constructionBolt != null) {
+			setSelectedObject({
+				...defaultSelectedObject,
+				...constructionBoltData.constructionBolt,
+			})
+		} else {
+			setSelectedObject({
+				...defaultSelectedObject,
+			})
+		}
+	}, [constructionBoltData])
 
 	const onDiameterSelect = (id: number) => {
 		if (id == null) {
@@ -85,28 +96,28 @@ const ConstructionBoltData = ({
 		}
 	}
 
-	const onPacketChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onPacketChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			packet: parseInt(event.currentTarget.value),
 		})
 	}
 
-	const onNumChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onNumChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			num: parseInt(event.currentTarget.value),
 		})
 	}
 
-	const onNutNumChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onNutNumChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			nutNum: parseInt(event.currentTarget.value),
 		})
 	}
 
-	const onWasherNumChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onWasherNumChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			washerNum: parseInt(event.currentTarget.value),
@@ -137,7 +148,7 @@ const ConstructionBoltData = ({
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				await httpClient.post(
+				const idResponse = await httpClient.post(
 					`/constructions/${constructionId}/bolts`,
 					{
 						diameterId: selectedObject.diameter.id,
@@ -147,10 +158,16 @@ const ConstructionBoltData = ({
 						washerNum: selectedObject.washerNum,
 					}
 				)
-				setScroll(4)
-				history.push(
-					`/specifications/${specificationId}/constructions/${constructionId}`
-				)
+				const arr = [...constructionBolts]
+				arr.push({
+					...selectedObject,
+					id: idResponse.data.id,
+				})
+				setConstructionBolts(arr)
+				setConstructionBoltData({
+					constructionBolt: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Болт уже существует')
@@ -171,39 +188,43 @@ const ConstructionBoltData = ({
 				const object = {
 					diameterId:
 						selectedObject.diameter.id ===
-						constructionBolt.diameter.id
+						constructionBoltData.constructionBolt.diameter.id
 							? undefined
 							: selectedObject.diameter.id,
 					packet:
-						selectedObject.packet === constructionBolt.packet
+						selectedObject.packet === constructionBoltData.constructionBolt.packet
 							? undefined
 							: selectedObject.packet,
 					num:
-						selectedObject.num === constructionBolt.num
+						selectedObject.num === constructionBoltData.constructionBolt.num
 							? undefined
 							: selectedObject.num,
 					nutNum:
-						selectedObject.nutNum === constructionBolt.nutNum
+						selectedObject.nutNum === constructionBoltData.constructionBolt.nutNum
 							? undefined
 							: selectedObject.nutNum,
 					washerNum:
-						selectedObject.washerNum === constructionBolt.washerNum
+						selectedObject.washerNum === constructionBoltData.constructionBolt.washerNum
 							? undefined
 							: selectedObject.washerNum,
-				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
 				}
 				await httpClient.patch(
 					`/construction-bolts/${selectedObject.id}`,
 					object
 				)
-				setScroll(4)
-				history.push(
-					`/specifications/${specificationId}/constructions/${constructionId}`
-				)
+				const arr = []
+				for (const v of constructionBolts) {
+					if (v.id == selectedObject.id) {
+						arr.push(selectedObject)
+						continue
+					}
+					arr.push(v)
+				}
+				setConstructionBolts(arr)
+				setConstructionBoltData({
+					constructionBolt: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Болт уже существует')
@@ -219,17 +240,16 @@ const ConstructionBoltData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
-			<div className="hanging-routes">
-				<Link to="/specifications">Выпуски спецификаций</Link>
-				<Link onClick={() => setScroll(1)} to={`/specifications/${specificationId}`}>Виды конструкций</Link>
-				<Link onClick={() => setScroll(4)} to={`/specifications/${specificationId}/constructions/${constructionId}`}>Высокопрочные болты</Link>
-			</div>
-			<h1 className="text-centered">
-				{isCreateMode
-					? 'Создание высокопрочного болта'
-					: 'Данные высокопрочного болта'}
-			</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded component-width component-cnt-div">
+			<div className="shadow custom-p-3 mb-5 bg-white rounded component-width component-cnt-div relative">
+				<div className="pointer absolute"
+					style={{top: 5, right: 8}}
+					onClick={() => setConstructionBoltData({
+						constructionBolt: null,
+						isCreateMode: false,
+					})}
+				>
+					<X color="#666" size={33} />
+				</div>
 				<Form.Group className="space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"
@@ -279,12 +299,12 @@ const ConstructionBoltData = ({
 						placeholder="Введите толщину пакета"
 						className="bolt-input-width"
 						autoComplete="off"
-						defaultValue={
+						value={
 							isNaN(selectedObject.packet)
 								? ''
 								: selectedObject.packet
 						}
-						onBlur={onPacketChange}
+						onChange={onPacketChange}
 					/>
 				</Form.Group>
 
@@ -301,10 +321,10 @@ const ConstructionBoltData = ({
 						placeholder="Введите число болтов"
 						className="bolt-input-width"
 						autoComplete="off"
-						defaultValue={
+						value={
 							isNaN(selectedObject.num) ? '' : selectedObject.num
 						}
-						onBlur={onNumChange}
+						onChange={onNumChange}
 					/>
 				</Form.Group>
 
@@ -321,12 +341,12 @@ const ConstructionBoltData = ({
 						placeholder="Введите число гаек на болт"
 						className="bolt-input-width"
 						autoComplete="off"
-						defaultValue={
+						value={
 							isNaN(selectedObject.nutNum)
 								? ''
 								: selectedObject.nutNum
 						}
-						onBlur={onNutNumChange}
+						onChange={onNutNumChange}
 					/>
 				</Form.Group>
 
@@ -343,12 +363,12 @@ const ConstructionBoltData = ({
 						placeholder="Введите число шайб на болт"
 						className="bolt-input-width"
 						autoComplete="off"
-						defaultValue={
+						value={
 							isNaN(selectedObject.washerNum)
 								? ''
 								: selectedObject.washerNum
 						}
-						onBlur={onWasherNumChange}
+						onChange={onWasherNumChange}
 					/>
 				</Form.Group>
 
@@ -358,11 +378,33 @@ const ConstructionBoltData = ({
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
 					onClick={
-						isCreateMode ? onCreateButtonClick : onChangeButtonClick
+						constructionBoltData.isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
-					disabled={processIsRunning}
+					disabled={processIsRunning || (!constructionBoltData.isCreateMode && !Object.values({
+						diameterId:
+							selectedObject.diameter.id ===
+							constructionBoltData.constructionBolt.diameter.id
+								? undefined
+								: selectedObject.diameter.id,
+						packet:
+							selectedObject.packet === constructionBoltData.constructionBolt.packet
+								? undefined
+								: selectedObject.packet,
+						num:
+							selectedObject.num === constructionBoltData.constructionBolt.num
+								? undefined
+								: selectedObject.num,
+						nutNum:
+							selectedObject.nutNum === constructionBoltData.constructionBolt.nutNum
+								? undefined
+								: selectedObject.nutNum,
+						washerNum:
+							selectedObject.washerNum === constructionBoltData.constructionBolt.washerNum
+								? undefined
+								: selectedObject.washerNum,
+					}).some((x) => x !== undefined))}
 				>
-					{isCreateMode
+					{constructionBoltData.isCreateMode
 						? 'Добавить высокопрочный болт'
 						: 'Сохранить изменения'}
 				</Button>

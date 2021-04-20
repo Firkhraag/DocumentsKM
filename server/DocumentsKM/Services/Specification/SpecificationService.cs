@@ -25,6 +25,11 @@ namespace DocumentsKM.Services
             return _repository.GetAllByMarkId(markId);
         }
 
+        public Specification GetCurrentByMarkId(int markId)
+        {
+            return _repository.GetCurrentByMarkId(markId);
+        }
+
         public Specification Create(int markId)
         {
             var foundMark = _markRepo.GetById(markId);

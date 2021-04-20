@@ -98,6 +98,8 @@ namespace DocumentsKM.Services
             }
             if (constructionElementRequest.Length != null)
                 foundConstructionElement.Length = constructionElementRequest.Length.GetValueOrDefault();
+            if (constructionElementRequest.ArithmeticExpression != null)
+                foundConstructionElement.ArithmeticExpression = constructionElementRequest.ArithmeticExpression;
 
             _repository.Update(foundConstructionElement);
 

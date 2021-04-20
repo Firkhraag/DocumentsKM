@@ -72,7 +72,7 @@ const EstimateTaskDocument = () => {
 		}
 	}, [mark])
 
-	const onTaskTextChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+	const onTaskTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			taskText: event.currentTarget.value,
@@ -80,7 +80,7 @@ const EstimateTaskDocument = () => {
 	}
 
 	const onAdditionalTextChange = (
-		event: React.FormEvent<HTMLTextAreaElement>
+		event: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
 		setSelectedObject({
 			...selectedObject,
@@ -179,19 +179,14 @@ const EstimateTaskDocument = () => {
 							? undefined
 							: selectedObject.taskText,
 					additionalText:
-						selectedObject.additionalText ===
-						defaultSelectedObject.additionalText
+						(selectedObject.additionalText ===
+						defaultSelectedObject.additionalText) || (selectedObject.additionalText === '' && defaultSelectedObject.additionalText == null)
 							? undefined
 							: selectedObject.additionalText,
 					approvalEmployeeId: getNullableFieldValue(
 						selectedObject.approvalEmployee,
 						defaultSelectedObject.approvalEmployee
 					),
-				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
 				}
 				await httpClient.patch(
 					`/marks/${mark.id}/estimate-task`,
@@ -250,8 +245,8 @@ const EstimateTaskDocument = () => {
 						rows={4}
 						style={{ resize: 'none' }}
 						placeholder="Введите текст задания"
-						defaultValue={selectedObject.taskText}
-						onBlur={onTaskTextChange}
+						value={selectedObject.taskText}
+						onChange={onTaskTextChange}
 					/>
 				</Form.Group>
 				<Form.Group>
@@ -262,8 +257,8 @@ const EstimateTaskDocument = () => {
 						rows={8}
 						style={{ resize: 'none' }}
 						placeholder="Дополнительная информация отсутствует"
-						defaultValue={selectedObject.additionalText}
-						onBlur={onAdditionalTextChange}
+						value={selectedObject.additionalText}
+						onChange={onAdditionalTextChange}
 					/>
 				</Form.Group>
 				<div className="flex">
@@ -345,7 +340,22 @@ const EstimateTaskDocument = () => {
 						variant="secondary"
 						className="full-width"
 						onClick={onChangeButtonClick}
-						disabled={processIsRunning}
+						disabled={processIsRunning || (defaultSelectedObject != null && !Object.values({
+							taskText:
+								selectedObject.taskText ===
+								defaultSelectedObject.taskText
+									? undefined
+									: selectedObject.taskText,
+							additionalText:
+								(selectedObject.additionalText ===
+								defaultSelectedObject.additionalText) || (selectedObject.additionalText === '' && defaultSelectedObject.additionalText == null)
+									? undefined
+									: selectedObject.additionalText,
+							approvalEmployeeId: getNullableFieldValue(
+								selectedObject.approvalEmployee,
+								defaultSelectedObject.approvalEmployee
+							),
+						}).some((x) => x !== undefined))}
 					>
 						Сохранить изменения
 					</Button>

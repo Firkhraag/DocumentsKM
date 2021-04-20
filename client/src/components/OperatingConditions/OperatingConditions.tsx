@@ -346,11 +346,6 @@ const OperatingConditions = () => {
 							? undefined
 							: selectedObject.highTensileBoltsType.id,
 				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
-				}
 				await httpClient.patch(
 					`/marks/${mark.id}/mark-operating-conditions`,
 					object
@@ -670,7 +665,48 @@ const OperatingConditions = () => {
 					onClick={
 						isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
-					disabled={processIsRunning}
+					disabled={processIsRunning || (!isCreateMode && defaultSelectedObject != null && !Object.values({
+						safetyCoeff:
+							selectedObject.safetyCoeff ===
+							defaultSelectedObject.safetyCoeff
+								? undefined
+								: selectedObject.safetyCoeff,
+						temperature:
+							selectedObject.temperature ===
+							defaultSelectedObject.temperature
+								? undefined
+								: selectedObject.temperature,
+						envAggressivenessId:
+							selectedObject.envAggressiveness.id ===
+							defaultSelectedObject.envAggressiveness.id
+								? undefined
+								: selectedObject.envAggressiveness.id,
+						operatingAreaId:
+							selectedObject.operatingArea.id ===
+							defaultSelectedObject.operatingArea.id
+								? undefined
+								: selectedObject.operatingArea.id,
+						gasGroupId:
+							selectedObject.gasGroup.id ===
+							defaultSelectedObject.gasGroup.id
+								? undefined
+								: selectedObject.gasGroup.id,
+						constructionMaterialId:
+							selectedObject.constructionMaterial.id ===
+							defaultSelectedObject.constructionMaterial.id
+								? undefined
+								: selectedObject.constructionMaterial.id,
+						paintworkTypeId:
+							selectedObject.paintworkType.id ===
+							defaultSelectedObject.paintworkType.id
+								? undefined
+								: selectedObject.paintworkType.id,
+						highTensileBoltsTypeId:
+							selectedObject.highTensileBoltsType.id ===
+							defaultSelectedObject.highTensileBoltsType.id
+								? undefined
+								: selectedObject.highTensileBoltsType.id,
+					}).some((x) => x !== undefined))}
 				>
 					{'Сохранить изменения'}
 				</Button>

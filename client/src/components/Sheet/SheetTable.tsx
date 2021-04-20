@@ -1,6 +1,5 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -8,20 +7,21 @@ import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
+import SheetData from './SheetData'
 import { useMark } from '../../store/MarkStore'
 import Doc from '../../model/Doc'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
+import { getEmployeeShortName } from '../../util/get-employee-short-name'
 
-type SheetTableProps = {
-	setSheet: (s: Doc) => void
-}
-
-const SheetTable = ({ setSheet }: SheetTableProps) => {
+const SheetTable = () => {
 	const mark = useMark()
-	const history = useHistory()
 	const setPopup = useSetPopup()
 
 	const [sheets, setSheets] = useState([] as Doc[])
+	const [sheetData, setSheetData] = useState({
+		isCreateMode: false,
+		sheet: null,
+	})
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -46,6 +46,10 @@ const SheetTable = ({ setSheet }: SheetTableProps) => {
 			arr.splice(row, 1)
 			setSheets(arr)
 			setPopup(defaultPopup)
+			setSheetData({
+				sheet: null,
+				isCreateMode: false,
+			})
 		} catch (e) {
 			console.log('Error')
 		}
@@ -54,8 +58,19 @@ const SheetTable = ({ setSheet }: SheetTableProps) => {
 	return (
 		<div className="component-cnt table-width">
 			<h1 className="text-centered">Листы основного комплекта</h1>
+			{sheetData.isCreateMode || sheetData.sheet != null ? <SheetData 
+				sheetData={sheetData}
+				setSheetData={setSheetData}
+				sheets={sheets}
+				setSheets={setSheets} /> : null}
 			<PlusCircle
-				onClick={() => history.push('/sheet-create')}
+				onClick={() => {
+					setSheetData({
+						isCreateMode: true,
+						sheet: null,
+					})
+					window.scrollTo(0, 0)
+				}}
 				color="#666"
 				size={28}
 				className="pointer"
@@ -79,27 +94,30 @@ const SheetTable = ({ setSheet }: SheetTableProps) => {
 					{sheets.map((s, index) => {
 						return (
 							<tr key={s.id}>
-								<td>{s.num}</td>
+								<td>{index + 1}</td>
 								<td className="doc-name-col-width">{s.name}</td>
 								<td>{s.form}</td>
 								<td className="doc-employee-col-width">
-									{s.creator.fullname}
+									{getEmployeeShortName(s.creator.fullname)}
 								</td>
 								<td className="doc-employee-col-width">
 									{s.inspector == null
 										? ''
-										: s.inspector.fullname}
+										: getEmployeeShortName(s.inspector.fullname)}
 								</td>
 								<td className="doc-employee-col-width">
 									{s.normContr == null
 										? ''
-										: s.normContr.fullname}
+										: getEmployeeShortName(s.normContr.fullname)}
 								</td>
 								<td className="doc-note-col-width">{s.note}</td>
 								<td
 									onClick={() => {
-										setSheet(s)
-										history.push(`/sheets/${s.id}`)
+										setSheetData({
+											isCreateMode: false,
+											sheet: s,
+										})
+										window.scrollTo(0, 0)
 									}}
 									className="pointer action-cell-width text-centered"
 								>
@@ -109,7 +127,7 @@ const SheetTable = ({ setSheet }: SheetTableProps) => {
 									onClick={() =>
 										setPopup({
 											isShown: true,
-											msg: `Вы действительно хотите удалить лист основного комплекта № ${s.num}?`,
+											msg: `Вы действительно хотите удалить лист основного комплекта № ${index + 1}?`,
 											onAccept: () =>
 												onDeleteClick(index, s.id),
 											onCancel: () =>

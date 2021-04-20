@@ -15,5 +15,9 @@ namespace DocumentsKM.Services
     public interface IEstimateTaskDocumentService : IGeneralDocumentService {}
     public interface IProjectRegistrationDocumentService : IGeneralDocumentService {}
     public interface IEstimationTitleDocumentService : IGeneralDocumentService {}
-    public interface IEstimationPagesDocumentService : IGeneralDocumentService {}
+    public interface IEstimationPagesDocumentService
+    {
+        // Заполнить документ
+        void PopulateDocument(int markId, int numOfPages, MemoryStream memory);
+    }
 }

@@ -1,45 +1,49 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory, Link } from 'react-router-dom'
 import Select from 'react-select'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { X } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import StandardConstruction from '../../model/StandardConstruction'
 import StandardConstructionName from '../../model/StandardConstructionName'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
-import { useSetScroll } from '../../store/ScrollStore'
 import { reactSelectStyle } from '../../util/react-select-style'
 
-type StandardConstructionDataProps = {
+type IStandardConstructionDataProps = {
 	standardConstruction: StandardConstruction
 	isCreateMode: boolean
+}
+
+type StandardConstructionDataProps = {
+	standardConstructionData: IStandardConstructionDataProps
+	setStandardConstructionData: (d: IStandardConstructionDataProps) => void
+	standardConstructions: StandardConstruction[]
+	setStandardConstructions: (a: StandardConstruction[]) => void
 	specificationId: number
 }
 
 const StandardConstructionData = ({
-	standardConstruction,
-	isCreateMode,
-	specificationId,
+	standardConstructionData,
+	setStandardConstructionData,
+	standardConstructions,
+	setStandardConstructions,
+	specificationId
 }: StandardConstructionDataProps) => {
-	const history = useHistory()
 	const mark = useMark()
-    const setScroll = useSetScroll()
 
-	const [selectedObject, setSelectedObject] = useState<StandardConstruction>(
-		isCreateMode
-			? {
-					id: -1,
-					name: '',
-					num: NaN,
-					sheet: '',
-					weight: NaN,
-			  }
-			: standardConstruction
-	)
+	const defaultSelectedObject = {
+		id: -1,
+		name: '',
+		num: NaN,
+		sheet: '',
+		weight: NaN,
+  	} as StandardConstruction
+
+	const [selectedObject, setSelectedObject] = useState<StandardConstruction>(null)
 	const [nameOptions, setNameOptions] = useState(
 		[] as StandardConstructionName[]
 	)
@@ -47,12 +51,10 @@ const StandardConstructionData = ({
 	const [processIsRunning, setProcessIsRunning] = useState(false)
 	const [errMsg, setErrMsg] = useState('')
 
+	const [fetched, setFetched] = useState(false)
+
 	useEffect(() => {
-		if (mark != null && mark.id != null) {
-			if (selectedObject == null || specificationId == -1) {
-				history.push('/specifications')
-				return
-			}
+		if (!fetched) {
 			const fetchData = async () => {
 				try {
 					const namesResponse = await httpClient.get(
@@ -64,8 +66,19 @@ const StandardConstructionData = ({
 				}
 			}
 			fetchData()
+			setFetched(true)
 		}
-	}, [mark])
+		if (standardConstructionData.standardConstruction != null) {
+			setSelectedObject({
+				...defaultSelectedObject,
+				...standardConstructionData.standardConstruction,
+			})
+		} else {
+			setSelectedObject({
+				...defaultSelectedObject,
+			})
+		}
+	}, [standardConstructionData])
 
 	const onNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
@@ -90,21 +103,21 @@ const StandardConstructionData = ({
 		}
 	}
 
-	const onNumChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onNumChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			num: parseInt(event.currentTarget.value),
 		})
 	}
 
-	const onSheetChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onSheetChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			sheet: event.currentTarget.value,
 		})
 	}
 
-	const onWeightChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onWeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			weight: parseFloat(event.currentTarget.value),
@@ -139,7 +152,7 @@ const StandardConstructionData = ({
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				await httpClient.post(
+				const idResponse = await httpClient.post(
 					`/specifications/${specificationId}/standard-constructions`,
 					{
 						name: selectedObject.name,
@@ -148,8 +161,16 @@ const StandardConstructionData = ({
 						weight: selectedObject.weight,
 					}
 				)
-                setScroll(2)
-				history.push(`/specifications/${specificationId}`)
+				const arr = [...standardConstructions]
+				arr.push({
+					...selectedObject,
+					id: idResponse.data.id,
+				})
+				setStandardConstructions(arr)
+				setStandardConstructionData({
+					standardConstruction: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Типовая конструкция уже существует')
@@ -169,33 +190,39 @@ const StandardConstructionData = ({
 			try {
 				const object = {
 					name:
-						selectedObject.name === standardConstruction.name
+						selectedObject.name === standardConstructionData.standardConstruction.name
 							? undefined
 							: selectedObject.name,
 					num:
-						selectedObject.num === standardConstruction.num
+						selectedObject.num === standardConstructionData.standardConstruction.num
 							? undefined
 							: selectedObject.num,
 					sheet:
-						selectedObject.sheet === standardConstruction.sheet
+						selectedObject.sheet === standardConstructionData.standardConstruction.sheet
 							? undefined
 							: selectedObject.sheet,
 					weight:
-						selectedObject.weight === standardConstruction.weight
+						selectedObject.weight === standardConstructionData.standardConstruction.weight
 							? undefined
 							: selectedObject.weight,
-				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
 				}
 				await httpClient.patch(
 					`/standard-constructions/${selectedObject.id}`,
 					object
 				)
-                setScroll(2)
-				history.push(`/specifications/${specificationId}`)
+				const arr = []
+				for (const v of standardConstructions) {
+					if (v.id == selectedObject.id) {
+						arr.push(selectedObject)
+						continue
+					}
+					arr.push(v)
+				}
+				setStandardConstructions(arr)
+				setStandardConstructionData({
+					standardConstruction: null,
+					isCreateMode: false,
+				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
 					setErrMsg('Типовая конструкция уже существует')
@@ -211,16 +238,17 @@ const StandardConstructionData = ({
 
 	return selectedObject == null || mark == null ? null : (
 		<div className="component-cnt flex-v-cent-h">
-			<div className="hanging-routes">
-				<Link to="/specifications">Выпуски спецификаций</Link>
-				<Link onClick={() => setScroll(2)} to={`/specifications/${specificationId}`}>Типовые конструкции</Link>
-			</div>
-			<h1 className="text-centered">
-				{isCreateMode
-					? 'Создание типовой конструкции'
-					: 'Данные по типовой конструкции'}
-			</h1>
-			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div">
+			<div className="shadow p-3 mb-5 bg-white rounded component-width-2 component-cnt-div relative">
+				<div className="pointer absolute"
+					style={{top: 5, right: 8}}
+					onClick={() => setStandardConstructionData({
+						standardConstruction: null,
+						isCreateMode: false,
+					})}
+				>
+					<X color="#666" size={33} />
+				</div>
+
 				<Form.Group>
 					<Form.Label htmlFor="name">Название</Form.Label>
 					<Form.Control
@@ -267,10 +295,10 @@ const StandardConstructionData = ({
 						placeholder="Введите количество элементов"
 						autoComplete="off"
 						className="standard-construction-input-width"
-						defaultValue={
+						value={
 							isNaN(selectedObject.num) ? '' : selectedObject.num
 						}
-						onBlur={onNumChange}
+						onChange={onNumChange}
 					/>
 				</Form.Group>
 
@@ -287,8 +315,8 @@ const StandardConstructionData = ({
 						placeholder="Не введено"
 						autoComplete="off"
 						className="standard-construction-input-width"
-						defaultValue={selectedObject.sheet}
-						onBlur={onSheetChange}
+						value={selectedObject.sheet}
+						onChange={onSheetChange}
 					/>
 				</Form.Group>
 
@@ -305,12 +333,12 @@ const StandardConstructionData = ({
 						placeholder="Введите вес"
 						autoComplete="off"
 						className="standard-construction-input-width"
-						defaultValue={
+						value={
 							isNaN(selectedObject.weight)
 								? ''
 								: selectedObject.weight
 						}
-						onBlur={onWeightChange}
+						onChange={onWeightChange}
 					/>
 				</Form.Group>
 
@@ -320,11 +348,28 @@ const StandardConstructionData = ({
 					variant="secondary"
 					className="btn-mrg-top-2 full-width"
 					onClick={
-						isCreateMode ? onCreateButtonClick : onChangeButtonClick
+						standardConstructionData.isCreateMode ? onCreateButtonClick : onChangeButtonClick
 					}
-					disabled={processIsRunning}
+					disabled={processIsRunning || (!standardConstructionData.isCreateMode && !Object.values({
+						name:
+							selectedObject.name === standardConstructionData.standardConstruction.name
+								? undefined
+								: selectedObject.name,
+						num:
+							selectedObject.num === standardConstructionData.standardConstruction.num
+								? undefined
+								: selectedObject.num,
+						sheet:
+							selectedObject.sheet === standardConstructionData.standardConstruction.sheet
+								? undefined
+								: selectedObject.sheet,
+						weight:
+							selectedObject.weight === standardConstructionData.standardConstruction.weight
+								? undefined
+								: selectedObject.weight,
+					}).some((x) => x !== undefined))}
 				>
-					{isCreateMode
+					{standardConstructionData.isCreateMode
 						? 'Добавить типовую конструкцию'
 						: 'Сохранить изменения'}
 				</Button>

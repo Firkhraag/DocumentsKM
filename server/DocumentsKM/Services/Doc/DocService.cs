@@ -14,6 +14,7 @@ namespace DocumentsKM.Services
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IDocTypeRepo _docTypeRepo;
+        private readonly IAdditionalWorkRepo _additionalWorkRepo;
         private readonly AppSettings _appSettings;
 
         public DocService(
@@ -21,12 +22,14 @@ namespace DocumentsKM.Services
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
             IDocTypeRepo docTypeRepo,
+            IAdditionalWorkRepo additionalWorkRepo,
             IOptions<AppSettings> appSettings)
         {
             _repository = docRepo;
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
             _docTypeRepo = docTypeRepo;
+            _additionalWorkRepo = additionalWorkRepo;
             _appSettings = appSettings.Value;
         }
 
@@ -80,9 +83,10 @@ namespace DocumentsKM.Services
             if (creator == null)
                 throw new ArgumentNullException(nameof(creator));
             doc.Creator = creator;
+            Employee inspector = null;
             if (inspectorId != null)
             {
-                var inspector = _employeeRepo.GetById(inspectorId.GetValueOrDefault());
+                inspector = _employeeRepo.GetById(inspectorId.GetValueOrDefault());
                 if (inspector == null)
                     throw new ArgumentNullException(nameof(inspector));
                 doc.Inspector = inspector;
@@ -95,6 +99,35 @@ namespace DocumentsKM.Services
                 doc.NormContr = normContr;
             }
             _repository.Add(doc);
+
+            var additionalWorkCreator = _additionalWorkRepo.GetByUniqueKey(markId, creatorId);
+            if (additionalWorkCreator == null)
+            {
+                additionalWorkCreator = new AdditionalWork
+                {
+                    Mark = foundMark,
+                    Employee = creator,
+                    Valuation = 0,
+                    MetalOrder = 0,
+                };
+                _additionalWorkRepo.Add(additionalWorkCreator);
+            }
+
+            if (inspectorId != null)
+            {
+                var additionalWorkInspector = _additionalWorkRepo.GetByUniqueKey(markId, inspectorId.GetValueOrDefault());
+                if (additionalWorkInspector == null)
+                {
+                    additionalWorkInspector = new AdditionalWork
+                    {
+                        Mark = foundMark,
+                        Employee = inspector,
+                        Valuation = 0,
+                        MetalOrder = 0,
+                    };
+                    _additionalWorkRepo.Add(additionalWorkInspector);
+                }
+            }
 
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
@@ -186,7 +219,18 @@ namespace DocumentsKM.Services
             if (foundDoc == null)
                 throw new ArgumentNullException(nameof(foundDoc));
             var markId = foundDoc.Mark.Id;
+            var creatorId = foundDoc.Creator.Id;
             _repository.Delete(foundDoc);
+
+            // var additionalWorkCreator = _additionalWorkRepo.GetByUniqueKey(markId, creatorId);
+            // if (additionalWorkCreator != null)
+            // {
+            //     var docs =_repository.GetAllByMarkIdAndCreator(markId, creatorId);
+            //     if (docs.Count() == 0)
+            //     {
+            //         _additionalWorkRepo.Delete(additionalWorkCreator);
+            //     }
+            // }
 
             var foundMark = _markRepo.GetById(markId);
             foundMark.EditedDate = DateTime.Now;

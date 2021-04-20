@@ -1,6 +1,5 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -8,33 +7,30 @@ import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
+import StandardConstructionData from './StandardConstructionData'
 import { useMark } from '../../store/MarkStore'
 import StandardConstruction from '../../model/StandardConstruction'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type StandardConstructionTableProps = {
-	setStandardConstruction: (sc: StandardConstruction) => void
 	specificationId: number
 }
 
-const StandardConstructionTable = ({
-	setStandardConstruction,
-	specificationId,
-}: StandardConstructionTableProps) => {
+const StandardConstructionTable = ({ specificationId }: StandardConstructionTableProps) => {
 	const mark = useMark()
-	const history = useHistory()
 	const setPopup = useSetPopup()
 
 	const [standardConstructions, setStandardConstructions] = useState(
 		[] as StandardConstruction[]
 	)
 
+	const [standardConstructionData, setStandardConstructionData] = useState({
+		isCreateMode: false,
+		standardConstruction: null,
+	})
+
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
-			if (specificationId == -1) {
-				history.push('/specifications')
-				return
-			}
 			const fetchData = async () => {
 				try {
 					const standardConstructionResponse = await httpClient.get(
@@ -56,6 +52,10 @@ const StandardConstructionTable = ({
 			arr.splice(row, 1)
 			setStandardConstructions(arr)
 			setPopup(defaultPopup)
+			setStandardConstructionData({
+				standardConstruction: null,
+				isCreateMode: false,
+			})
 		} catch (e) {
 			console.log('Error')
 		}
@@ -68,15 +68,23 @@ const StandardConstructionTable = ({
 			</h2>
 
 			<div className="full-width">
+				{standardConstructionData.isCreateMode || standardConstructionData.standardConstruction != null ? <StandardConstructionData 
+					standardConstructionData={standardConstructionData}
+					setStandardConstructionData={setStandardConstructionData}
+					standardConstructions={standardConstructions}
+					setStandardConstructions={setStandardConstructions}
+					specificationId={specificationId} /> : null}
 				<PlusCircle
+					onClick={() => {
+						setStandardConstructionData({
+							isCreateMode: true,
+							standardConstruction: null,
+						})
+						// window.scrollTo(0, 0)
+					}}
 					color="#666"
 					size={28}
 					className="pointer"
-					onClick={() =>
-						history.push(
-							`/specifications/${specificationId}/standard-construction-create`
-						)
-					}
 				/>
 				<Table bordered striped className="mrg-top no-bot-mrg">
 					<thead>
@@ -110,10 +118,11 @@ const StandardConstructionTable = ({
 									</td>
 									<td
 										onClick={() => {
-											setStandardConstruction(sc)
-											history.push(
-												`/specifications/${specificationId}/standard-constructions/${sc.id}`
-											)
+											setStandardConstructionData({
+												isCreateMode: false,
+												standardConstruction: sc,
+											})
+											// window.scrollTo(0, 0)
 										}}
 										className="pointer action-cell-width text-centered"
 									>

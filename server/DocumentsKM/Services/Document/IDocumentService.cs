@@ -19,6 +19,6 @@ namespace DocumentsKM.Services
         // Получить титульный лист комплекта для рассчета
         MemoryStream GetEstimationDocumentTitle(int markId);
         // Получить страницы комплекта для рассчета
-        MemoryStream GetEstimationDocumentPages(int markId);
+        MemoryStream GetEstimationDocumentPages(int markId, int numOfPages);
     }
 }

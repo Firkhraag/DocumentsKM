@@ -1,6 +1,5 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -8,24 +7,22 @@ import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
+import OtherAttachedDocData from './OtherAttachedDocData'
 import { useMark } from '../../store/MarkStore'
 import AttachedDoc from '../../model/AttachedDoc'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
-type OtherAttachedDocTableProps = {
-	setOtherAttachedDoc: (s: AttachedDoc) => void
-}
-
-const OtherAttachedDocTable = ({
-	setOtherAttachedDoc,
-}: OtherAttachedDocTableProps) => {
+const OtherAttachedDocTable = () => {
 	const mark = useMark()
-	const history = useHistory()
 	const setPopup = useSetPopup()
 
 	const [otherAttachedDocs, setOtherAttachedDocs] = useState(
 		[] as AttachedDoc[]
 	)
+	const [otherAttachedDocData, setOtherAttachedDocData] = useState({
+		isCreateMode: false,
+		otherAttachedDoc: null,
+	})
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -50,6 +47,10 @@ const OtherAttachedDocTable = ({
 			arr.splice(row, 1)
 			setOtherAttachedDocs(arr)
 			setPopup(defaultPopup)
+			setOtherAttachedDocData({
+				otherAttachedDoc: null,
+				isCreateMode: false,
+			})
 		} catch (e) {
 			console.log('Error')
 		}
@@ -58,8 +59,19 @@ const OtherAttachedDocTable = ({
 	return (
 		<div className="component-cnt">
 			<h1 className="text-centered">Прочие прилагаемые документы</h1>
+			{otherAttachedDocData.isCreateMode || otherAttachedDocData.otherAttachedDoc != null ? <OtherAttachedDocData 
+				otherAttachedDocData={otherAttachedDocData}
+				setOtherAttachedDocData={setOtherAttachedDocData}
+				otherAttachedDocs={otherAttachedDocs}
+				setOtherAttachedDocs={setOtherAttachedDocs} /> : null}
 			<PlusCircle
-				onClick={() => history.push('/other-attached-doc-add')}
+				onClick={() => {
+					setOtherAttachedDocData({
+						isCreateMode: true,
+						otherAttachedDoc: null,
+					})
+					window.scrollTo(0, 0)
+				}}
 				color="#666"
 				size={28}
 				className="pointer"
@@ -84,13 +96,13 @@ const OtherAttachedDocTable = ({
 								<td>{d.designation}</td>
 								<td className="doc-note-col-width">{d.name}</td>
 								<td className="doc-note-col-width">{d.note}</td>
-
 								<td
 									onClick={() => {
-										setOtherAttachedDoc(d)
-										history.push(
-											`/other-attached-docs/${d.id}`
-										)
+										setOtherAttachedDocData({
+											isCreateMode: false,
+											otherAttachedDoc: d,
+										})
+										window.scrollTo(0, 0)
 									}}
 									className="pointer action-cell-width text-centered"
 								>

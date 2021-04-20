@@ -37,6 +37,15 @@ namespace DocumentsKM.Controllers
                 specifications));
         }
 
+        [HttpGet, Route("marks/{markId}/specifications/current")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<IEnumerable<SpecificationResponse>> GetCurrentByMarkId(
+            int markId)
+        {
+            var specification = _service.GetCurrentByMarkId(markId);
+            return Ok(_mapper.Map<SpecificationResponse>(specification));
+        }
+
         [HttpPost, Route("marks/{markId}/specifications")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

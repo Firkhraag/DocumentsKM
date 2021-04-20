@@ -9,6 +9,7 @@ interface IConstructionElement {
 	profile: Profile
 	steel: Steel
 	length: number
+	arithmeticExpression: string
 }
 
 class ConstructionElement {
@@ -17,6 +18,7 @@ class ConstructionElement {
 	profile: Profile
 	steel: Steel
 	length: number
+	arithmeticExpression: string
 
 	constructor(obj?: IConstructionElement) {
 		this.id = (obj && obj.id) || 0
@@ -24,6 +26,7 @@ class ConstructionElement {
 		this.profile = (obj && obj.profile) || null
 		this.steel = (obj && obj.steel) || null
 		this.length = (obj && obj.length) || 0
+		this.arithmeticExpression = (obj && obj.arithmeticExpression) || ''
 	}
 }
 

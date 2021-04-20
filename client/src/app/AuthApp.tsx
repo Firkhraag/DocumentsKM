@@ -13,35 +13,21 @@ import MarkData from '../components/Mark/MarkData'
 import MarkApproval from '../components/MarkApproval/MarkApproval'
 import SpecificationTable from '../components/Specification/SpecificationTable'
 import SpecificationData from '../components/Specification/SpecificationData'
-import StandardConstructionData from '../components/StandardConstruction/StandardConstructionData'
 import ConstructionData from '../components/Construction/ConstructionData'
-import ConstructionBoltData from '../components/ConstructionBolt/ConstructionBoltData'
-import ConstructionElementData from '../components/ConstructionElement/ConstructionElementData'
 import SheetTable from '../components/Sheet/SheetTable'
-import SheetData from '../components/Sheet/SheetData'
 import DevelopingAttachedDocTable from '../components/DevelopingAttachedDoc/DevelopingAttachedDocTable'
-import DevelopingAttachedDocData from '../components/DevelopingAttachedDoc/DevelopingAttachedDocData'
 import OtherAttachedDocTable from '../components/OtherAttachedDoc/OtherAttachedDocTable'
-import OtherAttachedDocData from '../components/OtherAttachedDoc/OtherAttachedDocData'
 import LinkedDocTable from '../components/LinkedDoc/LinkedDocTable'
-import LinkedDocData from '../components/LinkedDoc/LinkedDocData'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
 import AdditionalWorkTable from '../components/AdditionalWork/AdditionalWorkTable'
-import AdditionalWorkData from '../components/AdditionalWork/AdditionalWorkData'
 import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
 import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import EstimateTaskDocument from '../components/EstimateTask/EstimateTaskDocument'
 import ProjectRegistration from '../components/ProjectRegistration/ProjectRegistration'
+import EstimationDocument from '../components/Estimation/EstimationDocument'
 import DefaultValuesData from '../components/DefaultValues/DefaultValuesData'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
-import StandardConstruction from '../model/StandardConstruction'
-import ConstructionBolt from '../model/ConstructionBolt'
-import ConstructionElement from '../model/ConstructionElement'
-import Doc from '../model/Doc'
-import AttachedDoc from '../model/AttachedDoc'
-import MarkLinkedDoc from '../model/MarkLinkedDoc'
-import AdditionalWork from '../model/AdditionalWork'
 
 const AuthApp = () => {
 	const [subnode, setSubnode] = useState(null)
@@ -50,24 +36,6 @@ const AuthApp = () => {
 	const [copiedConstruction, setCopiedConstruction] = useState<Construction>(
 		null
 	)
-	const [
-		standardConstruction,
-		setStandardConstruction,
-	] = useState<StandardConstruction>(null)
-	const [constructionBolt, setConstructionBolt] = useState<ConstructionBolt>(
-		null
-	)
-	const [
-		constructionElement,
-		setConstructionElement,
-	] = useState<ConstructionElement>(null)
-	const [sheet, setSheet] = useState<Doc>(null)
-	const [additionalWork, setAdditionalWork] = useState<AdditionalWork>(null)
-	const [developingAttachedDoc, setDevelopingAttachedDoc] = useState<Doc>(
-		null
-	)
-	const [otherAttachedDoc, setOtherAttachedDoc] = useState<AttachedDoc>(null)
-	const [markLinkedDoc, setMarkLinkedDoc] = useState<MarkLinkedDoc>(null)
 
 	return (
 		<MarkProvider>
@@ -79,7 +47,7 @@ const AuthApp = () => {
 						<Popup />
 						<div>
 							<Route exact path="/">
-								<Home />
+								<Home setSpecification={setSpecification} />
 							</Route>
 
 							<Route exact path="/marks">
@@ -130,45 +98,6 @@ const AuthApp = () => {
 										setCopiedConstruction={
 											setCopiedConstruction
 										}
-										setStandardConstruction={
-											setStandardConstruction
-										}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/specifications/:specificationId/standard-constructions/:standardConstructionId"
-							>
-								<div className="full-width div-container">
-									<StandardConstructionData
-										standardConstruction={
-											standardConstruction
-										}
-										isCreateMode={false}
-										specificationId={
-											specification == null
-												? -1
-												: specification.id
-										}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/specifications/:specificationId/standard-construction-create"
-							>
-								<div className="full-width div-container">
-									<StandardConstructionData
-										standardConstruction={
-											standardConstruction
-										}
-										isCreateMode={true}
-										specificationId={
-											specification == null
-												? -1
-												: specification.id
-										}
 									/>
 								</div>
 							</Route>
@@ -184,12 +113,6 @@ const AuthApp = () => {
 											specification == null
 												? -1
 												: specification.id
-										}
-										setConstructionBolt={
-											setConstructionBolt
-										}
-										setConstructionElement={
-											setConstructionElement
 										}
 									/>
 								</div>
@@ -207,209 +130,31 @@ const AuthApp = () => {
 												? -1
 												: specification.id
 										}
-										setConstructionBolt={
-											setConstructionBolt
-										}
-										setConstructionElement={
-											setConstructionElement
-										}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/specifications/:specificationId/constructions/:constructionId/bolts/:boltId"
-							>
-								<div className="full-width div-container">
-									<ConstructionBoltData
-										constructionBolt={constructionBolt}
-										isCreateMode={false}
-										specificationId={
-											specification == null
-												? -1
-												: specification.id
-										}
-										constructionId={
-											construction == null
-												? -1
-												: construction.id
-										}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/specifications/:specificationId/constructions/:constructionId/bolt-create"
-							>
-								<div className="full-width div-container">
-									<ConstructionBoltData
-										constructionBolt={constructionBolt}
-										isCreateMode={true}
-										specificationId={
-											specification == null
-												? -1
-												: specification.id
-										}
-										constructionId={
-											construction == null
-												? -1
-												: construction.id
-										}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/specifications/:specificationId/constructions/:constructionId/elements/:elementId"
-							>
-								<div className="full-width div-container">
-									<ConstructionElementData
-										constructionElement={
-											constructionElement
-										}
-										isCreateMode={false}
-										specificationId={
-											specification == null
-												? -1
-												: specification.id
-										}
-										constructionId={
-											construction == null
-												? -1
-												: construction.id
-										}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/specifications/:specificationId/constructions/:constructionId/element-create"
-							>
-								<div className="full-width div-container">
-									<ConstructionElementData
-										constructionElement={
-											constructionElement
-										}
-										isCreateMode={true}
-										specificationId={
-											specification == null
-												? -1
-												: specification.id
-										}
-										constructionId={
-											construction == null
-												? -1
-												: construction.id
-										}
 									/>
 								</div>
 							</Route>
 
 							<Route exact path="/sheets">
 								<div className="full-width div-container">
-									<SheetTable setSheet={setSheet} />
-								</div>
-							</Route>
-							<Route exact path="/sheets/:sheetId">
-								<div className="full-width div-container">
-									<SheetData
-										sheet={sheet}
-										isCreateMode={false}
-									/>
-								</div>
-							</Route>
-							<Route exact path="/sheet-create">
-								<div className="full-width div-container">
-									<SheetData
-										sheet={sheet}
-										isCreateMode={true}
-									/>
+									<SheetTable />
 								</div>
 							</Route>
 
 							<Route exact path="/developing-attached-docs">
 								<div className="full-width div-container">
-									<DevelopingAttachedDocTable
-										setDevelopingAttachedDoc={
-											setDevelopingAttachedDoc
-										}
-									/>
-								</div>
-							</Route>
-							<Route exact path="/developing-attached-doc-create">
-								<div className="full-width div-container">
-									<DevelopingAttachedDocData
-										developingAttachedDoc={
-											developingAttachedDoc
-										}
-										isCreateMode={true}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/developing-attached-docs/:attachedDocId"
-							>
-								<div className="full-width div-container">
-									<DevelopingAttachedDocData
-										developingAttachedDoc={
-											developingAttachedDoc
-										}
-										isCreateMode={false}
-									/>
+									<DevelopingAttachedDocTable />
 								</div>
 							</Route>
 
 							<Route exact path="/other-attached-docs">
 								<div className="full-width div-container">
-									<OtherAttachedDocTable
-										setOtherAttachedDoc={
-											setOtherAttachedDoc
-										}
-									/>
-								</div>
-							</Route>
-							<Route exact path="/other-attached-doc-add">
-								<div className="full-width div-container">
-									<OtherAttachedDocData
-										otherAttachedDoc={otherAttachedDoc}
-										isCreateMode={true}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/other-attached-docs/:attachedDocId"
-							>
-								<div className="full-width div-container">
-									<OtherAttachedDocData
-										otherAttachedDoc={otherAttachedDoc}
-										isCreateMode={false}
-									/>
+									<OtherAttachedDocTable />
 								</div>
 							</Route>
 
 							<Route exact path="/linked-docs">
 								<div className="full-width div-container">
-									<LinkedDocTable
-										setMarkLinkedDoc={setMarkLinkedDoc}
-									/>
-								</div>
-							</Route>
-							<Route exact path="/linked-docs/:linkedDocId">
-								<div className="full-width div-container">
-									<LinkedDocData
-										markLinkedDoc={markLinkedDoc}
-										isCreateMode={false}
-									/>
-								</div>
-							</Route>
-							<Route exact path="/linked-doc-add">
-								<div className="full-width div-container">
-									<LinkedDocData
-										markLinkedDoc={markLinkedDoc}
-										isCreateMode={true}
-									/>
+									<LinkedDocTable />
 								</div>
 							</Route>
 
@@ -421,28 +166,7 @@ const AuthApp = () => {
 
 							<Route exact path="/additional-work">
 								<div className="full-width div-container">
-									<AdditionalWorkTable
-										setAdditionalWork={setAdditionalWork}
-									/>
-								</div>
-							</Route>
-							<Route
-								exact
-								path="/additional-work/:additionalWorkId"
-							>
-								<div className="full-width div-container">
-									<AdditionalWorkData
-										additionalWork={additionalWork}
-										isCreateMode={false}
-									/>
-								</div>
-							</Route>
-							<Route exact path="/additional-work-add">
-								<div className="full-width div-container">
-									<AdditionalWorkData
-										additionalWork={additionalWork}
-										isCreateMode={true}
-									/>
+									<AdditionalWorkTable />
 								</div>
 							</Route>
 
@@ -471,6 +195,11 @@ const AuthApp = () => {
                             <Route exact path="/project-registration">
 								<div className="full-width div-container">
 									<ProjectRegistration />
+								</div>
+							</Route>
+							<Route exact path="/estimation">
+								<div className="full-width div-container">
+									<EstimationDocument />
 								</div>
 							</Route>
 						</div>

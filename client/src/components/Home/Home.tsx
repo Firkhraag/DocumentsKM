@@ -1,18 +1,24 @@
 // Global
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 // Bootstrap
 import Button from 'react-bootstrap/Button'
 // Util
 import httpClient from '../../axios'
+import Specification from '../../model/Specification'
 import { useMark } from '../../store/MarkStore'
 import { useUser } from '../../store/UserStore'
 // Style
 import './Home.css'
 
-const Home = () => {
+type HomeProps = {
+	setSpecification: (s: Specification) => void
+}
+
+const Home = ({ setSpecification }: HomeProps) => {
 	const mark = useMark()
 	const user = useUser()
+	const history = useHistory()
 
 	const [processIsRunning, setProcessIsRunning] = useState(false)
 
@@ -93,51 +99,12 @@ const Home = () => {
 		setProcessIsRunning(false)
 	}
 
-	const onEstimationDocumentDownloadButtonClick = async () => {
-		setProcessIsRunning(true)
-		try {
-			const response = await httpClient.get(
-				`/marks/${mark.id}/estimation-document-title`,
-				{
-					responseType: 'blob',
-				}
-			)
-
-			const url = window.URL.createObjectURL(new Blob([response.data]))
-			const link = document.createElement('a')
-			link.href = url
-			link.setAttribute(
-				'download',
-				`${mark.designation}_РР-обл_тит.docx`
-			)
-			document.body.appendChild(link)
-			link.click()
-			link.remove()
-		} catch (e) {
-			console.log('Failed to download the file')
-		}
-		try {
-			const response = await httpClient.get(
-				`/marks/${mark.id}/estimation-document-pages`,
-				{
-					responseType: 'blob',
-				}
-			)
-
-			const url = window.URL.createObjectURL(new Blob([response.data]))
-			const link = document.createElement('a')
-			link.href = url
-			link.setAttribute(
-				'download',
-				`${mark.designation}_РР-листы.docx`
-			)
-			document.body.appendChild(link)
-			link.click()
-			link.remove()
-		} catch (e) {
-			console.log('Failed to download the file')
-		}
-		setProcessIsRunning(false)
+	const goToCurrentSpecification = async () => {
+		const specResponse = await httpClient.get(
+			`/marks/${mark.id}/specifications/current`
+		)
+		setSpecification(specResponse.data)
+		history.push(`/specifications/${specResponse.data.id}`)
 	}
 
 	return (
@@ -170,16 +137,6 @@ const Home = () => {
 						}
 					>
 						Согласования
-					</Button>
-				</Link>
-				<Link to="/specifications">
-					<Button
-						variant="outline-secondary"
-						disabled={
-							mark == null || processIsRunning ? true : false
-						}
-					>
-						Выпуски спецификаций
 					</Button>
 				</Link>
 				<Link to="/sheets">
@@ -242,6 +199,25 @@ const Home = () => {
 						Учет дополнительных работ
 					</Button>
 				</Link>
+				<Button
+					variant="outline-secondary"
+					disabled={
+						mark == null || processIsRunning ? true : false
+					}
+					onClick={goToCurrentSpecification}
+				>
+					Текущий выпуск спецификации
+				</Button>
+				<Link to="/specifications">
+					<Button
+						variant="outline-secondary"
+						disabled={
+							mark == null || processIsRunning ? true : false
+						}
+					>
+						Выпуски спецификаций
+					</Button>
+				</Link>
 			</div>
 
 			<h2 className="home-cnt-header text-centered">Документы</h2>
@@ -297,13 +273,17 @@ const Home = () => {
 						Лист регистрации проекта
 					</Button>
 				</Link>
-				<Button
-					variant="outline-secondary"
-					disabled={mark == null || processIsRunning ? true : false}
-					onClick={onEstimationDocumentDownloadButtonClick}
-				>
-					Комплект для расчета
-				</Button>
+
+				<Link to={mark != null ? `/estimation` : '/'}>
+					<Button
+						variant="outline-secondary"
+						disabled={
+							mark == null || processIsRunning ? true : false
+						}
+					>
+						Комплект для расчета
+					</Button>
+				</Link>
 			</div>
 		</div>
 	)

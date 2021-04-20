@@ -67,7 +67,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 					})
 					
                     if (isCreateMode) {
-                        const defaultValuesResponse = await httpClient.get(
+                        const valuesResponse = await httpClient.get(
                             `/users/${user.id}/default-values`
                         )
 						setSelectedObject({
@@ -78,7 +78,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 							complexName: '',
 							chiefEngineerName: '',
 							objectName: '',
-							department: defaultValuesResponse.data.department,
+							department: valuesResponse.data.department,
 							chiefSpecialist: null,
 							groupLeader: null,
 							normContr: null,
@@ -142,14 +142,14 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 		}
 	}, [])
 
-	const onMarkCodeChange = (event: React.FormEvent<HTMLInputElement>) => {
+	const onMarkCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			code: event.currentTarget.value,
 		})
 	}
 
-	const onMarkNameChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+	const onMarkNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setSelectedObject({
 			...selectedObject,
 			name: event.currentTarget.value,
@@ -308,7 +308,6 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 					normContrId: selectedObject.normContr?.id,
 				})
 
-
 				localStorage.setItem('selectedMarkId', response.data.id.toString())
 
 				let recentMarks = [] as RecentMark[]
@@ -318,17 +317,16 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 						recentMarkStr
 					) as RecentMark[]
 				}
-
 				if (recentMarks.length >= 5) {
 					recentMarks.pop()
 				}
-				recentMarks.unshift(response.data)
-				let resStr = JSON.stringify(recentMarks.map((m) => new RecentMark({
-					id: m.id,
+				recentMarks.unshift(new RecentMark({
+					id: response.data.id,
 					projectId: currentSubnode.node.project.id,
 					nodeId: currentSubnode.node.id,
 					subnodeId: currentSubnode.id,
-				})))
+				}))
+				let resStr = JSON.stringify(recentMarks)
 				localStorage.setItem('recentMark', resStr)
 				
 				setMark(response.data)
@@ -375,11 +373,6 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 						mark.normContr
 					),
 				}
-				if (!Object.values(object).some((x) => x !== undefined)) {
-					setErrMsg('Изменения осутствуют')
-					setProcessIsRunning(false)
-					return
-				}
 				const designationResponse = await httpClient.patch(`/marks/${selectedObject.id}`, object)
 				setMark({
 					...selectedObject,
@@ -405,105 +398,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 				{isCreateMode ? 'Создание марки' : 'Данные марки'}
 			</h1>
 			<div className="flex">
-				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
-					<Form.Group>
-						<Form.Label>Обозначение марки</Form.Label>
-						<Form.Control
-							type="text"
-							value={
-								isCreateMode
-									? makeMarkName(
-										currentSubnode.node.project
-											.baseSeries,
-										currentSubnode.node.code,
-										currentSubnode.code,
-										selectedObject.code
-								  	)
-									: mark.designation
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Наименование комплекса</Form.Label>
-						<Form.Control
-							as="textarea"
-							rows={4}
-							style={{ resize: 'none' }}
-							value={
-								isCreateMode
-									? makeComplexAndObjectName(
-										currentSubnode.node.project
-											.name,
-										currentSubnode.node.name,
-										currentSubnode.name,
-										selectedObject.name,
-										currentSubnode.node.project.bias
-								  ).complexName
-									: mark.complexName
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Наименование объекта</Form.Label>
-						<Form.Control
-							as="textarea"
-							rows={4}
-							style={{ resize: 'none' }}
-							value={
-								isCreateMode
-									? makeComplexAndObjectName(
-										currentSubnode.node.project
-											.name,
-										currentSubnode.node.name,
-										currentSubnode.name,
-										selectedObject.name,
-										currentSubnode.node.project.bias
-								  ).objectName
-									: mark.objectName
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-					<Form.Group className="space-between-cent-v">
-						<Form.Label
-							className="no-bot-mrg"
-						>
-							ГИП
-						</Form.Label>
-						<Form.Control
-							type="text"
-							className="mark-data-input-width1"
-							value={
-								isCreateMode
-									? currentSubnode.node.chiefEngineerName
-											.fullname
-									: mark.chiefEngineerName
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-					<Form.Group className="space-between-cent-v no-bot-mrg">
-						<Form.Label
-							className="no-bot-mrg"
-						>
-							Начальник отдела
-						</Form.Label>
-						<Form.Control
-							type="text"
-							className="mark-data-input-width1"
-							value={
-								departmentHead == null
-									? ''
-									: departmentHead.fullname
-							}
-							readOnly={true}
-						/>
-					</Form.Group>
-				</div>
-
-				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
+				<div className="shadow p-3 bg-white rounded component-width component-cnt-div">
 					<Form.Group className="flex-cent-v">
 						<Form.Label
 							className="no-bot-mrg"
@@ -518,8 +413,8 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 							className="auto-width flex-grow"
 							placeholder="Введите шифр марки"
 							autoComplete="off"
-							defaultValue={selectedObject.code}
-							onBlur={onMarkCodeChange}
+							value={selectedObject.code}
+							onChange={onMarkCodeChange}
 						/>
 					</Form.Group>
 
@@ -531,8 +426,8 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 							rows={4}
 							style={{ resize: 'none' }}
 							placeholder="Введите наименование марки"
-							defaultValue={selectedObject.name}
-							onBlur={onMarkNameChange}
+							value={selectedObject.name}
+							onChange={onMarkNameChange}
 						/>
 					</Form.Group>
 
@@ -708,10 +603,132 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 								? onCreateButtonClick
 								: onChangeButtonClick
 						}
-						disabled={processIsRunning}
+						disabled={processIsRunning || (!isCreateMode && !Object.values({
+							code:
+								selectedObject.code === mark.code
+									? undefined
+									: selectedObject.code,
+							name:
+								selectedObject.name === mark.name
+									? undefined
+									: selectedObject.name,
+							departmentId:
+								selectedObject.department.id === mark.department.id
+									? undefined
+									: selectedObject.department.id,
+							chiefSpecialistId: getNullableFieldValue(
+								selectedObject.chiefSpecialist,
+								mark.chiefSpecialist
+							),
+							groupLeaderId: getNullableFieldValue(
+								selectedObject.groupLeader,
+								mark.groupLeader
+							),
+							normContrId: getNullableFieldValue(
+								selectedObject.normContr,
+								mark.normContr
+							),
+						}).some((x) => x !== undefined))}
 					>
 						{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
 					</Button>
+				</div>
+				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div mrg-left">
+					<Form.Group>
+						<Form.Label>Обозначение марки</Form.Label>
+						<Form.Control
+							type="text"
+							value={
+								isCreateMode
+									? makeMarkName(
+										currentSubnode.node.project
+											.baseSeries,
+										currentSubnode.node.code,
+										currentSubnode.code,
+										selectedObject.code
+								  	)
+									: mark.designation
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Наименование комплекса</Form.Label>
+						<Form.Control
+							as="textarea"
+							rows={4}
+							style={{ resize: 'none' }}
+							value={
+								isCreateMode
+									? makeComplexAndObjectName(
+										currentSubnode.node.project
+											.name,
+										currentSubnode.node.name,
+										currentSubnode.name,
+										selectedObject.name,
+										currentSubnode.node.project.bias
+								  ).complexName
+									: mark.complexName
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>Наименование объекта</Form.Label>
+						<Form.Control
+							as="textarea"
+							rows={4}
+							style={{ resize: 'none' }}
+							value={
+								isCreateMode
+									? makeComplexAndObjectName(
+										currentSubnode.node.project
+											.name,
+										currentSubnode.node.name,
+										currentSubnode.name,
+										selectedObject.name,
+										currentSubnode.node.project.bias
+								  ).objectName
+									: mark.objectName
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group className="space-between-cent-v">
+						<Form.Label
+							className="no-bot-mrg"
+						>
+							ГИП
+						</Form.Label>
+						<Form.Control
+							type="text"
+							className="mark-data-input-width1"
+							value={
+								isCreateMode
+									? currentSubnode.node.chiefEngineerName != null ? currentSubnode.node.chiefEngineerName
+											.fullname : ''
+									: mark.chiefEngineerName
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
+					<Form.Group className="space-between-cent-v no-bot-mrg">
+						<Form.Label
+							className="no-bot-mrg"
+						>
+							Начальник отдела
+						</Form.Label>
+						<Form.Control
+							type="text"
+							className="mark-data-input-width1"
+							value={
+								departmentHead == null
+									? ''
+									: departmentHead.fullname
+							}
+							readOnly={true}
+						/>
+					</Form.Group>
 				</div>
 			</div>
 		</div>

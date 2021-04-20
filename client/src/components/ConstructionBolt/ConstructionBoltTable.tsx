@@ -1,6 +1,5 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -8,28 +7,29 @@ import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
+import ConstructionBoltData from './ConstructionBoltData'
 import { useMark } from '../../store/MarkStore'
 import ConstructionBolt from '../../model/ConstructionBolt'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type ConstructionBoltTableProps = {
-	setConstructionBolt: (cb: ConstructionBolt) => void
-	specificationId: number
 	constructionId: number
 }
 
 const ConstructionBoltTable = ({
-	setConstructionBolt,
-	specificationId,
 	constructionId,
 }: ConstructionBoltTableProps) => {
 	const mark = useMark()
-	const history = useHistory()
 	const setPopup = useSetPopup()
 
 	const [constructionBolts, setConstructionBolts] = useState(
 		[] as ConstructionBolt[]
 	)
+
+	const [constructionBoltData, setConstructionBoltData] = useState({
+		isCreateMode: false,
+		constructionBolt: null,
+	})
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -54,6 +54,10 @@ const ConstructionBoltTable = ({
 			arr.splice(row, 1)
 			setConstructionBolts(arr)
 			setPopup(defaultPopup)
+			setConstructionBoltData({
+				constructionBolt: null,
+				isCreateMode: false,
+			})
 		} catch (e) {
 			console.log('Error')
 		}
@@ -64,15 +68,23 @@ const ConstructionBoltTable = ({
 			<h2 className="mrg-top-3  bold text-centered">
 				Высокопрочные болты
 			</h2>
+			{constructionBoltData.isCreateMode || constructionBoltData.constructionBolt != null ? <ConstructionBoltData 
+				constructionBoltData={constructionBoltData}
+				setConstructionBoltData={setConstructionBoltData}
+				constructionBolts={constructionBolts}
+				setConstructionBolts={setConstructionBolts}
+				constructionId={constructionId} /> : null}
 			<PlusCircle
+				onClick={() => {
+					setConstructionBoltData({
+						isCreateMode: true,
+						constructionBolt: null,
+					})
+					// window.scrollTo(0, 0)
+				}}
 				color="#666"
 				size={28}
 				className="pointer"
-				onClick={() =>
-					history.push(
-						`/specifications/${specificationId}/constructions/${constructionId}/bolt-create`
-					)
-				}
 			/>
 			<Table bordered striped className="mrg-top">
 				<thead>
@@ -100,10 +112,11 @@ const ConstructionBoltTable = ({
 								<td>{cb.washerNum}</td>
 								<td
 									onClick={() => {
-										setConstructionBolt(cb)
-										history.push(
-											`/specifications/${specificationId}/constructions/${constructionId}/bolts/${cb.id}`
-										)
+										setConstructionBoltData({
+											isCreateMode: false,
+											constructionBolt: cb,
+										})
+										// window.scrollTo(0, 0)
 									}}
 									className="pointer action-cell-width text-centered"
 								>

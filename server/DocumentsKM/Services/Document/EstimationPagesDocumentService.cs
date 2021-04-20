@@ -26,7 +26,7 @@ namespace DocumentsKM.Services
             _appSettings = appSettings.Value;
         }
 
-        public void PopulateDocument(int markId, MemoryStream memory)
+        public void PopulateDocument(int markId, int numOfPages, MemoryStream memory)
         {
             var mark = _markRepo.GetById(markId);
             if (mark == null)
@@ -57,6 +57,16 @@ namespace DocumentsKM.Services
                     mark.ObjectName,
                     departmentHead);
                 Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
+
+                for (int i = 1; i < numOfPages; i++)
+                {
+                    Body body = wordDoc.MainDocumentPart.Document.Body;
+                    var p = new Paragraph(new Run(new Break
+                    {
+                        Type = BreakValues.Page
+                    }));
+                    body.AppendChild(p);
+                }
             }
         }
 

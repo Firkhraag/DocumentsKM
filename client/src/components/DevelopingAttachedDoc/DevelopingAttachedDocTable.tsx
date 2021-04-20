@@ -1,6 +1,5 @@
 // Global
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -8,22 +7,21 @@ import { PencilSquare } from 'react-bootstrap-icons'
 import { Trash } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
+import DevelopingAttachedDocData from './DevelopingAttachedDocData'
 import { useMark } from '../../store/MarkStore'
 import Doc from '../../model/Doc'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
+import { getEmployeeShortName } from '../../util/get-employee-short-name'
 
-type DevelopingAttachedDocTableProps = {
-	setDevelopingAttachedDoc: (d: Doc) => void
-}
-
-const DevelopingAttachedDocTable = ({
-	setDevelopingAttachedDoc,
-}: DevelopingAttachedDocTableProps) => {
+const DevelopingAttachedDocTable = () => {
 	const mark = useMark()
-	const history = useHistory()
 	const setPopup = useSetPopup()
 
 	const [docs, setDocs] = useState([] as Doc[])
+	const [docData, setDocData] = useState({
+		isCreateMode: false,
+		doc: null,
+	})
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -48,6 +46,10 @@ const DevelopingAttachedDocTable = ({
 			arr.splice(row, 1)
 			setDocs(arr)
 			setPopup(defaultPopup)
+			setDocData({
+				doc: null,
+				isCreateMode: false,
+			})
 		} catch (e) {
 			console.log('Error')
 		}
@@ -58,8 +60,19 @@ const DevelopingAttachedDocTable = ({
 			<h1 className="text-centered">
 				Разрабатываемые прилагаемые документы
 			</h1>
+			{docData.isCreateMode || docData.doc != null ? <DevelopingAttachedDocData 
+				docData={docData}
+				setDocData={setDocData}
+				docs={docs}
+				setDocs={setDocs} /> : null}
 			<PlusCircle
-				onClick={() => history.push('/developing-attached-doc-create')}
+				onClick={() => {
+					setDocData({
+						isCreateMode: true,
+						doc: null,
+					})
+					window.scrollTo(0, 0)
+				}}
 				color="#666"
 				size={28}
 				className="pointer"
@@ -91,25 +104,26 @@ const DevelopingAttachedDocTable = ({
 								<td>{d.numOfPages}</td>
 								<td>{d.form}</td>
 								<td>
-									{d.creator == null ? '' : d.creator.fullname}
+									{d.creator == null ? '' : getEmployeeShortName(d.creator.fullname)}
 								</td>
 								<td>
 									{d.inspector == null
 										? ''
-										: d.inspector.fullname}
+										: getEmployeeShortName(d.inspector.fullname)}
 								</td>
 								<td>
 									{d.normContr == null
 										? ''
-										: d.normContr.fullname}
+										: getEmployeeShortName(d.normContr.fullname)}
 								</td>
 								<td>{d.note}</td>
 								<td
 									onClick={() => {
-										setDevelopingAttachedDoc(d)
-										history.push(
-											`/developing-attached-docs/${d.id}`
-										)
+										setDocData({
+											isCreateMode: false,
+											doc: d,
+										})
+										window.scrollTo(0, 0)
 									}}
 									className="pointer action-cell-width text-centered"
 								>

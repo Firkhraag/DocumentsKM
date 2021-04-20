@@ -62,7 +62,7 @@ namespace DocumentsKM.Controllers
             {
                 return Conflict();
             }
-            return Created($"additional-work/{additionalWorkModel.Id}", null);
+            return Created($"additional-work/{additionalWorkModel.Id}", new { Id = additionalWorkModel.Id });
         }
 
         [HttpPatch, Route("additional-work/{id}")]

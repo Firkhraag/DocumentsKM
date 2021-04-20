@@ -49,7 +49,7 @@ namespace DocumentsKM.Controllers
             {
                 var markLinkedDocModel = _mapper.Map<MarkLinkedDoc>(markLinkedDocRequest);
                 _service.Create(markLinkedDocModel, markId, markLinkedDocRequest.LinkedDocId);
-                return Created($"mark-linked-docs/{markLinkedDocModel.Id}", null);
+                return Created($"mark-linked-docs/{markLinkedDocModel.Id}", new { Id = markLinkedDocModel.Id });
             }
             catch (ArgumentNullException)
             {

@@ -363,3 +363,7 @@
 .absolute {
     position: absolute;
 }
+
+.custom-p-3 {
+    padding: 2.66rem 1rem 1rem 1rem;
+}

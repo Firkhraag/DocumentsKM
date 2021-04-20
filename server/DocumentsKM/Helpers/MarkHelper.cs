@@ -119,9 +119,6 @@ namespace DocumentsKM.Helpers
 
             var complexName = projectName;
             var objectName = objectNameBuilder.ToString();
-            Log.Information(complexName);
-            Log.Information(objectName);
-            Log.Information(bias.ToString());
             if (bias > 0)
             {
                 complexName = projectName + ". " + objectName.Substring(0, bias -2);
@@ -132,6 +129,20 @@ namespace DocumentsKM.Helpers
                 complexName = projectName.Substring(0, projectName.Length + bias - 2);
                 objectName = projectName.Substring(projectName.Length + bias) + ". " + objectName;
             }
+
+            complexName = complexName.Trim();
+            objectName = objectName.Trim();
+            if (complexName.Last() == '.') {
+                complexName = complexName.Substring(0, complexName.Length - 1);
+            }
+            if (objectName.Substring(0, 1) == ".") {
+                objectName = objectName.Substring(1);
+            }
+            if (objectName.Last() == '.') {
+                objectName = objectName.Substring(0, objectName.Length - 1);
+            }
+            complexName = complexName.Trim();
+            objectName = objectName.Trim();
 
             return (complexName, objectName);
         }

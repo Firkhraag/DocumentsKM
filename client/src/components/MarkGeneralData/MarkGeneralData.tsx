@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import Select from 'react-select'
+import Scroll from 'react-scroll'
 // Bootstrap
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Trash } from 'react-bootstrap-icons'
 import { Files } from 'react-bootstrap-icons'
 import { PlusCircle } from 'react-bootstrap-icons'
+import { ArrowUpCircle } from 'react-bootstrap-icons'
+import { ArrowDownCircle } from 'react-bootstrap-icons'
 // Util
 import httpClient from '../../axios'
 import GeneralDataModel from '../../model/GeneralDataModel'
@@ -134,7 +137,7 @@ const MarkGeneralData = () => {
 		}
 	}
 
-	const onPointSelect = async (id: number) => {
+	const onPointSelect = (id: number, scroll: boolean) => {
 		const v = getFromOptions(id, optionsObject.points, selectedObject.point)
 		if (v != null) {
 			setSelectedObject({
@@ -142,6 +145,11 @@ const MarkGeneralData = () => {
 				point: v,
 				pointText: v.text,
 			})
+			if (scroll) {
+				Scroll.scroller.scrollTo(`point${id}`, {
+					containerId: "srollable-points",
+				})
+			}
 		}
 	}
 
@@ -243,6 +251,224 @@ const MarkGeneralData = () => {
 		}
 		setPopup(defaultPopup)
 		setProcessIsRunning(false)
+	}
+
+	const onArrowUpClick = async () => {
+		if (selectedObject.section == null) {
+			return
+		}
+		if (selectedObject.point == null) {
+			if (optionsObject.points.length > 0) {
+				onPointSelect(optionsObject.points[optionsObject.points.length - 1].id, true)
+				return
+			}
+		}
+		let found = false
+		for (let i = optionsObject.points.length - 1; i >= 0; i--) {
+			if (found) {
+				onPointSelect(optionsObject.points[i].id, true)
+				return
+			}
+			if (selectedObject.point.id == optionsObject.points[i].id) {
+				found = true
+			}
+		}
+
+		found = false
+		for (let i = optionsObject.sections.length - 1; i >= 0; i--) {
+			if (found) {
+				const v = optionsObject.sections[i]
+				var pText = ''
+				if (optionsObject.sections[i].name == corrProtSectionName) {
+					const pointText = await httpClient.get(
+						`/marks/${mark.id}/corr-prot-point`
+					)
+					pText = pointText.data.result
+				}
+				if (cachedPoints.has(v.id)) {
+					const points = cachedPoints.get(v.id)
+					setOptionsObject({
+						...optionsObject,
+						points: points,
+					})
+					
+					if (points.length > 0) {
+						setSelectedObject({
+							...selectedObject,
+							section: v,
+							point: points[points.length - 1],
+							pointText: pText === '' ? points[points.length - 1].text : pText,
+							sectionText: v.name,
+						})
+						setTimeout(() => Scroll.scroller.scrollTo(`point${points[points.length - 1].id}`, {
+							containerId: "srollable-points",
+						}), 10)
+					} else {
+						setSelectedObject({
+							...selectedObject,
+							section: v,
+							point: null,
+							pointText: pText,
+							sectionText: v.name,
+						})
+					}
+					Scroll.scroller.scrollTo(`section${v.id}`, {
+						containerId: "srollable-sections",
+					})
+				} else {
+					try {
+						const pointsResponse = await httpClient.get(
+							`/mark-general-data-sections/${optionsObject.sections[i].id}/mark-general-data-points`
+						)
+						const points = pointsResponse.data
+						cachedPoints.set(v.id, points)
+						setOptionsObject({
+							...optionsObject,
+							points: points,
+						})
+						if (points.length > 0) {
+							setSelectedObject({
+								...selectedObject,
+								section: v,
+								point: points[points.length - 1],
+								pointText: pText === '' ? points[points.length - 1].text : pText,
+								sectionText: v.name,
+							})
+							setTimeout(() => Scroll.scroller.scrollTo(`point${points[points.length - 1].id}`, {
+								containerId: "srollable-points",
+							}), 10)
+						} else {
+							setSelectedObject({
+								...selectedObject,
+								section: v,
+								point: null,
+								pointText: pText,
+								sectionText: v.name,
+							})
+						}
+						Scroll.scroller.scrollTo(`section${v.id}`, {
+							containerId: "srollable-sections",
+						})
+					} catch (e) {
+						setLeftErrMsg(true)
+						setErrMsg('Произошла ошибка')
+					}
+				}
+				return
+			}
+			if (selectedObject.section.id == optionsObject.sections[i].id) {
+				found = true
+			}
+		}
+	}
+
+	const onArrowDownClick = async () => {
+		if (selectedObject.section == null) {
+			return
+		}
+		if (selectedObject.point == null) {
+			if (optionsObject.points.length > 0) {
+				onPointSelect(optionsObject.points[0].id, true)
+				return
+			}
+		}
+		let found = false
+		for (let i = 0; i < optionsObject.points.length; i++) {
+			if (found) {
+				onPointSelect(optionsObject.points[i].id, true)
+				return
+			}
+			if (selectedObject.point.id == optionsObject.points[i].id) {
+				found = true
+			}
+		}
+
+		found = false
+		for (let i = 0; i < optionsObject.sections.length; i++) {
+			if (found) {
+				const v = optionsObject.sections[i]
+				var pText = ''
+				if (optionsObject.sections[i].name == corrProtSectionName) {
+					const pointText = await httpClient.get(
+						`/marks/${mark.id}/corr-prot-point`
+					)
+					pText = pointText.data.result
+				}
+				if (cachedPoints.has(v.id)) {
+					const points = cachedPoints.get(v.id)
+					setOptionsObject({
+						...optionsObject,
+						points: points,
+					})
+					
+					if (points.length > 0) {
+						setSelectedObject({
+							...selectedObject,
+							section: v,
+							point: points[0],
+							pointText: pText === '' ? points[0].text : pText,
+							sectionText: v.name,
+						})
+						setTimeout(() => Scroll.scroller.scrollTo(`point${points[0].id}`, {
+							containerId: "srollable-points",
+						}), 10)
+					} else {
+						setSelectedObject({
+							...selectedObject,
+							section: v,
+							point: null,
+							pointText: pText,
+							sectionText: v.name,
+						})
+					}
+					Scroll.scroller.scrollTo(`section${v.id}`, {
+						containerId: "srollable-sections",
+					})
+				} else {
+					try {
+						const pointsResponse = await httpClient.get(
+							`/mark-general-data-sections/${optionsObject.sections[i].id}/mark-general-data-points`
+						)
+						const points = pointsResponse.data
+						cachedPoints.set(v.id, points)
+						setOptionsObject({
+							...optionsObject,
+							points: points,
+						})
+						if (points.length > 0) {
+							setSelectedObject({
+								...selectedObject,
+								section: v,
+								point: points[0],
+								pointText: pText === '' ? points[0].text : pText,
+								sectionText: v.name,
+							})
+							setTimeout(() => Scroll.scroller.scrollTo(`point${points[0].id}`, {
+								containerId: "srollable-points",
+							}), 10)
+						} else {
+							setSelectedObject({
+								...selectedObject,
+								section: v,
+								point: null,
+								pointText: pText,
+								sectionText: v.name,
+							})
+						}
+						Scroll.scroller.scrollTo(`section${v.id}`, {
+							containerId: "srollable-sections",
+						})
+					} catch (e) {
+						setLeftErrMsg(true)
+						setErrMsg('Произошла ошибка')
+					}
+				}
+				return
+			}
+			if (selectedObject.section.id == optionsObject.sections[i].id) {
+				found = true
+			}
+		}
 	}
 
 	const checkIfSectionValid = () => {
@@ -486,7 +712,7 @@ const MarkGeneralData = () => {
 		setProcessIsRunning(true)
 		try {
 			const response = await httpClient.get(
-				`/marks/${mark.id}/mark-general-data-document`,
+				`/marks/${mark.id}/general-data-document`,
 				{
 					responseType: 'blob',
 				}
@@ -547,67 +773,41 @@ const MarkGeneralData = () => {
 			<div className="flex">
 				<div className="info-area shadow p-3 bg-white rounded component-width component-cnt-div">
 					<div className="full-width">
-						<div className="flex-v general-data-selection">
+						<div className="flex-v general-data-selection" id="srollable-sections">
 							{optionsObject.sections.map((s, index) => {
 								return (
-									<div
-										className={
-											selectedObject.section == null
-												? 'pointer selection-text flex'
-												: selectedObject.section.id ==
-												  s.id
-												? 'pointer selection-text selected-bg flex'
-												: 'pointer selection-text flex'
-										}
-										onClick={() => onSectionSelect(s.id, s.name)}
-										key={s.id}
-									>
-										<p
-											className="no-bot-mrg"
-											style={{ flex: 1 }}
+									<Scroll.Element key={s.id} name={`section${s.id}`}>
+										<div
+											className={
+												selectedObject.section == null
+													? 'pointer selection-text flex'
+													: selectedObject.section.id ==
+													s.id
+													? 'pointer selection-text selected-bg flex'
+													: 'pointer selection-text flex'
+											}
+											onClick={() => onSectionSelect(s.id, s.name)}
 										>
-											{(index + 1).toString() +
-												'. ' +
-												s.name}
-										</p>
-										<div className="flex">
-											{/* <div onClick={() => onCopySectionClick(s.id, s.name)} className="trash-area">
-                                                <Files color="#666" size={22} />
-                                            </div> */}
-											<div
-												onClick={() =>
-													setPopup({
-														isShown: true,
-														msg: `Вы действительно хотите добавить раздел № ${
-															index + 1
-														} в шаблоны пользователя?`,
-														onAccept: () =>
-															onCopySectionClick(
-																s.id,
-																s.name
-															),
-														onCancel: () =>
-															setPopup(
-																defaultPopup
-															),
-													})
-												}
-												className="trash-area"
+											<p
+												className="no-bot-mrg"
+												style={{ flex: 1 }}
 											>
-												<Files color="#666" size={22} />
-											</div>
-											{
+												{(index + 1).toString() +
+													'. ' +
+													s.name}
+											</p>
+											<div className="flex">
 												<div
 													onClick={() =>
 														setPopup({
 															isShown: true,
-															msg: `Вы действительно хотите удалить раздел № ${
+															msg: `Вы действительно хотите добавить раздел № ${
 																index + 1
-															}?`,
+															} в шаблоны пользователя?`,
 															onAccept: () =>
-																onSectionDeleteClick(
-																	index,
-																	s.id
+																onCopySectionClick(
+																	s.id,
+																	s.name
 																),
 															onCancel: () =>
 																setPopup(
@@ -617,14 +817,38 @@ const MarkGeneralData = () => {
 													}
 													className="trash-area"
 												>
-													<Trash
-														color="#666"
-														size={22}
-													/>
+													<Files color="#666" size={22} />
 												</div>
-											}
+												{
+													<div
+														onClick={() =>
+															setPopup({
+																isShown: true,
+																msg: `Вы действительно хотите удалить раздел № ${
+																	index + 1
+																}?`,
+																onAccept: () =>
+																	onSectionDeleteClick(
+																		index,
+																		s.id
+																	),
+																onCancel: () =>
+																	setPopup(
+																		defaultPopup
+																	),
+															})
+														}
+														className="trash-area"
+													>
+														<Trash
+															color="#666"
+															size={22}
+														/>
+													</div>
+												}
+											</div>
 										</div>
-									</div>
+									</Scroll.Element>
 								)
 							})}
 						</div>
@@ -730,52 +954,62 @@ const MarkGeneralData = () => {
 					</div>
 				</div>
 
+				<div className="flex-v mrg-left">
+					<div className="pointer p-1" onClick={onArrowUpClick}>
+						<ArrowUpCircle color="#666" size={30} />
+					</div>
+					<div className="pointer p-1" onClick={onArrowDownClick}>
+						<ArrowDownCircle color="#666" size={30} />
+					</div>
+				</div>
+
 				<div className="shadow p-3 bg-white rounded mrg-left component-width component-cnt-div">
 					<div className="full-width">
-						<div className="flex-v general-data-selection">
+						<div className="flex-v general-data-selection" id="srollable-points">
 							{optionsObject.points.map((p, index) => {
 								return (
-									<div
-										className={
-											selectedObject.point == null
-												? 'pointer selection-text flex'
-												: selectedObject.point.id ==
-												  p.id
-												? 'pointer selection-text selected-bg flex'
-												: 'pointer selection-text flex'
-										}
-										key={p.id}
-									>
-										<p
-											className="no-bot-mrg"
-											style={{ flex: 1 }}
-											onClick={() => onPointSelect(p.id)}
-										>
-											{(index + 1).toString() +
-												'. ' +
-												truncateText(p.text, 55, null)}
-										</p>
+									<Scroll.Element key={p.id} name={`point${p.id}`}>
 										<div
-											onClick={() =>
-												setPopup({
-													isShown: true,
-													msg: `Вы действительно хотите удалить пункт № ${
-														index + 1
-													}?`,
-													onAccept: () =>
-														onPointDeleteClick(
-															index,
-															p.id
-														),
-													onCancel: () =>
-														setPopup(defaultPopup),
-												})
+											className={
+												selectedObject.point == null
+													? 'pointer selection-text flex'
+													: selectedObject.point.id ==
+													p.id
+													? 'pointer selection-text selected-bg flex'
+													: 'pointer selection-text flex'
 											}
-											className="trash-area"
 										>
-											<Trash color="#666" size={22} />
+											<p
+												className="no-bot-mrg"
+												style={{ flex: 1 }}
+												onClick={() => onPointSelect(p.id, false)}
+											>
+												{(index + 1).toString() +
+													'. ' +
+													truncateText(p.text, 55, null)}
+											</p>
+											<div
+												onClick={() =>
+													setPopup({
+														isShown: true,
+														msg: `Вы действительно хотите удалить пункт № ${
+															index + 1
+														}?`,
+														onAccept: () =>
+															onPointDeleteClick(
+																index,
+																p.id
+															),
+														onCancel: () =>
+															setPopup(defaultPopup),
+													})
+												}
+												className="trash-area"
+											>
+												<Trash color="#666" size={22} />
+											</div>
 										</div>
-									</div>
+									</Scroll.Element>
 								)
 							})}
 						</div>

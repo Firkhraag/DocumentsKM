@@ -25,6 +25,7 @@ namespace DocumentsKM.Tests
             var mockMarkRepo = new Mock<IMarkRepo>();
             var mockEmployeeRepo = new Mock<IEmployeeRepo>();
             var mockDocTypeRepo = new Mock<IDocTypeRepo>();
+            var mockAdditionalWorkRepo = new Mock<IAdditionalWorkRepo>();
 
             // Arrange
             foreach (var doc in TestData.docs)
@@ -100,6 +101,7 @@ namespace DocumentsKM.Tests
                 mockMarkRepo.Object,
                 mockEmployeeRepo.Object,
                 mockDocTypeRepo.Object,
+                mockAdditionalWorkRepo.Object,
                 options);
         }
 
