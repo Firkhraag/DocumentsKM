@@ -76,7 +76,7 @@ namespace DocumentsKM.Services
             const int secondPartColumnIndexToFill = 4;
 
             MainDocumentPart mainPart = document.MainDocumentPart;
-            var commonFooter = mainPart.FooterParts.LastOrDefault();
+            var commonFooter = mainPart.FooterParts.FirstOrDefault();
             var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
             var trArr = t.Descendants<TableRow>().ToList();
 
@@ -122,10 +122,14 @@ namespace DocumentsKM.Services
 
             p.Append(GetTextElement(departmentHead.Name, 22));
 
-            trCells = trArr[8].Descendants<TableCell>().ToList();
-            tc = trCells[1];
-            p = tc.GetFirstChild<Paragraph>();
-            p.Append(GetTextElement(mark.ChiefEngineerName, 22));
+            if (mark.ChiefEngineerName != null)
+            {
+                trCells = trArr[8].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                var split =  mark.ChiefEngineerName.Split(" ");
+                p.Append(GetTextElement(split.LastOrDefault(), 22));
+            }
 
             // trCells = trArr[9].Descendants<TableCell>().ToList();
             // tc = trCells[1];
@@ -180,7 +184,8 @@ namespace DocumentsKM.Services
             const int secondPartColumnIndexToFill = 4;
 
             MainDocumentPart mainPart = document.MainDocumentPart;
-            var commonFooter = mainPart.FooterParts.LastOrDefault();
+            // var commonFooter = mainPart.FooterParts.LastOrDefault();
+            var commonFooter = mainPart.FooterParts.FirstOrDefault();
             var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
             var trArr = t.Descendants<TableRow>().ToList();
 
@@ -238,7 +243,8 @@ namespace DocumentsKM.Services
         {
             var columnIndexToFill = 6;
             MainDocumentPart mainPart = document.MainDocumentPart;
-            var commonFooter = mainPart.FooterParts.FirstOrDefault();
+            // var commonFooter = mainPart.FooterParts.FirstOrDefault();
+            var commonFooter = mainPart.FooterParts.LastOrDefault();
             var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
 
             var firstTr = t.Descendants<TableRow>().FirstOrDefault();
@@ -252,7 +258,8 @@ namespace DocumentsKM.Services
         {
             var columnIndexToFill = 6;
             MainDocumentPart mainPart = document.MainDocumentPart;
-            var commonFooter = mainPart.FooterParts.LastOrDefault();
+            // var commonFooter = mainPart.FooterParts.LastOrDefault();
+            var commonFooter = mainPart.FooterParts.FirstOrDefault();
             var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
 
             var firstTr = t.Descendants<TableRow>().FirstOrDefault();

@@ -57,6 +57,19 @@ namespace DocumentsKM.Services
             return _repository.GetById(id);
         }
 
+        public (Mark, int, int, int) GetByIdWithParentIds(int id)
+        {
+            var mark = _repository.GetById(id);
+            if (mark == null)
+                return (null, 0, 0, 0);
+            var subnodeId = mark.SubnodeId;
+            var subnode = _subnodeRepo.GetById(subnodeId);
+            var nodeId = subnode.NodeId;
+            var node = _nodeRepo.GetById(nodeId);
+            var projectId = node.ProjectId;
+            return (mark, subnodeId, subnodeId, projectId);
+        }
+
         public string GetNewMarkCode(int subnodeId){
             var codes = _repository.GetAllBySubnodeId(subnodeId).Select(
                 v => v.Code.Substring(2));

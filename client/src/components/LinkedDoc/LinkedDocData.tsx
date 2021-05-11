@@ -387,7 +387,7 @@ const LinkedDocData = ({
 						}
 						disabled={processIsRunning || (!linkedDocData.isCreateMode && !Object.values({
 							linkedDocId:
-								selectedObject.linkedDoc.id ===
+								selectedObject.linkedDoc.code == '' || selectedObject.linkedDoc.id ===
 								linkedDocData.markLinkedDoc.linkedDoc.id
 									? undefined
 									: selectedObject.linkedDoc.id,

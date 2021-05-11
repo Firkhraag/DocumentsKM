@@ -1,5 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
+import Scroll from 'react-scroll'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -65,7 +66,7 @@ const ConstructionBoltTable = ({
 
 	return (
 		<div className="mrg-bot">
-			<h2 className="mrg-top-3  bold text-centered">
+			<h2 className="mrg-top-3 bold text-centered" id="construction-bolt-header">
 				Высокопрочные болты
 			</h2>
 			{constructionBoltData.isCreateMode || constructionBoltData.constructionBolt != null ? <ConstructionBoltData 
@@ -76,11 +77,13 @@ const ConstructionBoltTable = ({
 				constructionId={constructionId} /> : null}
 			<PlusCircle
 				onClick={() => {
+					Scroll.scroller.scrollTo(`construction-bolt-header`, {
+						offset: -200,
+					})
 					setConstructionBoltData({
 						isCreateMode: true,
 						constructionBolt: null,
 					})
-					// window.scrollTo(0, 0)
 				}}
 				color="#666"
 				size={28}
@@ -112,11 +115,13 @@ const ConstructionBoltTable = ({
 								<td>{cb.washerNum}</td>
 								<td
 									onClick={() => {
+										Scroll.scroller.scrollTo(`construction-bolt-header`, {
+											offset: -200,
+										})
 										setConstructionBoltData({
 											isCreateMode: false,
 											constructionBolt: cb,
 										})
-										// window.scrollTo(0, 0)
 									}}
 									className="pointer action-cell-width text-centered"
 								>

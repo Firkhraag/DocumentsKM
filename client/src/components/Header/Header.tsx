@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 // Bootstrap
 import { PersonFill } from 'react-bootstrap-icons'
+import { Link45deg } from 'react-bootstrap-icons'
 // Util
 import { useMark } from '../../store/MarkStore'
 import Drawer from './Drawer/Drawer'
-import { makeMarkName } from '../../util/make-name'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 import './Header.css'
 
@@ -38,10 +38,19 @@ const Header = () => {
 			<div onClick={onMainClick} className="pointer bold header-link-pad">
 				Главная
 			</div>
-			<div className="bold header-link-pad">
-				{mark == null
-					? '-'
-					: mark.designation}
+			<div className="flex">
+				<div className="bold header-link-pad">
+					{mark == null
+						? '-'
+						: mark.designation}
+				</div>
+				{mark == null ? null : <div className="header-link-pad pointer" onClick={
+					() => {
+						navigator.clipboard.writeText(`${window.location.protocol}//${window.location.host}/marks/${mark.id}/set-current`)
+						alert("Ссылка скопирована")
+				}}>
+					<Link45deg color="#333" size={18} style={{marginLeft: 5}} />
+				</div>}
 			</div>
 			<div id="user-cnt" className="profile-icon-cnt relative">
 				<Drawer

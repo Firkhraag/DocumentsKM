@@ -74,7 +74,7 @@ namespace DocumentsKM.Services
                     mark.ObjectName,
                     mark,
                     departmentHead);
-                Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
+                AppendToSecondFooterTable(wordDoc, mark.Designation);
             }
         }
 
@@ -206,6 +206,20 @@ namespace DocumentsKM.Services
                 p.Append(Word.GetTextElement(Math.Round(sums.Skip(1).Sum() * multiplier + standardConstWeightSum, 3).ToStringWithComma(), 24));
                 t.Append(lastTr);
             }
+        }
+
+        private void AppendToSecondFooterTable(WordprocessingDocument document, string markName)
+        {
+            var columnIndexToFill = 6;
+            MainDocumentPart mainPart = document.MainDocumentPart;
+            var commonFooter = mainPart.FooterParts.ToList()[1];
+            var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
+
+            var firstTr = t.Descendants<TableRow>().FirstOrDefault();
+            var firstTrCells = firstTr.Descendants<TableCell>().ToList();
+            var tc = firstTrCells[columnIndexToFill];
+            var p = tc.GetFirstChild<Paragraph>();
+            p.Append(Word.GetTextElement(markName, 28));
         }
     }
 }

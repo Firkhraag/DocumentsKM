@@ -486,12 +486,12 @@ const ConstructionElementData = ({
 						}
 						disabled={processIsRunning || (!constructionElementData.isCreateMode && !Object.values({
 							profileId:
-								selectedObject.profile.id ===
+								selectedObject.profile == null || selectedObject.profile.id ===
 								constructionElementData.constructionElement.profile.id
 									? undefined
 									: selectedObject.profile.id,
 							steelId:
-								selectedObject.steel.id === constructionElementData.constructionElement.steel.id
+								selectedObject.steel == null || selectedObject.steel.id === constructionElementData.constructionElement.steel.id
 									? undefined
 									: selectedObject.steel.id,
 							length:

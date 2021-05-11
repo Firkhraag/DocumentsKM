@@ -65,6 +65,8 @@ const SheetData = ({ sheetData, setSheetData, sheets, setSheets }: SheetDataProp
 
 	const [fetched, setFetched] = useState(false)
 
+	// console.log(sheetData.sheet)
+
 	// console.log(selectedObject != null ? sheetData.sheet.note : "aaa")
 	// console.log(selectedObject != null ? selectedObject.note : "aaa")
 
@@ -82,7 +84,7 @@ const SheetData = ({ sheetData, setSheetData, sheets, setSheets }: SheetDataProp
 						sheetNames: sheetNamesResponse.data,
 						employees: employeesResponse.data,
 					})
-					if (sheetData.isCreateMode) {
+					if (sheetData.isCreateMode && sheetData.sheet == null) {
 						const valuesResponse = await httpClient.get(
 							`/users/${user.id}/default-values`
 						)
@@ -547,7 +549,7 @@ const SheetData = ({ sheetData, setSheetData, sheets, setSheets }: SheetDataProp
 								? undefined
 								: selectedObject.form,
 						creatorId:
-							selectedObject.creator.id === sheetData.sheet.creator.id
+							selectedObject.creator == null || selectedObject.creator.id === sheetData.sheet.creator.id
 								? undefined
 								: selectedObject.creator.id,
 						inspectorId: getNullableFieldValue(

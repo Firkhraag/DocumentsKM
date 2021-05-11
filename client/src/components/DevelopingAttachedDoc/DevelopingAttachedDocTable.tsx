@@ -67,10 +67,34 @@ const DevelopingAttachedDocTable = () => {
 				setDocs={setDocs} /> : null}
 			<PlusCircle
 				onClick={() => {
-					setDocData({
-						isCreateMode: true,
-						doc: null,
-					})
+					if (docs.length > 0) {
+						const lastDoc = docs[docs.length - 1]
+						setDocData({
+							isCreateMode: true,
+							doc: {
+								id: -1,
+								num: 1,
+								numOfPages: 1,
+								form: 0.125,
+								name: '',
+								type: null,
+								creator: lastDoc.creator,
+								inspector: lastDoc.inspector,
+								normContr: lastDoc.normContr,
+								releaseNum: 0,
+								note: '',
+							},
+						})
+					} else {
+						setDocData({
+							isCreateMode: true,
+							doc: null,
+						})
+					}
+					// setDocData({
+					// 	isCreateMode: true,
+					// 	doc: null,
+					// })
 					window.scrollTo(0, 0)
 				}}
 				color="#666"

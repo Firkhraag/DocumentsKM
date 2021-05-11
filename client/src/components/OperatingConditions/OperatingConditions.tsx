@@ -677,32 +677,32 @@ const OperatingConditions = () => {
 								? undefined
 								: selectedObject.temperature,
 						envAggressivenessId:
-							selectedObject.envAggressiveness.id ===
+							selectedObject.envAggressiveness == null || selectedObject.envAggressiveness.id ===
 							defaultSelectedObject.envAggressiveness.id
 								? undefined
 								: selectedObject.envAggressiveness.id,
 						operatingAreaId:
-							selectedObject.operatingArea.id ===
+							selectedObject.operatingArea == null || selectedObject.operatingArea.id ===
 							defaultSelectedObject.operatingArea.id
 								? undefined
 								: selectedObject.operatingArea.id,
 						gasGroupId:
-							selectedObject.gasGroup.id ===
+							selectedObject.gasGroup == null || selectedObject.gasGroup.id ===
 							defaultSelectedObject.gasGroup.id
 								? undefined
 								: selectedObject.gasGroup.id,
 						constructionMaterialId:
-							selectedObject.constructionMaterial.id ===
+							selectedObject.constructionMaterial == null || selectedObject.constructionMaterial.id ===
 							defaultSelectedObject.constructionMaterial.id
 								? undefined
 								: selectedObject.constructionMaterial.id,
 						paintworkTypeId:
-							selectedObject.paintworkType.id ===
+							selectedObject.paintworkType == null || selectedObject.paintworkType.id ===
 							defaultSelectedObject.paintworkType.id
 								? undefined
 								: selectedObject.paintworkType.id,
 						highTensileBoltsTypeId:
-							selectedObject.highTensileBoltsType.id ===
+							selectedObject.highTensileBoltsType == null || selectedObject.highTensileBoltsType.id ===
 							defaultSelectedObject.highTensileBoltsType.id
 								? undefined
 								: selectedObject.highTensileBoltsType.id,

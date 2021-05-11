@@ -3,5 +3,6 @@ Create Table GeneralDataSections (
 	UserId Smallint Not Null,
 	Name Varchar(255) Not Null,
 	OrderNum Smallint Not Null,
-	Unique(UserId, Name)
+	Unique(UserId, Name),
+	Constraint GeneralDataSection Foreign Key(UserId) References Users(Id)
 );

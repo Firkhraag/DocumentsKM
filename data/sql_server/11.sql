@@ -4,5 +4,6 @@ Create Table AdditionalWork (
 	EmployeeId Int Not Null,
 	Valuation Smallint Not Null,
 	MetalOrder Smallint Not Null,
-	Unique(MarkId, EmployeeId)
+	Unique(MarkId, EmployeeId),
+	Constraint FK_Mark_AdditionalWork Foreign Key(MarkId) References Marks(Id)
 );

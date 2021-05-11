@@ -26,6 +26,7 @@ import EstimateTaskDocument from '../components/EstimateTask/EstimateTaskDocumen
 import ProjectRegistration from '../components/ProjectRegistration/ProjectRegistration'
 import EstimationDocument from '../components/Estimation/EstimationDocument'
 import DefaultValuesData from '../components/DefaultValues/DefaultValuesData'
+import CurrentMarkSetter from '../components/CurrentMarkSetter/CurrentMarkSetter'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
 
@@ -48,6 +49,10 @@ const AuthApp = () => {
 						<div>
 							<Route exact path="/">
 								<Home setSpecification={setSpecification} />
+							</Route>
+
+							<Route exact path="/marks/:markId/set-current">
+								<CurrentMarkSetter />
 							</Route>
 
 							<Route exact path="/marks">

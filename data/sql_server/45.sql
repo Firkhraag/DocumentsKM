@@ -1,5 +1,5 @@
 Create Table ConstructionBolts (
-	Id Smallint Identity(1, 1) Primary Key,
+	Id Int Identity(1, 1) Primary Key,
 	ConstructionId Int Not Null,
 	DiameterId Smallint Not Null,
 	Packet Smallint Not Null,

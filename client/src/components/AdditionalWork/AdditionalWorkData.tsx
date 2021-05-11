@@ -322,7 +322,7 @@ const AdditionalWorkData = ({
 					}
 					disabled={processIsRunning || (!additionalWorkData.isCreateMode && !Object.values({
 						employeeId:
-							selectedObject.employee.id ===
+							selectedObject.employee == null || selectedObject.employee.id ===
 							additionalWorkData.additionalWork.employee.id
 								? undefined
 								: selectedObject.employee.id,

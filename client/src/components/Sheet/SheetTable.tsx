@@ -65,10 +65,30 @@ const SheetTable = () => {
 				setSheets={setSheets} /> : null}
 			<PlusCircle
 				onClick={() => {
-					setSheetData({
-						isCreateMode: true,
-						sheet: null,
-					})
+					if (sheets.length > 0) {
+						const lastSheet = sheets[sheets.length - 1]
+						setSheetData({
+							isCreateMode: true,
+							sheet: {
+								id: -1,
+								num: 1,
+								form: 1.0,
+								name: '',
+								type: null,
+								creator: lastSheet.creator,
+								inspector: lastSheet.inspector,
+								normContr: lastSheet.normContr,
+								releaseNum: 0,
+								numOfPages: 0,
+								note: '',
+							},
+						})
+					} else {
+						setSheetData({
+							isCreateMode: true,
+							sheet: null,
+						})
+					}
 					window.scrollTo(0, 0)
 				}}
 				color="#666"

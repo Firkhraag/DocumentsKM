@@ -382,7 +382,7 @@ const ConstructionBoltData = ({
 					}
 					disabled={processIsRunning || (!constructionBoltData.isCreateMode && !Object.values({
 						diameterId:
-							selectedObject.diameter.id ===
+							selectedObject.diameter == null ||selectedObject.diameter.id ===
 							constructionBoltData.constructionBolt.diameter.id
 								? undefined
 								: selectedObject.diameter.id,

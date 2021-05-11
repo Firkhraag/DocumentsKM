@@ -6,6 +6,19 @@
     width: 18vw;
 }
 
+.form-group {
+    margin-bottom: 0.85em;
+}
+
+.form-check-input:checked {
+    background-color: #666 !important;
+    border-color: transparent !important;
+}
+
+.form-check-input:focus {
+    box-shadow: none !important;
+}
+
 .input-width-3 {
     width: 13vw;
 }
@@ -261,7 +274,7 @@
 /* Section */
 
 .no-bot-mrg {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
 }
 
 .form-group.no-bot-mrg {

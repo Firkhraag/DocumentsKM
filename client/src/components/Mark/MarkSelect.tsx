@@ -64,11 +64,9 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 					const marksResponse = await httpClient.post(`/marks/recent`, {
 						ids: recentMark.map(m => m.id),
 					})
-					console.log(marksResponse.data)
 					recentMarks = [] as Mark[]
 					marksResponse.data.forEach(
 						(v: Mark) => recentMarks[recentMark.map(m => m.id).indexOf(v.id)] = v)
-					console.log(recentMark)
 					setRecentMarks(recentMark)
 				}
 			} catch (e) {
@@ -355,21 +353,6 @@ const MarkSelect = ({ setSubnode }: MarkSelectProps) => {
 		}
 		const mark = selectedObject.mark
 		localStorage.setItem('selectedMarkId', mark.id.toString())
-
-		// const filteredRecentMarks = optionsObject.recentMarks.filter(
-		// 	(m) => m.id !== mark.id
-		// )
-		// if (filteredRecentMarks.length >= 5) {
-		// 	filteredRecentMarks.pop()
-		// }
-		// filteredRecentMarks.unshift(new RecentMark({
-		// 	id: m.id,
-		// 	projectId: selectedObject.project.id,
-		// 	nodeId: selectedObject.node.id,
-		// 	subnodeId: selectedObject.subnode.id,
-		// }))
-		// let resStr = JSON.stringify(filteredRecentMarks)
-		// localStorage.setItem('recentMark', resStr)
 
 		let recentMarks = [] as RecentMark[]
 		const recentMarkStr = localStorage.getItem('recentMark')

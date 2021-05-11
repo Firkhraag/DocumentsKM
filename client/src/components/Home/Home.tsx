@@ -218,6 +218,15 @@ const Home = ({ setSpecification }: HomeProps) => {
 						Выпуски спецификаций
 					</Button>
 				</Link>
+				{/* <Button
+					variant="outline-secondary"
+					disabled={
+						mark == null || processIsRunning ? true : false
+					}
+					onClick={() => navigator.clipboard.writeText(`${window.location.protocol}//${window.location.host}/marks/${mark.id}/set-current`)}
+				>
+					Скопировать ссылку
+				</Button> */}
 			</div>
 
 			<h2 className="home-cnt-header text-centered">Документы</h2>

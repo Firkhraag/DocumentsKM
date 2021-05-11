@@ -1,5 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
+import Scroll from 'react-scroll'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -63,7 +64,7 @@ const ConstructionElementTable = ({
 
 	return (
 		<div>
-			<h2 className="bold text-centered">Перечень элементов</h2>
+			<h2 className="bold text-centered" id="construction-element-header">Перечень элементов</h2>
 			{constructionElementData.isCreateMode || constructionElementData.constructionElement != null ? <ConstructionElementData 
 				constructionElementData={constructionElementData}
 				setConstructionElementData={setConstructionElementData}
@@ -72,11 +73,13 @@ const ConstructionElementTable = ({
 				constructionId={constructionId} /> : null}
 			<PlusCircle
 				onClick={() => {
+					Scroll.scroller.scrollTo(`construction-element-header`, {
+						offset: -200,
+					})
 					setConstructionElementData({
 						isCreateMode: true,
 						constructionElement: null,
 					})
-					// window.scrollTo(0, 0)
 				}}
 				color="#666"
 				size={28}
@@ -115,11 +118,13 @@ const ConstructionElementTable = ({
 									<td>{ce.profile.weight}</td>
 									<td
 										onClick={() => {
+											Scroll.scroller.scrollTo(`construction-element-header`, {
+												offset: -200,
+											})
 											setConstructionElementData({
 												isCreateMode: false,
 												constructionElement: ce,
 											})
-											// window.scrollTo(0, 0)
 										}}
 										className="pointer action-cell-width text-centered"
 									>

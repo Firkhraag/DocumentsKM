@@ -613,7 +613,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 									? undefined
 									: selectedObject.name,
 							departmentId:
-								selectedObject.department.id === mark.department.id
+								selectedObject.department == null || selectedObject.department.id === mark.department.id
 									? undefined
 									: selectedObject.department.id,
 							chiefSpecialistId: getNullableFieldValue(

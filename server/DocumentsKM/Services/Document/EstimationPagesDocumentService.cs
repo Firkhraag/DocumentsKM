@@ -56,7 +56,7 @@ namespace DocumentsKM.Services
                     mark.ComplexName,
                     mark.ObjectName,
                     departmentHead);
-                Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
+                AppendToSecondFooterTable(wordDoc, mark.Designation);
 
                 for (int i = 1; i < numOfPages; i++)
                 {
@@ -99,6 +99,21 @@ namespace DocumentsKM.Services
             tc = trCells[1];
             p = tc.GetFirstChild<Paragraph>();
             p.Append(Word.GetTextElement(departmentHead.Name, 22));
+        }
+
+        private void AppendToSecondFooterTable(WordprocessingDocument document, string markName)
+        {
+            var columnIndexToFill = 6;
+            MainDocumentPart mainPart = document.MainDocumentPart;
+            // var commonFooter = mainPart.FooterParts.FirstOrDefault();
+            var commonFooter = mainPart.FooterParts.FirstOrDefault();
+            var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
+
+            var firstTr = t.Descendants<TableRow>().FirstOrDefault();
+            var firstTrCells = firstTr.Descendants<TableCell>().ToList();
+            var tc = firstTrCells[columnIndexToFill];
+            var p = tc.GetFirstChild<Paragraph>();
+            p.Append(Word.GetTextElement(markName, 28));
         }
     }
 }

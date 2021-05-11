@@ -8,7 +8,7 @@ namespace DocumentsKM.Models
     public class StandardConstruction
     {
         [Key]
-        public Int16 Id { get; set; }
+        public Int32 Id { get; set; }
 
         // Выпуск спецификации
         [Required]

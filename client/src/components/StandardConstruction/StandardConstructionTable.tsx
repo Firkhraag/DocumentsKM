@@ -1,5 +1,6 @@
 // Global
 import React, { useState, useEffect } from 'react'
+import Scroll from 'react-scroll'
 // Bootstrap
 import Table from 'react-bootstrap/Table'
 import { PlusCircle } from 'react-bootstrap-icons'
@@ -63,7 +64,7 @@ const StandardConstructionTable = ({ specificationId }: StandardConstructionTabl
 
 	return (
 		<div className="mrg-bot">
-			<h2 className="mrg-top-3 bold text-centered">
+			<h2 className="mrg-top-3 bold text-centered" id ="standard-construction-header">
 				Типовые конструкции
 			</h2>
 
@@ -76,6 +77,9 @@ const StandardConstructionTable = ({ specificationId }: StandardConstructionTabl
 					specificationId={specificationId} /> : null}
 				<PlusCircle
 					onClick={() => {
+						Scroll.scroller.scrollTo(`standard-construction-header`, {
+							offset: -200,
+						})
 						setStandardConstructionData({
 							isCreateMode: true,
 							standardConstruction: null,
@@ -118,11 +122,13 @@ const StandardConstructionTable = ({ specificationId }: StandardConstructionTabl
 									</td>
 									<td
 										onClick={() => {
+											Scroll.scroller.scrollTo(`standard-construction-header`, {
+												offset: -200,
+											})
 											setStandardConstructionData({
 												isCreateMode: false,
 												standardConstruction: sc,
 											})
-											// window.scrollTo(0, 0)
 										}}
 										className="pointer action-cell-width text-centered"
 									>

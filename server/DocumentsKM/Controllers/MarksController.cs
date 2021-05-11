@@ -58,6 +58,22 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
+        [HttpGet, Route("marks/{id}/with-parent-ids")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<MarkResponse> GetByIdWithParentIds(int id)
+        {
+            (var mark, var subnodeId, var nodeId, var projectId) = _service.GetByIdWithParentIds(id);
+            if (mark != null)
+                return Ok(new MarkParentResponse{
+                    Mark = _mapper.Map<MarkResponse>(mark),
+                    SubnodeId = subnodeId,
+                    NodeId = nodeId,
+                    ProjectId = projectId,
+                });
+            return NotFound();
+        }
+
         [HttpGet, Route("subnodes/{subnodeId}/new-mark-code")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<string> GetNewMarkCode(int subnodeId)

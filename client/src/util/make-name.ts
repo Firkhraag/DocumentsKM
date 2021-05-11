@@ -39,11 +39,11 @@ export const makeComplexAndObjectName = (
 	markName: string,
 	bias: number
 ) => {
-	console.log(projectName)
-	console.log(nodeName)
-	console.log(subnodeName)
-	console.log(markName)
-	console.log(bias)
+	// console.log(projectName)
+	// console.log(nodeName)
+	// console.log(subnodeName)
+	// console.log(markName)
+	// console.log(bias)
 	let complexName = projectName
 	let objectName = ''
 	let firstPartAdded = false

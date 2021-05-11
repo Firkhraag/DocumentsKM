@@ -13,6 +13,8 @@ namespace DocumentsKM.Services
         IEnumerable<Mark> GetAllByIds(List<int> ids);
         // Получить марку по id
         Mark GetById(int id);
+        // Получить марку с id родителей по id
+        (Mark, int, int, int) GetByIdWithParentIds(int id);
         // Получить код для создания новой марки
         string GetNewMarkCode(int subnodeId);
         // Создать новую марку

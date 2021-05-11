@@ -5,7 +5,7 @@ namespace DocumentsKM.Dtos
 {
     public class ConstructionBoltResponse
     {
-        public Int16 Id { get; set; }
+        public Int32 Id { get; set; }
         public BoltDiameter Diameter { get; set; }
         public Int16 Packet { get; set; }
         public Int16 Num { get; set; }

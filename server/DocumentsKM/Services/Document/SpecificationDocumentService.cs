@@ -91,7 +91,7 @@ namespace DocumentsKM.Services
                     mark.ObjectName,
                     mark,
                     departmentHead);
-                Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
+                AppendToSecondFooterTable(wordDoc, mark.Designation);
             }
         }
 
@@ -366,6 +366,22 @@ namespace DocumentsKM.Services
                 t.Append(newTr);
                 n++;
             }
+        }
+
+        private void AppendToSecondFooterTable(WordprocessingDocument document, string markName)
+        {
+            var columnIndexToFill = 6;
+            MainDocumentPart mainPart = document.MainDocumentPart;
+            // var commonFooter = mainPart.FooterParts.FirstOrDefault();
+            var commonFooter = mainPart.FooterParts.ToList()[1];
+            // Log.Information(mainPart.FooterParts.ToList()[1]);
+            var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
+
+            var firstTr = t.Descendants<TableRow>().FirstOrDefault();
+            var firstTrCells = firstTr.Descendants<TableCell>().ToList();
+            var tc = firstTrCells[columnIndexToFill];
+            var p = tc.GetFirstChild<Paragraph>();
+            p.Append(Word.GetTextElement(markName, 28));
         }
     }
 }

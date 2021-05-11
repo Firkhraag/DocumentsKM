@@ -4,5 +4,6 @@ Create Table AttachedDocs (
 	Designation Varchar(100) Not Null,
 	Name Varchar(200) Not Null,
 	Note Varchar(50),
-	Unique(MarkId, Designation)
+	Unique(MarkId, Designation),
+	Constraint FK_Mark_AttachedDocs Foreign Key(MarkId) References Marks(Id)
 );

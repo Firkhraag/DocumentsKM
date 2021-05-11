@@ -79,7 +79,7 @@ const DevelopingAttachedDocData = ({
 						employees: employeesResponse.data,
 						types: docTypesResponse.data,
 					})
-                    if (docData.isCreateMode) {
+                    if (docData.isCreateMode && docData.doc == null) {
                         const valuesResponse = await httpClient.get(
                             `/users/${user.id}/default-values`
                         )
@@ -575,7 +575,7 @@ const DevelopingAttachedDocData = ({
 					}
 					disabled={processIsRunning || (!docData.isCreateMode && !Object.values({
 						typeId:
-							selectedObject.type.id === docData.doc.type.id
+							selectedObject.type == null || selectedObject.type.id === docData.doc.type.id
 								? undefined
 								: selectedObject.type.id,
 						name:
@@ -592,7 +592,7 @@ const DevelopingAttachedDocData = ({
 								? undefined
 								: selectedObject.form,
 						creatorId:
-							selectedObject.creator.id ===
+							selectedObject.creator == null || selectedObject.creator.id ===
 							docData.doc.creator.id
 								? undefined
 								: selectedObject.creator.id,

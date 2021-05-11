@@ -176,7 +176,7 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 														setPopup(defaultPopup),
 											  })
 									}
-									className="pointer text-centered"
+									className="pointer div-container"
 								>
 									<Form.Check
 										ref={refs[index]}

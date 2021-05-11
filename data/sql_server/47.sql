@@ -1,5 +1,5 @@
 Create Table StandardConstructions (
-	Id Smallint Identity(1, 1) Primary Key,
+	Id Int Identity(1, 1) Primary Key,
 	SpecificationId Int Not Null,
 	Name Varchar(255) Not Null,
 	Num Smallint Not Null,

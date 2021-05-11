@@ -3,5 +3,6 @@ Create Table MarkGeneralDataSections (
 	MarkId int Not Null,
 	Name Varchar(255) Not Null,
 	OrderNum Smallint Not Null,
-	Unique(MarkId, Name)
+	Unique(MarkId, Name),
+	Constraint GeneralDataSection Foreign Key(MarkId) References Marks(Id)
 );
