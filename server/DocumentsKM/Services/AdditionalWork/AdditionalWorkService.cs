@@ -36,11 +36,11 @@ namespace DocumentsKM.Services
                         Creator = g.First().Creator,
                         Form = g.Sum(v => v.Form),
                     });
-            var docsGroupedByNormContr = docs.Where(
-                v => v.NormContr != null).GroupBy(d => d.NormContr).Select(
+            var docsGroupedByInspector = docs.Where(
+                v => v.Inspector != null).GroupBy(d => d.Inspector).Select(
                     g => new Doc
                     {
-                        NormContr = g.First().NormContr,
+                        Inspector = g.First().Inspector,
                         Form = g.Sum(v => v.Form),
                     });
 
@@ -57,8 +57,8 @@ namespace DocumentsKM.Services
                     MetalOrder = v.MetalOrder,
                     DrawingsCompleted = docsGroupedByCreator.SingleOrDefault(
                         d => d.Creator.Id == v.Employee.Id)?.Form ?? 0,
-                    DrawingsCheck = docsGroupedByNormContr.SingleOrDefault(
-                        d => d.NormContr.Id == v.Employee.Id)?.Form ?? 0,
+                    DrawingsCheck = docsGroupedByInspector.SingleOrDefault(
+                        d => d.Inspector.Id == v.Employee.Id)?.Form ?? 0,
                 });
 
             return addWork;

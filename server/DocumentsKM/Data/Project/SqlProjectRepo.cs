@@ -21,7 +21,7 @@ namespace DocumentsKM.Data
         public IEnumerable<Project> GetAll()
         {
             const string query = @"select 
-                                    [Проект] as Id, 
+                                    [Проект] as Id,
                                     [БазСерия] as BaseSeries,
                                     [Название] as Name,
                                     [ОснНадпСмещ] as Bias
@@ -35,25 +35,25 @@ namespace DocumentsKM.Data
         public Project GetById(int id)
         {
             var query = $@"select 
-                            [Проект] as Id, 
+                            [Проект] as Id,
                             [БазСерия] as BaseSeries,
                             [Название] as Name,
                             [ОснНадпСмещ] as Bias
-                        from [Проекты] where [Проект] = {id}";
+                        from [Проекты] where [Проект] = @Id";
 
-            return _dbConnection.QuerySingle<Project>(query);
+            return _dbConnection.QuerySingle<Project>(query, new { Id = id });
         }
 
         public Project GetByUniqueKey(string baseSeries)
         {
             var query = $@"select 
-                            [Проект] as Id, 
+                            [Проект] as Id,
                             [БазСерия] as BaseSeries,
                             [Название] as Name,
                             [ОснНадпСмещ] as Bias
-                        from [Проекты] where [БазСерия] = {baseSeries}";
+                        from [Проекты] where [БазСерия] = @BaseSeries";
 
-            return _dbConnection.QuerySingle<Project>(query);
+            return _dbConnection.QuerySingle<Project>(query, new { BaseSeries = baseSeries });
         }
     }
 }

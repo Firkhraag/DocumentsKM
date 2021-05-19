@@ -13,6 +13,7 @@ import { useMark } from '../../store/MarkStore'
 type IOtherAttachedDocDataProps = {
 	otherAttachedDoc: AttachedDoc
 	isCreateMode: boolean
+	index: number
 }
 
 type OtherAttachedDocDataProps = {
@@ -117,6 +118,7 @@ const OtherAttachedDocData = ({
 				setOtherAttachedDocData({
 					otherAttachedDoc: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -174,6 +176,7 @@ const OtherAttachedDocData = ({
 				setOtherAttachedDocData({
 					otherAttachedDoc: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -198,10 +201,16 @@ const OtherAttachedDocData = ({
 					onClick={() => setOtherAttachedDocData({
 						otherAttachedDoc: null,
 						isCreateMode: false,
+						index: -1,
 					})}
 				>
 					<X color="#666" size={33} />
 				</div>
+				{otherAttachedDocData.isCreateMode ? null :
+					<div className="absolute bold" style={{top: -25, left: 0, color: "#666"}}>
+						{otherAttachedDocData.index}
+					</div>
+				}
 				<Form.Group>
 					<Form.Label htmlFor="designation">Обозначение</Form.Label>
 					<Form.Control

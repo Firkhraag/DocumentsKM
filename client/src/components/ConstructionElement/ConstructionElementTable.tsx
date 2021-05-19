@@ -28,6 +28,7 @@ const ConstructionElementTable = ({
 	const [constructionElementData, setConstructionElementData] = useState({
 		isCreateMode: false,
 		constructionElement: null,
+		index: -1,
 	})
 
 	useEffect(() => {
@@ -56,6 +57,7 @@ const ConstructionElementTable = ({
 			setConstructionElementData({
 				constructionElement: null,
 				isCreateMode: false,
+				index: -1,
 			})
 		} catch (e) {
 			console.log('Error')
@@ -79,6 +81,7 @@ const ConstructionElementTable = ({
 					setConstructionElementData({
 						isCreateMode: true,
 						constructionElement: null,
+						index: -1,
 					})
 				}}
 				color="#666"
@@ -124,6 +127,7 @@ const ConstructionElementTable = ({
 											setConstructionElementData({
 												isCreateMode: false,
 												constructionElement: ce,
+												index: index + 1,
 											})
 										}}
 										className="pointer action-cell-width text-centered"

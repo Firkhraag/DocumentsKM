@@ -12,6 +12,7 @@ import Employee from '../../model/Employee'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import Subnode from '../../model/Subnode'
 import Mark from '../../model/Mark'
+import ArchiveMark from '../../model/ArchiveMark'
 import RecentMark from '../../model/RecentMark'
 import { useMark, useSetMark } from '../../store/MarkStore'
 import { useUser } from '../../store/UserStore'
@@ -46,6 +47,8 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 	const [errMsg, setErrMsg] = useState('')
 
 	const cachedMainEmployees = useState(new Map<number, any>())[0]
+
+	const [archiveMarks, setArchiveMarks] = useState([] as ArchiveMark[])
 
 	useEffect(() => {
 		if (isCreateMode) {
@@ -83,6 +86,10 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 							groupLeader: null,
 							normContr: null,
 						})
+						const archiveMarksResponse = await httpClient.get(
+                            `/subnodes/${currentSubnode.id}/archive-marks`
+                        )
+						setArchiveMarks(archiveMarksResponse.data)
                     } else {
 						setSelectedObject({
 							id: 0,
@@ -153,6 +160,33 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 		setSelectedObject({
 			...selectedObject,
 			name: event.currentTarget.value,
+		})
+	}
+
+	const onArchiveMarkSelect = async (name: string, code: string, department: Department) => {
+		if (department != null) {
+			const fetchedMainEmployeesResponse = await httpClient.get(
+				`departments/${department.id}/mark-main-employees`
+			)
+			setOptionsObject({
+				...defaultOptionsObject,
+				chiefSpecialists:
+					fetchedMainEmployeesResponse.data
+						.chiefSpecialists,
+				groupLeaders:
+					fetchedMainEmployeesResponse.data.groupLeaders,
+				normContrs:
+					fetchedMainEmployeesResponse.data.normContrs,
+			})
+			setDepartmentHead(
+				fetchedMainEmployeesResponse.data.departmentHead
+			)
+		}
+		setSelectedObject({
+			...selectedObject,
+			name: name,
+			code: code,
+			department: department,
 		})
 	}
 
@@ -399,6 +433,39 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 			</h1>
 			<div className="flex">
 				<div className="shadow p-3 bg-white rounded component-width component-cnt-div">
+					{isCreateMode ? <Form.Group className="flex-cent-v">
+						<Form.Label
+							className="no-bot-mrg"
+							style={{ marginRight: '1em' }}
+							htmlFor="archive"
+						>
+							Архив
+						</Form.Label>
+						<Select
+							inputId="archive"
+							maxMenuHeight={250}
+							isClearable={true}
+							isSearchable={true}
+							placeholder="Марки архива"
+							noOptionsMessage={() => 'Марки не найдены'}
+							className="auto-width flex-grow"
+							onChange={(selectedOption) =>
+								onArchiveMarkSelect(
+									(selectedOption as any)?.value.name,
+									(selectedOption as any)?.value.code,
+									(selectedOption as any)?.value.department
+								)
+							}
+							value={null}
+							options={archiveMarks.map((m) => {
+								return {
+									value: m,
+									label: m.code,
+								}
+							})}
+							styles={reactSelectStyle}
+						/>
+					</Form.Group> : null}
 					<Form.Group className="flex-cent-v">
 						<Form.Label
 							className="no-bot-mrg"

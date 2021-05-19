@@ -10,15 +10,18 @@ namespace DocumentsKM.Services
     public class GeneralDataSectionService : IGeneralDataSectionService
     {
         private readonly IGeneralDataSectionRepo _repository;
+        private readonly IGeneralDataPointRepo _generalDataPointRepo;
         private readonly IMarkGeneralDataSectionRepo _markGeneralDataSectionRepo;
         private readonly IUserRepo _userRepo;
 
         public GeneralDataSectionService(
             IGeneralDataSectionRepo generalDataSectionRepo,
+            IGeneralDataPointRepo generalDataPointRepo,
             IMarkGeneralDataSectionRepo markGeneralDataSectionRepo,
             IUserRepo userRepo)
         {
             _repository = generalDataSectionRepo;
+            _generalDataPointRepo = generalDataPointRepo;
             _markGeneralDataSectionRepo = markGeneralDataSectionRepo;
             _userRepo = userRepo;
         }
@@ -154,19 +157,17 @@ namespace DocumentsKM.Services
                 GeneralDataPoints = new List<GeneralDataPoint>(){},
             };
 
-            var generalDataPoints = new List<GeneralDataPoint>(){};
+            _repository.Add(generalDataSection);
             foreach (var p in foundMarkGeneralDataSection.MarkGeneralDataPoints)
             {
-                generalDataPoints.Add(new GeneralDataPoint
+                _generalDataPointRepo.Add(new GeneralDataPoint
                 {
                     Section = generalDataSection,
                     Text = p.Text,
                     OrderNum = p.OrderNum,
                 });
             }
-            generalDataSection.GeneralDataPoints = generalDataPoints;
 
-            _repository.Add(generalDataSection);
         }
     }
 }

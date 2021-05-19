@@ -21,6 +21,7 @@ const SheetTable = () => {
 	const [sheetData, setSheetData] = useState({
 		isCreateMode: false,
 		sheet: null,
+		index: -1,
 	})
 
 	useEffect(() => {
@@ -49,6 +50,7 @@ const SheetTable = () => {
 			setSheetData({
 				sheet: null,
 				isCreateMode: false,
+				index: -1,
 			})
 		} catch (e) {
 			console.log('Error')
@@ -82,11 +84,13 @@ const SheetTable = () => {
 								numOfPages: 0,
 								note: '',
 							},
+							index: -1,
 						})
 					} else {
 						setSheetData({
 							isCreateMode: true,
 							sheet: null,
+							index: -1,
 						})
 					}
 					window.scrollTo(0, 0)
@@ -136,6 +140,7 @@ const SheetTable = () => {
 										setSheetData({
 											isCreateMode: false,
 											sheet: s,
+											index: index + 1,
 										})
 										window.scrollTo(0, 0)
 									}}

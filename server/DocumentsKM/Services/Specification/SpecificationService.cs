@@ -48,7 +48,7 @@ namespace DocumentsKM.Services
             var newSpecification = new Specification
             {
                 Mark = foundMark,
-                Num = (Int16)(specifications.Count() == 0 ? 1 :
+                Num = (Int16)(specifications.Count() == 0 ? 0 :
                     specifications.Max(v => v.Num) + 1),
                 IsCurrent = true,
             };

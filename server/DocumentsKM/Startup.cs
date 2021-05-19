@@ -187,6 +187,7 @@ namespace DocumentsKM
 
             services.AddScoped<ICorrProtGeneralDataPointService, CorrProtGeneralDataPointService>();
             services.AddScoped<IDefaultValuesService, DefaultValuesService>();
+            services.AddScoped<IArchiveMarkService, ArchiveMarkService>();
         }
 
         private void InjectScopedRepositories(IServiceCollection services)
@@ -252,6 +253,8 @@ namespace DocumentsKM
             services.AddScoped<IPrimerRepo, SqlPrimerRepo>();
 
             services.AddScoped<IDefaultValuesRepo, SqlDefaultValuesRepo>();
+            services.AddScoped<IArchiveDepartmentRepo, SqlArchiveDepartmentRepo>();
+            services.AddScoped<IArchiveMarkRepo, SqlArchiveMarkRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

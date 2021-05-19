@@ -22,6 +22,7 @@ const OtherAttachedDocTable = () => {
 	const [otherAttachedDocData, setOtherAttachedDocData] = useState({
 		isCreateMode: false,
 		otherAttachedDoc: null,
+		index: -1,
 	})
 
 	useEffect(() => {
@@ -50,6 +51,7 @@ const OtherAttachedDocTable = () => {
 			setOtherAttachedDocData({
 				otherAttachedDoc: null,
 				isCreateMode: false,
+				index: -1,
 			})
 		} catch (e) {
 			console.log('Error')
@@ -69,6 +71,7 @@ const OtherAttachedDocTable = () => {
 					setOtherAttachedDocData({
 						isCreateMode: true,
 						otherAttachedDoc: null,
+						index: -1,
 					})
 					window.scrollTo(0, 0)
 				}}
@@ -101,6 +104,7 @@ const OtherAttachedDocTable = () => {
 										setOtherAttachedDocData({
 											isCreateMode: false,
 											otherAttachedDoc: d,
+											index: index + 1,
 										})
 										window.scrollTo(0, 0)
 									}}

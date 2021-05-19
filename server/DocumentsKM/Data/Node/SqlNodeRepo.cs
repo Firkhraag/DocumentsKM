@@ -20,40 +20,40 @@ namespace DocumentsKM.Data
 
         public IEnumerable<Node> GetAllByProjectId(int projectId)
         {
-            var query = $@"select 
-                            [Узел] as Id, 
+            var query = $@"select
+                            [Узел] as Id,
                             [КодУзла] as Code, 
                             [НазвУзла] as Name,
                             [Проект] as ProjectId,
                             [ГИП] as ChiefEngineerName
-                        from [Узлы] where [КодУзла] is not null and [Проект] = {projectId}";
-            return _dbConnection.Query<Node>(query);
+                        from [Узлы] where [КодУзла] is not null and [Проект] = @ProjectId";
+            return _dbConnection.Query<Node>(query, new { ProjectId = projectId });
         }
 
         public Node GetById(int id)
         {
-            var query = $@"select 
-                            [Узел] as Id, 
+            var query = $@"select
+                            [Узел] as Id,
                             [КодУзла] as Code, 
                             [НазвУзла] as Name,
                             [Проект] as ProjectId,
                             [ГИП] as ChiefEngineerName
-                        from [Узлы] where [Узел] = {id}";
+                        from [Узлы] where [Узел] = @Id";
 
-            return _dbConnection.QuerySingle<Node>(query);
+            return _dbConnection.QuerySingle<Node>(query, new { Id = id });
         }
 
         public Node GetByUniqueKey(int projectId, string code)
         {
-            var query = $@"select 
-                            [Узел] as Id, 
+            var query = $@"select
+                            [Узел] as Id,
                             [КодУзла] as Code, 
                             [НазвУзла] as Name,
                             [Проект] as ProjectId,
                             [ГИП] as ChiefEngineerName
-                        from [Узлы] where [Проект] = {projectId} and [КодУзла] = {code}";
+                        from [Узлы] where [Проект] = @ProjectId and [КодУзла] = @Code";
 
-            return _dbConnection.QuerySingle<Node>(query);
+            return _dbConnection.QuerySingle<Node>(query, new { ProjectId = projectId, Code = code });
         }
     }
 }

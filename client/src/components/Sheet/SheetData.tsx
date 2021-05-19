@@ -20,6 +20,7 @@ import { reactSelectStyle } from '../../util/react-select-style'
 type ISheetDataProps = {
 	sheet: Doc
 	isCreateMode: boolean
+	index: number
 }
 
 type SheetDataProps = {
@@ -64,11 +65,6 @@ const SheetData = ({ sheetData, setSheetData, sheets, setSheets }: SheetDataProp
 	const [errMsg, setErrMsg] = useState('')
 
 	const [fetched, setFetched] = useState(false)
-
-	// console.log(sheetData.sheet)
-
-	// console.log(selectedObject != null ? sheetData.sheet.note : "aaa")
-	// console.log(selectedObject != null ? selectedObject.note : "aaa")
 
 	useEffect(() => {
 		if (!fetched || sheetData.sheet == null) {
@@ -256,6 +252,7 @@ const SheetData = ({ sheetData, setSheetData, sheets, setSheets }: SheetDataProp
 				setSheetData({
 					sheet: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
@@ -310,6 +307,7 @@ const SheetData = ({ sheetData, setSheetData, sheets, setSheets }: SheetDataProp
 				setSheetData({
 					sheet: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
@@ -328,10 +326,16 @@ const SheetData = ({ sheetData, setSheetData, sheets, setSheets }: SheetDataProp
 					onClick={() => setSheetData({
 						sheet: null,
 						isCreateMode: false,
+						index: -1,
 					})}
 				>
 					<X color="#666" size={33} />
 				</div>
+				{sheetData.isCreateMode ? null :
+					<div className="absolute bold" style={{top: -25, left: 0, color: "#666"}}>
+						{sheetData.index}
+					</div>
+				}
 				<Form.Group>
 					<Form.Label htmlFor="name">Наименование</Form.Label>
 					<Form.Control

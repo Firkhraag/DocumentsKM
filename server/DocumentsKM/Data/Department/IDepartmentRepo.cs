@@ -11,6 +11,8 @@ namespace DocumentsKM.Data
         IEnumerable<Department> GetAllActive();
         // Получить отдел по id
         Department GetById(int id);
+        // Получить отдел по коду
+        Department GetByCode(string code);
         // Добавить отдел
         void Add(Department department);
         // Обновить отдел

@@ -20,6 +20,7 @@ const LinkedDocTable = () => {
 	const [linkedDocData, setLinkedDocData] = useState({
 		isCreateMode: false,
 		markLinkedDoc: null,
+		index: -1,
 	})
 
 	useEffect(() => {
@@ -48,6 +49,7 @@ const LinkedDocTable = () => {
 			setLinkedDocData({
 				markLinkedDoc: null,
 				isCreateMode: false,
+				index: -1,
 			})
 		} catch (e) {
 			console.log('Error')
@@ -67,6 +69,7 @@ const LinkedDocTable = () => {
 					setLinkedDocData({
 						isCreateMode: true,
 						markLinkedDoc: null,
+						index: -1,
 					})
 					window.scrollTo(0, 0)
 				}}
@@ -106,6 +109,7 @@ const LinkedDocTable = () => {
 										setLinkedDocData({
 											isCreateMode: false,
 											markLinkedDoc: mld,
+											index: index + 1,
 										})
 										window.scrollTo(0, 0)
 									}}

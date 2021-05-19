@@ -20,6 +20,7 @@ import { reactSelectStyle } from '../../util/react-select-style'
 type IConstructionElementDataProps = {
 	constructionElement: ConstructionElement
 	isCreateMode: boolean
+	index: number
 }
 
 type ConstructionElementDataProps = {
@@ -52,21 +53,6 @@ const ConstructionElementData = ({
   } as ConstructionElement
 
   const [selectedObject, setSelectedObject] = useState<ConstructionElement>(null)
-
-	// const [selectedObject, setSelectedObject] = useState<ConstructionElement>(
-	// 	isCreateMode
-	// 		? {
-	// 				id: -1,
-	// 				profileClass: null,
-	// 				profile: null,
-	// 				steel: null,
-	// 				length: NaN,
-	// 		  }
-	// 		: {
-	// 				...constructionElement,
-	// 				profileClass: constructionElement.profile.class,
-	// 		  }
-	// )
 	const [optionsObject, setOptionsObject] = useState({
 		profileClasses: [] as ProfileClass[],
 		profileTypes: [] as ProfileType[],
@@ -193,6 +179,7 @@ const ConstructionElementData = ({
 		setSelectedObject({
 			...selectedObject,
 			length: parseFloat(event.currentTarget.value),
+			arithmeticExpression: "",
 		})
 	}
 
@@ -258,6 +245,7 @@ const ConstructionElementData = ({
 						profileId: selectedObject.profile.id,
 						steelId: selectedObject.steel.id,
 						length: selectedObject.length,
+						arithmeticExpression: selectedObject.arithmeticExpression,
 					}
 				)
 				const arr = [...constructionElements]
@@ -269,6 +257,7 @@ const ConstructionElementData = ({
 				setConstructionElementData({
 					constructionElement: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
@@ -297,7 +286,11 @@ const ConstructionElementData = ({
 						selectedObject.length === constructionElementData.constructionElement.length
 							? undefined
 							: selectedObject.length,
-				}
+					arithmeticExpression: (selectedObject.arithmeticExpression === constructionElementData.constructionElement.arithmeticExpression) ||
+						(selectedObject.arithmeticExpression === '' && constructionElementData.constructionElement.arithmeticExpression == null)
+							? undefined
+							: selectedObject.arithmeticExpression,
+					}
 				await httpClient.patch(
 					`/construction-elements/${selectedObject.id}`,
 					object
@@ -314,6 +307,7 @@ const ConstructionElementData = ({
 				setConstructionElementData({
 					constructionElement: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
@@ -333,10 +327,16 @@ const ConstructionElementData = ({
 						onClick={() => setConstructionElementData({
 							constructionElement: null,
 							isCreateMode: false,
+							index: -1,
 						})}
 					>
 						<X color="#666" size={33} />
 					</div>
+					{constructionElementData.isCreateMode ? null :
+						<div className="absolute bold" style={{top: -25, left: 0, color: "#666"}}>
+							{constructionElementData.index}
+						</div>
+					}
 					<Form.Group>
 						<Form.Label htmlFor="profileClass">
 							Вид профиля

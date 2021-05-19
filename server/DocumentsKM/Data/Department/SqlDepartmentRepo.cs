@@ -29,6 +29,11 @@ namespace DocumentsKM.Data
             return _context.Departments.SingleOrDefault(v => v.Id == id);
         }
 
+        public Department GetByCode(string code)
+        {
+            return _context.Departments.SingleOrDefault(v => v.Code == code);
+        }
+
         public void Add(Department department)
         {
             _context.Departments.Add(department);

@@ -17,6 +17,7 @@ import { reactSelectStyle } from '../../util/react-select-style'
 type IConstructionBoltDataProps = {
 	constructionBolt: ConstructionBolt
 	isCreateMode: boolean
+	index: number
 }
 
 type ConstructionBoltDataProps = {
@@ -167,6 +168,7 @@ const ConstructionBoltData = ({
 				setConstructionBoltData({
 					constructionBolt: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -224,6 +226,7 @@ const ConstructionBoltData = ({
 				setConstructionBoltData({
 					constructionBolt: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -246,10 +249,16 @@ const ConstructionBoltData = ({
 					onClick={() => setConstructionBoltData({
 						constructionBolt: null,
 						isCreateMode: false,
+						index: -1,
 					})}
 				>
 					<X color="#666" size={33} />
 				</div>
+				{constructionBoltData.isCreateMode ? null :
+					<div className="absolute bold" style={{top: -25, left: 0, color: "#666"}}>
+						{constructionBoltData.index}
+					</div>
+				}
 				<Form.Group className="space-between-cent-v">
 					<Form.Label
 						className="no-bot-mrg"

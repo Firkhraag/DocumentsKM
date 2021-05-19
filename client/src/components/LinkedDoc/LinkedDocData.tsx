@@ -18,6 +18,7 @@ import LinkedDocType from '../../model/LinkedDocType'
 type ILinkedDocDataProps = {
 	markLinkedDoc: MarkLinkedDoc
 	isCreateMode: boolean
+	index: number
 }
 
 type LinkedDocDataProps = {
@@ -208,6 +209,7 @@ const LinkedDocData = ({
 				setLinkedDocData({
 					markLinkedDoc: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -259,6 +261,7 @@ const LinkedDocData = ({
 				setLinkedDocData({
 					markLinkedDoc: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				if (e.response != null && e.response.status === 409) {
@@ -282,10 +285,16 @@ const LinkedDocData = ({
 						onClick={() => setLinkedDocData({
 							markLinkedDoc: null,
 							isCreateMode: false,
+							index: -1,
 						})}
 					>
 						<X color="#666" size={33} />
 					</div>
+					{linkedDocData.isCreateMode ? null :
+						<div className="absolute bold" style={{top: -25, left: 0, color: "#666"}}>
+							{linkedDocData.index}
+						</div>
+					}
 					<Form.Group>
 						<Form.Label className="no-bot-mrg" htmlFor="type">
 							Вид

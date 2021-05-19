@@ -20,6 +20,7 @@ import { reactSelectStyle } from '../../util/react-select-style'
 type IDevelopingAttachedDocDataProps = {
 	doc: Doc
 	isCreateMode: boolean
+	index: number
 }
 
 type DevelopingAttachedDocDataProps = {
@@ -262,10 +263,12 @@ const DevelopingAttachedDocData = ({
 					...selectedObject,
 					id: idResponse.data.id,
 				})
+				arr.sort((a, b) => a.type.code > b.type.code ? 1 : a.type.code == b.type.code ? 0 : -1)
 				setDocs(arr)
 				setDocData({
 					doc: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
@@ -330,6 +333,7 @@ const DevelopingAttachedDocData = ({
 				setDocData({
 					doc: null,
 					isCreateMode: false,
+					index: -1,
 				})
 			} catch (e) {
 				setErrMsg('Произошла ошибка')
@@ -348,10 +352,16 @@ const DevelopingAttachedDocData = ({
 					onClick={() => setDocData({
 						doc: null,
 						isCreateMode: false,
+						index: -1,
 					})}
 				>
 					<X color="#666" size={33} />
 				</div>
+				{docData.isCreateMode ? null :
+					<div className="absolute bold" style={{top: -25, left: 0, color: "#666"}}>
+						{docData.index}
+					</div>
+				}
 				<Form.Group>
 					<Form.Label htmlFor="code">
 						Шифр документа

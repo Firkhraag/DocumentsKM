@@ -21,6 +21,7 @@ const DevelopingAttachedDocTable = () => {
 	const [docData, setDocData] = useState({
 		isCreateMode: false,
 		doc: null,
+		index: -1,
 	})
 
 	useEffect(() => {
@@ -49,6 +50,7 @@ const DevelopingAttachedDocTable = () => {
 			setDocData({
 				doc: null,
 				isCreateMode: false,
+				index: -1,
 			})
 		} catch (e) {
 			console.log('Error')
@@ -84,11 +86,13 @@ const DevelopingAttachedDocTable = () => {
 								releaseNum: 0,
 								note: '',
 							},
+							index: -1,
 						})
 					} else {
 						setDocData({
 							isCreateMode: true,
 							doc: null,
+							index: -1,
 						})
 					}
 					// setDocData({
@@ -146,6 +150,7 @@ const DevelopingAttachedDocTable = () => {
 										setDocData({
 											isCreateMode: false,
 											doc: d,
+											index: index + 1,
 										})
 										window.scrollTo(0, 0)
 									}}

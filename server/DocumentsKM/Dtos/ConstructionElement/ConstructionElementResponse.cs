@@ -9,6 +9,6 @@ namespace DocumentsKM.Dtos
         public Profile Profile { get; set; }
         public Steel Steel { get; set; }
         public float Length { get; set; }
-        string ArithmeticExpression { get; set; }
+        public string ArithmeticExpression { get; set; }
     }
 }

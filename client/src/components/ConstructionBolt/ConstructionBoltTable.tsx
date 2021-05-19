@@ -30,6 +30,7 @@ const ConstructionBoltTable = ({
 	const [constructionBoltData, setConstructionBoltData] = useState({
 		isCreateMode: false,
 		constructionBolt: null,
+		index: -1,
 	})
 
 	useEffect(() => {
@@ -58,6 +59,7 @@ const ConstructionBoltTable = ({
 			setConstructionBoltData({
 				constructionBolt: null,
 				isCreateMode: false,
+				index: -1,
 			})
 		} catch (e) {
 			console.log('Error')
@@ -83,6 +85,7 @@ const ConstructionBoltTable = ({
 					setConstructionBoltData({
 						isCreateMode: true,
 						constructionBolt: null,
+						index: -1,
 					})
 				}}
 				color="#666"
@@ -121,6 +124,7 @@ const ConstructionBoltTable = ({
 										setConstructionBoltData({
 											isCreateMode: false,
 											constructionBolt: cb,
+											index: index + 1,
 										})
 									}}
 									className="pointer action-cell-width text-centered"

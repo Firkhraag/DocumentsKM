@@ -18,7 +18,7 @@ namespace DocumentsKM.Data
         {
             return _context.Docs.Where(
                 v => v.Mark.Id == markId).OrderBy(
-                    v => v.Type.Name).ThenBy(v => v.Num).ToList();
+                    v => v.Type.Name).ToList();
         }
 
         public IEnumerable<Doc> GetAllByMarkIdAndDocType(
@@ -26,7 +26,8 @@ namespace DocumentsKM.Data
         {
             return _context.Docs.Where(
                 v => (v.Mark.Id == markId) &&
-                    (v.Type.Id == docTypeId)).ToList();
+                    (v.Type.Id == docTypeId)).OrderBy(
+                    v => v.Type.Name).ToList();
         }
 
         public IEnumerable<Doc> GetAllByMarkIdAndNotDocType(
@@ -34,7 +35,8 @@ namespace DocumentsKM.Data
         {
             return _context.Docs.Where(
                 v => (v.Mark.Id == markId) &&
-                    (v.Type.Id != docTypeId)).ToList();
+                    (v.Type.Id != docTypeId)).OrderBy(
+                    v => v.Type.Name).ToList();
         }
 
         public Doc GetById(int id)
