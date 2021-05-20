@@ -14,7 +14,7 @@ namespace DocumentsKM.Services
         void Update(int id, int markId,
             MarkGeneralDataSectionUpdateRequest generalDataSection);
         // Обновить разделы общих указаний марки по id шаблонных разделов
-        IEnumerable<MarkGeneralDataSection> UpdateAllBySectionIds(int userId, int markId, List<int> sectionIds);
+        IEnumerable<MarkGeneralDataSection> UpdateAllBySectionIds(int markId, List<int> sectionIds);
         // Удалить раздел общих указаний марки
         void Delete(int id, int markId);
     }

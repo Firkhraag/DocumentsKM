@@ -17,7 +17,6 @@ namespace DocumentsKM.Tests
         private readonly List<Department> _departments;
         private readonly List<Position> _positions;
         private readonly List<Employee> _employees;
-        private readonly List<User> _users;
         private readonly List<GeneralDataSection> _generalDataSections;
         private readonly List<GeneralDataPoint> _generalDataPoints;
 
@@ -136,67 +135,37 @@ namespace DocumentsKM.Tests
                     Position = _positions[6],
                 },
             };
-            _users = new List<User>
-            {
-                new User
-                {
-                    Id = 1,
-                    Login = "1",
-                    Password = "1",
-                    Employee = _employees[0],
-                },
-                new User
-                {
-                    Id = 2,
-                    Login = "2",
-                    Password = "2",
-                    Employee = _employees[1],
-                },
-                new User
-                {
-                    Id = 3,
-                    Login = "3",
-                    Password = "3",
-                    Employee = _employees[2],
-                },
-            };
             _generalDataSections = new List<GeneralDataSection>
             {
                 new GeneralDataSection
                 {
                     Id = 1,
                     Name = "S1",
-                    User = _users[0],
                 },
                 new GeneralDataSection
                 {
                     Id = 2,
                     Name = "S2",
-                    User = _users[0],
                 },
                 new GeneralDataSection
                 {
                     Id = 3,
                     Name = "S3",
-                    User = _users[0],
                 },
                 new GeneralDataSection
                 {
                     Id = 4,
                     Name = "S4",
-                    User = _users[1],
                 },
                 new GeneralDataSection
                 {
                     Id = 5,
                     Name = "S5",
-                    User = _users[1],
                 },
                 new GeneralDataSection
                 {
                     Id = 6,
                     Name = "S6",
-                    User = _users[2],
                 },
             };
             _generalDataPoints = new List<GeneralDataPoint>
@@ -320,20 +289,17 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByUserId_ShouldReturnGeneralDataPoints()
+        public void GetAll_ShouldReturnGeneralDataPoints()
         {
             // Arrange
             var context = GetContext();
             var repo = new SqlGeneralDataPointRepo(context);
 
-            var userId = 1;
-
             // Act
-            var generalDataPoints = repo.GetAllByUserId(userId);
+            var generalDataPoints = repo.GetAll();
 
             // Assert
-            Assert.Equal(_generalDataPoints.Where(
-                v => v.Section.User.Id == userId).OrderBy(
+            Assert.Equal(_generalDataPoints.OrderBy(
                     v => v.OrderNum), generalDataPoints);
 
             context.Database.EnsureDeleted();
@@ -416,72 +382,6 @@ namespace DocumentsKM.Tests
             // Assert
             Assert.Null(additionalWork1);
             Assert.Null(additionalWork2);
-
-            context.Database.EnsureDeleted();
-            context.Dispose();
-        }
-
-        [Fact]
-        public void Add_ShouldAddGeneralDataPoint()
-        {
-            // Arrange
-            var context = GetContext();
-            var repo = new SqlGeneralDataPointRepo(context);
-
-            int sectionId = _rnd.Next(1, _maxSectionId);
-            var generalDataPoint = new GeneralDataPoint
-            {
-                Section = _generalDataSections.SingleOrDefault(v => v.Id == sectionId),
-                Text = "NewCreate",
-                OrderNum = 9,
-            };
-
-            // Act
-            repo.Add(generalDataPoint);
-
-            // Assert
-            Assert.NotNull(repo.GetById(generalDataPoint.Id));
-
-            context.Database.EnsureDeleted();
-            context.Dispose();
-        }
-
-        [Fact]
-        public void Update_ShouldUpdateGeneralDataPoint()
-        {
-            // Arrange
-            var context = GetContext(true);
-            var repo = new SqlGeneralDataPointRepo(context);
-
-            int id = _rnd.Next(1, _updateGeneralDataPoints.Count());
-            var generalDataPoint = _updateGeneralDataPoints.FirstOrDefault(v => v.Id == id);
-            generalDataPoint.Text = "NewUpdate";
-
-            // Act
-            repo.Update(generalDataPoint);
-
-            // Assert
-            Assert.Equal(generalDataPoint.Text, repo.GetById(id).Text);
-
-            context.Database.EnsureDeleted();
-            context.Dispose();
-        }
-
-        [Fact]
-        public void Delete_ShouldDeleteGeneralDataPoint()
-        {
-            // Arrange
-            var context = GetContext();
-            var repo = new SqlGeneralDataPointRepo(context);
-
-            int id = _rnd.Next(1, _generalDataPoints.Count());
-            var generalDataPoint = _generalDataPoints.FirstOrDefault(v => v.Id == id);
-
-            // Act
-            repo.Delete(generalDataPoint);
-
-            // Assert
-            Assert.Null(repo.GetById(id));
 
             context.Database.EnsureDeleted();
             context.Dispose();

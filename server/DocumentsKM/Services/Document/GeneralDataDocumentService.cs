@@ -9,6 +9,8 @@ using System;
 using DocumentsKM.Helpers;
 using DocumentFormat.OpenXml;
 using Microsoft.Extensions.Options;
+using Serilog;
+using System.Text.RegularExpressions;
 
 namespace DocumentsKM.Services
 {
@@ -24,6 +26,7 @@ namespace DocumentsKM.Services
         private readonly IMarkLinkedDocRepo _markLinkedDocRepo;
         private readonly IAttachedDocRepo _attachedDocRepo;
         private readonly IMarkOperatingConditionsRepo _markOperatingConditionsRepo;
+        private readonly IOrganizationNameRepo _organizationNameRepo;
         private readonly AppSettings _appSettings;
 
         public GeneralDataDocumentService(
@@ -35,6 +38,7 @@ namespace DocumentsKM.Services
             IMarkLinkedDocRepo markLinkedDocRepo,
             IAttachedDocRepo attachedDocRepo,
             IMarkOperatingConditionsRepo markOperatingConditionsRepo,
+            IOrganizationNameRepo organizationNameRepo,
             IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
@@ -45,6 +49,7 @@ namespace DocumentsKM.Services
             _markLinkedDocRepo = markLinkedDocRepo;
             _attachedDocRepo = attachedDocRepo;
             _markOperatingConditionsRepo = markOperatingConditionsRepo;
+            _organizationNameRepo = organizationNameRepo;
             _appSettings = appSettings.Value;
         }
 
@@ -78,15 +83,22 @@ namespace DocumentsKM.Services
                 markId).OrderByDescending(
                     v => v.Section.OrderNum).ThenByDescending(v => v.OrderNum);
             var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _appSettings.SheetDocTypeId);
+            var organizationShortName = _organizationNameRepo.Get().ShortName;
+
+            var marks = _markRepo.GetAllBySubnodeId(mark.SubnodeId).Where(
+                v => Regex.IsMatch(v.Code.Substring(2).Trim(), @"^\d+$")).ToList();
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
-            {  
+            {
                 AppendList(wordDoc, markGeneralDataPoints, opCond);
                 AppendToSheetTable(wordDoc, sheets.ToList());
                 AppendToLinkedAndAttachedDocsTable(
                     wordDoc,
                     _markLinkedDocRepo.GetAllByMarkId(markId).ToList(),
                     _attachedDocRepo.GetAllByMarkId(markId).ToList());
+
+                AppendToMainComplectTable(wordDoc, marks);
+
                 Word.AppendToBigFooterTable(
                     wordDoc,
                     mark.Designation,
@@ -95,7 +107,8 @@ namespace DocumentsKM.Services
                     sheets.Count(),
                     mark,
                     markApprovals.ToList(),
-                    departmentHead);
+                    departmentHead,
+                    organizationShortName);
                 Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
             }
         }
@@ -107,7 +120,7 @@ namespace DocumentsKM.Services
                 Body body = document.MainDocumentPart.Document.Body;
                 var t = body.Descendants<Table>().FirstOrDefault(
                     tbl => tbl.InnerText.Contains("Лист"));
-                var firstTr = t.Descendants<TableRow>().ToList()[1];
+                var firstTr = t.Descendants<TableRow>().ToList()[2];
                 var clonedFirstTr = firstTr.CloneNode(true);
                 var trCells = firstTr.Descendants<TableCell>().ToList();
                 OpenXmlElement newTr = null;
@@ -131,6 +144,32 @@ namespace DocumentsKM.Services
             }
         }
 
+        private void AppendToMainComplectTable(WordprocessingDocument document, List<Mark> marks)
+        {
+            Body body = document.MainDocumentPart.Document.Body;
+            var t = body.Descendants<Table>().FirstOrDefault(
+                tbl => tbl.InnerText.Contains("комплектов"));
+            var firstTr = t.Descendants<TableRow>().ToList()[2];
+            var clonedFirstTr = firstTr.CloneNode(true);
+            var trCells = firstTr.Descendants<TableCell>().ToList();
+            OpenXmlElement newTr = null;
+
+            for (int i = 0; i < marks.Count(); i++)
+            {
+                if (i > 0)
+                {
+                    newTr = clonedFirstTr.CloneNode(true);
+                    trCells = newTr.Descendants<TableCell>().ToList();
+                }
+                trCells[0].GetFirstChild<Paragraph>().Append(
+                    Word.GetTextElement(marks[i].Designation, 26));
+                trCells[1].GetFirstChild<Paragraph>().Append(
+                    Word.GetTextElement(marks[i].Name, 26));
+                if (i > 0)
+                    t.Append(newTr);
+            }
+        }
+
         private void AppendToLinkedAndAttachedDocsTable(
             WordprocessingDocument document,
             List<MarkLinkedDoc> markLinkedDocs,
@@ -138,9 +177,9 @@ namespace DocumentsKM.Services
         {
             Body body = document.MainDocumentPart.Document.Body;
             var t = body.Descendants<Table>().FirstOrDefault(
-                tbl => tbl.InnerText.Contains("Обозначение"));
+                tbl => tbl.InnerText.Contains("ссылочных"));
 
-            var firstTr = t.Descendants<TableRow>().ToList()[1];
+            var firstTr = t.Descendants<TableRow>().ToList()[2];
             var clonedFirstTr = firstTr.CloneNode(true);
 
             if (markLinkedDocs.Count() > 0)
@@ -350,8 +389,69 @@ namespace DocumentsKM.Services
                 var spacingBetweenLines = new SpacingBetweenLines() { After = "120", Line = "240" };
                 var indentation = new Indentation() { Left = "360", Right = "360", FirstLine = "720" };
 
+                // if (item.HasLineBreak)
+                // {
+                //     var p = new Paragraph(new Run(new Break()
+                //     {
+                //         Type = BreakValues.Page
+                //     }));
+                //     body.PrependChild(p);
+                // }
+
                 NumberingProperties numberingProperties;
                 var pointText = item.Text;
+                if (pointText == "Таблица 1")
+                {
+                    var t = body.Descendants<Table>().LastOrDefault(
+                        tbl => tbl.InnerText.Contains("Усилие в элементе")).CloneNode(true);
+                    body.PrependChild(t);
+
+                    if (item.HasLineBreak)
+                    {
+                        var p = new Paragraph(new Run(new Break()
+                        {
+                            Type = BreakValues.Page
+                        }));
+                        body.PrependChild(p);
+                    }
+
+                    continue;
+                }
+                else if (pointText == "Таблица 2")
+                {
+                    var t = body.Descendants<Table>().LastOrDefault(
+                        tbl => tbl.InnerText.Contains("Полуавтоматическая сварка")).CloneNode(true);
+                    body.PrependChild(t);
+
+                    if (item.HasLineBreak)
+                    {
+                        var p = new Paragraph(new Run(new Break()
+                        {
+                            Type = BreakValues.Page
+                        }));
+                        body.PrependChild(p);
+                    }
+
+                    continue;
+                }
+                else if (pointText == "Таблица 3")
+                {
+                    var t = body.Descendants<Table>().LastOrDefault(
+                        tbl => tbl.InnerText.Contains("Вид нагрузки")).CloneNode(true);
+                    body.PrependChild(t);
+
+                    if (item.HasLineBreak)
+                    {
+                        var p = new Paragraph(new Run(new Break()
+                        {
+                            Type = BreakValues.Page
+                        }));
+                        body.PrependChild(p);
+                    }
+
+                    continue;
+                }
+
                 if (item.OrderNum == 1)
                 {
                     numberingProperties = new NumberingProperties(
@@ -432,53 +532,26 @@ namespace DocumentsKM.Services
                 else
                     newPara.AppendChild(Word.GetTextElement(pointText, 26));
                 body.PrependChild(newPara);
+
+                if (item.HasLineBreak)
+                {
+                    var p = new Paragraph(new Run(new Break()
+                    {
+                        Type = BreakValues.Page
+                    }));
+                    body.PrependChild(p);
+                }
             }
-        }
+            var t1 = body.Descendants<Table>().LastOrDefault(
+                tbl => tbl.InnerText.Contains("Усилие в элементе"));
+            var t2 = body.Descendants<Table>().LastOrDefault(
+                tbl => tbl.InnerText.Contains("Полуавтоматическая сварка"));
+            var t3 = body.Descendants<Table>().LastOrDefault(
+                tbl => tbl.InnerText.Contains("Вид нагрузки"));
 
-        private void AppendToMainFooterTable(
-            WordprocessingDocument document,
-            string markFullCodeName,
-            string complexName,
-            string objectName,
-            Employee departmentHead)
-        {
-            MainDocumentPart mainPart = document.MainDocumentPart;
-            var commonFooter = mainPart.FooterParts.LastOrDefault();
-            var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
-            var trArr = t.Descendants<TableRow>().ToList();
-
-            var trCells = trArr[0].Descendants<TableCell>().ToList();
-            var tc = trCells[6];
-            var p = tc.GetFirstChild<Paragraph>();
-            p.Append(Word.GetTextElement(markFullCodeName + ".РР", 28));
-
-            trCells = trArr[3].Descendants<TableCell>().ToList();
-            tc = trCells[4];
-            p = tc.GetFirstChild<Paragraph>();
-            var text = Word.GetTextElement(complexName, 20);
-            text.AppendChild(new Break());
-            p.Append(text);
-            p.Append(Word.GetTextElement(objectName, 20));
-
-            trCells = trArr[7].Descendants<TableCell>().ToList();
-            tc = trCells[1];
-            p = tc.GetFirstChild<Paragraph>();
-            p.Append(Word.GetTextElement(departmentHead.Name, 22));
-        }
-
-        private void AppendToSecondFooterTable(WordprocessingDocument document, string markName)
-        {
-            var columnIndexToFill = 6;
-            MainDocumentPart mainPart = document.MainDocumentPart;
-            // var commonFooter = mainPart.FooterParts.FirstOrDefault();
-            var commonFooter = mainPart.FooterParts.FirstOrDefault();
-            var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
-
-            var firstTr = t.Descendants<TableRow>().FirstOrDefault();
-            var firstTrCells = firstTr.Descendants<TableCell>().ToList();
-            var tc = firstTrCells[columnIndexToFill];
-            var p = tc.GetFirstChild<Paragraph>();
-            p.Append(Word.GetTextElement(markName, 28));
+            body.RemoveChild(t1);
+            body.RemoveChild(t2);
+            body.RemoveChild(t3);
         }
     }
 }

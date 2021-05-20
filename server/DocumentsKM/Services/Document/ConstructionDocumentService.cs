@@ -19,6 +19,7 @@ namespace DocumentsKM.Services
         private readonly IConstructionRepo _constructionRepo;
         private readonly IStandardConstructionRepo _standardConstructionRepo;
         private readonly IConstructionElementRepo _constructionElementRepo;
+        private readonly IOrganizationNameRepo _organizationNameRepo;
         private readonly AppSettings _appSettings;
 
         public ConstructionDocumentService(
@@ -27,6 +28,7 @@ namespace DocumentsKM.Services
             IConstructionRepo constructionRepo,
             IStandardConstructionRepo standardConstructionRepo,
             IConstructionElementRepo constructionElementRepo,
+            IOrganizationNameRepo organizationNameRepo,
             IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
@@ -34,6 +36,7 @@ namespace DocumentsKM.Services
             _constructionRepo = constructionRepo;
             _standardConstructionRepo = standardConstructionRepo;
             _constructionElementRepo = constructionElementRepo;
+            _organizationNameRepo = organizationNameRepo;
             _appSettings = appSettings.Value;
         }
 
@@ -59,8 +62,9 @@ namespace DocumentsKM.Services
                     Name = "",
                 };
 
-            var constructions = _constructionRepo.GetAllByMarkId(markId);
+            var constructions = _constructionRepo.GetAllIncludedByMarkId(markId);
             var standardConstructions = _standardConstructionRepo.GetAllByMarkId(markId);
+            var organizationShortName = _organizationNameRepo.Get().ShortName;
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
@@ -73,7 +77,8 @@ namespace DocumentsKM.Services
                     mark.ComplexName,
                     mark.ObjectName,
                     mark,
-                    departmentHead);
+                    departmentHead,
+                    organizationShortName);
                 AppendToSecondFooterTable(wordDoc, mark.Designation);
             }
         }

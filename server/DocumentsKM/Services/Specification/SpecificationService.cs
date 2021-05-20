@@ -51,6 +51,7 @@ namespace DocumentsKM.Services
                 Num = (Int16)(specifications.Count() == 0 ? 0 :
                     specifications.Max(v => v.Num) + 1),
                 IsCurrent = true,
+                IsIncluded = true,
             };
             _repository.Add(newSpecification);
 
@@ -77,6 +78,8 @@ namespace DocumentsKM.Services
                 _repository.Update(spec);
                 foundSpecification.IsCurrent = true;
             }
+             if (specification.IsIncluded != null)
+                foundSpecification.IsIncluded = specification.IsIncluded.GetValueOrDefault();
             if (specification.Note != null)
                 foundSpecification.Note = specification.Note;
             _repository.Update(foundSpecification);

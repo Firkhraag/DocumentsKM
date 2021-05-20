@@ -22,5 +22,8 @@ namespace DocumentsKM.Models
         // Номер
         [Required]
         public Int16 OrderNum { get; set; }
+        
+        [Required]
+        public bool HasLineBreak { get; set; }
     }
 }

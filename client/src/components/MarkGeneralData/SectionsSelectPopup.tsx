@@ -8,7 +8,6 @@ import httpClient from '../../axios'
 import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import { useMark } from '../../store/MarkStore'
-import { useUser } from '../../store/UserStore'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 
 type IOptionsObject = {
@@ -45,7 +44,6 @@ const SectionsSelectPopup = ({
     setRefresh,
 }: PopupProps) => {
 	const mark = useMark()
-    const user = useUser()
 
 	const [sections, setSections] = useState<GeneralDataSection[]>([])
 	const [selectedSections, setSelectedSections] = useState<
@@ -74,7 +72,7 @@ const SectionsSelectPopup = ({
 			const fetchData = async () => {
 				try {
 					const sectionsResponse = await httpClient.get(
-						`/users/${user.id}/general-data-sections`
+						`/general-data-sections`
 					)
 					for (let _ of sectionsResponse.data) {
 						refs.push(createRef())
@@ -107,7 +105,7 @@ const SectionsSelectPopup = ({
 		setProcessIsRunning(true)
 		try {
 			await httpClient.patch(
-				`users/${user.id}/marks/${mark.id}/mark-general-data-sections`,
+				`/marks/${mark.id}/mark-general-data-sections`,
 				selectedSections.map((v) => v.id)
 			)
             setSelectedObject({

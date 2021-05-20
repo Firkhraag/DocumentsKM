@@ -1,8 +1,5 @@
 Create Table GeneralDataSections (
 	Id Smallint Identity(1, 1) Primary Key,
-	UserId Smallint Not Null,
-	Name Varchar(255) Not Null,
+	Name Varchar(255) Not Null Unique,
 	OrderNum Smallint Not Null,
-	Unique(UserId, Name),
-	Constraint GeneralDataSection Foreign Key(UserId) References Users(Id)
 );

@@ -15,13 +15,13 @@ namespace DocumentsKM.Services
             int sectionId);
         // Обновить пункты общих указаний марки по id шаблонных пунктов
         IEnumerable<MarkGeneralDataPoint> UpdateAllByPointIds(
-            int userId, int sectionId, List<int> pointIds);
+            int sectionId, List<int> pointIds);
         // Обновить пункт общих указаний марки
         void Update(int id, int sectionId,
             MarkGeneralDataPointUpdateRequest generalDataPoint);
         // Удалить пункт общих указаний марки
         void Delete(int id, int sectionId);
         // Добавить шаблонные пункты общих указаний пользователя к марке
-        void AddDefaultPoints(int userId, Mark mark);
+        void AddDefaultPoints(Mark mark);
     }
 }

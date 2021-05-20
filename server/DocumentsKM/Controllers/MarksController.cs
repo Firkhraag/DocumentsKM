@@ -95,20 +95,19 @@ namespace DocumentsKM.Controllers
             return NotFound();
         }
 
-        [HttpPost, Route("users/{userId}/subnodes/{subnodeId}/marks")]
+        [HttpPost, Route("subnodes/{subnodeId}/marks")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult Create(
-            int userId, int subnodeId, [FromBody] MarkCreateRequest markRequest)
+            int subnodeId, [FromBody] MarkCreateRequest markRequest)
         {
             var markModel = _mapper.Map<Mark>(markRequest);
             try
             {
                 _service.Create(
                     markModel,
-                    userId,
                     subnodeId,
                     markRequest.DepartmentId,
                     markRequest.ChiefSpecialistId,

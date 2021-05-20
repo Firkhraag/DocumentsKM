@@ -17,6 +17,7 @@ Create Table Marks (
 	EditedDate Datetime,
 	Note Varchar(255),
 	FireHazardCategoryId Smallint,
+	Task Varchar(255),
 	Unique (SubnodeId, Code),
 	Constraint FK_ChiefSpecialist_Mark Foreign Key(ChiefSpecialistId) References Employees(Id),
 	Constraint FK_GroupLeader_Mark Foreign Key(GroupLeaderId) References Employees(Id),

@@ -3,6 +3,7 @@ interface ISpecification {
 	num: number
 	createdDate: string
 	isCurrent: boolean
+	isIncluded: boolean
 	note: string
 }
 
@@ -11,6 +12,7 @@ class Specification {
 	num: number
 	createdDate: string
 	isCurrent: boolean
+	isIncluded: boolean
 	note: string
 
 	constructor(obj?: ISpecification) {
@@ -18,6 +20,7 @@ class Specification {
 		this.num = (obj && obj.num) || 0
 		this.createdDate = (obj && obj.createdDate) || ''
 		this.isCurrent = (obj && obj.isCurrent) || false
+		this.isIncluded = (obj && obj.isIncluded) || false
 		this.note = (obj && obj.note) || ''
 	}
 }

@@ -152,7 +152,6 @@ namespace DocumentsKM.Tests
         public void Create_ShouldCreateMark()
         {
             // Arrange
-            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
             int departmentId = _rnd.Next(1, TestData.departments.Count());
             int normContrId = _rnd.Next(1, TestData.employees.Count());
@@ -182,7 +181,6 @@ namespace DocumentsKM.Tests
 
             // Act
             _service.Create(newMark,
-                userId,
                 subnodeId,
                 departmentId,
                 normContrId,
@@ -201,7 +199,6 @@ namespace DocumentsKM.Tests
         public void Create_ShouldFailWithNull_WhenWrongValues()
         {
             // Arrange
-            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = _rnd.Next(1, TestData.subnodes.Count());
             int departmentId = _rnd.Next(1, TestData.departments.Count());
             int normContrId = _rnd.Next(1, TestData.employees.Count());
@@ -232,7 +229,6 @@ namespace DocumentsKM.Tests
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 null,
-                userId,
                 subnodeId,
                 departmentId,
                 normContrId,
@@ -240,7 +236,6 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
-                userId,
                 999,
                 departmentId,
                 normContrId,
@@ -248,7 +243,6 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
-                userId,
                 subnodeId,
                 999,
                 normContrId,
@@ -256,7 +250,6 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
-                userId,
                 subnodeId,
                 departmentId,
                 999,
@@ -264,7 +257,6 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
-                userId,
                 subnodeId,
                 departmentId,
                 normContrId,
@@ -272,7 +264,6 @@ namespace DocumentsKM.Tests
                 groupLeaderId));
             Assert.Throws<ArgumentNullException>(() => _service.Create(
                 newMark,
-                userId,
                 subnodeId,
                 departmentId,
                 normContrId,
@@ -285,7 +276,6 @@ namespace DocumentsKM.Tests
         public void Create_ShouldFailWithConflict_WhenConflictValue()
         {
             // Arrange
-            int userId = _rnd.Next(1, TestData.users.Count());
             int subnodeId = 1;
             var conflictCode = _marks[0].Code;
             int departmentId = _rnd.Next(1, TestData.departments.Count());
@@ -316,7 +306,6 @@ namespace DocumentsKM.Tests
 
             // Act & Assert
             Assert.Throws<ConflictException>(() => _service.Create(newMark,
-                userId,
                 subnodeId,
                 departmentId,
                 normContrId,

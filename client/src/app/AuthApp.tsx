@@ -21,7 +21,6 @@ import LinkedDocTable from '../components/LinkedDoc/LinkedDocTable'
 import OperatingConditions from '../components/OperatingConditions/OperatingConditions'
 import AdditionalWorkTable from '../components/AdditionalWork/AdditionalWorkTable'
 import GeneralData from '../components/MarkGeneralData/MarkGeneralData'
-import UserGeneralData from '../components/UserGeneralData/UserGeneralData'
 import EstimateTaskDocument from '../components/EstimateTask/EstimateTaskDocument'
 import ProjectRegistration from '../components/ProjectRegistration/ProjectRegistration'
 import EstimationDocument from '../components/Estimation/EstimationDocument'
@@ -29,6 +28,8 @@ import DefaultValuesData from '../components/DefaultValues/DefaultValuesData'
 import CurrentMarkSetter from '../components/CurrentMarkSetter/CurrentMarkSetter'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
+import GeneralDataSection from '../model/GeneralDataSection'
+import GeneralDataPoint from '../model/GeneralDataPoint'
 
 const AuthApp = () => {
 	const [subnode, setSubnode] = useState(null)
@@ -37,6 +38,10 @@ const AuthApp = () => {
 	const [copiedConstruction, setCopiedConstruction] = useState<Construction>(
 		null
 	)
+	const [copiedSection, setCopiedSection] = useState({
+		section: null as GeneralDataSection,
+		points: [] as GeneralDataPoint[],
+	})
 
 	return (
 		<MarkProvider>
@@ -177,12 +182,7 @@ const AuthApp = () => {
 
 							<Route exact path="/general-data">
 								<div className="full-width div-container">
-									<GeneralData />
-								</div>
-							</Route>
-							<Route exact path="/user/general-data">
-								<div className="full-width div-container">
-									<UserGeneralData />
+									<GeneralData copiedSection={copiedSection} setCopiedSection={setCopiedSection} />
 								</div>
 							</Route>
 

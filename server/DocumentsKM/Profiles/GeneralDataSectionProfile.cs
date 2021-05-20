@@ -8,7 +8,6 @@ namespace DocumentsKM.Profiles
         public GeneralDataSectionsProfile()
         {
             CreateMap<GeneralDataSection, GeneralDataSectionResponse>();
-            CreateMap<GeneralDataSectionCreateRequest, GeneralDataSection>();
         }
     }
 }

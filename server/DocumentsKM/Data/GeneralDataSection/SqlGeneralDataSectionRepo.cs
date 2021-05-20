@@ -14,10 +14,9 @@ namespace DocumentsKM.Data
             _context = context;
         }
 
-        public IEnumerable<GeneralDataSection> GetAllByUserId(int userId)
+        public IEnumerable<GeneralDataSection> GetAll()
         {
-            return _context.GeneralDataSections.Where(
-                v => v.User.Id == userId).OrderBy(
+            return _context.GeneralDataSections.OrderBy(
                     v => v.OrderNum).ToList();
         }
 
@@ -33,29 +32,10 @@ namespace DocumentsKM.Data
                 v => v.Id == id);
         }
 
-        public GeneralDataSection GetByUniqueKey(
-            int userId, string name)
+        public GeneralDataSection GetByUniqueKey(string name)
         {
             return _context.GeneralDataSections.SingleOrDefault(
-                v => v.User.Id == userId && v.Name == name);
-        }
-
-        public void Add(GeneralDataSection GeneralDataSection)
-        {
-            _context.GeneralDataSections.Add(GeneralDataSection);
-            _context.SaveChanges();
-        }
-
-        public void Update(GeneralDataSection GeneralDataSection)
-        {
-            _context.Entry(GeneralDataSection).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void Delete(GeneralDataSection GeneralDataSection)
-        {
-            _context.GeneralDataSections.Remove(GeneralDataSection);
-            _context.SaveChanges();
+                v => v.Name == name);
         }
     }
 }

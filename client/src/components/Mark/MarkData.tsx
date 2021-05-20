@@ -85,6 +85,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 							chiefSpecialist: null,
 							groupLeader: null,
 							normContr: null,
+							task: '',
 						})
 						const archiveMarksResponse = await httpClient.get(
                             `/subnodes/${currentSubnode.id}/archive-marks`
@@ -103,6 +104,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 							chiefSpecialist: null,
 							groupLeader: null,
 							normContr: null,
+							task: '',
 						})
 					}
 				} catch (e) {
@@ -317,6 +319,13 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 		}
 	}
 
+	const onTaskChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+		setSelectedObject({
+			...selectedObject,
+			task: event.currentTarget.value,
+		})
+	}
+
 	const checkIfValid = () => {
 		if (selectedObject.code === '') {
 			setErrMsg('Пожалуйста, введите шифр марки')
@@ -333,13 +342,14 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 		setProcessIsRunning(true)
 		if (checkIfValid()) {
 			try {
-				const response = await httpClient.post(`/users/${user.id}/subnodes/${currentSubnode.id}/marks`, {
+				const response = await httpClient.post(`/subnodes/${currentSubnode.id}/marks`, {
 					code: selectedObject.code,
 					name: selectedObject.name,
 					departmentId: selectedObject.department.id,
 					chiefSpecialistId: selectedObject.chiefSpecialist?.id,
 					groupLeaderId: selectedObject.groupLeader?.id,
 					normContrId: selectedObject.normContr?.id,
+					task: selectedObject.task,
 				})
 
 				localStorage.setItem('selectedMarkId', response.data.id.toString())
@@ -406,6 +416,9 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 						selectedObject.normContr,
 						mark.normContr
 					),
+					task: (selectedObject.task === mark.task) || (selectedObject.task === '' && mark.task == null)
+						? undefined
+						: selectedObject.task,
 				}
 				const designationResponse = await httpClient.patch(`/marks/${selectedObject.id}`, object)
 				setMark({
@@ -620,7 +633,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 						/>
 					</Form.Group>
 
-					<Form.Group className="space-between-cent-v mrg-top-2 no-bot-mrg">
+					<Form.Group className="space-between-cent-v mrg-top-2">
 						<Form.Label
 							className="no-bot-mrg"
 							htmlFor="normContr"
@@ -660,6 +673,19 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 						/>
 					</Form.Group>
 
+					<Form.Group  className="no-bot-mrg">
+						<Form.Label htmlFor="task">Задание</Form.Label>
+						<Form.Control
+							id="task"
+							as="textarea"
+							rows={4}
+							style={{ resize: 'none' }}
+							placeholder="Задание отсутствует"
+							value={selectedObject.task}
+							onChange={onTaskChange}
+						/>
+					</Form.Group>
+
 					<ErrorMsg errMsg={errMsg} hide={() => setErrMsg('')} />
 
 					<Button
@@ -695,6 +721,9 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 								selectedObject.normContr,
 								mark.normContr
 							),
+							task: (selectedObject.task === mark.task) || (selectedObject.task === '' && mark.task == null)
+								? undefined
+								: selectedObject.task,
 						}).some((x) => x !== undefined))}
 					>
 						{isCreateMode ? 'Создать марку' : 'Сохранить изменения'}
@@ -772,8 +801,7 @@ const MarkData = ({ isCreateMode, currentSubnode }: MarkDataProps) => {
 							className="mark-data-input-width1"
 							value={
 								isCreateMode
-									? currentSubnode.node.chiefEngineerName != null ? currentSubnode.node.chiefEngineerName
-											.fullname : ''
+									? currentSubnode.node.chiefEngineerName != null ? currentSubnode.node.chiefEngineerName : ''
 									: mark.chiefEngineerName
 							}
 							readOnly={true}

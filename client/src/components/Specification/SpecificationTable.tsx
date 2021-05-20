@@ -24,7 +24,8 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 
 	const [specifications, setSpecifications] = useState([] as Specification[])
 
-	const refs = useState([] as React.MutableRefObject<undefined>[])[0]
+	const isCurrentRefs = useState([] as React.MutableRefObject<undefined>[])[0]
+	const isIncludedRefs = useState([] as React.MutableRefObject<undefined>[])[0]
 	const [currentSpecId, setCurrentSpecId] = useState(-1)
 	const [initialRender, setInitialRender] = useState(true)
 
@@ -32,15 +33,19 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 		if (mark != null && mark.id != null) {
 			if (
 				currentSpecId !== -1 &&
-				refs.length > 0 &&
+				isCurrentRefs.length > 0 &&
 				specifications.length > 0
 			) {
 				for (const [i, s] of specifications.entries()) {
 					if (s.id === currentSpecId) {
-						const inputElement = refs[i].current as any
+						const inputElement = isCurrentRefs[i].current as any
 						if (inputElement) {
 							inputElement.checked = true
 						}
+					}
+					const inputElement = isIncludedRefs[i].current as any
+					if (inputElement) {
+						inputElement.checked = s.isIncluded
 					}
 				}
 				return
@@ -56,7 +61,8 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 							if (s.isCurrent) {
 								setCurrentSpecId(s.id)
 							}
-							refs.push(createRef())
+							isCurrentRefs.push(createRef())
+							isIncludedRefs.push(createRef())
 						}
 						setSpecifications(specificationsResponse.data)
 					} catch (e) {
@@ -72,17 +78,38 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 		try {
 			await httpClient.patch(`/specifications/${id}`, {
 				isCurrent: true,
+				isIncluded: true,
 			})
-			const inputElement = refs[row].current as any
+			const inputElement = isCurrentRefs[row].current as any
 			if (inputElement) {
 				inputElement.checked = true
+			}
+			const inputElement2 = isIncludedRefs[row].current as any
+			if (inputElement2) {
+				inputElement2.checked = true
 			}
 			setCurrentSpecId(id)
 			for (const s of specifications) {
 				s.isCurrent = false
 			}
 			specifications[row].isCurrent = true
+			specifications[row].isIncluded = true
 			setPopup(defaultPopup)
+		} catch (e) {
+			console.log('Error')
+		}
+	}
+
+	const onIncludeClick = async (row: number, id: number) => {
+		try {
+			await httpClient.patch(`/specifications/${id}`, {
+				isIncluded: !specifications[row].isIncluded,
+			})
+			const inputElement = isIncludedRefs[row].current as any
+			if (inputElement) {
+				inputElement.checked = !inputElement.checked
+			}
+			specifications[row].isIncluded = !specifications[row].isIncluded
 		} catch (e) {
 			console.log('Error')
 		}
@@ -95,7 +122,8 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 			)
 			specifications.push(newSpecificationResponse.data)
 			setSpecifications(specifications)
-			refs.push(createRef())
+			isCurrentRefs.push(createRef())
+			isIncludedRefs.push(createRef())
 			setCurrentSpecId(newSpecificationResponse.data.id)
 			setPopup(defaultPopup)
 		} catch (e) {
@@ -106,7 +134,8 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 	const onDeleteClick = async (row: number, id: number) => {
 		try {
 			await httpClient.delete(`/specifications/${id}`)
-			refs.splice(row, 1)
+			isCurrentRefs.splice(row, 1)
+			isIncludedRefs.splice(row, 1)
 			const arr = [...specifications]
 			arr.splice(row, 1)
 			setSpecifications(arr)
@@ -139,6 +168,7 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 						<th>№</th>
 						<th>Создан</th>
 						<th className="spec-note-col-width">Примечание</th>
+						<th>Включать</th>
 						<th>Текущий</th>
 						<th className="text-centered" colSpan={2}>
 							Действия
@@ -160,6 +190,25 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 								<td className="spec-note-col-width">
 									{s.note}
 								</td>
+								<td 
+									onClick={() =>
+										currentSpecId === s.id
+											? null : onIncludeClick(
+											index,
+											s.id
+										)
+									}
+									className="pointer">
+									<div className="div-container">
+										<Form.Check
+											ref={isIncludedRefs[index]}
+											id={`is${s.id}`}
+											type="checkbox"
+											className="checkmark"
+											style={{ pointerEvents: 'none' }}
+										/>
+									</div>
+								</td>
 								<td
 									onClick={() =>
 										currentSpecId === s.id
@@ -176,15 +225,17 @@ const SpecificationTable = ({ setSpecification }: SpecificationTableProps) => {
 														setPopup(defaultPopup),
 											  })
 									}
-									className="pointer div-container"
+									className="pointer"
 								>
-									<Form.Check
-										ref={refs[index]}
-										id={`is${s.id}`}
-										name="currentRelease"
-										type="radio"
-										style={{ pointerEvents: 'none' }}
-									/>
+									<div className="div-container">
+										<Form.Check
+											ref={isCurrentRefs[index]}
+											id={`is${s.id}`}
+											name="currentRelease"
+											type="radio"
+											style={{ pointerEvents: 'none' }}
+										/>
+									</div>
 								</td>
 								<td
 									onClick={() => {

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
@@ -10,11 +9,6 @@ namespace DocumentsKM.Models
     {
         [Key]
         public Int16 Id { get; set; }
-
-        // Пользователь
-        [Required]
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
 
         // Название
         [Required]

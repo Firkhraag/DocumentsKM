@@ -19,6 +19,7 @@ namespace DocumentsKM.Services
         private readonly ISpecificationRepo _specificationRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IConstructionElementRepo _constructionElementRepo;
+        private readonly IOrganizationNameRepo _organizationNameRepo;
         private readonly AppSettings _appSettings;
 
         private class GroupedElement
@@ -47,6 +48,7 @@ namespace DocumentsKM.Services
             ISpecificationRepo specificationRepo,
             IConstructionRepo constructionRepo,
             IConstructionElementRepo constructionElementRepo,
+            IOrganizationNameRepo organizationNameRepo,
             IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
@@ -54,6 +56,7 @@ namespace DocumentsKM.Services
             _specificationRepo = specificationRepo;
             _constructionRepo = constructionRepo;
             _constructionElementRepo = constructionElementRepo;
+            _organizationNameRepo = organizationNameRepo;
             _appSettings = appSettings.Value;
         }
 
@@ -80,6 +83,7 @@ namespace DocumentsKM.Services
                 };
 
             var currentSpec = _specificationRepo.GetCurrentByMarkId(markId);
+            var organizationShortName = _organizationNameRepo.Get().ShortName;
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
@@ -90,7 +94,8 @@ namespace DocumentsKM.Services
                     mark.ComplexName,
                     mark.ObjectName,
                     mark,
-                    departmentHead);
+                    departmentHead,
+                    organizationShortName);
                 AppendToSecondFooterTable(wordDoc, mark.Designation);
             }
         }

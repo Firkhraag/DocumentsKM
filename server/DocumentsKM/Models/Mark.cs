@@ -77,5 +77,7 @@ namespace DocumentsKM.Models
 
         // Категория пожарной опасности
         public Int16? FireHazardCategoryId { get; set; }
+
+        public string Task { get; set; }
     }
 }

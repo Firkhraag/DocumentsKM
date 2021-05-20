@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DocumentsKM.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsKM.Data
 {
@@ -22,19 +21,16 @@ namespace DocumentsKM.Data
                     v => v.OrderNum).ToList();
         }
         
-        public IEnumerable<GeneralDataPoint> GetAllByUserIdAndSectionName(
-            int userId, string sectionName)
+        public IEnumerable<GeneralDataPoint> GetAllBySectionName(string sectionName)
         {
             return _context.GeneralDataPoints.Where(
-                v => v.Section.User.Id == userId && v.Section.Name == sectionName).OrderBy(
+                v => v.Section.Name == sectionName).OrderBy(
                     v => v.OrderNum).ToList();
         }
 
-        public IEnumerable<GeneralDataPoint> GetAllByUserId(
-            int userId)
+        public IEnumerable<GeneralDataPoint> GetAll()
         {
-            return _context.GeneralDataPoints.Where(
-                v => v.Section.User.Id == userId).OrderBy(
+            return _context.GeneralDataPoints.OrderBy(
                     v => v.OrderNum).ToList();
         }
 
@@ -48,24 +44,6 @@ namespace DocumentsKM.Data
         {
             return _context.GeneralDataPoints.SingleOrDefault(
                 v => v.Section.Id == sectionId && v.Text == text);
-        }
-
-        public void Add(GeneralDataPoint generalDataPoint)
-        {
-            _context.GeneralDataPoints.Add(generalDataPoint);
-            _context.SaveChanges();
-        }
-
-        public void Update(GeneralDataPoint generalDataPoint)
-        {
-            _context.Entry(generalDataPoint).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void Delete(GeneralDataPoint generalDataPoint)
-        {
-            _context.GeneralDataPoints.Remove(generalDataPoint);
-            _context.SaveChanges();
         }
     }
 }

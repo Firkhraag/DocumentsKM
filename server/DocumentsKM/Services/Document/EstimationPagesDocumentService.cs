@@ -14,15 +14,18 @@ namespace DocumentsKM.Services
     {
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
+        private readonly IOrganizationNameRepo _organizationNameRepo;
         private readonly AppSettings _appSettings;
 
         public EstimationPagesDocumentService(
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
+            IOrganizationNameRepo organizationNameRepo,
             IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
+            _organizationNameRepo = organizationNameRepo;
             _appSettings = appSettings.Value;
         }
 
@@ -47,6 +50,7 @@ namespace DocumentsKM.Services
                 departmentHead = new Employee{
                     Name = "",
                 };
+            var organizationShortName = _organizationNameRepo.Get().ShortName;
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
@@ -55,7 +59,8 @@ namespace DocumentsKM.Services
                     mark.Designation,
                     mark.ComplexName,
                     mark.ObjectName,
-                    departmentHead);
+                    departmentHead,
+                    organizationShortName);
                 AppendToSecondFooterTable(wordDoc, mark.Designation);
 
                 for (int i = 1; i < numOfPages; i++)
@@ -75,7 +80,8 @@ namespace DocumentsKM.Services
             string markFullCodeName,
             string complexName,
             string objectName,
-            Employee departmentHead)
+            Employee departmentHead,
+            string organizationShortName)
         {
             MainDocumentPart mainPart = document.MainDocumentPart;
             var commonFooter = mainPart.FooterParts.LastOrDefault();
@@ -94,6 +100,11 @@ namespace DocumentsKM.Services
             text.AppendChild(new Break());
             p.Append(text);
             p.Append(Word.GetTextElement(objectName, 20));
+
+            trCells = trArr[5].Descendants<TableCell>().ToList();
+            tc = trCells[5];
+            p = tc.GetFirstChild<Paragraph>();
+            p.Append(Word.GetTextElement(organizationShortName, 24));
 
             trCells = trArr[7].Descendants<TableCell>().ToList();
             tc = trCells[1];

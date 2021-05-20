@@ -14,6 +14,8 @@ namespace DocumentsKM.Data
             builder.Entity<Mark>().Property(e => e.EditedDate).HasColumnType("datetime");
             builder.Entity<Mark>().Property(e => e.IssueDate).HasColumnType("datetime");
             builder.Entity<Specification>().Property(e => e.CreatedDate).HasColumnType("datetime");
+
+            builder.Entity<OrganizationName>().HasKey(v => new { v.Model, v.Name, v.ShortName });
         }
 
         // Other services data
@@ -77,5 +79,7 @@ namespace DocumentsKM.Data
         public DbSet<DefaultValues> DefaultValues { get; set; }
 
         public DbSet<EstimateTask> EstimateTask { get; set; }
+
+        public DbSet<OrganizationName> OrganizationName { get; set; }
     }
 }

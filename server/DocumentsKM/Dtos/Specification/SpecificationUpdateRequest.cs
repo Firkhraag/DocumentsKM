@@ -7,11 +7,13 @@ namespace DocumentsKM.Dtos
         [MaxLength(255)]
         public string Note { get; set; }
         public bool? IsCurrent { get; set; }
+        public bool? IsIncluded { get; set; }
 
         public SpecificationUpdateRequest()
         {
             Note = null;
             IsCurrent = null;
+            IsIncluded = null;
         }
     }
 }

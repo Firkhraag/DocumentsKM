@@ -1328,37 +1328,31 @@ namespace DocumentsKM.Tests
             {
                 Id = 1,
                 Name = "S1",
-                User = users[0],
             },
             new GeneralDataSection
             {
                 Id = 2,
                 Name = "S2",
-                User = users[0],
             },
             new GeneralDataSection
             {
                 Id = 3,
                 Name = "S3",
-                User = users[0],
             },
             new GeneralDataSection
             {
                 Id = 4,
                 Name = "S4",
-                User = users[1],
             },
             new GeneralDataSection
             {
                 Id = 5,
                 Name = "S5",
-                User = users[1],
             },
             new GeneralDataSection
             {
                 Id = 6,
                 Name = "S6",
-                User = users[2],
             },
         };
 

@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button'
 import { Trash } from 'react-bootstrap-icons'
 import { Files } from 'react-bootstrap-icons'
 import { PlusCircle } from 'react-bootstrap-icons'
+import { ClipboardPlus } from 'react-bootstrap-icons'
 import { ArrowUpCircle } from 'react-bootstrap-icons'
 import { ArrowDownCircle } from 'react-bootstrap-icons'
 // Util
@@ -18,20 +19,31 @@ import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 import { useMark } from '../../store/MarkStore'
-import { useUser } from '../../store/UserStore'
 import getFromOptions from '../../util/get-from-options'
 import { reactSelectStyle } from '../../util/react-select-style'
 import truncateText from '../../util/truncate'
 import SectionsSelectPopup from './SectionsSelectPopup'
 import PointsSelectPopup from './PointsSelectPopup'
 import { defaultPopup, useSetPopup } from '../../store/PopupStore'
+import table1 from '../../../assets/table1.png'
+import table2 from '../../../assets/table2.png'
+import table3 from '../../../assets/table3.png'
 
-const MarkGeneralData = () => {
+type ICopiedSectionType = {
+	section: GeneralDataSection
+	points: GeneralDataPoint[]
+}
+
+type MarkGeneralDataProps = {
+	copiedSection: ICopiedSectionType
+	setCopiedSection: (v:ICopiedSectionType) => void
+}
+
+const MarkGeneralData = ({ copiedSection, setCopiedSection }: MarkGeneralDataProps) => {
 	const corrProtSectionName = "Антикоррозионная защита"
 
 	const history = useHistory()
 	const mark = useMark()
-	const user = useUser()
 	const setPopup = useSetPopup()
 
 	const [selectedObject, setSelectedObject] = useState<GeneralDataModel>({
@@ -66,6 +78,11 @@ const MarkGeneralData = () => {
 	const [isLeftErrMsg, setLeftErrMsg] = useState(true)
 
 	const [refresh, setRefresh] = useState(false)
+
+	console.log(selectedObject.point)
+	const currentPointFromArray = selectedObject.point == null ? null : optionsObject.points.find(
+		(v) => v.id === selectedObject.point.id
+	)
 
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
@@ -189,30 +206,40 @@ const MarkGeneralData = () => {
 		})
 	}
 
-	const onCopySectionClick = async (id: number, name: string) => {
-		setProcessIsRunning(true)
-		try {
-			await httpClient.post(
-				`/users/${user.id}/general-data-sections/copy`,
-				{
-					id: id,
-					name:
-						mark.designation +
-						' ' +
-						name,
-				}
-			)
-		} catch (e) {
-			setLeftErrMsg(true)
-			if (e.response.status === 409) {
-				setErrMsg('Раздел с таким содержанием уже существует')
-			} else {
-				setErrMsg('Произошла ошибка')
+	const onLineBreakCheck = () => {
+		setSelectedObject({
+			...selectedObject,
+			point: {
+				...selectedObject.point,
+				hasLineBreak: !selectedObject.point.hasLineBreak,
 			}
-		}
-		setPopup(defaultPopup)
-		setProcessIsRunning(false)
+		})
 	}
+
+	// const onPasteSectionClick = async (id: number, name: string) => {
+	// 	setProcessIsRunning(true)
+	// 	try {
+	// 		await httpClient.post(
+	// 			`/users/${user.id}/general-data-sections/copy`,
+	// 			{
+	// 				id: id,
+	// 				name:
+	// 					mark.designation +
+	// 					' ' +
+	// 					name,
+	// 			}
+	// 		)
+	// 	} catch (e) {
+	// 		setLeftErrMsg(true)
+	// 		if (e.response.status === 409) {
+	// 			setErrMsg('Раздел с таким содержанием уже существует')
+	// 		} else {
+	// 			setErrMsg('Произошла ошибка')
+	// 		}
+	// 	}
+	// 	setPopup(defaultPopup)
+	// 	setProcessIsRunning(false)
+	// }
 
 	const onSectionDeleteClick = async (row: number, id: number) => {
 		setProcessIsRunning(true)
@@ -630,6 +657,7 @@ const MarkGeneralData = () => {
 					{
 						text: selectedObject.pointText,
 						orderNum: selectedObject.point.orderNum,
+						hasLineBreak: selectedObject.point.hasLineBreak,
 					}
 				)
 				const p = { ...selectedObject.point }
@@ -639,6 +667,7 @@ const MarkGeneralData = () => {
 				)
 				foundPoint.text = selectedObject.pointText
 				foundPoint.orderNum = selectedObject.point.orderNum
+				foundPoint.hasLineBreak = selectedObject.point.hasLineBreak
 
 				var num = 1
 				for (let p of optionsObject.points) {
@@ -798,23 +827,13 @@ const MarkGeneralData = () => {
 											</p>
 											<div className="flex">
 												<div
-													onClick={() =>
-														setPopup({
-															isShown: true,
-															msg: `Вы действительно хотите добавить раздел № ${
-																index + 1
-															} в шаблоны пользователя?`,
-															onAccept: () =>
-																onCopySectionClick(
-																	s.id,
-																	s.name
-																),
-															onCancel: () =>
-																setPopup(
-																	defaultPopup
-																),
+													onClick={() => {
+														setCopiedSection({
+															section: selectedObject.section,
+															points: [],
 														})
-													}
+														alert("Раздел скопирован")
+													}}
 													className="trash-area"
 												>
 													<Files color="#666" size={22} />
@@ -905,7 +924,7 @@ const MarkGeneralData = () => {
 								styles={reactSelectStyle}
 							/>
 						</Form.Group>
-						<div
+						{/* <div
 							onClick={() => setSectionsSelectionShown(true)}
 							className="pointer"
 						>
@@ -914,7 +933,49 @@ const MarkGeneralData = () => {
 								size={28}
 								style={{ marginTop: '1.5em' }}
 							/>
+						</div> */}
+
+
+						<div className="flex-cent-v">
+							<div
+								onClick={() => alert("Не реализовано")}
+								className="pointer"
+							>
+								<ClipboardPlus
+									// onClick={
+									// 	copiedSection == null ||
+									// 	SectionsState.Sections
+									// 		.map((v) => v.id)
+									// 		.includes(copiedSection.id)
+									// 		? null
+									// 		: onPasteClick
+									// }
+									// color={copiedSection == null ? '#ccc' : '#666'}
+									// size={28}
+									// className={
+									// 	copiedSection == null
+									// 		? 'mrg-top'
+									// 		: 'pointer mrg-top'
+									// }
+									color={'#666'}
+									size={28}
+									className={'pointer'}
+									style={{ marginRight: 10, marginTop: 20 }}
+								/>
+							</div>
+							<div
+								onClick={() => setSectionsSelectionShown(true)}
+								className="pointer"
+							>
+								<PlusCircle
+									color={'#666'}
+									size={28}
+									style={{ marginTop: '1.5em' }}
+								/>
+							</div>
 						</div>
+
+
 					</div>
 					<Form.Group>
 						<Form.Label className="bold" htmlFor="section_title">
@@ -1088,20 +1149,37 @@ const MarkGeneralData = () => {
 							</div>
 						</div>
 						<Form.Group className="no-bot-mrg">
-							<div className="flex">
-								<Form.Label className="bold" htmlFor="text">
-									Пункт
-								</Form.Label>
-								<p style={{ marginLeft: 10 }}>(°C –)</p>
+							<div className="space-between">
+								<div className="flex">
+									<Form.Label className="bold" htmlFor="text">
+										Пункт
+									</Form.Label>
+									<p style={{ marginLeft: 10 }}>(°C)</p>
+								</div>
+								<div className="flex">
+									<Form.Check
+										id="break"
+										type="checkbox"
+										className="checkmark"
+										checked={selectedObject.point != null ? selectedObject.point.hasLineBreak : false }
+										disabled={selectedObject.point == null}
+										onChange={onLineBreakCheck}
+									/>
+									<label style={{marginLeft: 10}} htmlFor="break">Разрыв страницы перед пунктом</label>
+								</div>
 							</div>
-							<Form.Control
-								id="text"
-								as="textarea"
-								rows={8}
-								style={{ resize: 'none' }}
-								value={selectedObject.pointText}
-								onChange={onPointTextChange}
-							/>
+
+							{selectedObject.pointText == "Таблица 1" && selectedObject.point != null ? <img src={table1} style={{width: "100%", height: "auto"}} /> :
+								selectedObject.pointText == "Таблица 2" && selectedObject.point != null ? <img src={table2} style={{width: "100%", height: "auto"}} /> :
+									selectedObject.pointText == "Таблица 3" && selectedObject.point != null ? <img src={table3} style={{width: "100%", height: "auto"}} /> :
+										<Form.Control
+										id="text"
+										as="textarea"
+										rows={8}
+										style={{ resize: 'none' }}
+										value={selectedObject.pointText}
+										onChange={onPointTextChange}
+									/>}
 						</Form.Group>
 						{isLeftErrMsg ? null : (
 							<ErrorMsg
@@ -1117,8 +1195,20 @@ const MarkGeneralData = () => {
 								onClick={onUpdatePointButtonClick}
 								disabled={
 									selectedObject.point == null ||
-									processIsRunning
-								}
+									processIsRunning || !Object.values({
+										text:
+											currentPointFromArray == null || selectedObject.pointText === currentPointFromArray.text
+												? undefined
+												: selectedObject.point.text,
+										orderNum:
+											currentPointFromArray == null || selectedObject.point.orderNum === currentPointFromArray.orderNum
+												? undefined
+												: selectedObject.point.orderNum,
+										hasLineBreak:
+											currentPointFromArray == null || selectedObject.point.hasLineBreak === currentPointFromArray.hasLineBreak
+												? undefined
+												: selectedObject.point.hasLineBreak,
+									}).some((x) => x !== undefined)}
 							>
 								Изменить
 							</Button>

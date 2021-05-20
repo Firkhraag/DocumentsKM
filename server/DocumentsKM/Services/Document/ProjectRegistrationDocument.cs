@@ -61,6 +61,8 @@ namespace DocumentsKM.Services
                 Word.ReplaceText(
                     wordDoc, "F", mark.IssueDate.GetValueOrDefault().ToString("dd.MM.yyyy"));
                 Word.ReplaceText(wordDoc, "G", FindWeight(constructions, standardConstructions).ToStringWithComma());
+                Word.ReplaceText(wordDoc, "T", mark.Task);
+
                 AppendToSheetsTable(wordDoc, sheets);
                 AppendToDocsTable(wordDoc, docs);
                 AppendToAttachedDocsTable(wordDoc, attachedDocs);

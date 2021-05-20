@@ -13,6 +13,7 @@ interface IMark {
 	chiefSpecialist: Employee
 	groupLeader: Employee
 	normContr: Employee
+	task: string
 }
 
 class Mark {
@@ -27,6 +28,7 @@ class Mark {
 	chiefSpecialist: Employee
 	groupLeader: Employee
 	normContr: Employee
+	task: string
 
 	constructor(obj?: IMark) {
 		this.id = (obj && obj.id) || 0
@@ -40,6 +42,7 @@ class Mark {
 		this.chiefSpecialist = (obj && obj.chiefSpecialist) || null
 		this.groupLeader = (obj && obj.groupLeader) || null
 		this.normContr = (obj && obj.normContr) || null
+		this.task = (obj && obj.task) || ''
 	}
 }
 

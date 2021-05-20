@@ -255,6 +255,8 @@ namespace DocumentsKM
             services.AddScoped<IDefaultValuesRepo, SqlDefaultValuesRepo>();
             services.AddScoped<IArchiveDepartmentRepo, SqlArchiveDepartmentRepo>();
             services.AddScoped<IArchiveMarkRepo, SqlArchiveMarkRepo>();
+
+            services.AddScoped<IOrganizationNameRepo, SqlOrganizationNameRepo>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

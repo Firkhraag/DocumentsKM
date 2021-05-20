@@ -123,7 +123,6 @@ namespace DocumentsKM.Tests
         // public async Task Create_ShouldReturnCreated()
         // {
         //     // Arrange
-        //     var userId = 1;
         //     short subnodeId = 1;
         //     short departmentId = 1;
         //     var normContrId = 1;
@@ -136,7 +135,7 @@ namespace DocumentsKM.Tests
         //     };
         //     string json = JsonSerializer.Serialize(markRequest);
         //     var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-        //     var endpoint = $"/api/users/{userId}/subnodes/{subnodeId}/marks";
+        //     var endpoint = $"/api/subnodes/{subnodeId}/marks";
 
         //     // Act
         //     var response = await _httpClient.PostAsync(endpoint, httpContent);
@@ -149,7 +148,6 @@ namespace DocumentsKM.Tests
         // public async Task Create_ShouldReturnBadRequest_WhenWrongValues()
         // {
         //     // Arrange
-        //     var userId = 1;
         //     short subnodeId = 1;
         //     short departmentId = 1;
         //     var normContrId = 1;
@@ -164,7 +162,7 @@ namespace DocumentsKM.Tests
         //         },
         //     };
 
-        //     var endpoint = $"/api/users/{userId}/subnodes/{subnodeId}/marks";
+        //     var endpoint = $"/api/subnodes/{subnodeId}/marks";
         //     foreach (var wrongMarkRequest in wrongMarkRequests)
         //     {
         //         var json = JsonSerializer.Serialize(wrongMarkRequest);
@@ -182,7 +180,6 @@ namespace DocumentsKM.Tests
         // public async Task Create_ShouldReturnNotFound_WhenWrongValues()
         // {
         //     // Arrange
-        //     var userId = 1;
         //     short subnodeId = 1;
         //     short departmentId = 1;
         //     var normContrId = 1;
@@ -261,7 +258,7 @@ namespace DocumentsKM.Tests
         //     {
         //         var json = JsonSerializer.Serialize(wrongMarkRequest.Body);
         //         var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-        //         var endpoint = $"/api/users/{userId}/subnodes/{wrongMarkRequest.SubnodeId}/marks";
+        //         var endpoint = $"/api/subnodes/{wrongMarkRequest.SubnodeId}/marks";
 
 
         //         // Act
@@ -276,7 +273,6 @@ namespace DocumentsKM.Tests
         // public async Task Create_ShouldReturnConflict_WhenEmployeesAndDepartmentDontMatchOrConflictValues()
         // {
         //     // Arrange
-        //     var userId = 1;
         //     short subnodeId = 1;
         //     short departmentId = 1;
         //     var chiefSpecialistId = 1;
@@ -305,7 +301,7 @@ namespace DocumentsKM.Tests
         //         },
         //     };
 
-        //     var endpoint = $"/api/users/{userId}/subnodes/{subnodeId}/marks";
+        //     var endpoint = $"/api/subnodes/{subnodeId}/marks";
         //     foreach (var wrongMarkRequest in wrongMarkRequests)
         //     {
         //         var json = JsonSerializer.Serialize(wrongMarkRequest);
@@ -323,7 +319,6 @@ namespace DocumentsKM.Tests
         public async Task Create_ShouldReturnUnauthorized_WhenNoAccessToken()
         {
             // Arrange
-            var userId = 1;
             short subnodeId = 1;
             short departmentId = 1;
             var normContrId = 1;
@@ -336,7 +331,7 @@ namespace DocumentsKM.Tests
             };
             string json = JsonSerializer.Serialize(markRequest);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = $"/api/users/{userId}/subnodes/{subnodeId}/marks";
+            var endpoint = $"/api/subnodes/{subnodeId}/marks";
 
             // Act
             var response = await _authHttpClient.PostAsync(endpoint, httpContent);

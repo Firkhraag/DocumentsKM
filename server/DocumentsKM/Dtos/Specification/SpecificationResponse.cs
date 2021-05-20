@@ -7,6 +7,7 @@ namespace DocumentsKM.Dtos
         public Int32 Id { get; set; }
         public Int16 Num { get; set; }
         public bool IsCurrent { get; set; }
+        public bool IsIncluded { get; set; }
         public string Note { get; set; }
         public DateTime? CreatedDate { get; set; }
     }

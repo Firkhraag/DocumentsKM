@@ -97,7 +97,6 @@ namespace DocumentsKM.Services
 
         public void Create(
             Mark mark,
-            int userId,
             int subnodeId,
             int departmentId,
             int? chiefSpecialistId,
@@ -176,7 +175,7 @@ namespace DocumentsKM.Services
                 TaskText = "Разработать сметную документацию к чертежам " + mark.Designation + "\nСостав и объемы работ:",
             });
 
-            _markGeneralDataPointService.AddDefaultPoints(userId, mark);
+            _markGeneralDataPointService.AddDefaultPoints(mark);
         }
 
         public string Update(
@@ -284,6 +283,9 @@ namespace DocumentsKM.Services
                     foundMark.NormContr = normContr;
                 }
             }
+            if (mark.Task != null)
+                foundMark.Task = mark.Task;
+
             foundMark.EditedDate = DateTime.Now;
             _repository.Update(foundMark);
 

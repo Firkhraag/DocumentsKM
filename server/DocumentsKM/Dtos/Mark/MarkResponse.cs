@@ -16,5 +16,6 @@ namespace DocumentsKM.Dtos
         public virtual EmployeeBaseResponse ChiefSpecialist { get; set; }
         public virtual EmployeeBaseResponse GroupLeader { get; set; }
         public virtual EmployeeBaseResponse NormContr { get; set; }
+        public string Task { get; set; }
     }
 }

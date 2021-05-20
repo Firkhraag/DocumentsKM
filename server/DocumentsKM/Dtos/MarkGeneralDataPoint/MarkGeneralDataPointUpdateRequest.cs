@@ -10,10 +10,13 @@ namespace DocumentsKM.Dtos
         public string Text { get; set; }
         public Int16? OrderNum { get; set; }
 
+        public bool? HasLineBreak { get; set; }
+
         public MarkGeneralDataPointUpdateRequest()
         {
             Text = null;
             OrderNum = null;
+            HasLineBreak = null;
         }
     }
 }

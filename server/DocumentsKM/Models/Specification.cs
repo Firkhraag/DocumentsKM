@@ -25,6 +25,10 @@ namespace DocumentsKM.Models
         [Required]
         public bool IsCurrent { get; set; }
 
+        // Текущий
+        [Required]
+        public bool IsIncluded { get; set; }
+
         // Примечание
         [MaxLength(255)]
         public string Note { get; set; }

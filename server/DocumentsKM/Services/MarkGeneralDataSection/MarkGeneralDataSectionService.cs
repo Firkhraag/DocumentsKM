@@ -61,7 +61,7 @@ namespace DocumentsKM.Services
             _markRepo.Update(foundMark);
         }
 
-        public IEnumerable<MarkGeneralDataSection> UpdateAllBySectionIds(int userId, int markId, List<int> sectionIds)
+        public IEnumerable<MarkGeneralDataSection> UpdateAllBySectionIds(int markId, List<int> sectionIds)
         {
             if (sectionIds == null)
                 throw new ArgumentNullException(nameof(sectionIds));
@@ -80,7 +80,7 @@ namespace DocumentsKM.Services
                 generalDataSections.Add(generalDataSection);
             }
 
-            var allUserSections = _generalDataSectionRepo.GetAllByUserId(userId);
+            var allUserSections = _generalDataSectionRepo.GetAll();
             foreach (var userSection in allUserSections)
                 if (!sectionIds.Contains(userSection.Id))
                     if (currentSections.Select(v => v.Name).Contains(userSection.Name))

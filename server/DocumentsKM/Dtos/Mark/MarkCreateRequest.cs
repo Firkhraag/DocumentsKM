@@ -19,11 +19,14 @@ namespace DocumentsKM.Dtos
         public Int32? GroupLeaderId { get; set; }
         public Int32? NormContrId { get; set; }
 
+        public string Task { get; set; }
+
         public MarkCreateRequest()
         {
             ChiefSpecialistId = null;
             GroupLeaderId = null;
             NormContrId = null;
+            Task = null;
         }
     }
 }

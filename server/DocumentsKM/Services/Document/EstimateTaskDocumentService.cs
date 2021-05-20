@@ -24,6 +24,7 @@ namespace DocumentsKM.Services
         private readonly IMarkOperatingConditionsRepo _markOperatingConditionsRepo;
         private readonly IEstimateTaskRepo _estimateTaskRepo;
         private readonly IMarkGeneralDataPointRepo _markGeneralDataPointRepo;
+        private readonly IOrganizationNameRepo _organizationNameRepo;
         private readonly AppSettings _appSettings;
 
         private class GroupedSteel
@@ -50,6 +51,7 @@ namespace DocumentsKM.Services
             IMarkOperatingConditionsRepo markOperatingConditionsRepo,
             IEstimateTaskRepo estimateTaskRepo,
             IMarkGeneralDataPointRepo markGeneralDataPointRepo,
+            IOrganizationNameRepo organizationNameRepo,
             IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
@@ -60,6 +62,7 @@ namespace DocumentsKM.Services
             _markOperatingConditionsRepo = markOperatingConditionsRepo;
             _estimateTaskRepo = estimateTaskRepo;
             _markGeneralDataPointRepo = markGeneralDataPointRepo;
+            _organizationNameRepo = organizationNameRepo;
             _appSettings = appSettings.Value;
         }
 
@@ -103,6 +106,7 @@ namespace DocumentsKM.Services
                     Employee = estTask.ApprovalEmployee,
                 });
             }
+            var organizationShortName = _organizationNameRepo.Get().ShortName;
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
@@ -381,8 +385,9 @@ namespace DocumentsKM.Services
                     -1,
                     mark,
                     markApprovals.ToList(),
-                    departmentHead);
-                Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
+                    departmentHead,
+                    organizationShortName);
+                AppendToSmallFooterTable(wordDoc, mark.Designation);
             }
         }
 
@@ -638,6 +643,20 @@ namespace DocumentsKM.Services
 
                 body.AppendChild(newPara);
             }
+        }
+
+        private void AppendToSmallFooterTable(WordprocessingDocument document, string markName)
+        {
+            var columnIndexToFill = 6;
+            MainDocumentPart mainPart = document.MainDocumentPart;
+            var commonFooter = mainPart.FooterParts.ToList()[1];
+            var t = commonFooter.RootElement.Descendants<Table>().FirstOrDefault();
+
+            var firstTr = t.Descendants<TableRow>().FirstOrDefault();
+            var firstTrCells = firstTr.Descendants<TableCell>().ToList();
+            var tc = firstTrCells[columnIndexToFill];
+            var p = tc.GetFirstChild<Paragraph>();
+            p.Append(Word.GetTextElement(markName, 28));
         }
     }
 }

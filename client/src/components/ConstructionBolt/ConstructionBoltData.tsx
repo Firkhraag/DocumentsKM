@@ -414,7 +414,7 @@ const ConstructionBoltData = ({
 					}).some((x) => x !== undefined))}
 				>
 					{constructionBoltData.isCreateMode
-						? 'Добавить высокопрочный болт'
+						? 'Добавить высокопрочные болты'
 						: 'Сохранить изменения'}
 				</Button>
 			</div>

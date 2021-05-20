@@ -66,7 +66,7 @@ namespace DocumentsKM.Services
         }
 
         public IEnumerable<MarkGeneralDataPoint> UpdateAllByPointIds(
-            int userId, int sectionId, List<int> pointIds)
+            int sectionId, List<int> pointIds)
         {
             if (pointIds == null)
                 throw new ArgumentNullException(nameof(pointIds));
@@ -86,16 +86,19 @@ namespace DocumentsKM.Services
                 generalDataPoints.Add(generalDataPoint);
             }
 
-            var allUserPoints = _generalDataPointRepo.GetAllBySectionId(sectionId);
-            foreach (var userPoint in allUserPoints)
-                if (!pointIds.Contains(userPoint.Id))
-                    if (currentPoints.Select(v => v.Text).Contains(userPoint.Text))
-                    {
-                        var point = currentPoints.SingleOrDefault(v => v.Text == userPoint.Text);
-                        _repository.Delete(
-                            currentPoints.SingleOrDefault(v => v.Text == userPoint.Text));
-                        currentPoints.Remove(point);
-                    }
+            var idsToRemove = new List<int>();
+            foreach (var currentPoint in currentPoints)
+                if (!generalDataPoints.Select(v => v.Text).Contains(currentPoint.Text))
+                {
+                    idsToRemove.Add(currentPoint.Id);
+                }
+
+            foreach (var id in idsToRemove)
+            {
+                var currentPoint = currentPoints.SingleOrDefault(v => v.Id == id);
+                _repository.Delete(currentPoint);
+                currentPoints.Remove(currentPoint);
+            }
 
             foreach (var p in generalDataPoints.OrderBy(v => v.OrderNum))
             {
@@ -116,6 +119,7 @@ namespace DocumentsKM.Services
                     currentPoints.Add(markGeneralDataPoint);
                 }
             }
+
             short num = 1;
             foreach (var p in currentPoints)
             {
@@ -175,6 +179,8 @@ namespace DocumentsKM.Services
                     num = (Int16)(num + 1);
                 }
             }
+            if (markGeneralDataPoint.HasLineBreak != null)
+                foundMarkGeneralDataPoint.HasLineBreak = markGeneralDataPoint.HasLineBreak.GetValueOrDefault();
 
             _repository.Update(foundMarkGeneralDataPoint);
 
@@ -206,9 +212,9 @@ namespace DocumentsKM.Services
             _markRepo.Update(mark);
         }
 
-        public void AddDefaultPoints(int userId, Mark mark)
+        public void AddDefaultPoints(Mark mark)
         {
-            var sections = _generalDataSectionRepo.GetAllByUserId(userId);
+            var sections = _generalDataSectionRepo.GetAll();
             foreach (var section in sections)
             {
                 var markSection = new MarkGeneralDataSection()

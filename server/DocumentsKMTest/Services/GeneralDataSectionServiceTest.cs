@@ -12,7 +12,6 @@ namespace DocumentsKM.Tests
         private readonly IGeneralDataSectionService _service;
         private readonly Mock<IGeneralDataSectionRepo> _repository = new Mock<IGeneralDataSectionRepo>();
         private readonly Random _rnd = new Random();
-        private readonly int _maxUserId = 3;
 
         public GeneralDataSectionServiceTest()
         {
@@ -28,9 +27,8 @@ namespace DocumentsKM.Tests
                         TestData.users.SingleOrDefault(v => v.Id == user.Id));
 
                 _repository.Setup(mock =>
-                    mock.GetAllByUserId(user.Id)).Returns(
-                        TestData.generalDataSections.Where(
-                            v => v.User.Id == user.Id));
+                    mock.GetAll()).Returns(
+                        TestData.generalDataSections);
             }
 
             _service = new GeneralDataSectionService(
@@ -41,15 +39,13 @@ namespace DocumentsKM.Tests
         }
 
         [Fact]
-        public void GetAllByUserId_ShouldReturnGeneralDataSections()
+        public void GetAll_ShouldReturnGeneralDataSections()
         {
             // Act
-            int userId = _rnd.Next(1, _maxUserId);
-            var returnedGeneralDataSections = _service.GetAllByUserId(userId);
+            var returnedGeneralDataSections = _service.GetAll();
 
             // Assert
-            Assert.Equal(TestData.generalDataSections.Where(v => v.User.Id == userId),
-                returnedGeneralDataSections);
+            Assert.Equal(TestData.generalDataSections, returnedGeneralDataSections);
         }
     }
 }

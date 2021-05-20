@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DocumentsKM.Models
 {
-    // Пункт общих указаний пользователя
+    // Пункт общих указаний
     public class GeneralDataPoint
     {
         [Key]

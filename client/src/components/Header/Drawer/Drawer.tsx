@@ -31,16 +31,6 @@ const Drawer = ({ isShown, hide }: DrawerProps) => {
 			</Button>
 			<Button
 				variant="secondary"
-				onClick={() => {
-					hide()
-					history.push('/user/general-data')
-				}}
-				className="full-width btn-mrg-top"
-			>
-				Общие данные
-			</Button>
-			<Button
-				variant="secondary"
 				onClick={authMethods.logout}
 				className="full-width btn-mrg-top"
 			>

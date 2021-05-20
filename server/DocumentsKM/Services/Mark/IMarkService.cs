@@ -19,7 +19,6 @@ namespace DocumentsKM.Services
         string GetNewMarkCode(int subnodeId);
         // Создать новую марку
         void Create(Mark mark,
-            int userId,
             int subnodeId,
             int departmentId,
             int? chiefSpecialistId,

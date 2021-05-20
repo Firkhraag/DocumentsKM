@@ -8,7 +8,6 @@ namespace DocumentsKM.Profiles
         public GeneralDataPointsProfile()
         {
             CreateMap<GeneralDataPoint, GeneralDataPointResponse>();
-            CreateMap<GeneralDataPointCreateRequest, GeneralDataPoint>();
         }
     }
 }

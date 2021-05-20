@@ -30,6 +30,14 @@ namespace DocumentsKM.Data
                     v => v.Type.Id).ToList();
         }
 
+        public IEnumerable<Construction> GetAllIncludedByMarkId(
+            int markId)
+        {
+            return _context.Constructions.Where(
+                v => v.Specification.IsIncluded && v.Specification.Mark.Id == markId).OrderBy(
+                    v => v.Type.Id).ToList();
+        }
+
         public Construction GetById(int id, bool withEagerLoading = false)
         {
             if (withEagerLoading)

@@ -78,19 +78,17 @@ namespace DocumentsKM.Controllers
         }
 
         [HttpPatch,
-            Route("users/{userId}/mark-general-data-sections/{sectionId}/mark-general-data-points")]
+            Route("mark-general-data-sections/{sectionId}/mark-general-data-points")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<MarkGeneralDataPointResponse>> UpdateAllByPointIds(
-            int userId,
             int sectionId,
             [FromBody] List<int> pointIds)
         {
             try
             {
-                var addedPoints = _service.UpdateAllByPointIds(
-                    userId, sectionId, pointIds);
+                var addedPoints = _service.UpdateAllByPointIds(sectionId, pointIds);
                 return Ok(_mapper.Map<IEnumerable<MarkGeneralDataPointResponse>>(
                     addedPoints));
             }

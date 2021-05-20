@@ -70,7 +70,8 @@ namespace DocumentsKM.Services
             int sheetsCount,
             Mark mark,
             List<MarkApproval> markApprovals,
-            Employee departmentHead)
+            Employee departmentHead,
+            string organizationShortName)
         {
             const int firstPartColumnIndexToFill = 6;
             const int secondPartColumnIndexToFill = 4;
@@ -90,6 +91,7 @@ namespace DocumentsKM.Services
             p = tc.GetFirstChild<Paragraph>();
             p.Append(GetTextElement(complexName, 24));
 
+
             trCells = trArr[5].Descendants<TableCell>().ToList();
 
             // tc = trCells[1];
@@ -99,6 +101,11 @@ namespace DocumentsKM.Services
             tc = trCells[secondPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
             p.Append(GetTextElement(objectName, 20));
+
+            trCells = trArr[8].Descendants<TableCell>().ToList();
+            tc = trCells[firstPartColumnIndexToFill - 1];
+            p = tc.GetFirstChild<Paragraph>();
+            p.Append(GetTextElement(organizationShortName, 24));
 
             trCells = trArr[6].Descendants<TableCell>().ToList();
 
@@ -178,7 +185,8 @@ namespace DocumentsKM.Services
             string complexName,
             string objectName,
             Mark mark,
-            Employee departmentHead)
+            Employee departmentHead,
+            string organizationShortName)
         {
             const int firstPartColumnIndexToFill = 6;
             const int secondPartColumnIndexToFill = 4;
@@ -208,6 +216,11 @@ namespace DocumentsKM.Services
             tc = trCells[secondPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
             p.Append(GetTextElement(objectName, 20));
+
+            trCells = trArr[8].Descendants<TableCell>().ToList();
+            tc = trCells[firstPartColumnIndexToFill - 1];
+            p = tc.GetFirstChild<Paragraph>();
+            p.Append(GetTextElement(organizationShortName, 24));
 
             // trCells = trArr[6].Descendants<TableCell>().ToList();
 

@@ -7,5 +7,6 @@ namespace DocumentsKM.Dtos
         public Int32 Id { get; set; }
         public string Text { get; set; }
         public Int16 OrderNum { get; set; }
+        public bool HasLineBreak { get; set; }
     }
 }

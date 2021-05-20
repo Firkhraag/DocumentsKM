@@ -66,16 +66,16 @@ namespace DocumentsKM.Controllers
                 _mapper.Map<MarkGeneralDataSectionResponse>(markGeneralDataSectionModel));
         }
 
-        [HttpPatch, Route("users/{userId}/marks/{markId}/mark-general-data-sections")]
+        [HttpPatch, Route("marks/{markId}/mark-general-data-sections")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult UpdateAllBySectionIds(int userId, int markId, [FromBody] List<int> sectionIds)
+        public ActionResult UpdateAllBySectionIds(int markId, [FromBody] List<int> sectionIds)
         {
             try
             {
-                _service.UpdateAllBySectionIds(userId, markId, sectionIds);
+                _service.UpdateAllBySectionIds(markId, sectionIds);
             }
             catch (ArgumentNullException)
             {
@@ -130,5 +130,29 @@ namespace DocumentsKM.Controllers
                 return NotFound();
             }
         }
+
+        // [HttpPost, Route("mark-general-data-sections/copy")]
+        // [Consumes(MediaTypeNames.Application.Json)]
+        // [ProducesResponseType(StatusCodes.Status201Created)]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // [ProducesResponseType(StatusCodes.Status404NotFound)]
+        // [ProducesResponseType(StatusCodes.Status409Conflict)]
+        // public ActionResult<GeneralDataSection> Copy(int userId,
+        //     [FromBody] MarkGeneralDataSectionCopyRequest markGeneralDataSectionRequest)
+        // {
+        //     try
+        //     {
+        //         _service.Copy(markGeneralDataSectionRequest);
+        //     }
+        //     catch (ArgumentNullException)
+        //     {
+        //         return NotFound();
+        //     }
+        //     catch (ConflictException)
+        //     {
+        //         return Conflict();
+        //     }
+        //     return Ok();
+        // }
     }
 }

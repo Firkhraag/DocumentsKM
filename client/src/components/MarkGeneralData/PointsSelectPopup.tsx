@@ -8,7 +8,6 @@ import httpClient from '../../axios'
 import GeneralDataSection from '../../model/GeneralDataSection'
 import GeneralDataPoint from '../../model/GeneralDataPoint'
 import { useMark } from '../../store/MarkStore'
-import { useUser } from '../../store/UserStore'
 import ErrorMsg from '../ErrorMsg/ErrorMsg'
 
 type IOptionsObject = {
@@ -47,7 +46,6 @@ const PointsSelectPopup = ({
 	cachedPoints,
 }: PopupProps) => {
 	const mark = useMark()
-	const user = useUser()
 
 	const [points, setPoints] = useState<GeneralDataPoint[]>([])
 	const [selectedPoints, setSelectedPoints] = useState<GeneralDataPoint[]>([])
@@ -74,7 +72,7 @@ const PointsSelectPopup = ({
 			const fetchData = async () => {
 				try {
 					const pointsResponse = await httpClient.get(
-						`/users/${user.id}/general-data-sections/${sectionName}/general-data-points`
+						`/general-data-section-names/${sectionName}/general-data-points`
 					)
 					for (let _ of pointsResponse.data) {
 						refs.push(createRef())
@@ -106,8 +104,8 @@ const PointsSelectPopup = ({
 	const onSaveButtonClick = async () => {
 		setProcessIsRunning(true)
 		try {
-			const addedPointsResponse = await httpClient.patch(
-				`/users/${user.id}/mark-general-data-sections/${sectionId}/mark-general-data-points`,
+			const pointsResponse = await httpClient.patch(
+				`/mark-general-data-sections/${sectionId}/mark-general-data-points`,
 				selectedPoints.map((v) => v.id)
 			)
 			setSelectedObject({
@@ -115,10 +113,9 @@ const PointsSelectPopup = ({
 				point: null,
 			})
             cachedPoints.delete(sectionId)
-			// optionsObject.points = addedPointsResponse.data
             setOptionsObject({
                 ...optionsObject,
-                points:  addedPointsResponse.data,
+                points:  pointsResponse.data,
             })
 			close()
 		} catch (e) {
