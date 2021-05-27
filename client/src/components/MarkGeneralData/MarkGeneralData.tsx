@@ -29,17 +29,12 @@ import table1 from '../../../assets/table1.png'
 import table2 from '../../../assets/table2.png'
 import table3 from '../../../assets/table3.png'
 
-type ICopiedSectionType = {
-	section: GeneralDataSection
-	points: GeneralDataPoint[]
-}
-
 type MarkGeneralDataProps = {
-	copiedSection: ICopiedSectionType
-	setCopiedSection: (v:ICopiedSectionType) => void
+	copiedSectionId: number
+	setCopiedSectionId: (id: number) => void
 }
 
-const MarkGeneralData = ({ copiedSection, setCopiedSection }: MarkGeneralDataProps) => {
+const MarkGeneralData = ({ copiedSectionId, setCopiedSectionId }: MarkGeneralDataProps) => {
 	const corrProtSectionName = "Антикоррозионная защита"
 
 	const history = useHistory()
@@ -79,7 +74,6 @@ const MarkGeneralData = ({ copiedSection, setCopiedSection }: MarkGeneralDataPro
 
 	const [refresh, setRefresh] = useState(false)
 
-	console.log(selectedObject.point)
 	const currentPointFromArray = selectedObject.point == null ? null : optionsObject.points.find(
 		(v) => v.id === selectedObject.point.id
 	)
@@ -216,30 +210,32 @@ const MarkGeneralData = ({ copiedSection, setCopiedSection }: MarkGeneralDataPro
 		})
 	}
 
-	// const onPasteSectionClick = async (id: number, name: string) => {
-	// 	setProcessIsRunning(true)
-	// 	try {
-	// 		await httpClient.post(
-	// 			`/users/${user.id}/general-data-sections/copy`,
-	// 			{
-	// 				id: id,
-	// 				name:
-	// 					mark.designation +
-	// 					' ' +
-	// 					name,
-	// 			}
-	// 		)
-	// 	} catch (e) {
-	// 		setLeftErrMsg(true)
-	// 		if (e.response.status === 409) {
-	// 			setErrMsg('Раздел с таким содержанием уже существует')
-	// 		} else {
-	// 			setErrMsg('Произошла ошибка')
-	// 		}
-	// 	}
-	// 	setPopup(defaultPopup)
-	// 	setProcessIsRunning(false)
-	// }
+	const onPasteSectionClick = async () => {
+		setProcessIsRunning(true)
+		try {
+			const response = await httpClient.post(
+				`/marks/${mark.id}/mark-general-data-sections/copy`,
+				{
+					id: copiedSectionId,
+				}
+			)
+			var arr = [...optionsObject.sections]
+			arr.push(response.data)
+			// arr.sort((v) => v.type.id)
+			setOptionsObject({
+                ...optionsObject,
+                sections: arr,
+            })
+		} catch (e) {
+			setLeftErrMsg(true)
+			if (e.response.status === 409) {
+				setErrMsg('Данный раздел уже существует')
+			} else {
+				setErrMsg('Произошла ошибка')
+			}
+		}
+		setProcessIsRunning(false)
+	}
 
 	const onSectionDeleteClick = async (row: number, id: number) => {
 		setProcessIsRunning(true)
@@ -815,7 +811,7 @@ const MarkGeneralData = ({ copiedSection, setCopiedSection }: MarkGeneralDataPro
 													? 'pointer selection-text selected-bg flex'
 													: 'pointer selection-text flex'
 											}
-											onClick={() => onSectionSelect(s.id, s.name)}
+											onMouseDown={() => onSectionSelect(s.id, s.name)}
 										>
 											<p
 												className="no-bot-mrg"
@@ -828,11 +824,10 @@ const MarkGeneralData = ({ copiedSection, setCopiedSection }: MarkGeneralDataPro
 											<div className="flex">
 												<div
 													onClick={() => {
-														setCopiedSection({
-															section: selectedObject.section,
-															points: [],
-														})
-														alert("Раздел скопирован")
+														if (selectedObject.section != null) {
+															setCopiedSectionId(selectedObject.section.id)
+															alert("Раздел скопирован")
+														}
 													}}
 													className="trash-area"
 												>
@@ -938,28 +933,21 @@ const MarkGeneralData = ({ copiedSection, setCopiedSection }: MarkGeneralDataPro
 
 						<div className="flex-cent-v">
 							<div
-								onClick={() => alert("Не реализовано")}
+								onClick={
+									copiedSectionId === -1
+										? null
+										: onPasteSectionClick
+								}
 								className="pointer"
 							>
 								<ClipboardPlus
-									// onClick={
-									// 	copiedSection == null ||
-									// 	SectionsState.Sections
-									// 		.map((v) => v.id)
-									// 		.includes(copiedSection.id)
-									// 		? null
-									// 		: onPasteClick
-									// }
-									// color={copiedSection == null ? '#ccc' : '#666'}
-									// size={28}
-									// className={
-									// 	copiedSection == null
-									// 		? 'mrg-top'
-									// 		: 'pointer mrg-top'
-									// }
-									color={'#666'}
+									color={copiedSectionId === -1 ? '#ccc' : '#666'}
 									size={28}
-									className={'pointer'}
+									className={
+										copiedSectionId === -1
+											? 'mrg-top'
+											: 'pointer mrg-top'
+									}
 									style={{ marginRight: 10, marginTop: 20 }}
 								/>
 							</div>
@@ -1169,9 +1157,24 @@ const MarkGeneralData = ({ copiedSection, setCopiedSection }: MarkGeneralDataPro
 								</div>
 							</div>
 
-							{selectedObject.pointText == "Таблица 1" && selectedObject.point != null ? <img src={table1} style={{width: "100%", height: "auto"}} /> :
-								selectedObject.pointText == "Таблица 2" && selectedObject.point != null ? <img src={table2} style={{width: "100%", height: "auto"}} /> :
-									selectedObject.pointText == "Таблица 3" && selectedObject.point != null ? <img src={table3} style={{width: "100%", height: "auto"}} /> :
+							{selectedObject.pointText == "Таблица 1" && selectedObject.point != null ? <img onClick={() => {
+								setSelectedObject({
+									...selectedObject,
+									pointText: "Таблица 1 ",
+								})
+							}} src={table1} style={{width: "100%", height: "auto"}} /> :
+								selectedObject.pointText == "Таблица 2" && selectedObject.point != null ? <img onClick={() => {
+									setSelectedObject({
+										...selectedObject,
+										pointText: "Таблица 2 ",
+									})
+								}} src={table2} style={{width: "100%", height: "auto"}} /> :
+									selectedObject.pointText == "Таблица 3" && selectedObject.point != null ? <img onClick={() => {
+										setSelectedObject({
+											...selectedObject,
+											pointText: "Таблица 3 ",
+										})
+									}} src={table3} style={{width: "100%", height: "auto"}} /> :
 										<Form.Control
 										id="text"
 										as="textarea"

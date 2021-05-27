@@ -131,28 +131,27 @@ namespace DocumentsKM.Controllers
             }
         }
 
-        // [HttpPost, Route("mark-general-data-sections/copy")]
-        // [Consumes(MediaTypeNames.Application.Json)]
-        // [ProducesResponseType(StatusCodes.Status201Created)]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [ProducesResponseType(StatusCodes.Status409Conflict)]
-        // public ActionResult<GeneralDataSection> Copy(int userId,
-        //     [FromBody] MarkGeneralDataSectionCopyRequest markGeneralDataSectionRequest)
-        // {
-        //     try
-        //     {
-        //         _service.Copy(markGeneralDataSectionRequest);
-        //     }
-        //     catch (ArgumentNullException)
-        //     {
-        //         return NotFound();
-        //     }
-        //     catch (ConflictException)
-        //     {
-        //         return Conflict();
-        //     }
-        //     return Ok();
-        // }
+        [HttpPost, Route("marks/{markId}/mark-general-data-sections/copy")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public ActionResult<GeneralDataSection> Copy(int markId, [FromBody] IdRequest idRequest)
+        {
+            try
+            {
+                var section = _service.Copy(markId, idRequest.Id);
+                return Ok(_mapper.Map<MarkGeneralDataSectionResponse>(section));
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (ConflictException)
+            {
+                return Conflict();
+            }
+        }
     }
 }

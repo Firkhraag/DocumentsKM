@@ -17,5 +17,7 @@ namespace DocumentsKM.Services
         IEnumerable<MarkGeneralDataSection> UpdateAllBySectionIds(int markId, List<int> sectionIds);
         // Удалить раздел общих указаний марки
         void Delete(int id, int markId);
+        // Скопировать раздел с пунктами у марки
+        MarkGeneralDataSection Copy(int markId, int id);
     }
 }

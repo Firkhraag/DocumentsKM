@@ -16,15 +16,15 @@ import ErrorMsg from '../ErrorMsg/ErrorMsg'
 type SpecificationDataProps = {
 	specification: Specification
 	setConstruction: (c: Construction) => void
-	copiedConstruction: Construction
-	setCopiedConstruction: (c: Construction) => void
+	copiedConstructionId: number
+	setCopiedConstructionId: (id: number) => void
 }
 
 const SpecificationData = ({
 	specification,
 	setConstruction,
-	copiedConstruction,
-	setCopiedConstruction,
+	copiedConstructionId,
+	setCopiedConstructionId,
 }: SpecificationDataProps) => {
 	const history = useHistory()
 	const mark = useMark()
@@ -134,8 +134,8 @@ const SpecificationData = ({
 
 			<ConstructionTable
 				setConstruction={setConstruction}
-				copiedConstruction={copiedConstruction}
-				setCopiedConstruction={setCopiedConstruction}
+				copiedConstructionId={copiedConstructionId}
+				setCopiedConstructionId={setCopiedConstructionId}
 				specificationId={selectedObject.id}
 			/>
 			<StandardConstructionTable

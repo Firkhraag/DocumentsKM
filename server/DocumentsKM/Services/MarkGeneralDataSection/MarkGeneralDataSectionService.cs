@@ -222,5 +222,46 @@ namespace DocumentsKM.Services
             foundMark.EditedDate = DateTime.Now;
             _markRepo.Update(foundMark);
         }
+
+        public MarkGeneralDataSection Copy(int markId, int id)
+        {
+            var foundMarkGeneralDataSection = _repository.GetById(id);
+            if (foundMarkGeneralDataSection == null)
+                throw new ArgumentNullException(nameof(foundMarkGeneralDataSection));
+            var foundMark = _markRepo.GetById(markId);
+            if (foundMark == null)
+                throw new ArgumentNullException(nameof(foundMark));
+
+            var uniqueConstraintViolationCheck = _repository.GetByUniqueKey(
+                markId, foundMarkGeneralDataSection.Name);
+            if (uniqueConstraintViolationCheck != null)
+                throw new ConflictException(uniqueConstraintViolationCheck.Id.ToString());
+
+            short orderNum;
+            var allSections = _repository.GetAllByMarkId(markId);
+            if (allSections.Count() == 0)
+                orderNum = 1;
+            else
+                orderNum = (Int16)(allSections.Max(v => v.OrderNum) + 1);
+
+            var section = new MarkGeneralDataSection
+            {
+                Mark = foundMark,
+                Name = foundMarkGeneralDataSection.Name,
+                OrderNum = orderNum,
+                MarkGeneralDataPoints = foundMarkGeneralDataSection.MarkGeneralDataPoints.Select(p => new MarkGeneralDataPoint
+                {
+                    Text = p.Text,
+                    OrderNum = p.OrderNum,
+                    HasLineBreak = p.HasLineBreak,
+                }).ToList(),
+            };
+            _repository.Add(section);
+
+            foundMark.EditedDate = DateTime.Now;
+            _markRepo.Update(foundMark);
+
+            return section;
+        }
     }
 }

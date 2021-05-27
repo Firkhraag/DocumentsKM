@@ -28,20 +28,13 @@ import DefaultValuesData from '../components/DefaultValues/DefaultValuesData'
 import CurrentMarkSetter from '../components/CurrentMarkSetter/CurrentMarkSetter'
 import Specification from '../model/Specification'
 import Construction from '../model/Construction'
-import GeneralDataSection from '../model/GeneralDataSection'
-import GeneralDataPoint from '../model/GeneralDataPoint'
 
 const AuthApp = () => {
 	const [subnode, setSubnode] = useState(null)
 	const [specification, setSpecification] = useState<Specification>(null)
 	const [construction, setConstruction] = useState<Construction>(null)
-	const [copiedConstruction, setCopiedConstruction] = useState<Construction>(
-		null
-	)
-	const [copiedSection, setCopiedSection] = useState({
-		section: null as GeneralDataSection,
-		points: [] as GeneralDataPoint[],
-	})
+	const [copiedConstructionId, setCopiedConstructionId] = useState(-1)
+	const [copiedSectionId, setCopiedSectionId] = useState(-1)
 
 	return (
 		<MarkProvider>
@@ -102,11 +95,11 @@ const AuthApp = () => {
 									<SpecificationData
 										specification={specification}
 										setConstruction={setConstruction}
-										copiedConstruction={
-											copiedConstruction
+										copiedConstructionId={
+											copiedConstructionId
 										}
-										setCopiedConstruction={
-											setCopiedConstruction
+										setCopiedConstructionId={
+											setCopiedConstructionId
 										}
 									/>
 								</div>
@@ -182,7 +175,7 @@ const AuthApp = () => {
 
 							<Route exact path="/general-data">
 								<div className="full-width div-container">
-									<GeneralData copiedSection={copiedSection} setCopiedSection={setCopiedSection} />
+									<GeneralData copiedSectionId={copiedSectionId} setCopiedSectionId={setCopiedSectionId} />
 								</div>
 							</Route>
 

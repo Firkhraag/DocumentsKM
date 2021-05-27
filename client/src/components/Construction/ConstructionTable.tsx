@@ -17,15 +17,15 @@ import { defaultPopup, useSetPopup } from '../../store/PopupStore'
 
 type ConstructionTableProps = {
 	setConstruction: (c: Construction) => void
-	copiedConstruction: Construction
-	setCopiedConstruction: (c: Construction) => void
+	copiedConstructionId: number
+	setCopiedConstructionId: (id: number) => void
 	specificationId: number
 }
 
 const ConstructionTable = ({
 	setConstruction,
-	copiedConstruction,
-	setCopiedConstruction,
+	copiedConstructionId,
+	setCopiedConstructionId,
 	specificationId,
 }: ConstructionTableProps) => {
 	const mark = useMark()
@@ -80,8 +80,8 @@ const ConstructionTable = ({
                 ...constructionsState,
                 constructions: arr,
             })
-			if (copiedConstruction != null && id == copiedConstruction.id) {
-				setCopiedConstruction(null)
+			if (id == copiedConstructionId) {
+				setCopiedConstructionId(-1)
 			}
 			setPopup(defaultPopup)
 		} catch (e) {
@@ -94,7 +94,7 @@ const ConstructionTable = ({
 			const response = await httpClient.post(
 				`/specifications/${specificationId}/construction-copy`,
 				{
-					id: copiedConstruction.id,
+					id: copiedConstructionId,
 				}
 			)
 			var arr = [...constructionsState.constructions]
@@ -105,7 +105,9 @@ const ConstructionTable = ({
                 constructions: arr,
             })
 		} catch (e) {
-			console.log('Error', e)
+			if (e.response.status !== 409) {
+				console.log('Error', e)
+			}
 		}
 	}
 
@@ -125,17 +127,17 @@ const ConstructionTable = ({
 				/>
 				<ClipboardPlus
 					onClick={
-						copiedConstruction == null ||
+						copiedConstructionId === -1 ||
 						constructionsState.constructions
 							.map((v) => v.id)
-							.includes(copiedConstruction.id)
+							.includes(copiedConstructionId)
 							? null
 							: onPasteClick
 					}
-					color={copiedConstruction == null ? '#ccc' : '#666'}
+					color={copiedConstructionId === -1 ? '#ccc' : '#666'}
 					size={28}
 					className={
-						copiedConstruction == null
+						copiedConstructionId === -1
 							? 'mrg-top'
 							: 'pointer mrg-top'
 					}
@@ -194,7 +196,10 @@ const ConstructionTable = ({
 									<Trash color="#666" size={26} />
 								</td>
 								<td
-									onClick={() => setCopiedConstruction(c)}
+									onClick={() => {
+										setCopiedConstructionId(c.id)
+										alert("Вид конструкции скопирован")
+									}}
 									className="pointer action-cell-width text-centered"
 								>
 									<Files color="#666" size={26} />

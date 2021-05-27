@@ -8,7 +8,5 @@ namespace DocumentsKM.Services
     {
         // Получить все раздел общих указаний марки по id марки
         IEnumerable<GeneralDataSection> GetAll();
-        // Скопировать раздел с пунктами у марки
-        // void Copy(int userId, GeneralDataSectionCopyRequest generalDataSectionRequest);
     }
 }
