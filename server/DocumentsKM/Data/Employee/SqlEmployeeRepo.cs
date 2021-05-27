@@ -75,6 +75,11 @@ namespace DocumentsKM.Data
             return _context.Employees.SingleOrDefault(v => v.Id == id);
         }
 
+        public Employee GetByPositionId(int positionId)
+        {
+            return _context.Employees.FirstOrDefault(v => v.PositionId == positionId);
+        }
+
         public void Add(Employee employee)
         {
             _context.Employees.Add(employee);

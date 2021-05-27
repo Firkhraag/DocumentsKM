@@ -16,6 +16,7 @@ namespace DocumentsKM.Services
     {
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
+        private readonly IDocRepo _docRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IStandardConstructionRepo _standardConstructionRepo;
         private readonly IConstructionElementRepo _constructionElementRepo;
@@ -25,6 +26,7 @@ namespace DocumentsKM.Services
         public ConstructionDocumentService(
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
+            IDocRepo docRepo,
             IConstructionRepo constructionRepo,
             IStandardConstructionRepo standardConstructionRepo,
             IConstructionElementRepo constructionElementRepo,
@@ -33,6 +35,7 @@ namespace DocumentsKM.Services
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
+            _docRepo = docRepo;
             _constructionRepo = constructionRepo;
             _standardConstructionRepo = standardConstructionRepo;
             _constructionElementRepo = constructionElementRepo;
@@ -66,6 +69,13 @@ namespace DocumentsKM.Services
             var standardConstructions = _standardConstructionRepo.GetAllByMarkId(markId);
             var organizationShortName = _organizationNameRepo.Get().ShortName;
 
+            var docs = _docRepo.GetAllByMarkId(markId);
+            var creatorName = "";
+            if (docs.Count() > 0)
+            {
+                creatorName = docs.ToList()[0].Creator.Name;
+            }
+
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
                 AppendConstructionToTable(wordDoc,
@@ -78,7 +88,8 @@ namespace DocumentsKM.Services
                     mark.ObjectName,
                     mark,
                     departmentHead,
-                    organizationShortName);
+                    organizationShortName,
+                    creatorName);
                 AppendToSecondFooterTable(wordDoc, mark.Designation);
             }
         }

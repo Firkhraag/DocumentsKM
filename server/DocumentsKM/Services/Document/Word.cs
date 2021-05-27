@@ -71,7 +71,9 @@ namespace DocumentsKM.Services
             Mark mark,
             List<MarkApproval> markApprovals,
             Employee departmentHead,
-            string organizationShortName)
+            string organizationShortName,
+            string creatorName,
+            string mainBuilderName)
         {
             const int firstPartColumnIndexToFill = 6;
             const int secondPartColumnIndexToFill = 4;
@@ -94,9 +96,9 @@ namespace DocumentsKM.Services
 
             trCells = trArr[5].Descendants<TableCell>().ToList();
 
-            // tc = trCells[1];
-            // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetTextElement("E1", 22));
+            tc = trCells[1];
+            p = tc.GetFirstChild<Paragraph>();
+            p.Append(GetTextElement(creatorName, 22));
 
             tc = trCells[secondPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
@@ -138,15 +140,26 @@ namespace DocumentsKM.Services
                 p.Append(GetTextElement(split.LastOrDefault(), 22));
             }
 
-            // trCells = trArr[9].Descendants<TableCell>().ToList();
-            // tc = trCells[1];
-            // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetTextElement("E5", 22));
+            if (mark.NormContr != null)
+            {
+                trCells = trArr[9].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(GetTextElement(mark.NormContr.Name, 22));
+            }
 
-            // trCells = trArr[10].Descendants<TableCell>().ToList();
-            // tc = trCells[1];
-            // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetTextElement("E6", 22));
+            if (mark.ChiefSpecialist != null)
+            {
+                trCells = trArr[8].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(GetTextElement(mark.ChiefSpecialist.Name, 22));
+            }
+
+            trCells = trArr[10].Descendants<TableCell>().ToList();
+            tc = trCells[1];
+            p = tc.GetFirstChild<Paragraph>();
+            p.Append(GetTextElement(mainBuilderName, 22));
 
             for (int i = 0; i < markApprovals.Count(); i++)
             {
@@ -186,7 +199,8 @@ namespace DocumentsKM.Services
             string objectName,
             Mark mark,
             Employee departmentHead,
-            string organizationShortName)
+            string organizationShortName,
+            string creatorName)
         {
             const int firstPartColumnIndexToFill = 6;
             const int secondPartColumnIndexToFill = 4;
@@ -209,9 +223,9 @@ namespace DocumentsKM.Services
 
             trCells = trArr[5].Descendants<TableCell>().ToList();
 
-            // tc = trCells[1];
-            // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetTextElement("E1", 22));
+            tc = trCells[1];
+            p = tc.GetFirstChild<Paragraph>();
+            p.Append(GetTextElement(creatorName, 22));
 
             tc = trCells[secondPartColumnIndexToFill];
             p = tc.GetFirstChild<Paragraph>();
@@ -231,20 +245,29 @@ namespace DocumentsKM.Services
             //     p.Append(GetTextElement(mark.ChiefSpecialist.Name, 22));
             // }
 
-            // trCells = trArr[7].Descendants<TableCell>().ToList();
-            // tc = trCells[1];
-            // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetTextElement("E4", 22));
+            if (mark.GroupLeader != null)
+            {
+                trCells = trArr[7].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(GetTextElement(mark.GroupLeader.Name, 22));
+            }
 
-            // trCells = trArr[8].Descendants<TableCell>().ToList();
-            // tc = trCells[1];
-            // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetTextElement("E5", 22));
+            if (mark.ChiefSpecialist != null)
+            {
+                trCells = trArr[8].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(GetTextElement(mark.ChiefSpecialist.Name, 22));
+            }
 
-            // trCells = trArr[9].Descendants<TableCell>().ToList();
-            // tc = trCells[1];
-            // p = tc.GetFirstChild<Paragraph>();
-            // p.Append(GetTextElement("E6", 22));
+            if (mark.NormContr != null)
+            {
+                trCells = trArr[9].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(GetTextElement(mark.NormContr.Name, 22));
+            }
 
             trCells = trArr[10].Descendants<TableCell>().ToList();
             tc = trCells[1];

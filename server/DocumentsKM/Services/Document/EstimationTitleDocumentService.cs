@@ -27,7 +27,7 @@ namespace DocumentsKM.Services
             {
                 AddMarkInfo(wordDoc, mark.ComplexName, mark.ObjectName, mark.Designation);
                 AddChiefEngineer(wordDoc, mark.ChiefEngineerName);
-                AddYear(wordDoc);
+                // AddYear(wordDoc);
             }
         }
 

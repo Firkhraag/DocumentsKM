@@ -18,6 +18,7 @@ namespace DocumentsKM.Services
         
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
+        private readonly IDocRepo _docRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IConstructionElementRepo _constructionElementRepo;
         private readonly IStandardConstructionRepo _standardConstructionRepo;
@@ -45,6 +46,7 @@ namespace DocumentsKM.Services
         public EstimateTaskDocumentService(
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
+            IDocRepo docRepo,
             IConstructionRepo constructionRepo,
             IConstructionElementRepo constructionElementRepo,
             IStandardConstructionRepo standardConstructionRepo,
@@ -56,6 +58,7 @@ namespace DocumentsKM.Services
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
+            _docRepo = docRepo;
             _constructionRepo = constructionRepo;
             _constructionElementRepo = constructionElementRepo;
             _standardConstructionRepo = standardConstructionRepo;
@@ -106,6 +109,21 @@ namespace DocumentsKM.Services
                     Employee = estTask.ApprovalEmployee,
                 });
             }
+
+            var docs = _docRepo.GetAllByMarkId(markId);
+            var creatorName = "";
+            if (docs.Count() > 0)
+            {
+                creatorName = docs.ToList()[0].Creator.Name;
+            }
+
+            var mainBuilderName = "";
+            var mainBuilder = _employeeRepo.GetByPositionId(_appSettings.MainBuilderPosId);
+            if (mainBuilder != null)
+            {
+                mainBuilderName = mainBuilder.Name;
+            }
+
             var organizationShortName = _organizationNameRepo.Get().ShortName;
 
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
@@ -386,7 +404,9 @@ namespace DocumentsKM.Services
                     mark,
                     markApprovals.ToList(),
                     departmentHead,
-                    organizationShortName);
+                    organizationShortName,
+                    creatorName,
+                    mainBuilderName);
                 AppendToSmallFooterTable(wordDoc, mark.Designation);
             }
         }

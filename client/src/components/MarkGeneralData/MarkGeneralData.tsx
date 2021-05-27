@@ -78,6 +78,8 @@ const MarkGeneralData = ({ copiedSectionId, setCopiedSectionId }: MarkGeneralDat
 		(v) => v.id === selectedObject.point.id
 	)
 
+	const [pointTextFieldFocused, setPointTextFieldFocused] = useState(false)
+
 	useEffect(() => {
 		if (mark != null && mark.id != null) {
 			const fetchData = async () => {
@@ -1157,19 +1159,19 @@ const MarkGeneralData = ({ copiedSectionId, setCopiedSectionId }: MarkGeneralDat
 								</div>
 							</div>
 
-							{selectedObject.pointText == "Таблица 1" && selectedObject.point != null ? <img onClick={() => {
+							{selectedObject.pointText == "Таблица 1" && selectedObject.point != null && !pointTextFieldFocused ? <img onClick={() => {
 								setSelectedObject({
 									...selectedObject,
 									pointText: "Таблица 1 ",
 								})
 							}} src={table1} style={{width: "100%", height: "auto"}} /> :
-								selectedObject.pointText == "Таблица 2" && selectedObject.point != null ? <img onClick={() => {
+								selectedObject.pointText == "Таблица 2" && selectedObject.point != null && !pointTextFieldFocused ? <img onClick={() => {
 									setSelectedObject({
 										...selectedObject,
 										pointText: "Таблица 2 ",
 									})
 								}} src={table2} style={{width: "100%", height: "auto"}} /> :
-									selectedObject.pointText == "Таблица 3" && selectedObject.point != null ? <img onClick={() => {
+									selectedObject.pointText == "Таблица 3" && selectedObject.point != null && !pointTextFieldFocused ? <img onClick={() => {
 										setSelectedObject({
 											...selectedObject,
 											pointText: "Таблица 3 ",
@@ -1181,6 +1183,8 @@ const MarkGeneralData = ({ copiedSectionId, setCopiedSectionId }: MarkGeneralDat
 										rows={8}
 										style={{ resize: 'none' }}
 										value={selectedObject.pointText}
+										onFocus={() => setPointTextFieldFocused(true)}
+										onBlur={() => setPointTextFieldFocused(false)}
 										onChange={onPointTextChange}
 									/>}
 						</Form.Group>
@@ -1195,7 +1199,7 @@ const MarkGeneralData = ({ copiedSectionId, setCopiedSectionId }: MarkGeneralDat
 							<Button
 								variant="secondary"
 								className="flex-grow"
-								onClick={onUpdatePointButtonClick}
+								onMouseDown={onUpdatePointButtonClick}
 								disabled={
 									selectedObject.point == null ||
 									processIsRunning || !Object.values({

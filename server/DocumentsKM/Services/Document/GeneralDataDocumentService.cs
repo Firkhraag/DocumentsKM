@@ -83,6 +83,21 @@ namespace DocumentsKM.Services
                 markId).OrderByDescending(
                     v => v.Section.OrderNum).ThenByDescending(v => v.OrderNum);
             var sheets = _docRepo.GetAllByMarkIdAndDocType(markId, _appSettings.SheetDocTypeId);
+
+            var docs = _docRepo.GetAllByMarkId(markId);
+            var creatorName = "";
+            if (docs.Count() > 0)
+            {
+                creatorName = docs.ToList()[0].Creator.Name;
+            }
+
+            var mainBuilderName = "";
+            var mainBuilder = _employeeRepo.GetByPositionId(_appSettings.MainBuilderPosId);
+            if (mainBuilder != null)
+            {
+                mainBuilderName = mainBuilder.Name;
+            }
+            
             var organizationShortName = _organizationNameRepo.Get().ShortName;
 
             var marks = _markRepo.GetAllBySubnodeId(mark.SubnodeId).Where(
@@ -108,7 +123,9 @@ namespace DocumentsKM.Services
                     mark,
                     markApprovals.ToList(),
                     departmentHead,
-                    organizationShortName);
+                    organizationShortName,
+                    creatorName,
+                    mainBuilderName);
                 Word.AppendToSmallFooterTable(wordDoc, mark.Designation);
             }
         }

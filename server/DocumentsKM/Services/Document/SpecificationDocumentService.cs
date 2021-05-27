@@ -16,6 +16,7 @@ namespace DocumentsKM.Services
     {
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
+        private readonly IDocRepo _docRepo;
         private readonly ISpecificationRepo _specificationRepo;
         private readonly IConstructionRepo _constructionRepo;
         private readonly IConstructionElementRepo _constructionElementRepo;
@@ -45,6 +46,7 @@ namespace DocumentsKM.Services
         public SpecificationDocumentService(
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
+            IDocRepo docRepo,
             ISpecificationRepo specificationRepo,
             IConstructionRepo constructionRepo,
             IConstructionElementRepo constructionElementRepo,
@@ -53,6 +55,7 @@ namespace DocumentsKM.Services
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
+            _docRepo = docRepo;
             _specificationRepo = specificationRepo;
             _constructionRepo = constructionRepo;
             _constructionElementRepo = constructionElementRepo;
@@ -85,6 +88,13 @@ namespace DocumentsKM.Services
             var currentSpec = _specificationRepo.GetCurrentByMarkId(markId);
             var organizationShortName = _organizationNameRepo.Get().ShortName;
 
+            var docs = _docRepo.GetAllByMarkId(markId);
+            var creatorName = "";
+            if (docs.Count() > 0)
+            {
+                creatorName = docs.ToList()[0].Creator.Name;
+            }
+
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
                 AppendToTable(wordDoc, currentSpec.Id);
@@ -95,7 +105,8 @@ namespace DocumentsKM.Services
                     mark.ObjectName,
                     mark,
                     departmentHead,
-                    organizationShortName);
+                    organizationShortName,
+                    creatorName);
                 AppendToSecondFooterTable(wordDoc, mark.Designation);
             }
         }

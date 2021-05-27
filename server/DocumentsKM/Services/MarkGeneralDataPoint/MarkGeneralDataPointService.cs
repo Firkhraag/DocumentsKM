@@ -78,6 +78,9 @@ namespace DocumentsKM.Services
                 sectionId).ToList();
 
             var generalDataPoints = new List<GeneralDataPoint> { };
+            var generalDataSection = _generalDataSectionRepo.GetByUniqueKey(foundSection.Name);
+            if (generalDataSection == null)
+                throw new ArgumentNullException(nameof(generalDataSection));
             foreach (var id in pointIds)
             {
                 var generalDataPoint = _generalDataPointRepo.GetById(id);
@@ -86,18 +89,18 @@ namespace DocumentsKM.Services
                 generalDataPoints.Add(generalDataPoint);
             }
 
-            var idsToRemove = new List<int>();
-            foreach (var currentPoint in currentPoints)
-                if (!generalDataPoints.Select(v => v.Text).Contains(currentPoint.Text))
-                {
-                    idsToRemove.Add(currentPoint.Id);
-                }
-
-            foreach (var id in idsToRemove)
+            var allPoints = _generalDataPointRepo.GetAllBySectionId(generalDataSection.Id);
+            foreach (var point in allPoints)
             {
-                var currentPoint = currentPoints.SingleOrDefault(v => v.Id == id);
-                _repository.Delete(currentPoint);
-                currentPoints.Remove(currentPoint);
+                if (!pointIds.Contains(point.Id))
+                {
+                    if (currentPoints.Select(v => v.Text).Contains(point.Text))
+                    {
+                        var curPoint = currentPoints.SingleOrDefault(v => v.Text == point.Text);
+                        _repository.Delete(curPoint);
+                        currentPoints.Remove(curPoint);
+                    }
+                }
             }
 
             foreach (var p in generalDataPoints.OrderBy(v => v.OrderNum))

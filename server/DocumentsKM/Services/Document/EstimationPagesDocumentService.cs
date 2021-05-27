@@ -14,17 +14,20 @@ namespace DocumentsKM.Services
     {
         private readonly IMarkRepo _markRepo;
         private readonly IEmployeeRepo _employeeRepo;
+        private readonly IDocRepo _docRepo;
         private readonly IOrganizationNameRepo _organizationNameRepo;
         private readonly AppSettings _appSettings;
 
         public EstimationPagesDocumentService(
             IMarkRepo markRepo,
             IEmployeeRepo employeeRepo,
+            IDocRepo docRepo,
             IOrganizationNameRepo organizationNameRepo,
             IOptions<AppSettings> appSettings)
         {
             _markRepo = markRepo;
             _employeeRepo = employeeRepo;
+            _docRepo = docRepo;
             _organizationNameRepo = organizationNameRepo;
             _appSettings = appSettings.Value;
         }
@@ -52,6 +55,13 @@ namespace DocumentsKM.Services
                 };
             var organizationShortName = _organizationNameRepo.Get().ShortName;
 
+            var docs = _docRepo.GetAllByMarkId(markId);
+            var creatorName = "";
+            if (docs.Count() > 0)
+            {
+                creatorName = docs.ToList()[0].Creator.Name;
+            }
+
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(memory, true))
             {
                 AppendToMainFooterTable(
@@ -60,7 +70,9 @@ namespace DocumentsKM.Services
                     mark.ComplexName,
                     mark.ObjectName,
                     departmentHead,
-                    organizationShortName);
+                    organizationShortName,
+                    mark,
+                    creatorName);
                 AppendToSecondFooterTable(wordDoc, mark.Designation);
 
                 for (int i = 1; i < numOfPages; i++)
@@ -81,7 +93,9 @@ namespace DocumentsKM.Services
             string complexName,
             string objectName,
             Employee departmentHead,
-            string organizationShortName)
+            string organizationShortName,
+            Mark mark,
+            string creatorName)
         {
             MainDocumentPart mainPart = document.MainDocumentPart;
             var commonFooter = mainPart.FooterParts.LastOrDefault();
@@ -105,6 +119,35 @@ namespace DocumentsKM.Services
             tc = trCells[5];
             p = tc.GetFirstChild<Paragraph>();
             p.Append(Word.GetTextElement(organizationShortName, 24));
+
+            trCells = trArr[3].Descendants<TableCell>().ToList();
+            tc = trCells[1];
+            p = tc.GetFirstChild<Paragraph>();
+            p.Append(Word.GetTextElement(creatorName, 22));
+
+            if (mark.GroupLeader != null)
+            {
+                trCells = trArr[4].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(Word.GetTextElement(mark.GroupLeader.Name, 22));
+            }
+
+            if (mark.ChiefSpecialist != null)
+            {
+                trCells = trArr[5].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(Word.GetTextElement(mark.ChiefSpecialist.Name, 22));
+            }
+
+            if (mark.NormContr != null)
+            {
+                trCells = trArr[6].Descendants<TableCell>().ToList();
+                tc = trCells[1];
+                p = tc.GetFirstChild<Paragraph>();
+                p.Append(Word.GetTextElement(mark.NormContr.Name, 22));
+            }
 
             trCells = trArr[7].Descendants<TableCell>().ToList();
             tc = trCells[1];
